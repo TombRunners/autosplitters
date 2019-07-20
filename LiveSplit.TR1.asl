@@ -72,29 +72,32 @@ startup
 
 init
 {
+	vars.timer = new Stopwatch();
     if (modules.First().ModuleMemorySize == 3092480)
         version = "ATI";
     else if (modules.First().ModuleMemorySize == 40321024)
         version = "DOSBox";
-	
-	vars.timer = new Stopwatch();
-	vars.timer.Reset();
 }
 
 update
 {
-	// Check to see if both the Steam workshop launcher (uses the
-    // name Dosbox) and the ATI game it opens are both open.
-    // This timer is needed because this script hooks to the first of
-    // either process name it finds, and naturally, the launcher
-    // is launched first and even though the window minimizes after
-    // opening, the process is left running in the background while the
-    // actual game process plays.
-    if(Process.GetProcessesByName("dosbox").Length != 0 && Process.GetProcessesByName("tombati").Length != 0)
-		vars.timer.Start();
+	// Check if both the Steam workshop launcher (uses the name Dosbox)
+    // and the ATI game it opens are both open. ASL scripts hook onto
+    // the first of any valid process name they find, so the launcher
+    // is problematic; although it minimizes upon launching
+    // the game, its process remains in the background.
+    if (Process.GetProcessesByName("dosbox").Length != 0 &&
+        Process.GetProcessesByName("tombati").Length != 0)
+    {
+        // Take action only if the "dosbox" process is the launcher.
+        if (version != "DOSBox" && version != "ATI")
+            vars.timer.Start();
+    }	
 	
-	if(vars.timer.ElapsedMilliseconds > 2500)
-		game.Kill();
+	if (vars.timer.ElapsedMilliseconds > 2500) {		
+        game.Kill();  // TODO: See if we can reassign `game` instead.
+        vars.timer.Reset();
+    }
 	
     if (settings["FG"] && settings["IL"])
 		return false;
