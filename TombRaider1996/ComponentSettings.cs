@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace TR1
@@ -41,7 +41,6 @@ namespace TR1
             this._ilModeButton.Name = "_ilModeButton";
             this._ilModeButton.Size = new System.Drawing.Size(135, 17);
             this._ilModeButton.TabIndex = 1;
-            this._ilModeButton.TabStop = true;
             this._ilModeButton.Text = "Individual Levels (RTA)";
             this._ilModeButton.UseVisualStyleBackColor = true;
             this._ilModeButton.CheckedChanged += new System.EventHandler(this.ILModeButtonCheckedChanged);
@@ -49,6 +48,7 @@ namespace TR1
             // _fullGameModeButton
             // 
             this._fullGameModeButton.AutoSize = true;
+            this._fullGameModeButton.Checked = true;
             this._fullGameModeButton.Location = new System.Drawing.Point(6, 20);
             this._fullGameModeButton.Name = "_fullGameModeButton";
             this._fullGameModeButton.Size = new System.Drawing.Size(72, 17);
