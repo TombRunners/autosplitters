@@ -4,6 +4,9 @@ using LiveSplit.UI.Components.AutoSplit;
 
 namespace TR1
 {
+    /// <summary>
+    ///     Implementation of <see cref="IAutoSplitter"/> for the component to use.
+    /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
         private uint _fullGameFarthestLevel = 1;
@@ -15,11 +18,27 @@ namespace TR1
             throw new NotImplementedException("When is this called and what do I do with it?");
         }
 
+        /// <summary>
+        ///     Determines whether IGT is paused.
+        /// </summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     <c>true</c> indicates a pause, <c>false</c> indicates no pause.
+        /// </remarks>
+        /// <returns>If IGT should be paused</returns>
         public bool IsGameTimePaused(LiveSplitState state)
         {
             return false;
         }
 
+        /// <summary>
+        ///     Determines if the timer should split.
+        /// </summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     <c>true</c> splits, <c>false</c> does nothing.
+        /// </remarks>
+        /// <returns>If the timer should split</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
             uint currentLevel = GameMemory.Data.Level.Current;
@@ -34,7 +53,8 @@ namespace TR1
                 // The following checks are needed because the level value switches for cutscenes and FMVs.
                 if (_fullGameFarthestLevel == 15)
                 {
-                    if (currentLevel >= 16) return false;
+                    if (currentLevel >= 16) 
+                        return false;
                 }
                 else if (_fullGameFarthestLevel > 9)
                 {
@@ -81,17 +101,20 @@ namespace TR1
             else
                 shouldSplit = false;
 
-
             if (shouldSplit && Settings.FullGame)
-            {
                 _fullGameFarthestLevel++;
-                return true;
-            }
 
-            // For ILs and returning false for FG.
             return shouldSplit;
         }
 
+        /// <summary>
+        ///     Determines if the timer should reset.
+        /// </summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     <c>true</c> resets, <c>false</c> does nothing.
+        /// </remarks>
+        /// <returns>If the timer should reset</returns>
         public bool ShouldReset(LiveSplitState state)
         {
             /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
@@ -108,6 +131,14 @@ namespace TR1
             return false;
         }
 
+        /// <summary>
+        ///     Determines if the timer should start.
+        /// </summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     <c>true</c> starts, <c>false</c> does nothing.
+        /// </remarks>
+        /// <returns>If the timer should start</returns>
         public bool ShouldStart(LiveSplitState state)
         {
             _fullGameFarthestLevel = 1;
@@ -128,6 +159,12 @@ namespace TR1
             return !Settings.FullGame && ILTimerShouldStart(currentLevel, oldLevel);
         }
 
+        /// <summary>
+        ///     Used to determine if the timer should start for IL runs.
+        /// </summary>
+        /// <param name="currentLevel">Current level</param>
+        /// <param name="oldLevel">Old level</param>
+        /// <returns>If the timer should start for IL runs</returns>
         private bool ILTimerShouldStart(uint currentLevel, uint oldLevel)
         {
             // The last level is 15.
