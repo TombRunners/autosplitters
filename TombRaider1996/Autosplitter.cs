@@ -141,6 +141,9 @@ namespace TR1
         /// <returns>If the timer should start</returns>
         public bool ShouldStart(LiveSplitState state)
         {
+            if (!GameMemory.Update())
+                return false;
+
             _fullGameFarthestLevel = 1;
 
             uint currentLevel = GameMemory.Data.Level.Current;
