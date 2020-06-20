@@ -92,18 +92,23 @@ namespace TR1
         public GameData Data = null;
         public GameVersion GameVersion;
 
-        public void Update()
+        public bool Update()
         {
             if (Game == null || Game.HasExited)
             {
                 if (!SetGameProcessAndVersion())
-                    return;
+                    return false;
 
                 if (Data == null)
                     Data = new GameData(GameVersion);
             }
 
-            Data.UpdateAll(Game);
+            Data.StatsScreenIsActive.Update(Game);
+            Data.CutsceneFlag.Update(Game);
+            Data.Level.Update(Game);
+            Data.StartGameFlag.Update(Game);
+
+            return true;
         }
 
         private bool SetGameProcessAndVersion()
@@ -113,10 +118,10 @@ namespace TR1
 
             // The Steam Workshop launcher uses the name "dosbox" and remains as a background process after launching the game.
             bool workshopLauncherAndATIGameAreBothRunning = atiProcesses.Length != 0 && dosProcesses.Length != 0;
-            bool atiLooksLikeATI = atiProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
+            bool atiLooksLikeATI = atiProcesses.Length != 0 ? atiProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI : false;
             // Some Workshop guides have the user rename the ATI EXE back to "DOSBox" for Steam compatibility.
-            bool dosLooksLikeATI = dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
-            bool dosLooksLikeDOSBox = dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
+            bool dosLooksLikeATI = dosProcesses.Length != 0 ? dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI : false;
+            bool dosLooksLikeDOSBox = dosProcesses.Length != 0 ? dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox : false;
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
