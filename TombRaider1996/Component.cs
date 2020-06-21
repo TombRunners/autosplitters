@@ -1,4 +1,4 @@
-﻿using System;                             // IDisposable
+using System;                             // IDisposable
 using System.Windows.Forms;               // Control
 using System.Xml;                         // XmlDocument, XmlElement XmlNode
 using LiveSplit.Model;                    // LiveSplitState
@@ -104,5 +104,13 @@ namespace TR1
         ///     This is the text that is displayed in the white area of LiveSplit's Layout Editor.
         /// </remarks>
         public override string ComponentName => "Tomb Raider (1996)";
+        
+
+        public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+        {
+            if (!_splitter.GameMemory.Update())
+                return;
+            base.Update(invalidator, state, width, height, mode);
+        }
     }
 }
