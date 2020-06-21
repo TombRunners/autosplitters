@@ -5,7 +5,7 @@ using LiveSplit.ComponentUtil;
 namespace TR1
 {
     /// <summary>
-    ///     A list of supported game versions.
+    ///     The supported game versions.
     /// </summary>
     internal enum GameVersion
     {
@@ -102,27 +102,27 @@ namespace TR1
 
     internal class GameMemory
     {
-        private Process _game;
+        public Process Game;
         public GameData Data;
-        public GameVersion GameVersion;
+        private GameVersion _version;
 
         public bool Update()
         {
-            if (_game == null || _game.HasExited)
+            if (Game == null || Game.HasExited)
             {
                 if (!SetGameProcessAndVersion())
                     return false;
 
                 if (Data == null)
-                    Data = new GameData(GameVersion);
+                    Data = new GameData(_version);
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.StatsScreenIsActive.Update(_game);
-            Data.CutsceneFlag.Update(_game);
-            Data.Level.Update(_game);
-            Data.LevelTime.Update(_game);
-            Data.StartGameFlag.Update(_game);
+            Data.StatsScreenIsActive.Update(Game);
+            Data.CutsceneFlag.Update(Game);
+            Data.Level.Update(Game);
+            Data.LevelTime.Update(Game);
+            Data.StartGameFlag.Update(Game);
 
             return true;
         }
@@ -142,18 +142,18 @@ namespace TR1
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                _game = atiProcesses[0];
-                GameVersion = GameVersion.ATI;
+                Game = atiProcesses[0];
+                _version = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                _game = dosProcesses[0];
-                GameVersion = GameVersion.ATI;
+                Game = dosProcesses[0];
+                _version = GameVersion.ATI;
             }
             else if (dosLooksLikeDOS)
             {
-                _game = dosProcesses[0];
-                GameVersion = GameVersion.DOSBox;
+                Game = dosProcesses[0];
+                _version = GameVersion.DOSBox;
             }
             else
             {
