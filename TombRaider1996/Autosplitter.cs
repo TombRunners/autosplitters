@@ -13,9 +13,21 @@ namespace TR1
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
 
+        /// <summary>
+        ///     Determines the IGT.
+        /// </summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <returns>The IGT</returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            throw new NotImplementedException("When is this called and what do I do with it?");
+            if (state.CurrentPhase != TimerPhase.Running)
+                return null;
+            
+            // TODO Finish this so it doesn't only work in Caves (if it even does that).
+            // We can't track time to the millisecond very accurately, which is acceptable
+            // given that the stats screen reports time to the whole second anyway.
+            uint levelTime = GameMemory.Data.LevelTime.Current / 30;
+            return TimeSpan.FromSeconds(levelTime);
         }
 
         /// <summary>
@@ -122,13 +134,7 @@ namespace TR1
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            if (GameMemory.Data.StartGameFlag.Current == 2)
-            {
-                _fullGameFarthestLevel = 1;
-                return true;
-            }
-
-            return false;
+            return GameMemory.Data.StartGameFlag.Current == 2;
         }
 
         /// <summary>
@@ -146,14 +152,11 @@ namespace TR1
             uint currentLevel = GameMemory.Data.Level.Current;
             uint oldLevel = GameMemory.Data.Level.Old;
 
-            // We check for the old level because it is feasible that you save
-            // while in Caves, triggering a false positive due to how the
-            // StartGameFlag variable works.
-            // The current level check is needed so that the script doesn't
-            // prematurely start the timer; i.e., only starts once in Caves.
-            bool canStartNewGame = oldLevel == 0 || oldLevel == 20;
-            bool newGameWasStarted = canStartNewGame && currentLevel == 1 && GameMemory.Data.StartGameFlag.Current == 1;
-            if (newGameWasStarted)
+            // Check if the player may have used `New Game` from the main menu.
+            bool loadedCaves = currentLevel == 1 && GameMemory.Data.StartGameFlag.Current == 1;
+            // Avoid false positives caused by saving and loading within Caves.
+            bool notAlreadyInCaves = oldLevel == 0 || oldLevel == 20;
+            if (loadedCaves && notAlreadyInCaves)
                 return true;
 
             return !Settings.FullGame && ILTimerShouldStart(currentLevel, oldLevel);
@@ -167,24 +170,15 @@ namespace TR1
         /// <returns>If the timer should start for IL runs</returns>
         private bool ILTimerShouldStart(uint currentLevel, uint oldLevel)
         {
-            // The last level is 15.
-            if (currentLevel >= 16)
+            // Don't start in non-levels.
+            if (currentLevel > 15)
                 return false;
-
-            // Check if the level loaded follows a cutscene.
-            if (oldLevel >= 16)
-            {
+            // Check for a level that follows a cutscene.
+            if (oldLevel > 15 && oldLevel < 20)
                 return currentLevel == 05 || currentLevel == 10 ||
                        currentLevel == 14 || currentLevel == 15;
-            }
-            // If not on the Qualopec or Tihocan levels, inspect the normal case.
-            else if (currentLevel != 4 && currentLevel != 9)
-            {
-                bool statsScreenBecameInactive = GameMemory.Data.StatsScreenIsActive.Old && !GameMemory.Data.StatsScreenIsActive.Current;
-                return statsScreenBecameInactive;
-            }
-
-            return false;
+            // For normal cases, check if the stats screen was closed.
+            return GameMemory.Data.StatsScreenIsActive.Old && !GameMemory.Data.StatsScreenIsActive.Current;
         }
     }
 }

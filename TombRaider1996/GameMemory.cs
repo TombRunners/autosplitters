@@ -4,12 +4,18 @@ using LiveSplit.ComponentUtil;
 
 namespace TR1
 {
+    /// <summary>
+    ///     A list of supported game versions.
+    /// </summary>
     internal enum GameVersion
     {
         ATI,
         DOSBox
     }
 
+    /// <summary>
+    ///     The memory sizes of supported game versions.
+    /// </summary>
     internal enum ExpectedSize
     {
         ATI = 3092480,
@@ -18,7 +24,6 @@ namespace TR1
 
     internal class GameData : MemoryWatcherList
     {
-         
         /// <summary>
         ///     Sometimes indicates if the stats screen is active.
         /// </summary>
@@ -51,7 +56,15 @@ namespace TR1
         ///     19: Atlantis cutscene after the FMV until next level start.
         ///     20: Title screen and opening FMV.
         /// </remarks>
-        public MemoryWatcher<uint> Level { get; }
+        public MemoryWatcher<uint> Level { get; }        
+        
+        /// <summary>
+        ///     Gives the IGT value for the current level.
+        /// </summary>
+        /// <remarks>
+        ///     For TR1 specifically, this address does not track the cumulative level time; it only tracks the current level time.
+        /// </remarks>
+        public MemoryWatcher<uint> LevelTime { get; }
 
         /// <summary>
         ///     Tells if a new game is loading or if game is exiting to main menu.
@@ -71,12 +84,14 @@ namespace TR1
                     StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                     CutsceneFlag = new MemoryWatcher<uint>(new DeepPointer(0x56688));
                     Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
+                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x45BB0A));
                     StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                     break;
                 case GameVersion.DOSBox:
                     StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                     CutsceneFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x1623A4));
                     Level = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243D38));
+                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
                     StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                     break;
                 default:
@@ -85,16 +100,15 @@ namespace TR1
         }
     }
 
-
     internal class GameMemory
     {
-        public Process Game = null;
-        public GameData Data = null;
+        private Process _game;
+        public GameData Data;
         public GameVersion GameVersion;
 
         public bool Update()
         {
-            if (Game == null || Game.HasExited)
+            if (_game == null || _game.HasExited)
             {
                 if (!SetGameProcessAndVersion())
                     return false;
@@ -103,10 +117,12 @@ namespace TR1
                     Data = new GameData(GameVersion);
             }
 
-            Data.StatsScreenIsActive.Update(Game);
-            Data.CutsceneFlag.Update(Game);
-            Data.Level.Update(Game);
-            Data.StartGameFlag.Update(Game);
+            // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
+            Data.StatsScreenIsActive.Update(_game);
+            Data.CutsceneFlag.Update(_game);
+            Data.Level.Update(_game);
+            Data.LevelTime.Update(_game);
+            Data.StartGameFlag.Update(_game);
 
             return true;
         }
@@ -118,24 +134,27 @@ namespace TR1
 
             // The Steam Workshop launcher uses the name "dosbox" and remains as a background process after launching the game.
             bool workshopLauncherAndATIGameAreBothRunning = atiProcesses.Length != 0 && dosProcesses.Length != 0;
-            bool atiLooksLikeATI = atiProcesses.Length != 0 ? atiProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI : false;
-            // Some Workshop guides have the user rename the ATI EXE back to "DOSBox" for Steam compatibility.
-            bool dosLooksLikeATI = dosProcesses.Length != 0 ? dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI : false;
-            bool dosLooksLikeDOSBox = dosProcesses.Length != 0 ? dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox : false;
+            bool atiLooksLikeATI = atiProcesses.Length != 0 && 
+                                   atiProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
+            // Some Workshop guides have the user rename the ATI EXE back to "dosbox" for Steam compatibility.
+            bool dosLooksLikeATI = dosProcesses.Length != 0 && 
+                                   dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
+            bool dosLooksLikeDOS = dosProcesses.Length != 0 && 
+                                   dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.DOSBox;
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                Game = atiProcesses[0];
+                _game = atiProcesses[0];
                 GameVersion = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 GameVersion = GameVersion.ATI;
             }
-            else if (dosLooksLikeDOSBox)
+            else if (dosLooksLikeDOS)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 GameVersion = GameVersion.DOSBox;
             }
             else
@@ -143,7 +162,6 @@ namespace TR1
                 return false;
             }
 
-            Data = new GameData(GameVersion);
             return true;
         }
     }

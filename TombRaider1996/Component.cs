@@ -105,12 +105,21 @@ namespace TR1
         /// </remarks>
         public override string ComponentName => "Tomb Raider (1996)";
         
-
+        /// <summary>
+        ///     Prepends <see cref="GameMemory.Update"/> to <see cref="AutoSplitComponent.Update"/>.
+        /// </summary>
+        /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <param name="width">width passed by LiveSplit</param>
+        /// <param name="height">height passed by LiveSplit</param>
+        /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     This override allows <see cref="AutoSplitter"/> to use <see cref="GameMemory"/> in its logic.
+        /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (!_splitter.GameMemory.Update())
-                return;
-            base.Update(invalidator, state, width, height, mode);
+            if (_splitter.GameMemory.Update()) 
+                base.Update(invalidator, state, width, height, mode);
         }
     }
 }
