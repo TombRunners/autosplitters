@@ -134,13 +134,11 @@ namespace TR1
 
             // The Steam Workshop launcher uses the name "dosbox" and remains as a background process after launching the game.
             bool workshopLauncherAndATIGameAreBothRunning = atiProcesses.Length != 0 && dosProcesses.Length != 0;
-            bool atiLooksLikeATI = atiProcesses.Length != 0 && 
-                                   atiProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
+            bool atiLooksLikeATI = atiProcesses.Length != 0 && atiProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
             // Some Workshop guides have the user rename the ATI EXE back to "dosbox" for Steam compatibility.
-            bool dosLooksLikeATI = dosProcesses.Length != 0 && 
-                                   dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.ATI;
-            bool dosLooksLikeDOS = dosProcesses.Length != 0 && 
-                                   dosProcesses[0]?.MainModuleWow64Safe().ModuleMemorySize == (int) ExpectedSize.DOSBox;
+            bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
+            bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
+            // Note: This doesn't deal with DLLs, so using MainModule is perfectly fine and cleans up Event Viewer a bit.
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
