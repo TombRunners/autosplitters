@@ -9,9 +9,15 @@ namespace TR1
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
+        private const uint IGTTicksPerSecond = 30;
+        private const uint NumberOfLevels = 15;
+        
         private uint _fullGameFarthestLevel = 1;
+        private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
+
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
+
 
         /// <summary>
         ///     Determines the IGT.
@@ -26,7 +32,7 @@ namespace TR1
             // TODO Finish this so it doesn't only work in Caves (if it even does that).
             // We can't track time to the millisecond very accurately, which is acceptable
             // given that the stats screen reports time to the whole second anyway.
-            uint levelTime = GameMemory.Data.LevelTime.Current / 30;
+            uint levelTime = GameMemory.Data.LevelTime.Current / IGTTicksPerSecond;
             return TimeSpan.FromSeconds(levelTime);
         }
 
@@ -163,7 +169,7 @@ namespace TR1
         }
 
         /// <summary>
-        ///     Used to determine if the timer should start for IL runs.
+        ///     Determines if the timer should start for IL runs.
         /// </summary>
         /// <param name="currentLevel">Current level</param>
         /// <param name="oldLevel">Old level</param>
@@ -179,6 +185,15 @@ namespace TR1
                        currentLevel == 14 || currentLevel == 15;
             // For normal cases, check if the stats screen was closed.
             return GameMemory.Data.StatsScreenIsActive.Old && !GameMemory.Data.StatsScreenIsActive.Current;
+        }
+
+        /// <summary>
+        ///     Resets values for full game runs.
+        /// </summary>
+        public void ResetValues()
+        {
+            _fullGameFarthestLevel = 1;
+            _fullGameLevelTimes = new uint[NumberOfLevels];
         }
     }
 }
