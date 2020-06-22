@@ -87,7 +87,8 @@ namespace TR1
             uint currentLevel = GameMemory.Data.Level.Current;
             uint oldLevel = GameMemory.Data.Level.Old;
 
-            // At some points in MinesToAtlantis, the stats value would return false positives.
+            // In MinesToAtlantis, the stats value sometimes gives false positives, and
+            // the NatlasMines stats screen appears before the MinesToAtlantis scene anyway.
             if (currentLevel == (int) Levels.MinesToAtlantis)
                 return false;
             // If the runner loads into a previously-completed level and re-completes it, do not resplit.
@@ -145,7 +146,11 @@ namespace TR1
             if (oldLevel == (int) Levels.Qualopec && currentLevel == (int) Levels.QualopecCutscene ||
                 oldLevel == (int) Levels.Tihocan  && currentLevel == (int) Levels.TihocanCutscene)
                 return true;
-            
+
+            // Since we split at the start of these cutscenes, don't split at the ends of them.
+            if (currentLevel == (int) Levels.QualopecCutscene || currentLevel == (int) Levels.TihocanCutscene)
+                return false;
+
             // Inspect the normal case.
             return GameMemory.Data.StatsScreenIsActive.Current && !GameMemory.Data.StatsScreenIsActive.Old;
         }
