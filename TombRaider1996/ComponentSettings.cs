@@ -8,7 +8,7 @@ namespace TR1
         private GroupBox _modeSelect;
         public RadioButton _ilModeButton;
         public RadioButton _fullGameModeButton;
-        public bool FullGame;
+        public bool FullGame = true;
 
         public ComponentSettings()
         {
