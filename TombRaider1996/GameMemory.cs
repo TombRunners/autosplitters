@@ -14,7 +14,7 @@ namespace TR1
     }
 
     /// <summary>
-    ///     The memory sizes of supported game versions.
+    ///     The memory sizes of supported game versions (in bytes).
     /// </summary>
     internal enum ExpectedSize
     {
