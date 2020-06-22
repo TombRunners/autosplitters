@@ -84,7 +84,7 @@ namespace TR1
                     StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                     CutsceneFlag = new MemoryWatcher<uint>(new DeepPointer(0x56688));
                     Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
-                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x45BB0A));
+                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
                     StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                     break;
                 case GameVersion.DOSBox:
