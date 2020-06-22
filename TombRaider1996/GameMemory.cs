@@ -94,8 +94,6 @@ namespace TR1
                     LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
                     StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(version), version, "Bad GameVersion");
             }
         }
     }
@@ -156,9 +154,7 @@ namespace TR1
                 _version = GameVersion.DOSBox;
             }
             else
-            {
                 return false;
-            }
 
             return true;
         }
