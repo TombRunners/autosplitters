@@ -37,7 +37,6 @@ namespace TR1
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
-        private const uint IGTTicksPerSecond = 30;
         private const uint NumberOfLevels = 15;
         
         private uint _fullGameFarthestLevel = 1;
@@ -54,11 +53,48 @@ namespace TR1
         /// <returns>The IGT</returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            // TODO Finish this so it doesn't only work in Caves (if it even does that).
+            const uint IGTTicksPerSecond = 30;
             // We can't track time to the millisecond very accurately, which is acceptable
             // given that the stats screen reports time to the whole second anyway.
             uint levelTime = GameMemory.Data.LevelTime.Current / IGTTicksPerSecond;
-            return TimeSpan.FromSeconds(levelTime);
+
+            uint lastRealLevel = GetLastRealLevel(GameMemory.Data.Level.Current);
+            if (lastRealLevel == 0xDEADBEEF)
+                return null;
+
+            if (Settings.FullGame)
+            {
+                    _fullGameLevelTimes[lastRealLevel - 1] = levelTime;
+
+                    uint sumOfLevelTimes = 0;
+                    for (int i = 0; i <= lastRealLevel - 1; i++)
+                    {
+                        sumOfLevelTimes += _fullGameLevelTimes[i];
+                    }
+                    return TimeSpan.FromSeconds(sumOfLevelTimes);
+            }
+            else
+                return TimeSpan.FromSeconds(levelTime);
+        }
+
+        /// <summary>
+        ///     Gets the last non-cutscene level the runner was on.
+        /// </summary>
+        /// <param name="level"> the value read from GameMemory.Data.Level.Current</param>
+        /// <returns>The number of the last non-cutscene level.</returns>
+        private uint GetLastRealLevel(uint level)
+        {
+            if (level <= (uint) Levels.TheGreatPyramid)
+                return level;
+            else if (level == (uint) Levels.QualopecCutscene)
+                return (uint) Levels.Qualopec;
+            else if (level == (uint) Levels.TihocanCutscene)
+                return (uint) Levels.Tihocan;
+            else if (level == (uint) Levels.MinesToAtlantis)
+                return (uint) Levels.NatlasMines;
+            else if (level == (uint) Levels.AfterAtlantisFMV)
+                return (uint) Levels.Atlantis;
+            else return 0xDEADBEEF;
         }
 
         /// <summary>
