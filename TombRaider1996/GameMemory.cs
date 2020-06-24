@@ -35,16 +35,6 @@ namespace TR1
         public MemoryWatcher<bool> StatsScreenIsActive { get; }
 
         /// <summary>
-        ///     Indicates when an in-game cutscene is active.
-        /// </summary>
-        /// <remarks>
-        ///     This can't be watched as a bool to do cases of "random" values that would be falsely read as true.
-        ///     For <see cref="GameVersion.DOSBox"/>, the value is <c>1</c> during cutscenes.
-        ///     For <see cref="GameVersion.ATI"/>, the value is <c>0</c> during cutscenes.
-        /// </remarks>
-        public MemoryWatcher<uint> CutsceneFlag { get; }
-
-        /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
         /// </summary>
         /// <remarks>
@@ -78,22 +68,19 @@ namespace TR1
 
         public GameData(GameVersion version)
         {
-            switch (version)
+            if (version == GameVersion.ATI)
             {
-                case GameVersion.ATI:
-                    StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
-                    CutsceneFlag = new MemoryWatcher<uint>(new DeepPointer(0x56688));
-                    Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
-                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
-                    StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
-                    break;
-                case GameVersion.DOSBox:
-                    StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
-                    CutsceneFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x1623A4));
-                    Level = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243D38));
-                    LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
-                    StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
-                    break;
+                StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
+                Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
+                LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
+                StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
+            }
+            else
+            {
+                StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
+                Level = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243D38));
+                LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
+                StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
             }
         }
     }
