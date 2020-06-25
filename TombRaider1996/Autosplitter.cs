@@ -42,7 +42,6 @@ namespace TR1
         
         private uint _fullGameFarthestLevel = 1;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
-        private bool _fmvSkipAlreadySplit;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -147,79 +146,6 @@ namespace TR1
             }
         }
 
-        /*/// <summary>
-        ///     Determines if the runner has progressed past the given level.
-        /// </summary>
-        /// <param name="currentLevel">Current level</param>
-        /// <remarks>
-        ///     Additional checks are needed because the level value switches for cutscenes and FMVs.
-        ///     These checks start from the farthest level and work down to earlier levels.
-        /// </remarks>
-        /// <returns>If the runner progressed past the given level.</returns>
-        private bool RunnerAlreadyFinishedLevel(uint currentLevel)
-        {
-            // If the runner progresses to the last level, do not split at any cutscenes again.
-            if (_fullGameFarthestLevel == (int) Level.TheGreatPyramid && 
-                currentLevel >= (int) Level.QualopecCutscene)
-                return true;
-            
-            // If the runner progresses past Tihocan, do not split at the previous cutscenes again.
-            if (_fullGameFarthestLevel > (int) Level.Tihocan  &&
-                (currentLevel == (int) Level.QualopecCutscene ||
-                 currentLevel == (int) Level.TihocanCutscene))
-            return true;
-
-            // If the runner progresses past Qualopec, do not split at the Qualopec cutscene again.
-            if (_fullGameFarthestLevel > (int) Level.Qualopec &&
-                currentLevel == (int) Level.QualopecCutscene)
-                return true;
-            
-            // Inspecting the normal case, this prevents a resplit at an already-complete level.
-            return currentLevel < _fullGameFarthestLevel;
-        }
-
-        /// <summary>
-        ///     Determines if the runner just finish a level.
-        /// </summary>
-        /// <param name="currentLevel">Current level</param>
-        /// <param name="oldLevel">Old level</param>
-        /// <returns><c>true</c> if the runner just finished a level</returns>
-        private bool RunnerJustFinishedALevel(uint currentLevel, uint oldLevel)
-        {
-            // Deal with the levels that end in an in-game cutscene before the stats screen.
-            // Splitting at the cutscene's start is desirable for both Full Game and IL RTA runs.
-            if (oldLevel == (int) Level.Qualopec && currentLevel == (int) Level.QualopecCutscene ||
-                oldLevel == (int) Level.Tihocan  && currentLevel == (int) Level.TihocanCutscene)
-                return true;
-
-            // Since we split at the start of these cutscenes, don't split at the ends of them.
-            if (currentLevel == (int) Level.QualopecCutscene || currentLevel == (int) Level.TihocanCutscene)
-                return false;
-
-            // Inspect the normal case.
-            return GameMemory.Data.StatsScreenIsActive.Current && !GameMemory.Data.StatsScreenIsActive.Old;
-        }
-
-        /// <summary>
-        ///     Determines if the runner just did the ALT + F4 FMV skip.
-        /// </summary>
-        /// <param name="currentLevel">Current level</param>
-        /// <returns><c>true</c> if the runner just did the FMV skip</returns>
-        private bool RunnerJustDidTheFMVSkip(uint currentLevel)
-        {
-            // If this function were not helped by shouldIgnore, LiveSplit
-            // would constantly split while the runner was restarting the game.
-            // For IL RTA runs, the runner should not perform the ALT + F4 trick.
-            bool isILRun = !Settings.FullGame;
-            bool shouldIgnore = Settings.FullGame && _fmvSkipAlreadySplit;
-            bool skipWasPerformed = currentLevel == (int) Level.Atlantis && GameMemory.Game.HasExited;
-            if (isILRun || shouldIgnore || !skipWasPerformed)
-                return false;
-
-            _fmvSkipAlreadySplit = true;
-            return true;
-        }*/
-
         /// <summary>
         ///     Determines if the timer should reset.
         /// </summary>
@@ -235,7 +161,7 @@ namespace TR1
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return GameMemory.Data.StartGameFlag.Current == 2;
+            return GameMemory.Data.PickedPassportPage.Current == 2;
         }
 
         /// <summary>
@@ -250,36 +176,12 @@ namespace TR1
         {
             uint currentLevel = GameMemory.Data.Level.Current;
             uint oldLevel = GameMemory.Data.Level.Old;
+            uint currentLevelTime = GameMemory.Data.LevelTime.Current;
 
-            // Check if the player may have used `New Game` from the main menu.
-            bool loadedCaves = currentLevel == (int) Level.Caves && GameMemory.Data.StartGameFlag.Current == 1;
-            // Avoid false positives caused by saving and loading within Caves.
-            bool notAlreadyInCaves = oldLevel == (int) Level.Manor || oldLevel == (int) Level.TitleAndFirstFMV;
-            if (loadedCaves && notAlreadyInCaves)
-                return true;
-
-            return !Settings.FullGame && ILTimerShouldStart(currentLevel, oldLevel);
-        }
-
-        /// <summary>
-        ///     Determines if the timer should start for IL runs.
-        /// </summary>
-        /// <param name="currentLevel">Current level</param>
-        /// <param name="oldLevel">Old level</param>
-        /// <returns><c>true</c> if the timer should start</returns>
-        private bool ILTimerShouldStart(uint currentLevel, uint oldLevel)
-        {
-            // Don't start in non-levels.
-            if (currentLevel > (int) Level.TheGreatPyramid)
-                return false;
-            // Check for a level that follows a cutscene.
-            if (oldLevel > (int) Level.TheGreatPyramid && oldLevel < (int) Level.TitleAndFirstFMV)
-                return currentLevel == (int) Level.StFrancisFolly || 
-                       currentLevel == (int) Level.CityOfKhamoon  ||
-                       currentLevel == (int) Level.Atlantis       || 
-                       currentLevel == (int) Level.TheGreatPyramid;
-            // For normal cases, check if the stats screen was closed.
-            return GameMemory.Data.StatsScreenIsActive.Old && !GameMemory.Data.StatsScreenIsActive.Current;
+            if (Settings.FullGame)
+                return (currentLevel == Level.Caves && currentLevelTime == 0);
+            else
+                return (currentLevel != Level.Manor && currentLevel != TitleAndFirstFMV && currentLevelTime == 0);
         }
 
         /// <summary>
@@ -289,7 +191,6 @@ namespace TR1
         {
             _fullGameFarthestLevel = 1;
             _fullGameLevelTimes = new uint[NumberOfLevels];
-            _fmvSkipAlreadySplit = false;
         }
     }
 }
