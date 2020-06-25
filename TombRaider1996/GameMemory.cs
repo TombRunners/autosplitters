@@ -48,7 +48,7 @@ namespace TR1
         ///     19: Atlantis cutscene after the FMV until next level start.
         ///     20: Title screen and opening FMV.
         /// </remarks>
-        public MemoryWatcher<uint> Level { get; }        
+        public MemoryWatcher<Level> Level { get; }        
         
         /// <summary>
         ///     Gives the IGT value for the current level.
