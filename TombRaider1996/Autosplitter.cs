@@ -1,5 +1,4 @@
-﻿using System;
-using System.CodeDom;
+using System;
 using System.Linq;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
@@ -58,7 +57,7 @@ namespace TR1
             const uint igtTicksPerSecond = 30;
             // We can't track time to the millisecond very accurately, which is acceptable
             // given that the stats screen reports time to the whole second anyway.
-            uint levelTime = GameMemory.Data.LevelTime.Current / igtTicksPerSecond;
+            uint levelTime = GameMemory.Data.LevelTime.Current;
 
             Level? lastRealLevel = GetLastRealLevel((Level) GameMemory.Data.Level.Current);
             if (lastRealLevel is null)
@@ -71,12 +70,12 @@ namespace TR1
                 // But Take's argument is the number of elements, not an index.
                 uint sumOfLevelTimes = (uint) _fullGameLevelTimes
                     .Take((int) lastRealLevel)
-                    .Sum(x => x);
+                    .Sum();
 
-                return TimeSpan.FromSeconds(sumOfLevelTimes);
+                return TimeSpan.FromSeconds(sumOfLevelTimes / igtTicksPerSecond);
             }
             
-            return TimeSpan.FromSeconds(levelTime);
+            return TimeSpan.FromSeconds(levelTime / igtTicksPerSecond);
         }
 
         /// <summary>
@@ -126,22 +125,29 @@ namespace TR1
             uint currentLevel = GameMemory.Data.Level.Current;
             uint oldLevel = GameMemory.Data.Level.Old;
 
-            // In MinesToAtlantis, the stats value sometimes gives false positives, and
-            // the NatlasMines stats screen appears before the MinesToAtlantis scene anyway.
-            if (currentLevel == (int) Level.MinesToAtlantis)
-                return false;
-            // If the runner loads into a previously-completed level and re-completes it, do not resplit.
-            if (Settings.FullGame && RunnerAlreadyFinishedLevel(currentLevel))
+            // Handle IL RTA-specific splitting logic first.
+            if (!Settings.FullGame) 
+            {
+                if (oldLevel <= (uint) Levels.TheGreatPyramid && currentLevel > (uint) Levels.TheGreatPyramid)
+                    return true;
+            }
+
+            // We explicitly do not split on any of these levels, because cutscenes or FMVs around them cause issues.
+            if (currentLevel == (uint) Levels.Qualopec || 
+                currentLevel == (uint) Levels.Tihocan  || 
+                currentLevel == (uint) Levels.Atlantis || 
+                currentLevel == (uint) Levels.MinesToAtlantis))
                 return false;
 
-            bool shouldSplit = RunnerJustFinishedALevel(currentLevel, oldLevel) || RunnerJustDidTheFMVSkip(currentLevel);
-            if (Settings.FullGame && shouldSplit)
-                ++_fullGameFarthestLevel;
-
-            return shouldSplit;
+            if (GameMemory.Data.StatsScreenIsActive.Old == 0 && GameMemory.Data.StatsScreenIsActive.Current == 1 &&
+                _fullGameFarthestLevel < currentLevel)
+            {
+                _fullGameFarthestLevel++;
+                return true;
+            }
         }
 
-        /// <summary>
+        /*/// <summary>
         ///     Determines if the runner has progressed past the given level.
         /// </summary>
         /// <param name="currentLevel">Current level</param>
@@ -212,7 +218,7 @@ namespace TR1
 
             _fmvSkipAlreadySplit = true;
             return true;
-        }
+        }*/
 
         /// <summary>
         ///     Determines if the timer should reset.
