@@ -30,7 +30,9 @@ namespace TR1
         /// <remarks>
         ///     1 while an end-level stats screen is active.
         ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
-        ///     In some cases, fluctuates between 1 and 0 during FMVs and cutscenes; such cases are documented in the Split logic.
+        ///     It also remains 1 during the FMV at the end of Natla's Mines and Atlantis.
+        ///     At the end of Tomb of Qualopec and Tihocan, just before the in-game cutscene, the value changes from 0 to 1 then back to 0 immediately.
+        ///     Otherwise the value is zero.
         /// </remarks>
         public MemoryWatcher<bool> StatsScreenIsActive { get; }
 
@@ -57,14 +59,17 @@ namespace TR1
         public MemoryWatcher<uint> LevelTime { get; }
 
         /// <summary>
-        ///     Tells if a new game is loading or if game is exiting to main menu.
+        ///     Shows the index value of the chosen passport page.
         /// </summary>
         /// <remarks>
-        ///     Normally at 0.
-        ///     Changes to 1 when using the <c>New Game</c> page OR saving. Remains at 1 until the inventory is opened.
-        ///     Changes to 2 when using <c>Exit To Title</c> or <c>Exit Game</c>. Returns to 0 at the title screen or when the game closes.
+        ///     0 if the first page was picked.
+        ///     Changes to 1 when choosing the second page (<c>New Game</c> OR <c>Save Game</c>).
+        ///     If the game is saved, the value is 1 until the passport is reopened.
+        ///     The value is also 1 during the first FMV if you pick New Game from Lara's Home.
+        ///     Changes to 2 when using the third page (<c>Exit To Title</c> or <c>Exit Game</c>).
+        ///     Anywhere else the value is 0.
         /// </remarks>
-        public MemoryWatcher<uint> StartGameFlag { get; }
+        public MemoryWatcher<uint> PickedPassportPage { get; }
 
         public GameData(GameVersion version)
         {
@@ -73,14 +78,14 @@ namespace TR1
                 StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
-                StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
+                PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
             }
             else
             {
                 StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                 Level = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243D38));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
-                StartGameFlag = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
+                PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
             }
         }
     }
@@ -107,7 +112,7 @@ namespace TR1
             Data.CutsceneFlag.Update(Game);
             Data.Level.Update(Game);
             Data.LevelTime.Update(Game);
-            Data.StartGameFlag.Update(Game);
+            Data.PickedPassportPage.Update(Game);
 
             return true;
         }
