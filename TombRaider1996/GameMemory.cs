@@ -109,7 +109,6 @@ namespace TR1
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
             Data.StatsScreenIsActive.Update(Game);
-            Data.CutsceneFlag.Update(Game);
             Data.Level.Update(Game);
             Data.LevelTime.Update(Game);
             Data.PickedPassportPage.Update(Game);
