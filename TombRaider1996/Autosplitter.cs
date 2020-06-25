@@ -8,7 +8,7 @@ namespace TR1
     /// <summary>
     ///     The game's level and cutscene values.
     /// </summary>
-    internal enum Level
+    internal enum Level : uint
     {
         Manor            = 00,
         Caves            = 01,
@@ -40,7 +40,7 @@ namespace TR1
     {
         private const uint NumberOfLevels = 15;
         
-        private uint _fullGameFarthestLevel = 1;
+        private Level _fullGameFarthestLevel = Level.Caves;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
@@ -58,7 +58,7 @@ namespace TR1
             // given that the stats screen reports time to the whole second anyway.
             uint levelTime = GameMemory.Data.LevelTime.Current;
 
-            Level? lastRealLevel = GetLastRealLevel((Level) GameMemory.Data.Level.Current);
+            Level? lastRealLevel = GetLastRealLevel(GameMemory.Data.Level.Current);
             if (lastRealLevel is null)
                 return null;
 
@@ -69,7 +69,7 @@ namespace TR1
                 // But Take's argument is the number of elements, not an index.
                 uint sumOfLevelTimes = (uint) _fullGameLevelTimes
                     .Take((int) lastRealLevel)
-                    .Sum();
+                    .Sum(x => x);
 
                 return TimeSpan.FromSeconds(sumOfLevelTimes / igtTicksPerSecond);
             }
@@ -121,24 +121,24 @@ namespace TR1
         /// <returns><c>true</c> if the timer should split</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            uint currentLevel = GameMemory.Data.Level.Current;
-            uint oldLevel = GameMemory.Data.Level.Old;
+            Level currentLevel = GameMemory.Data.Level.Current;
+            Level oldLevel = GameMemory.Data.Level.Old;
 
             // Handle IL RTA-specific splitting logic first.
-            if (!Settings.FullGame) 
+            if (!Settings.FullGame)
             {
-                if (oldLevel <= (uint) Levels.TheGreatPyramid && currentLevel > (uint) Levels.TheGreatPyramid)
+                if (oldLevel <= Level.TheGreatPyramid && currentLevel > Level.TheGreatPyramid)
                     return true;
             }
 
             // We explicitly do not split on any of these levels, because cutscenes or FMVs around them cause issues.
-            if (currentLevel == (uint) Levels.Qualopec || 
-                currentLevel == (uint) Levels.Tihocan  || 
-                currentLevel == (uint) Levels.Atlantis || 
-                currentLevel == (uint) Levels.MinesToAtlantis))
+            if (currentLevel == Level.Qualopec || 
+                currentLevel == Level.Tihocan  || 
+                currentLevel == Level.Atlantis || 
+                currentLevel == Level.MinesToAtlantis)
                 return false;
 
-            if (GameMemory.Data.StatsScreenIsActive.Old == 0 && GameMemory.Data.StatsScreenIsActive.Current == 1 &&
+            if (!GameMemory.Data.StatsScreenIsActive.Old && GameMemory.Data.StatsScreenIsActive.Current &&
                 _fullGameFarthestLevel < currentLevel)
             {
                 _fullGameFarthestLevel++;
@@ -174,14 +174,14 @@ namespace TR1
         /// <returns><c>true</c> if the timer should start</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            uint currentLevel = GameMemory.Data.Level.Current;
-            uint oldLevel = GameMemory.Data.Level.Old;
+            Level currentLevel = GameMemory.Data.Level.Current;
+            Level oldLevel = GameMemory.Data.Level.Old;
             uint currentLevelTime = GameMemory.Data.LevelTime.Current;
 
             if (Settings.FullGame)
                 return (currentLevel == Level.Caves && currentLevelTime == 0);
             else
-                return (currentLevel != Level.Manor && currentLevel != TitleAndFirstFMV && currentLevelTime == 0);
+                return (currentLevel != Level.Manor && currentLevel != Level.TitleAndFirstFMV && currentLevelTime == 0);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace TR1
         /// </summary>
         public void ResetValues()
         {
-            _fullGameFarthestLevel = 1;
+            _fullGameFarthestLevel = Level.Caves;
             _fullGameLevelTimes = new uint[NumberOfLevels];
         }
     }
