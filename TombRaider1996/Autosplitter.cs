@@ -144,6 +144,8 @@ namespace TR1
                 _fullGameFarthestLevel++;
                 return true;
             }
+            else
+                return false;
         }
 
         /// <summary>
