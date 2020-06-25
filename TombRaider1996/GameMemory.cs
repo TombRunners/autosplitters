@@ -76,14 +76,14 @@ namespace TR1
             if (version == GameVersion.ATI)
             {
                 StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
-                Level = new MemoryWatcher<uint>(new DeepPointer(0x53C4C));
+                Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
                 PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
             }
             else
             {
                 StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
-                Level = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243D38));
+                Level = new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
                 PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
             }
