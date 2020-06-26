@@ -73,6 +73,10 @@ namespace TR1
         /// </remarks>
         public MemoryWatcher<uint> PickedPassportPage { get; }
 
+        /// <summary>
+        ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
+        /// </summary>
+        /// <param name="version"></param>
         public GameData(GameVersion version)
         {
             if (version == GameVersion.ATI)
@@ -105,7 +109,7 @@ namespace TR1
         ///     Updates <see cref="GameData"/> and its addresses' values.
         /// </summary>
         /// <returns>
-        ///     true if game data was able to be updated, false otherwise
+        ///     <see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise
         /// </returns>
         public bool Update()
         {
@@ -131,7 +135,7 @@ namespace TR1
         ///     If applicable, finds a <see cref="Process"/> running an expected <see cref="GameVersion"/>.
         /// </summary>
         /// <returns>
-        ///     true if values were set, false otherwise
+        ///     <see langword="true"/> if values were set, <see langword="false"/> otherwise
         /// </returns>
         private bool SetGameProcessAndVersion()
         {

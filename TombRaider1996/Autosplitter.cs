@@ -35,7 +35,7 @@ namespace TR1
     }
     
     /// <summary>
-    ///     Implementation of <see cref="IAutoSplitter"/> for the component to use.
+    ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
@@ -79,10 +79,10 @@ namespace TR1
         }
 
         /// <summary>
-        ///     Gets the last non-cutscene level the runner was on.
+        ///     Gets the last non-cutscene <see cref="Level"/> the runner was on.
         /// </summary>
-        /// <param name="level">Level</param>
-        /// <returns>The last non-cutscene level.</returns>
+        /// <param name="level"><see cref="Level"/></param>
+        /// <returns>The last non-cutscene <see cref="Level"/>.</returns>
         private static Level? GetLastRealLevel(Level level)
         {
             if (level <= Level.TheGreatPyramid)
@@ -103,23 +103,14 @@ namespace TR1
         ///     Determines whether IGT is paused.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <remarks>
-        ///     <c>true</c> indicates a pause, <c>false</c> indicates no pause.
-        /// </remarks>
-        /// <returns>If IGT should be paused</returns>
-        public bool IsGameTimePaused(LiveSplitState state)
-        {
-            return false;
-        }
+        /// <returns><see langword="true"/> to indicate IGT is paused, <see langword="true"/></returns>
+        public bool IsGameTimePaused(LiveSplitState state) => false;
 
         /// <summary>
         ///     Determines if the timer should split.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <remarks>
-        ///     <c>true</c> splits, <c>false</c> does nothing.
-        /// </remarks>
-        /// <returns><c>true</c> if the timer should split</returns>
+        /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise.</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
             Level currentLevel = GameMemory.Data.Level.Current;
@@ -156,10 +147,7 @@ namespace TR1
         ///     Determines if the timer should reset.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <remarks>
-        ///     <c>true</c> resets, <c>false</c> does nothing.
-        /// </remarks>
-        /// <returns><c>true</c> if the timer should reset</returns>
+        /// <returns><see langword="true"/> if the timer should reset, <see langword="false"/> otherwise.</returns>
         public bool ShouldReset(LiveSplitState state)
         {
             /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
@@ -174,10 +162,7 @@ namespace TR1
         ///     Determines if the timer should start.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <remarks>
-        ///     <c>true</c> starts, <c>false</c> does nothing.
-        /// </remarks>
-        /// <returns><c>true</c> if the timer should start</returns>
+        /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise.</returns>
         public bool ShouldStart(LiveSplitState state)
         {
             Level currentLevel = GameMemory.Data.Level.Current;

@@ -22,35 +22,26 @@ namespace TR1
     {
         #region IComponentFactory Implementations
 
-        /// <summary>
-        ///     Returns the category of the component.
-        /// </summary>
+        /// <inheritdoc/>
         /// <remarks>
         ///     Using <see cref="ComponentCategory.Timer"/> makes the component appear in the <c>Timer</c> section of the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
         public ComponentCategory Category => ComponentCategory.Timer;
 
-        /// <summary>
-        ///     Returns the name of the component.
-        /// </summary>
+        /// <inheritdoc/>
         /// <remarks>
         ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
         /// </remarks>
         public string ComponentName => "Tomb Raider (1996)";
 
-        /// <summary>
-        ///     Returns a description of the component.
-        /// </summary>
+        /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
         public string Description => "Autosplitter for Tomb Raider (1996)";
 
-        /// <summary>
-        ///     Constructs the component.
-        /// </summary>
+        /// <inheritdoc/>
         /// <param name="state">State passed by LiveSplit</param>
-        /// <returns>The component with the given state.</returns>
         /// <remarks>
         ///     This loads the component's code into LiveSplit.
         /// </remarks>

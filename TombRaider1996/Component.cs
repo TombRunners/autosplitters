@@ -1,5 +1,5 @@
 using System;                             // IDisposable
-using System.Windows.Forms;               // Control
+using System.Windows.Forms;               // Control, TableLayoutPanel
 using System.Xml;                         // XmlDocument, XmlElement XmlNode
 using LiveSplit.Model;                    // LiveSplitState
 using LiveSplit.UI;                       // LayoutMode, SettingsHelper
@@ -9,7 +9,7 @@ using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 namespace TR1
 {
     /// <summary>
-    ///     Implementation of <see cref="AutoSplitComponent"/> for the component.
+    ///     Implementation of <see cref="AutoSplitComponent"/>.
     /// </summary>
     /// <remarks>
     ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
@@ -22,41 +22,35 @@ namespace TR1
         /// <summary>
         ///     Initializes the component.
         /// </summary>
-        /// <param name="autoSplitter"><see cref="IAutoSplitter"/> implementation to use</param>
+        /// <param name="autoSplitter"><see cref="IAutoSplitter"/> implementation</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         public Component(Autosplitter autoSplitter, LiveSplitState state) : base(autoSplitter, state)
         {
             _splitter = autoSplitter;
         }
 
-        /// <summary>
-        ///     Shows a dialog where the user can configure the component.
-        /// </summary>
-        /// <param name="mode">LayoutMode passed by LiveSplit</param>
+        /// <summary><inheritdoc/></summary>
+        /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
-        ///     Returned object must contain at least an empty TableLayoutPanel, otherwise the Layout Settings menu doesn't show up!
+        ///     Returned object must contain at least an empty <see cref="TableLayoutPanel"/>, otherwise the Layout Settings menu doesn't show up!
         /// </remarks>
-        /// <returns>In what way the dialog was closed.</returns>
+        /// <returns><inheritdoc/></returns>
         public override Control GetSettingsControl(LayoutMode mode)
         {
             return _splitter.Settings;
         }
 
-        /// <summary>
-        ///     Writes your component's settings into the <c>.lss</c> file.
-        /// </summary>
+        /// <summary><inheritdoc/></summary>
         /// <param name="document"><see cref="XmlDocument"/> passed by LiveSplit</param>
         /// <remarks>
         ///     Even if you don't have any settings, you can't return with null.
-        ///     If you do, LiveSplit spams the Event Viewer with the <c>Object reference not set to an instance of an object.</c> error message.
+        ///     If you do, LiveSplit spams the Event Viewer with <c>Object reference not set to an instance of an object.</c> error messages.
         /// </remarks>
         /// <example>
         ///     https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70
         ///     https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25
         /// </example>
-        /// <returns>
-        ///     The document to be written out.
-        /// </returns>
+        /// <returns><inheritdoc/></returns>
         public override XmlNode GetSettings(XmlDocument document)
         {
             XmlElement settingsNode = document.CreateElement("Settings");
@@ -64,15 +58,13 @@ namespace TR1
             return settingsNode;
         }
 
-        /// <summary>
-        ///     Loads the settings of this component from XML.
-        /// </summary>
+        /// <summary><inheritdoc/></summary>
         /// <param name="settings"><see cref="XmlNode"/> passed by LiveSplit</param>
         /// <remarks>
         ///     This might happen more than once (e.g. when the settings dialog is cancelled, to restore previous settings).
         ///     The XML file is the <c>[game - category].lss</c> file in your LiveSplit folder.
-        ///     See the remarks on <see cref="GetSettings"/> for how to use it.
         /// </remarks>
+        /// <example><inheritdoc cref="GetSettings"/></example>
         public override void SetSettings(XmlNode settings)
         {
             _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
@@ -88,23 +80,19 @@ namespace TR1
             }
         }
 
-        /// <summary>
-        ///     Implements <see cref="IDisposable"/> for the component.
-        /// </summary>
+        /// <inheritdoc/>
         public override void Dispose()
         {
             _splitter.GameMemory = null;
             _splitter = null;
         }
 
-        /// <summary>
-        ///     Returns the component's name.
-        /// </summary>
+        /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that is displayed in the white area of LiveSplit's Layout Editor.
         /// </remarks>
         public override string ComponentName => "Tomb Raider (1996)";
-        
+
         /// <summary>
         ///     Adds <see cref="GameMemory"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
         /// </summary>
