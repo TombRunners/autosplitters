@@ -169,7 +169,7 @@ namespace TR1
             Level oldLevel = GameMemory.Data.Level.Old;
             uint currentLevelTime = GameMemory.Data.LevelTime.Current;
             uint passportPage = GameMemory.Data.PickedPassportPage.Current;
-
+            
             // When the game starts, currentLevel is initialized as Caves; protect against that
             // by only allowing runs to start on Caves if a new game was started.
             // A new game starts from the New Game page of the passport (page 2, index 1).
@@ -179,14 +179,25 @@ namespace TR1
 
             if (!Settings.FullGame)
             {
-                // Don't start on Manor or any cutscenes.
-                bool notInCutsceneManorOrCaves = currentLevel <= Level.Caves && currentLevel != Level.TitleAndFirstFMV;
-                // While idling in the title screen, the game plays demos which change the level value.
-                // This is a problem given that the IGT is initialized as 0 upon launch.
-                // None of the demos play in Caves, so this is not a worry for startedANewGame.
-                bool notADemo = oldLevel != Level.TitleAndFirstFMV;
-                bool startedANonCavesLevel = notInCutsceneManorOrCaves && notADemo && currentLevelTime == 0;
-
+                /* For Caves, the IL is started by starting a New Game, covered by startedANewGame.
+                 * In all other cases, the procedure to start a given level n is to load into level n-1,
+                 * finish it, then load into level n. This procedure is done to ensure every single frame of 
+                 * level n is captured in the run, whereas if loading into a save at level n was allowed, it
+                 * would be impossible to capture every frame, as a minimum of 1 elapses even if a player holds
+                 * a menu button at the start of the level. With this procedure, oldLevel is never the title screen.
+                 * However, while idling in the title screen, the game plays demos which change the level value.
+                 * This is a problem given that the IGT is initialized as 0 upon launch.
+                 * But when the demo level loads in, oldLevel is the title screen. Since we already checked for
+                 * startedANewGame, we can safely ignore any other cases where oldLevel is the title screen to avoid
+                 * false starts due to demos playing.
+                 * Note: None of the demos play in Caves, so demos do not affect startedANewGame's logic.
+                 */
+                bool notStartingADemo = oldLevel != Level.TitleAndFirstFMV;
+                // Don't start on Manor or the title screen.
+                // No need to worry about cutscenes since IGT is never 0 during them;
+                // the IGT remains the completed level time until it resets at the start of the next level.
+                bool notInTitleScreenOrManor = currentLevel != Level.TitleAndFirstFMV && currentLevel > Level.Caves;
+                bool startedANonCavesLevel = notInTitleScreenOrManor && notStartingADemo && currentLevelTime == 0;
                 return startedANonCavesLevel;
             }
 
