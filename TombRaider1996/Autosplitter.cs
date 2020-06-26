@@ -41,7 +41,7 @@ namespace TR1
     {
         private const uint NumberOfLevels = 15;
         
-        private Level _fullGameFarthestLevel = Level.Caves;
+        private Level _fullGameFarthestLevel = Level.Manor;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
@@ -72,10 +72,10 @@ namespace TR1
                     .Take((int) lastRealLevel)
                     .Sum(x => x);
 
-                return TimeSpan.FromSeconds(sumOfLevelTimes / igtTicksPerSecond);
+                return TimeSpan.FromSeconds((double) sumOfLevelTimes / igtTicksPerSecond);
             }
             
-            return TimeSpan.FromSeconds(levelTime / igtTicksPerSecond);
+            return TimeSpan.FromSeconds((double) levelTime / igtTicksPerSecond);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace TR1
         /// </summary>
         public void ResetValues()
         {
-            _fullGameFarthestLevel = Level.Caves;
+            _fullGameFarthestLevel = Level.Manor;
             _fullGameLevelTimes = new uint[NumberOfLevels];
         }
     }
