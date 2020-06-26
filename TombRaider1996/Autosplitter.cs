@@ -196,7 +196,7 @@ namespace TR1
                 // Don't start on Manor or the title screen.
                 // No need to worry about cutscenes since IGT is never 0 during them;
                 // the IGT remains the completed level time until it resets at the start of the next level.
-                bool notInTitleScreenOrManor = currentLevel != Level.TitleAndFirstFMV && currentLevel > Level.Caves;
+                bool notInTitleScreenOrManor = currentLevel != Level.TitleAndFirstFMV && currentLevel != Level.Manor;
                 bool startedANonCavesLevel = notInTitleScreenOrManor && notStartingADemo && currentLevelTime == 0;
                 return startedANonCavesLevel;
             }
