@@ -173,17 +173,24 @@ namespace TR1
             // When the game starts, currentLevel is initialized as Caves; protect against that
             // by only allowing runs to start on Caves if a new game was started.
             // A new game starts from the New Game page of the passport (page 2, index 1).
-            bool startedNewGame = currentLevel == Level.Caves && currentLevelTime == 0 && passportPage == 1;
-            if (Settings.FullGame)
-                return startedNewGame;
+            bool startedANewGame = currentLevel == Level.Caves && currentLevelTime == 0 && passportPage == 1;
+            if (startedANewGame)
+                return true;
 
-            // Also, don't start on Manor or any cutscenes.
-            bool notInCutsceneManorOrCaves = currentLevel <= Level.Caves && currentLevel != Level.TitleAndFirstFMV;
-            // While idling in the title screen, the game plays demos; these change the level and set IGT to 0.
-            // None of the demos play in Caves, so this is not a worry for startedNewGame.
-            bool notADemo = oldLevel != Level.TitleAndFirstFMV;
-            bool startedANonCavesLevel = notInCutsceneManorOrCaves && notADemo && currentLevelTime == 0;
-            return startedANonCavesLevel || startedNewGame;
+            if (!Settings.FullGame)
+            {
+                // Don't start on Manor or any cutscenes.
+                bool notInCutsceneManorOrCaves = currentLevel <= Level.Caves && currentLevel != Level.TitleAndFirstFMV;
+                // While idling in the title screen, the game plays demos which change the level value.
+                // This is a problem given that the IGT is initialized as 0 upon launch.
+                // None of the demos play in Caves, so this is not a worry for startedANewGame.
+                bool notADemo = oldLevel != Level.TitleAndFirstFMV;
+                bool startedANonCavesLevel = notInCutsceneManorOrCaves && notADemo && currentLevelTime == 0;
+
+                return startedANonCavesLevel;
+            }
+
+            return false;
         }
 
         /// <summary>

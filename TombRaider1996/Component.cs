@@ -29,18 +29,17 @@ namespace TR1
             _splitter = autoSplitter;
         }
 
-        /// <summary><inheritdoc/></summary>
+        /// <inheritdoc/>
         /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
         ///     Returned object must contain at least an empty <see cref="TableLayoutPanel"/>, otherwise the Layout Settings menu doesn't show up!
         /// </remarks>
-        /// <returns><inheritdoc/></returns>
         public override Control GetSettingsControl(LayoutMode mode)
         {
             return _splitter.Settings;
         }
 
-        /// <summary><inheritdoc/></summary>
+        /// <inheritdoc/>
         /// <param name="document"><see cref="XmlDocument"/> passed by LiveSplit</param>
         /// <remarks>
         ///     Even if you don't have any settings, you can't return with null.
@@ -50,7 +49,6 @@ namespace TR1
         ///     https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70
         ///     https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25
         /// </example>
-        /// <returns><inheritdoc/></returns>
         public override XmlNode GetSettings(XmlDocument document)
         {
             XmlElement settingsNode = document.CreateElement("Settings");
@@ -58,7 +56,7 @@ namespace TR1
             return settingsNode;
         }
 
-        /// <summary><inheritdoc/></summary>
+        /// <inheritdoc/>
         /// <param name="settings"><see cref="XmlNode"/> passed by LiveSplit</param>
         /// <remarks>
         ///     This might happen more than once (e.g. when the settings dialog is cancelled, to restore previous settings).
