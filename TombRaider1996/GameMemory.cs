@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
 namespace TR1
@@ -22,6 +21,9 @@ namespace TR1
         DOSBox = 40321024
     }
 
+    /// <summary>
+    ///     The game's watched memory addresses.
+    /// </summary>
     internal class GameData : MemoryWatcherList
     {
         /// <summary>
@@ -90,15 +92,24 @@ namespace TR1
         }
     }
 
+    /// <summary>
+    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
+    /// </summary>
     internal class GameMemory
     {
-        public Process Game;
+        private Process _game;
         public GameData Data;
         private GameVersion _version;
 
+        /// <summary>
+        ///     Updates <see cref="GameData"/> and its addresses' values.
+        /// </summary>
+        /// <returns>
+        ///     true if game data was able to be updated, false otherwise
+        /// </returns>
         public bool Update()
         {
-            if (Game == null || Game.HasExited)
+            if (_game == null || _game.HasExited)
             {
                 if (!SetGameProcessAndVersion())
                     return false;
@@ -108,14 +119,20 @@ namespace TR1
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.StatsScreenIsActive.Update(Game);
-            Data.Level.Update(Game);
-            Data.LevelTime.Update(Game);
-            Data.PickedPassportPage.Update(Game);
+            Data.StatsScreenIsActive.Update(_game);
+            Data.Level.Update(_game);
+            Data.LevelTime.Update(_game);
+            Data.PickedPassportPage.Update(_game);
 
             return true;
         }
 
+        /// <summary>
+        ///     If applicable, finds a <see cref="Process"/> running an expected <see cref="GameVersion"/>.
+        /// </summary>
+        /// <returns>
+        ///     true if values were set, false otherwise
+        /// </returns>
         private bool SetGameProcessAndVersion()
         {
             Process[] atiProcesses = Process.GetProcessesByName("tombati");
@@ -131,21 +148,23 @@ namespace TR1
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                Game = atiProcesses[0];
+                _game = atiProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeDOS)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 _version = GameVersion.DOSBox;
             }
             else
+            {
                 return false;
+            }
 
             return true;
         }

@@ -26,6 +26,7 @@ namespace TR1
         NatlasMines      = 13,
         Atlantis         = 14,
         TheGreatPyramid  = 15,
+        // Cutscenes and title screen
         QualopecCutscene = 16,
         TihocanCutscene  = 17,
         MinesToAtlantis  = 18,
@@ -127,25 +128,28 @@ namespace TR1
             // Handle IL RTA-specific splitting logic first.
             if (!Settings.FullGame)
             {
-                if (oldLevel <= Level.TheGreatPyramid && currentLevel > Level.TheGreatPyramid)
+                // Split in cases where a level's play ends with a cutscene before a stats screen.
+                bool oldLevelIsNotACutscene = oldLevel <= Level.TheGreatPyramid;
+                bool currentLevelIsACutscene = currentLevel > Level.TheGreatPyramid;
+                if (oldLevelIsNotACutscene && currentLevelIsACutscene)
                     return true;
             }
 
-            // We explicitly do not split on any of these levels, because cutscenes or FMVs around them cause issues.
+            // Do not split on these levels because cutscenes/FMVs around them cause issues.
             if (currentLevel == Level.Qualopec || 
                 currentLevel == Level.Tihocan  || 
                 currentLevel == Level.Atlantis || 
                 currentLevel == Level.MinesToAtlantis)
                 return false;
 
-            if (!GameMemory.Data.StatsScreenIsActive.Old && GameMemory.Data.StatsScreenIsActive.Current &&
-                _fullGameFarthestLevel < currentLevel)
+            bool statsScreenJustOpened = !GameMemory.Data.StatsScreenIsActive.Old && GameMemory.Data.StatsScreenIsActive.Current;
+            if (statsScreenJustOpened && _fullGameFarthestLevel < currentLevel)
             {
                 _fullGameFarthestLevel++;
                 return true;
             }
-            else
-                return false;
+            
+            return false;
         }
 
         /// <summary>
@@ -177,7 +181,6 @@ namespace TR1
         public bool ShouldStart(LiveSplitState state)
         {
             Level currentLevel = GameMemory.Data.Level.Current;
-            Level oldLevel = GameMemory.Data.Level.Old;
             uint currentLevelTime = GameMemory.Data.LevelTime.Current;
 
             if (Settings.FullGame)

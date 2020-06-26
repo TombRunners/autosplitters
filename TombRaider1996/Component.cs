@@ -4,7 +4,7 @@ using System.Xml;                         // XmlDocument, XmlElement XmlNode
 using LiveSplit.Model;                    // LiveSplitState
 using LiveSplit.UI;                       // LayoutMode, SettingsHelper
 using LiveSplit.UI.Components;            // IComponent, LogicComponent
-using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent
+using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 
 namespace TR1
 {
@@ -22,7 +22,7 @@ namespace TR1
         /// <summary>
         ///     Initializes the component.
         /// </summary>
-        /// <param name="autoSplitter">The <see cref="AutoSplitter"/> logic to use</param>
+        /// <param name="autoSplitter"><see cref="IAutoSplitter"/> implementation to use</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         public Component(Autosplitter autoSplitter, LiveSplitState state) : base(autoSplitter, state)
         {
@@ -114,7 +114,7 @@ namespace TR1
         /// <param name="height">height passed by LiveSplit</param>
         /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
-        ///     This override allows <see cref="AutoSplitter"/> to use <see cref="GameMemory"/> in its logic.
+        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameMemory"/> in its logic.
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
