@@ -166,12 +166,23 @@ namespace TR1
         public bool ShouldStart(LiveSplitState state)
         {
             Level currentLevel = GameMemory.Data.Level.Current;
+            Level oldLevel = GameMemory.Data.Level.Old;
             uint currentLevelTime = GameMemory.Data.LevelTime.Current;
+            uint passportPage = GameMemory.Data.PickedPassportPage.Current;
 
+            // A new game starts from the New Game page of the passport (page 2, index 1).
+            bool startedNewGame = currentLevel == Level.Caves && currentLevelTime == 0 && passportPage == 1;
             if (Settings.FullGame)
-                return (currentLevel == Level.Caves && currentLevelTime == 0);
-            else
-                return (currentLevel != Level.Manor && currentLevel != Level.TitleAndFirstFMV && currentLevelTime == 0);
+                return startedNewGame;
+
+            // When the game starts, currentLevel is initialized as Caves; protect against that
+            // by only allowing an IL run to start on Caves if a new game was started.
+            // Also, don't start on Manor or any cutscenes.
+            bool notInCutsceneManorOrCaves = currentLevel <= Level.Caves && currentLevel != Level.TitleAndFirstFMV;
+            // While idling in the title screen, the game plays demos; these change the level and set IGT to 0.
+            // None of the demos play in Caves, so this is not a worry for startedNewGame.
+            bool notADemo = oldLevel != Level.TitleAndFirstFMV;
+            return (notInCutsceneManorOrCaves && notADemo && currentLevelTime == 0) || startedNewGame;
         }
 
         /// <summary>
