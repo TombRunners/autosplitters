@@ -54,19 +54,28 @@ namespace TR1
         /// <returns>The IGT</returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            const uint igtTicksPerSecond = 30;
-            // We can't track time to the millisecond very accurately, which is acceptable
-            // given that the stats screen reports time to the whole second anyway.
-            uint levelTime = GameMemory.Data.LevelTime.Current;
+            uint oldTime = GameMemory.Data.LevelTime.Old;
+            uint currentTime = GameMemory.Data.LevelTime.Current;
+            uint currentDemoTimer = GameMemory.Data.DemoTimer.Current;
+
+            bool igtIsNotTicking = oldTime == currentTime;
+            // IGT reset: the moment when the game is restarted after a quitout,
+            // or when you transition from a level to the next,
+            // or when you start new game.
+            bool igtGotReset = oldTime != 0 && currentTime == 0;
+            if (igtIsNotTicking || igtGotReset || currentDemoTimer > 480)
+                return null;
 
             Level? lastRealLevel = GetLastRealLevel(GameMemory.Data.Level.Current);
             if (lastRealLevel is null)
                 return null;
 
+            const uint igtTicksPerSecond = 30;
+
             if (Settings.FullGame)
             {
                 // The array is 0-indexed.
-                _fullGameLevelTimes[(uint) lastRealLevel - 1] = levelTime;
+                _fullGameLevelTimes[(uint) lastRealLevel - 1] = currentTime;
                 // But Take's argument is the number of elements, not an index.
                 uint sumOfLevelTimes = (uint) _fullGameLevelTimes
                     .Take((int) lastRealLevel)
@@ -75,7 +84,7 @@ namespace TR1
                 return TimeSpan.FromSeconds((double) sumOfLevelTimes / igtTicksPerSecond);
             }
             
-            return TimeSpan.FromSeconds((double) levelTime / igtTicksPerSecond);
+            return TimeSpan.FromSeconds((double) currentTime / igtTicksPerSecond);
         }
 
         /// <summary>
@@ -100,11 +109,11 @@ namespace TR1
         }
 
         /// <summary>
-        ///     Determines whether IGT is paused.
+        ///     Used to control whether Game Time is paused if the game is quit, or if GetGameTime returned null.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> to indicate IGT is paused, <see langword="true"/></returns>
-        public bool IsGameTimePaused(LiveSplitState state) => false;
+        /// <returns>If true is returned, Game Time is paused when the game is quit (or if GGT returned null), return false and GT will keep running after quitting (or when GGT returned null).</returns>
+        public bool IsGameTimePaused(LiveSplitState state) => true;
 
         /// <summary>
         ///     Determines if the timer should split.
@@ -115,15 +124,14 @@ namespace TR1
         {
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
+            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
 
             // Handle IL RTA-specific splitting logic first.
             if (!Settings.FullGame)
             {
-                // Split in cases where a level's play ends with a cutscene before a stats screen.
-                bool oldLevelIsNotACutscene = oldLevel <= Level.TheGreatPyramid;
-                bool currentLevelIsACutscene = currentLevel > Level.TheGreatPyramid;
-                if (oldLevelIsNotACutscene && currentLevelIsACutscene)
-                    return true;
+                // Assuming the runner only has one split in the layout.
+                // If not, this causes multiple splits on levels ending with a cutscene.
+                return levelJustCompleted;
             }
 
             // Do not split on these levels because cutscenes/FMVs around them cause issues.
@@ -133,8 +141,7 @@ namespace TR1
                 currentLevel == Level.MinesToAtlantis)
                 return false;
 
-            bool statsScreenJustOpened = !GameMemory.Data.StatsScreenIsActive.Old && GameMemory.Data.StatsScreenIsActive.Current;
-            if (statsScreenJustOpened && _fullGameFarthestLevel < currentLevel)
+            if (levelJustCompleted && _fullGameFarthestLevel < currentLevel)
             {
                 _fullGameFarthestLevel++;
                 return true;
@@ -169,36 +176,27 @@ namespace TR1
             Level oldLevel = GameMemory.Data.Level.Old;
             uint currentLevelTime = GameMemory.Data.LevelTime.Current;
             uint passportPage = GameMemory.Data.PickedPassportPage.Current;
-            
-            // When the game starts, currentLevel is initialized as Caves; protect against that
-            // by only allowing runs to start on Caves if a new game was started.
+            bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
+            bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
+
+            // When the game process starts, currentLevel is initialized as Caves and IGT as 0.
+            // Thus the code also checks if the user picked New Game from the passport.
             // A new game starts from the New Game page of the passport (page 2, index 1).
-            bool startedANewGame = currentLevel == Level.Caves && currentLevelTime == 0 && passportPage == 1;
-            if (startedANewGame)
+            bool goingToFirstLevel = oldLevel != Level.Caves && currentLevel == Level.Caves && passportPage == 1;
+            if (goingToFirstLevel)
                 return true;
 
             if (!Settings.FullGame)
             {
-                /* For Caves, the IL is started by starting a New Game, covered by startedANewGame.
-                 * In all other cases, the procedure to start a given level n is to load into level n-1,
-                 * finish it, then load into level n. This procedure is done to ensure every single frame of 
-                 * level n is captured in the run, whereas if loading into a save at level n was allowed, it
-                 * would be impossible to capture every frame, as a minimum of 1 elapses even if a player holds
-                 * a menu button at the start of the level. With this procedure, oldLevel is never the title screen.
-                 * However, while idling in the title screen, the game plays demos which change the level value.
-                 * This is a problem given that the IGT is initialized as 0 upon launch.
-                 * But when the demo level loads in, oldLevel is the title screen. Since we already checked for
-                 * startedANewGame, we can safely ignore any other cases where oldLevel is the title screen to avoid
-                 * false starts due to demos playing.
-                 * Note: None of the demos play in Caves, so demos do not affect startedANewGame's logic.
-                 */
-                bool notStartingADemo = oldLevel != Level.TitleAndFirstFMV;
-                // Don't start on Manor or the title screen.
-                // No need to worry about cutscenes since IGT is never 0 during them;
-                // the IGT remains the completed level time until it resets at the start of the next level.
-                bool notInTitleScreenOrManor = currentLevel != Level.TitleAndFirstFMV && currentLevel != Level.Manor;
-                bool startedANonCavesLevel = notInTitleScreenOrManor && notStartingADemo && currentLevelTime == 0;
-                return startedANonCavesLevel;
+                Level? oldRealLevel = GetLastRealLevel(oldLevel);
+                Level? currentRealLevel = GetLastRealLevel(currentLevel);
+                if ((oldRealLevel is null) || (currentRealLevel is null))
+                    return false;
+
+                bool goingToNextRealLevel = oldRealLevel == currentRealLevel - 1 && oldLevelComplete && !currentLevelComplete;
+
+                if (goingToNextRealLevel)
+                    return true;
             }
 
             return false;

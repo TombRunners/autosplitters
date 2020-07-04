@@ -27,7 +27,7 @@ namespace TR1
     internal class GameData : MemoryWatcherList
     {
         /// <summary>
-        ///     Sometimes indicates if the stats screen is active.
+        ///     Indicates if the current <see cref="Level"/> is finished.
         /// </summary>
         /// <remarks>
         ///     1 while an end-level stats screen is active.
@@ -36,7 +36,7 @@ namespace TR1
         ///     At the end of Tomb of Qualopec and Tihocan, just before the in-game cutscene, the value changes from 0 to 1 then back to 0 immediately.
         ///     Otherwise the value is zero.
         /// </remarks>
-        public MemoryWatcher<bool> StatsScreenIsActive { get; }
+        public MemoryWatcher<bool> LevelComplete { get; }
 
         /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
@@ -66,12 +66,23 @@ namespace TR1
         /// <remarks>
         ///     0 if the first page was picked.
         ///     Changes to 1 when choosing the second page (<c>New Game</c> OR <c>Save Game</c>).
-        ///     If the game is saved, the value is 1 until the passport is reopened.
+        ///     The value stays 1 until the inventory is reopened.
         ///     The value is also 1 during the first FMV if you pick New Game from Lara's Home.
         ///     Changes to 2 when using the third page (<c>Exit To Title</c> or <c>Exit Game</c>).
         ///     Anywhere else the value is 0.
         /// </remarks>
         public MemoryWatcher<uint> PickedPassportPage { get; }
+
+        /// <summary>
+        ///     Timer determining whether to start Demo Mode or not.
+        /// </summary>
+        /// <remarks>
+        ///     Value is initialized to zero, and it doesn't change outside the menu.
+        ///     In the menu, value is set to zero if the user presses any key.
+        ///     If no menu item is activated, and the value gets higher than 480, Demo Mode is started.
+        ///     If any menu item is active, the value just increases and Demo Mode is not activated.
+        /// </remarks>
+        public MemoryWatcher<uint> DemoTimer { get; }
 
         /// <summary>
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
@@ -81,17 +92,19 @@ namespace TR1
         {
             if (version == GameVersion.ATI)
             {
-                StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
+                LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
                 PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
+                DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
             }
             else
             {
-                StatsScreenIsActive = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
+                LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
                 PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
+                DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
             }
         }
     }
@@ -115,18 +128,21 @@ namespace TR1
         {
             if (_game == null || _game.HasExited)
             {
-                if (!SetGameProcessAndVersion())
-                    return false;
-
-                if (Data == null)
+                if (SetGameProcessAndVersion())
+                {
                     Data = new GameData(_version);
+                    return true;
+                }
+
+                return false;
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.StatsScreenIsActive.Update(_game);
+            Data.LevelComplete.Update(_game);
             Data.Level.Update(_game);
             Data.LevelTime.Update(_game);
             Data.PickedPassportPage.Update(_game);
+            Data.DemoTimer.Update(_game);
 
             return true;
         }
@@ -148,7 +164,6 @@ namespace TR1
             // Some Workshop guides have the user rename the ATI EXE back to "dosbox" for Steam compatibility.
             bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
             bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
-            // Note: This doesn't deal with DLLs, so using MainModule is perfectly fine and cleans up Event Viewer a bit.
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
