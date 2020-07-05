@@ -45,10 +45,8 @@ namespace TR1
         /// <remarks>
         ///     This loads the component's code into LiveSplit.
         /// </remarks>
-        public IComponent Create(LiveSplitState state)
-        {
-            return new Component(new Autosplitter(), state);
-        }
+        public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(), state);
+        
 
         #endregion
 
@@ -83,7 +81,9 @@ namespace TR1
         /// <summary>
         ///     XML file which is checked to see if the component needs updated.
         /// </summary>
-        /// <remarks>Value should be: UpdateURL + <c>[relative path to the XML file]</c></remarks>
+        /// <remarks>
+        ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
+        /// </remarks>
         public string XMLURL => UpdateURL + "Component/update.xml";
 
         #endregion

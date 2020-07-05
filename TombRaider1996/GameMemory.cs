@@ -67,8 +67,8 @@ namespace TR1
         ///     0 if the first page was picked.
         ///     Changes to 1 when choosing the second page (<c>New Game</c> OR <c>Save Game</c>).
         ///     The value stays 1 until the inventory is reopened.
-        ///     The value is also 1 during the first FMV if you pick New Game from Lara's Home.
-        ///     Changes to 2 when using the third page (<c>Exit To Title</c> or <c>Exit Game</c>).
+        ///     The value is also 1 during the first FMV if you pick <c>New Game</c> from Lara's Home.
+        ///     The value is always 2 when using the (<c>Exit To Title</c> or <c>Exit Game</c>) pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
         public MemoryWatcher<uint> PickedPassportPage { get; }
@@ -128,13 +128,11 @@ namespace TR1
         {
             if (_game == null || _game.HasExited)
             {
-                if (SetGameProcessAndVersion())
-                {
-                    Data = new GameData(_version);
-                    return true;
-                }
-
-                return false;
+                if (!SetGameProcessAndVersion()) 
+                    return false;
+                
+                Data = new GameData(_version);
+                return true;
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.

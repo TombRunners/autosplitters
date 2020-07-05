@@ -34,11 +34,8 @@ namespace TR1
         /// <remarks>
         ///     Returned object must contain at least an empty <see cref="TableLayoutPanel"/>, otherwise the Layout Settings menu doesn't show up!
         /// </remarks>
-        public override Control GetSettingsControl(LayoutMode mode)
-        {
-            return _splitter.Settings;
-        }
-
+        public override Control GetSettingsControl(LayoutMode mode) => _splitter.Settings;
+        
         /// <inheritdoc/>
         /// <param name="document"><see cref="XmlDocument"/> passed by LiveSplit</param>
         /// <remarks>
@@ -68,13 +65,13 @@ namespace TR1
             _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
             if (_splitter.Settings.FullGame)
             {
-                _splitter.Settings._fullGameModeButton.Checked = true;
-                _splitter.Settings._ilModeButton.Checked = false;
+                _splitter.Settings.FullGameModeButton.Checked = true;
+                _splitter.Settings.ILModeButton.Checked = false;
             }
             else
             {
-                _splitter.Settings._fullGameModeButton.Checked = false;
-                _splitter.Settings._ilModeButton.Checked = true;
+                _splitter.Settings.FullGameModeButton.Checked = false;
+                _splitter.Settings.ILModeButton.Checked = true;
             }
         }
 
@@ -104,13 +101,13 @@ namespace TR1
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (_splitter.GameMemory.Update())
-            {
-                if (state.CurrentPhase == TimerPhase.NotRunning && _splitter.Settings.FullGame)
-                    _splitter.ResetValues();
-                
-                base.Update(invalidator, state, width, height, mode);
-            }
+            if (!_splitter.GameMemory.Update()) 
+                return;
+
+            if (state.CurrentPhase == TimerPhase.NotRunning && _splitter.Settings.FullGame)
+                _splitter.ResetValues();
+
+            base.Update(invalidator, state, width, height, mode);
         }
     }
 }
