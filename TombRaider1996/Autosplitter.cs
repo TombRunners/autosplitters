@@ -161,7 +161,7 @@ namespace TR1
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return GameMemory.Data.PickedPassportPage.Current == 2;
+            return GameMemory.Data.PickedPassportFunction.Current == 2;
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace TR1
         {
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
-            uint passportPage = GameMemory.Data.PickedPassportPage.Current;
+            uint passportPage = GameMemory.Data.PickedPassportFunction.Current;
             bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
             bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
 

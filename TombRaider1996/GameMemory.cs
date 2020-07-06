@@ -61,17 +61,17 @@ namespace TR1
         public MemoryWatcher<uint> LevelTime { get; }
 
         /// <summary>
-        ///     Shows the index value of the chosen passport page.
+        ///     Indicates the passport function chosen by the user.
         /// </summary>
         /// <remarks>
-        ///     0 if the first page was picked.
-        ///     Changes to 1 when choosing the second page (<c>New Game</c> OR <c>Save Game</c>).
+        ///     0 if <c>Load Game</c> was picked.
+        ///     Changes to 1 when choosing <c>New Game</c> or <c>Save Game</c>.
         ///     The value stays 1 until the inventory is reopened.
         ///     The value is also 1 during the first FMV if you pick <c>New Game</c> from Lara's Home.
-        ///     The value is always 2 when using the (<c>Exit To Title</c> or <c>Exit Game</c>) pages.
+        ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
-        public MemoryWatcher<uint> PickedPassportPage { get; }
+        public MemoryWatcher<uint> PickedPassportFunction { get; }
 
         /// <summary>
         ///     Timer determining whether to start Demo Mode or not.
@@ -95,7 +95,7 @@ namespace TR1
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
-                PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
+                PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
             }
             else
@@ -103,7 +103,7 @@ namespace TR1
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
-                PickedPassportPage = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
+                PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
             }
         }
@@ -139,7 +139,7 @@ namespace TR1
             Data.LevelComplete.Update(_game);
             Data.Level.Update(_game);
             Data.LevelTime.Update(_game);
-            Data.PickedPassportPage.Update(_game);
+            Data.PickedPassportFunction.Update(_game);
             Data.DemoTimer.Update(_game);
 
             return true;
