@@ -14,7 +14,7 @@ state("tombati", "ATI")
     // in-game cutscene, but cannot be fully interpreted as a
     // boolean due to some cases of "random" values at other points
     // which would be interpreted as "true" despite no cutscene running.
-    // Note for tombati, it apparently behaves the opposire of the
+    // Note for tombati, it apparently behaves the opposite of the
     // DOSBOX `cutscene` variable.
     uint cutscene: 0x56688;
 
@@ -61,10 +61,10 @@ startup
     // No need for specific FG rulesets/categories because this
     // splitter (if coded properly) will work with any category
     // including Any%, Secrets, and 100% (with known speedrunning tech.
-	settings.Add("FG", true, "Full Game");
-	settings.SetToolTip("FG", "A full game run, as opposed to an IL (Individual Level) run.");
-	settings.Add("IL", false, "Individual Level - RTA");
-	settings.SetToolTip("IL", "RTA (Real-Time Attack) ILs; do not use this for IGT (In-Game Time) ILs nor full-game runs.");
+    settings.Add("FG", true, "Full Game");
+    settings.SetToolTip("FG", "A full game run, as opposed to an IL (Individual Level) run.");
+    settings.Add("IL", false, "Individual Level - RTA");
+    settings.SetToolTip("IL", "RTA (Real-Time Attack) ILs; do not use this for IGT (In-Game Time) ILs nor full-game runs.");
 
     // Track the furthest level split on.
     vars.FG_farthest_level = 1;
@@ -72,7 +72,7 @@ startup
 
 init
 {
-	vars.timer = new Stopwatch();
+    vars.timer = new Stopwatch();
     if (modules.First().ModuleMemorySize == 3092480)
         version = "ATI";
     else if (modules.First().ModuleMemorySize == 40321024)
@@ -81,7 +81,7 @@ init
 
 update
 {
-	// Check if both the Steam workshop launcher (uses the name Dosbox)
+    // Check if both the Steam workshop launcher (uses the name Dosbox)
     // and the ATI game it opens are both open. ASL scripts hook onto
     // the first of any valid process name they find, so the launcher
     // is problematic; although it minimizes upon launching
@@ -93,14 +93,14 @@ update
         if (version != "DOSBox" && version != "ATI")
             vars.timer.Start();
     }	
-	
-	if (vars.timer.ElapsedMilliseconds > 2500) {		
+    
+    if (vars.timer.ElapsedMilliseconds > 2500) {		
         game.Kill();  // TODO: See if we can reassign `game` instead.
         vars.timer.Reset();
     }
-	
+    
     if (settings["FG"] && settings["IL"])
-		return false;
+        return false;
 }
 
 start
