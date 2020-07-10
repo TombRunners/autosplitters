@@ -38,8 +38,14 @@ state("tomb3", "INT")
     // 20: All Hallows
     uint level: 0xC561C;
 
+    // 0 During play.
+    // Flicks to 1 and back at the start of in-game cutscenes.
+    // Goes to 1 if an FMV plays or an end-level stats screen opens,
+    // going back to 0 at the next level's start.
+    bool levelComplete: 0x233F54;
+
     // Current level time as measured by in-game "ticks" (30 / second)
-    uint levelTime: 0x2D27CF;
+    uint currentLevelTime: 0x2D27CF;
 
     // 0 if Load Game was picked.
     // Changes to 1 when choosing New Game or Save Game.
@@ -55,7 +61,8 @@ state("tomb3", "JP")
     bool isStatsScreen:          0x2266AC;
     bool isTitle:                0x2A1C60;
     uint level:                  0xC561C;
-    uint levelTime:              0x2D27CF;
+    bool levelComplete:          0x233f5C;
+    uint currentLevelTime:       0x2D27CF;
     uint pickedPassportFunction: 0x226458;
 }
 
@@ -104,7 +111,7 @@ init
 
 start
 {
-    bool newGameStarted = current.level == 1 && current.levelTime == 0 && old.isTitle;
+    bool newGameStarted = current.level == 1 && current.currentLevelTime == 0 && old.isTitle;
     if (newGameStarted)
         return true;
 
@@ -114,7 +121,7 @@ start
     }
     else  // IL-specific logic
     {
-        bool goingToNextRealLevel = current.level == old.level + 1 && current.levelTime == 0;
+        bool goingToNextRealLevel = current.level == old.level + 1 && current.currentLevelTime == 0;
         return goingToNextRealLevel;
     }
 }
@@ -129,7 +136,7 @@ split
 {
     if (current.level == 19)
         return current.isCutscene && !old.isCutscene;
-    return current.isStatsScreen && !old.isStatsScreen;
+    return current.levelComplete && !old.levelComplete;
 }
 
 // Copied from rtrger's TR3G ASL with IntPtr value and some var names changed.
@@ -137,20 +144,20 @@ split
 gameTime
 {
     const int ticksPerSecond = 30;
+    const uint levelCount = 19; // This does not include the bonus level
 
     if (settings["IL"])
     {
-        return TimeSpan.FromSeconds((double) current.levelTime / ticksPerSecond);
+        return TimeSpan.FromSeconds((double) current.currentLevelTime / ticksPerSecond);
     }
     else
     {
         var firstLevelTime = (IntPtr)0x6D2326;
         int finishedLevelsTime = 0;
         // The game stores statistics (including time) for each completed level on separate addresses.
-        for (int i = 0; i < (current.level - 1); i++)
-        {
+        for (int i = 1; i <= levelCount; i++)
             finishedLevelsTime += memory.ReadValue<int>((IntPtr)(firstLevelTime + (i * 0x33)));
-        }
-        return TimeSpan.FromSeconds((double) (current.levelTime + finishedLevelsTime) / ticksPerSecond);
+
+        return TimeSpan.FromSeconds((double) (current.currentLevelTime + finishedLevelsTime) / ticksPerSecond);
     }
 }
