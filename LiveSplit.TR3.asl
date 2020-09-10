@@ -121,8 +121,8 @@ start
     }
     else  // IL-specific logic
     {
-        bool goingToNextRealLevel = current.level == old.level + 1 && current.currentLevelTime == 0;
-        return goingToNextRealLevel;
+        bool goingToAnotherLevel = old.isStatsScreen && !current.isStatsScreen && current.currentLevelTime == 0;
+        return goingToAnotherLevel;
     }
 }
 
@@ -131,33 +131,39 @@ reset
     return current.pickedPassportFunction == 2;
 }
 
-// TODO: Create IL split logic.
 split
 {
-    if (current.level == 19)
-        return current.isCutscene && !old.isCutscene;
-    return current.levelComplete && !old.levelComplete;
+    if (current.level == 4 || current.level == 19)
+        return current.levelComplete && !old.levelComplete;
+    return current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
 }
 
-// Copied from rtrger's TR3G ASL with IntPtr value and some var names changed.
-// TODO: Adjust the loop and/or other logic to account for unenforced level order.
+// Inspired by rtrger's TR3G ASL's gameTime block.
 gameTime
 {
-    const int ticksPerSecond = 30;
-    const uint levelCount = 19; // This does not include the bonus level
+    const uint ticksPerSecond = 30;
+    const uint levelCount = 19;  // This counts the first level as 0 and includes the bonus level.
 
     if (settings["IL"])
     {
-        return TimeSpan.FromSeconds((double) current.currentLevelTime / ticksPerSecond);
+        // Looping through level times isn't needed if only running one level or
+        // if the runner is on the first level in a full-game run.
+        return TimeSpan.FromSeconds((double)current.currentLevelTime / ticksPerSecond);
     }
     else
     {
-        var firstLevelTime = (IntPtr)0x6D2326;
+        // The game stores statistics (including time) for each completed level on separate addresses;
+        // these addresses do not store anything for the level which is currently being played.
+        // Level order in TR3 is variable, so we can't nicely loop up to the current.level value.
+        // The simplest brute force solution is to loop through all completed level time addresses to sum them,
+        // then add the current level's time. For NG+ full-game runs, this will result in an erroneous number
+        // since the completed level information is not zeroed out before NG+ begins. The final result might be
+        // correct, but only if the runner completes All Hallows in the NG+ run.
         int finishedLevelsTime = 0;
-        // The game stores statistics (including time) for each completed level on separate addresses.
-        for (int i = 1; i <= levelCount; i++)
-            finishedLevelsTime += memory.ReadValue<int>((IntPtr)(firstLevelTime + (i * 0x33)));
+        IntPtr firstLevelTimeAddress = (IntPtr)0x6D2326;  // This is the same on all supported versions.
+        for (int i = 0; i <= levelCount; ++i)
+            finishedLevelsTime += memory.ReadValue<int>((IntPtr)(firstLevelTimeAddress + (i * 0x33)));
 
-        return TimeSpan.FromSeconds((double) (current.currentLevelTime + finishedLevelsTime) / ticksPerSecond);
+        return TimeSpan.FromSeconds((double)(current.currentLevelTime + finishedLevelsTime) / ticksPerSecond);
     }
 }
