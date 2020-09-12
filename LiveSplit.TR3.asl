@@ -75,6 +75,11 @@ startup
     settings.SetToolTip("FG", "A full game run, as opposed to an IL (Individual Level) run.");
     settings.Add("IL", false, "Individual Level - RTA");
     settings.SetToolTip("IL", "RTA (Real-Time Attack) ILs; do not use this for IGT (In-Game Time) ILs nor full-game runs.");
+
+    // TR3 has addresses that store completed levels' times; however, these do not get
+    // zeroed out if an NG+ game is started. So in order to make the gameTime block
+    // compatible with NG+, the times must be tracked manually.
+    vars.completedLevelTimes = new uint[20];
 }
 
 init
@@ -113,7 +118,10 @@ start
 {
     bool newGameStarted = current.level == 1 && current.currentLevelTime == 0 && old.isTitle;
     if (newGameStarted)
+    {
+        vars.completedLevelTimes = new uint[20];
         return true;
+    }
 
     if (settings["FG"])
     {
@@ -133,9 +141,18 @@ reset
 
 split
 {
+    // Determine if a split should occur.
+    bool shouldSplit;
     if (current.level == 4 || current.level == 19)
-        return current.levelComplete && !old.levelComplete;
-    return current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
+        shouldSplit = current.levelComplete && !old.levelComplete;
+    else
+        shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
+
+    // Handle level time array for full-game runs.
+    if (shouldSplit && settings["FG"])
+        vars.completedLevelTimes[current.level - 1] = current.currentLevelTime;
+
+    return shouldSplit;
 }
 
 // Inspired by rtrger's TR3G ASL's gameTime block.
@@ -146,8 +163,6 @@ gameTime
 
     if (settings["IL"])
     {
-        // Looping through level times isn't needed if only running one level or
-        // if the runner is on the first level in a full-game run.
         return TimeSpan.FromSeconds((double)current.currentLevelTime / ticksPerSecond);
     }
     else
@@ -159,10 +174,14 @@ gameTime
         // then add the current level's time. For NG+ full-game runs, this will result in an erroneous number
         // since the completed level information is not zeroed out before NG+ begins. The final result might be
         // correct, but only if the runner completes All Hallows in the NG+ run.
-        int finishedLevelsTime = 0;
-        IntPtr firstLevelTimeAddress = (IntPtr)0x6D2326;  // This is the same on all supported versions.
-        for (int i = 0; i <= levelCount; ++i)
-            finishedLevelsTime += memory.ReadValue<int>((IntPtr)(firstLevelTimeAddress + (i * 0x33)));
+        // To better support NG+, we don't use these addresses.
+        /* IntPtr firstLevelTimeAddress = (IntPtr)0x6D2326;  // This is the same on all supported versions. */
+        uint finishedLevelsTime = 0;
+        for (uint i = 0; i <= levelCount; ++i)
+        {
+            if (current.level - 1 != i)
+                finishedLevelsTime += vars.completedLevelTimes[i];
+        }
 
         return TimeSpan.FromSeconds((double)(current.currentLevelTime + finishedLevelsTime) / ticksPerSecond);
     }
