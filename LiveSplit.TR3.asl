@@ -79,7 +79,9 @@ startup
     // TR3 has addresses that store completed levels' times; however, these do not get
     // zeroed out if an NG+ game is started. So in order to make the gameTime block
     // compatible with NG+, the times must be tracked manually.
-    vars.completedLevelTimes = new uint[20];
+    vars.levelCount = 19;  // This counts the first level as 0 and includes the bonus level.
+    vars.completedLevels = new List<uint>(vars.levelCount + 1);
+    vars.completedLevelTimes = new List<uint>(vars.levelCount + 1);
 }
 
 init
@@ -116,10 +118,11 @@ init
 
 start
 {
-    bool newGameStarted = current.level == 1 && current.currentLevelTime == 0 && old.isTitle;
+    bool newGameStarted = current.level <= 20 && current.currentLevelTime == 0 && old.isTitle;
     if (newGameStarted)
     {
-        vars.completedLevelTimes = new uint[20];
+        vars.completedLevels.Clear();
+        vars.completedLevelTimes.Clear();
         return true;
     }
 
@@ -148,9 +151,22 @@ split
     else
         shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
 
-    // Handle level time array for full-game runs.
+    // Handle completed level and time arrays for full-game runs.
     if (shouldSplit && settings["FG"])
-        vars.completedLevelTimes[current.level - 1] = current.currentLevelTime;
+    {
+        var index = vars.completedLevels.IndexOf(current.level);
+        if (index != -1)
+        {
+            // If the level was previously completed, overwrite the existing time.
+            vars.completedLevelTimes[index] = current.currentLevelTime;
+        }
+        else
+        {
+            // Otherwise, append the level and time to their respective arrays.
+            vars.completedLevels.Add(current.level);
+            vars.completedLevelTimes.Add(current.currentLevelTime);
+        }
+    }
 
     return shouldSplit;
 }
@@ -159,8 +175,6 @@ split
 gameTime
 {
     const uint ticksPerSecond = 30;
-    const uint levelCount = 19;  // This counts the first level as 0 and includes the bonus level.
-
     if (settings["IL"])
     {
         return TimeSpan.FromSeconds((double)current.currentLevelTime / ticksPerSecond);
@@ -177,9 +191,11 @@ gameTime
         // To better support NG+, we don't use these addresses.
         /* IntPtr firstLevelTimeAddress = (IntPtr)0x6D2326;  // This is the same on all supported versions. */
         uint finishedLevelsTime = 0;
-        for (uint i = 0; i <= levelCount; ++i)
+        for (int i = 0; i < vars.completedLevels.Count; ++i)
         {
-            if (current.level - 1 != i)
+            if (current.level == vars.completedLevels[i])
+                break;
+            else
                 finishedLevelsTime += vars.completedLevelTimes[i];
         }
 
