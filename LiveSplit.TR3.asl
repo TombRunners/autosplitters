@@ -86,7 +86,7 @@ startup
 
 init
 {
-    // See: https://github.com/rtrger/Components/blob/master/TombRaiderTheAngelofDarkness.asl#L223
+    // See: https://github.com/rtrger/Components/blob/master/TombRaiderTheAngelofDarkness.asl
     // for hash code inspiration.
     var versionHashes = new Dictionary<string, string>
     {
@@ -173,7 +173,6 @@ split
     return shouldSplit && !levelWasAlreadyCompleted;
 }
 
-// Inspired by rtrger's TR3G ASL's gameTime block.
 gameTime
 {
     const uint ticksPerSecond = 30;
