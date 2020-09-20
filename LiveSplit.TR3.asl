@@ -151,11 +151,13 @@ split
     else
         shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
 
+    var index = vars.completedLevels.IndexOf(current.level);
+    bool levelWasAlreadyCompleted = index != -1;
+
     // Handle completed level and time arrays for full-game runs.
     if (shouldSplit && settings["FG"])
     {
-        var index = vars.completedLevels.IndexOf(current.level);
-        if (index != -1)
+        if (levelWasAlreadyCompleted)
         {
             // If the level was previously completed, overwrite the existing time.
             vars.completedLevelTimes[index] = current.currentLevelTime;
@@ -168,7 +170,7 @@ split
         }
     }
 
-    return shouldSplit;
+    return shouldSplit && !levelWasAlreadyCompleted;
 }
 
 // Inspired by rtrger's TR3G ASL's gameTime block.
