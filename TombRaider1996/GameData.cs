@@ -25,10 +25,10 @@ namespace TR1
         /// <remarks>
         ///     Matches the chronological number of the current level, but also matches the file number for in-game cutscenes and FMVs.
         ///     0 through 15: Active level
-        ///     16: Qualopec cutscene until next level start.
-        ///     17: Tihocan cutscene until next level start.
-        ///     18: After Natla's Mines stats screen until next level start.
-        ///     19: Atlantis cutscene after the FMV until next level start.
+        ///     16: Qualopec cutscene until the next level starts.
+        ///     17: Tihocan cutscene until the next level starts.
+        ///     18: After Natla's Mines stats screen until the next level starts.
+        ///     19: Atlantis cutscene after the FMV until the next level starts.
         ///     20: Title screen and opening FMV.
         /// </remarks>
         public MemoryWatcher<Level> Level { get; }        
@@ -46,11 +46,14 @@ namespace TR1
         /// </summary>
         /// <remarks>
         ///     0 if <c>Load Game</c> was picked.
-        ///     Changes to 1 when choosing <c>New Game</c> or <c>Save Game</c>.
         ///     The value stays 1 until the inventory is reopened.
         ///     The value is also 1 during the first FMV if you pick <c>New Game</c> from Lara's Home.
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
+        ///     PC:
+        ///     Changes to 1 when choosing <c>New Game</c> or <c>Save Game</c>.
+        ///     PSX:
+        ///     Changes to 1 when choosing <c>Start Game</c> or <c>Restart Level</c>.
         /// </remarks>
         public MemoryWatcher<uint> PickedPassportFunction { get; }
 
@@ -59,9 +62,13 @@ namespace TR1
         /// </summary>
         /// <remarks>
         ///     Value is initialized to zero, and it doesn't change outside the menu.
-        ///     In the menu, value is set to zero if the user presses any key.
         ///     If no menu item is activated, and the value gets higher than 480, Demo Mode is started.
+        ///     PC:
+        ///     In the menu, value is set to zero if the user presses any mapped key.
         ///     If any menu item is active, the value just increases and Demo Mode is not activated.
+        ///     PSX:
+        ///     In the menu, pressing the left/right arrow stops the timer, pressing other keys sets it to zero.
+        ///     If any menu item is active, the value gets reset to zero and it doesn't change.
         /// </remarks>
         public MemoryWatcher<uint> DemoTimer { get; }
 
