@@ -3,21 +3,52 @@
 namespace TR1
 {
     /// <summary>
-    ///     The supported game versions.
+    ///     The game version's original target platform.
     /// </summary>
-    internal enum GameVersion
+    internal enum Platform
     {
-        ATI,
-        DOSBox
+        PC,
+        PSX
     }
 
     /// <summary>
-    ///     The memory sizes of supported game versions (in bytes).
+    ///     The supported process versions.
+    /// </summary>
+    internal enum ProcessVersion
+    {
+        ATI,
+        DOSBox,     // Steam's DOSBox
+        ePSXe180,
+        ePSXe190,
+        ePSXe1925,
+        ePSXe200
+    }
+
+    /// <summary>
+    ///     The memory sizes of supported process versions (in bytes).
     /// </summary>
     internal enum ExpectedSize
     {
         ATI = 3092480,
-        DOSBox = 40321024
+        DOSBox = 40321024,
+        /* TODO
+        ePSXe180 = ,
+        ePSXe190 = ,
+        ePSXe1925 = ,
+        ePSXe200 = */
+    }
+
+    /// <summary>
+    ///     The supported PSX versions of the game.
+    /// </summary>
+    internal enum PSXGameVersion
+    {
+        USA_1_0,
+        USA_final,
+        EU,
+        FR,
+        GER,
+        JP
     }
 
     /// <summary>
@@ -27,7 +58,10 @@ namespace TR1
     {
         private Process _game;
         public GameData Data;
-        private GameVersion _version;
+        private EmulatorData emuData;
+        private ProcessVersion _version;
+        private Platform _platform;
+        private bool PSXGameInitialized = false; 
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -41,9 +75,26 @@ namespace TR1
             {
                 if (!SetGameProcessAndVersion()) 
                     return false;
-                
-                Data = new GameData(_version);
+
+                if (_platform == Platform.PC)
+                    Data = new GameData(_version);
+                else
+                {
+                    emuData = new EmulatorData(_version);
+                    PSXGameInitialized = false;
+                }
                 return true;
+            }
+
+            if (_platform == Platform.PSX)
+            {
+                // update the emulator's watchers (name of the running executable and perhaps more)   
+            }
+
+            if (_platform == Platform.PSX && !PSXGameInitialized)
+            {
+                PSXGameInitialized = SetPSXGameVersion();
+                return PSXGameInitialized;
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
@@ -57,7 +108,7 @@ namespace TR1
         }
 
         /// <summary>
-        ///     If applicable, finds a <see cref="Process"/> running an expected <see cref="GameVersion"/>.
+        ///     If applicable, finds a <see cref="Process"/> running an expected <see cref="ProcessVersion"/>.
         /// </summary>
         /// <returns>
         ///     <see langword="true"/> if values were set, <see langword="false"/> otherwise
@@ -77,24 +128,40 @@ namespace TR1
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
                 _game = atiProcesses[0];
-                _version = GameVersion.ATI;
+                _version = ProcessVersion.ATI;
+                _platform = Platform.PC;
             }
             else if (dosLooksLikeATI)
             {
                 _game = dosProcesses[0];
-                _version = GameVersion.ATI;
+                _version = ProcessVersion.ATI;
+                _platform = Platform.PC;
             }
             else if (dosLooksLikeDOS)
             {
                 _game = dosProcesses[0];
-                _version = GameVersion.DOSBox;
+                _version = ProcessVersion.DOSBox;
+                _platform = Platform.PC;
             }
+            // TODO ePSXe versions
             else
             {
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///     Determines what game version has been loaded into the PSX emulator.
+        /// </summary>
+        /// <returns>
+        ///     <see langword="true"/> if the game version has been successfully set, <see langword="false"/> otherwise.
+        /// </returns>
+        private bool SetPSXGameVersion()
+        {
+            // TODO
+            return false;
         }
     }
 }

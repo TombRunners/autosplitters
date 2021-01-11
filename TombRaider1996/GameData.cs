@@ -76,9 +76,9 @@ namespace TR1
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
-        public GameData(GameVersion version)
+        public GameData(ProcessVersion version)
         {
-            if (version == GameVersion.ATI)
+            if (version == ProcessVersion.ATI)
             {
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
