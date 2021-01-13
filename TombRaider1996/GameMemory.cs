@@ -55,7 +55,7 @@ namespace TR1
     /// </summary>
     internal class GameMemory
     {
-        private Process _game;
+        private Process _process;
         public GameData Data;
         private EmulatorData emuData;
         private ProcessVersion _version;
@@ -70,9 +70,9 @@ namespace TR1
         /// </returns>
         public bool Update()
         {
-            if (_game == null || _game.HasExited)
+            if (_process == null || _process.HasExited)
             {
-                if (!SetProcessAndVersion()) 
+                if (!SetProcessAndPlatformAndVersion()) 
                     return false;
 
                 if (_platform == Platform.PC)
@@ -87,7 +87,7 @@ namespace TR1
 
             if (_platform == Platform.PSX)
             {
-                // update the emulator's watchers (name of the running executable and perhaps more)   
+                // TODO update the emulator's watchers (name of the running executable and perhaps more)   
             }
 
             if (_platform == Platform.PSX && !PSXGameInitialized)
@@ -97,11 +97,11 @@ namespace TR1
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.LevelComplete.Update(_game);
-            Data.Level.Update(_game);
-            Data.LevelTime.Update(_game);
-            Data.PickedPassportFunction.Update(_game);
-            Data.DemoTimer.Update(_game);
+            Data.LevelComplete.Update(_process);
+            Data.Level.Update(_process);
+            Data.LevelTime.Update(_process);
+            Data.PickedPassportFunction.Update(_process);
+            Data.DemoTimer.Update(_process);
 
             return true;
         }
@@ -112,7 +112,7 @@ namespace TR1
         /// <returns>
         ///     <see langword="true"/> if values were set, <see langword="false"/> otherwise
         /// </returns>
-        private bool SetProcessAndVersion()
+        private bool SetProcessAndPlatformAndVersion()
         {
             Process[] atiProcesses = Process.GetProcessesByName("tombati");
             Process[] dosProcesses = Process.GetProcessesByName("dosbox");
@@ -125,50 +125,50 @@ namespace TR1
             bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
             bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
 
-            bool ePSXe180Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe180;
-            bool ePSXe190Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe190;
-            bool ePSXe1925Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe1925;
-            bool ePSXe200Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe200;
+            bool ePSXe180Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe180;
+            bool ePSXe190Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe190;
+            bool ePSXe1925Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe1925;
+            bool ePSXe200Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe200;
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                _game = atiProcesses[0];
+                _process = atiProcesses[0];
                 _version = ProcessVersion.ATI;
                 _platform = Platform.PC;
             }
             else if (dosLooksLikeATI)
             {
-                _game = dosProcesses[0];
+                _process = dosProcesses[0];
                 _version = ProcessVersion.ATI;
                 _platform = Platform.PC;
             }
             else if (dosLooksLikeDOS)
             {
-                _game = dosProcesses[0];
+                _process = dosProcesses[0];
                 _version = ProcessVersion.DOSBox;
                 _platform = Platform.PC;
             }
             else if (ePSXe180Running)
             {
-                _game = ePSXeProcesses[0];
+                _process = ePSXeProcesses[0];
                 _version = ProcessVersion.ePSXe180;
                 _platform = Platform.PSX;
             }
             else if (ePSXe190Running)
             {
-                _game = ePSXeProcesses[0];
+                _process = ePSXeProcesses[0];
                 _version = ProcessVersion.ePSXe190;
                 _platform = Platform.PSX;
             }
             else if (ePSXe1925Running)
             {
-                _game = ePSXeProcesses[0];
+                _process = ePSXeProcesses[0];
                 _version = ProcessVersion.ePSXe1925;
                 _platform = Platform.PSX;
             }
             else if (ePSXe200Running)
             {
-                _game = ePSXeProcesses[0];
+                _process = ePSXeProcesses[0];
                 _version = ProcessVersion.ePSXe200;
                 _platform = Platform.PSX;
             }
