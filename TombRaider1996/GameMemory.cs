@@ -31,11 +31,10 @@ namespace TR1
     {
         ATI = 3092480,
         DOSBox = 40321024,
-        /* TODO
-        ePSXe180 = ,
-        ePSXe190 = ,
-        ePSXe1925 = ,
-        ePSXe200 = */
+        ePSXe180 = 10231808,
+        ePSXe190 = 10301440,
+        ePSXe1925 = 10518528,
+        ePSXe200 = 20287488
     }
 
     /// <summary>
@@ -73,7 +72,7 @@ namespace TR1
         {
             if (_game == null || _game.HasExited)
             {
-                if (!SetGameProcessAndVersion()) 
+                if (!SetProcessAndVersion()) 
                     return false;
 
                 if (_platform == Platform.PC)
@@ -113,10 +112,11 @@ namespace TR1
         /// <returns>
         ///     <see langword="true"/> if values were set, <see langword="false"/> otherwise
         /// </returns>
-        private bool SetGameProcessAndVersion()
+        private bool SetProcessAndVersion()
         {
             Process[] atiProcesses = Process.GetProcessesByName("tombati");
             Process[] dosProcesses = Process.GetProcessesByName("dosbox");
+            Process[] ePSXeProcesses = Process.GetProcessesByName("ePSXe");
 
             // The Steam Workshop launcher uses the name "dosbox" and remains as a background process after launching the game.
             bool workshopLauncherAndATIGameAreBothRunning = atiProcesses.Length != 0 && dosProcesses.Length != 0;
@@ -124,6 +124,11 @@ namespace TR1
             // Some Workshop guides have the user rename the ATI EXE back to "dosbox" for Steam compatibility.
             bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
             bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
+
+            bool ePSXe180Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe180;
+            bool ePSXe190Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe190;
+            bool ePSXe1925Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe1925;
+            bool ePSXe200Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int)ExpectedSize.ePSXe200;
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
@@ -143,7 +148,30 @@ namespace TR1
                 _version = ProcessVersion.DOSBox;
                 _platform = Platform.PC;
             }
-            // TODO ePSXe versions
+            else if (ePSXe180Running)
+            {
+                _game = ePSXeProcesses[0];
+                _version = ProcessVersion.ePSXe180;
+                _platform = Platform.PSX;
+            }
+            else if (ePSXe190Running)
+            {
+                _game = ePSXeProcesses[0];
+                _version = ProcessVersion.ePSXe190;
+                _platform = Platform.PSX;
+            }
+            else if (ePSXe1925Running)
+            {
+                _game = ePSXeProcesses[0];
+                _version = ProcessVersion.ePSXe1925;
+                _platform = Platform.PSX;
+            }
+            else if (ePSXe200Running)
+            {
+                _game = ePSXeProcesses[0];
+                _version = ProcessVersion.ePSXe200;
+                _platform = Platform.PSX;
+            }
             else
             {
                 return false;
