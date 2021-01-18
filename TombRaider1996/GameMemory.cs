@@ -198,7 +198,40 @@ namespace TR1
         /// </returns>
         private bool SetPSXGameVersion()
         {
-            // TODO
+            if (emuData.serial.Current.Contains("SLUS_001.52"))
+            {
+                if (emuData.rootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
+                    _PSXGameVersion = PSXGameVersion.USA_final;
+                else
+                    _PSXGameVersion = PSXGameVersion.USA_1_0;
+
+                return true;
+            }
+
+            if (emuData.serial.Current.Contains("SLPS_006.17"))
+            {
+                _PSXGameVersion = PSXGameVersion.JP;
+                return true;
+            }
+
+            if (emuData.serial.Current.Contains("SLES_000.24"))
+            {
+                _PSXGameVersion = PSXGameVersion.EU;
+                return true;
+            }
+
+            if (emuData.serial.Current.Contains("SLES_004.85"))
+            {
+                _PSXGameVersion = PSXGameVersion.FR;
+                return true;
+            }
+
+            if (emuData.serial.Current.Contains("SLES_004.86"))
+            {
+                _PSXGameVersion = PSXGameVersion.GER;
+                return true;
+            }
+
             return false;
         }
     }
