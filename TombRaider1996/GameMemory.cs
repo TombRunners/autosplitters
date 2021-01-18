@@ -88,14 +88,11 @@ namespace TR1
 
             if (_platform == Platform.PSX)
             {
-                emuData.counter.Update(_process);
+                emuData.rootDirectoryContents.Update(_process);
+                emuData.serial.Update(_process);
 
-                if (emuData.counter.Old == 0 && emuData.counter.Current != 0)
-                {
-                    emuData.rootDirectoryContents.Update(_process);
-                    emuData.serial.Update(_process);
+                if (emuData.serial.Changed)
                     PSXGameInitialized = false;
-                }
             }
 
             if (_platform == Platform.PSX && !PSXGameInitialized)
