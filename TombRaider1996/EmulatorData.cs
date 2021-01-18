@@ -32,22 +32,22 @@ namespace TR1
             {
                 case ProcessVersion.ePSXe180:
                     counter = new MemoryWatcher<uint>(new DeepPointer(0xE5960));
-                    serial = new StringWatcher(new DeepPointer(0x927C28), 11);
+                    serial = new StringWatcher(new DeepPointer(0x927420), 11);
                     rootDirectoryContents = new StringWatcher(new DeepPointer(0xE5C41), 12);
                     break;
                 case ProcessVersion.ePSXe190:
                     counter = new MemoryWatcher<uint>(new DeepPointer(0xEA0E4));
-                    serial = new StringWatcher(new DeepPointer(0x92C808), 11);
+                    serial = new StringWatcher(new DeepPointer(0x92C000), 11);
                     rootDirectoryContents = new StringWatcher(new DeepPointer(0xEA409), 12);
                     break;
                 case ProcessVersion.ePSXe1925:
                     counter = new MemoryWatcher<uint>(new DeepPointer(0x11D184));
-                    serial = new StringWatcher(new DeepPointer(0x960C88), 11);
+                    serial = new StringWatcher(new DeepPointer(0x960480), 11);
                     rootDirectoryContents = new StringWatcher(new DeepPointer(0x1206C1), 12);
                     break;
                 case ProcessVersion.ePSXe200:
                     counter = new MemoryWatcher<uint>(new DeepPointer(0x3173A0));
-                    serial = new StringWatcher(new DeepPointer(0x1AEE3C8), 11);
+                    serial = new StringWatcher(new DeepPointer(0x122DBC0), 11);
                     rootDirectoryContents = new StringWatcher(new DeepPointer(0x30E661), 12);
                     break;
             }
