@@ -73,12 +73,13 @@ namespace TR1
         public MemoryWatcher<uint> DemoTimer { get; }
 
         /// <summary>
-        ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
+        ///     Initializes <see cref="GameData"/> based on <paramref name="procVersion"/> and <paramref name="psxGameVersion"/>.
         /// </summary>
-        /// <param name="version"></param>
-        public GameData(ProcessVersion version, Platform platform)
+        /// <param name="procVersion"></param>
+        /// <param name="psxGameVersion"></param>
+        public GameData(ProcessVersion procVersion, PSXGameVersion? psxGameVersion)
         {
-            if (version == ProcessVersion.ATI)
+            if (procVersion == ProcessVersion.ATI)
             {
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
@@ -86,7 +87,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
             }
-            else
+            else if (procVersion == ProcessVersion.DOSBox)
             {
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38));
@@ -94,7 +95,199 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
             }
-            // TODO PSX
+            else if (procVersion == ProcessVersion.ePSXe180)
+            {
+                switch (psxGameVersion)
+                {
+                    case PSXGameVersion.USA_final:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA510));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA508));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6DC8DC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DB9DC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA488));
+                        break;
+                    case PSXGameVersion.USA_1_0:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA428));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA420));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6DC7DC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DB8F4));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA3A0));
+                        break;
+                    case PSXGameVersion.GER:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA668));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA660));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6DCB28));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DBC28));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA5E0));
+                        break;
+                    case PSXGameVersion.EU:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA5A0));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA598));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6DC96C));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DBA6C));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA518));
+                        break;
+                    case PSXGameVersion.JP:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA5B8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA5B0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6E5888));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DBACC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA530));
+                        break;
+                    case PSXGameVersion.FR:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DA628));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DA620));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6DCA88));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6DBB88));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DA5A0));
+                        break;
+                }
+            }
+            else if (procVersion == ProcessVersion.ePSXe190)
+            {
+                switch (psxGameVersion)
+                {
+                    case PSXGameVersion.USA_final:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DF010));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DF008));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6E13DC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E04DC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DEF88));
+                        break;
+                    case PSXGameVersion.USA_1_0:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DEF28));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DEF20));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6E12DC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E03F4));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DEEA0));
+                        break;
+                    case PSXGameVersion.GER:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DF168));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DF160));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6EA4E4));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E0728));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DF0E0));
+                        break;
+                    case PSXGameVersion.EU:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DF0A0));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DF098));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6EA328));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E056C));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DF018));
+                        break;
+                    case PSXGameVersion.JP:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DF0B8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DF0B0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6E14CC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E05CC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DF030));
+                        break;
+                    case PSXGameVersion.FR:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x6DF128));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x6DF120));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x6E1588));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x6E0688));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x6DF0A0));
+                        break;
+                }
+            }
+            else if (procVersion == ProcessVersion.ePSXe1925)
+            {
+                switch (psxGameVersion)
+                {
+                    case PSXGameVersion.USA_final:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712D10));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712D08));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x7150DC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x7141DC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712C88));
+                        break;
+                    case PSXGameVersion.USA_1_0:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712C28));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712C20));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x714FDC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x7140F4));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712BA0));
+                        break;
+                    case PSXGameVersion.GER:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712E68));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712E60));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x71E1E4));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x714428));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712DE0));
+                        break;
+                    case PSXGameVersion.EU:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712DA0));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712D98));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x71516C));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x71426C));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712D18));
+                        break;
+                    case PSXGameVersion.JP:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712DB8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712DB0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x7151CC));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x7142CC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712D30));
+                        break;
+                    case PSXGameVersion.FR:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x712E28));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x712E20));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x715288));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x714388));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x712DA0));
+                        break;
+                }
+            }
+            else if (procVersion == ProcessVersion.ePSXe200)
+            {
+                switch (psxGameVersion)
+                {
+                    case PSXGameVersion.USA_final:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A1690));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A1688));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8AC918));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2B5C));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A1608));
+                        break;
+                    case PSXGameVersion.USA_1_0:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A15A8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A15A0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8A395C));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2A74));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A1520));
+                        break;
+                    case PSXGameVersion.GER:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A17E8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A17E0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8A3CA8));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2DA8));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A1760));
+                        break;
+                    case PSXGameVersion.EU:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A1720));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A1718));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8AC9A8));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2BEC));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A1698));
+                        break;
+                    case PSXGameVersion.JP:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A1738));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A1730));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8A3B4C));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2C4C));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A16B0));
+                        break;
+                    case PSXGameVersion.FR:
+                        LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x8A17A8));
+                        Level = new MemoryWatcher<Level>(new DeepPointer(0x8A17A0));
+                        LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x8ACAC4));
+                        PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x8A2D08));
+                        DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x8A1720));
+                        break;
+                }
+            }
+
         }
     }
 }

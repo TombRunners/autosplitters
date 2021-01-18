@@ -58,8 +58,9 @@ namespace TR1
         private Process _process;
         public GameData gameData;
         private EmulatorData emuData;
-        private ProcessVersion _version;
+        private ProcessVersion _processVersion;
         private Platform _platform;
+        private PSXGameVersion? _PSXGameVersion = null;
         private bool PSXGameInitialized = false; 
 
         /// <summary>
@@ -76,10 +77,10 @@ namespace TR1
                     return false;
 
                 if (_platform == Platform.PC)
-                    gameData = new GameData(_version, _platform);
+                    gameData = new GameData(_processVersion, null);
                 else
                 {
-                    emuData = new EmulatorData(_version);
+                    emuData = new EmulatorData(_processVersion);
                     PSXGameInitialized = false;
                 }
                 return true;
@@ -92,6 +93,7 @@ namespace TR1
                 if (emuData.counter.Old == 0 && emuData.counter.Current != 0)
                 {
                     emuData.rootDirectoryContents.Update(_process);
+                    emuData.serial.Update(_process);
                     PSXGameInitialized = false;
                 }
             }
@@ -99,6 +101,8 @@ namespace TR1
             if (_platform == Platform.PSX && !PSXGameInitialized)
             {
                 PSXGameInitialized = SetPSXGameVersion();
+                if (PSXGameInitialized)
+                    gameData = new GameData(_processVersion, _PSXGameVersion);
                 return PSXGameInitialized;
             }
 
@@ -139,43 +143,43 @@ namespace TR1
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
                 _process = atiProcesses[0];
-                _version = ProcessVersion.ATI;
+                _processVersion = ProcessVersion.ATI;
                 _platform = Platform.PC;
             }
             else if (dosLooksLikeATI)
             {
                 _process = dosProcesses[0];
-                _version = ProcessVersion.ATI;
+                _processVersion = ProcessVersion.ATI;
                 _platform = Platform.PC;
             }
             else if (dosLooksLikeDOS)
             {
                 _process = dosProcesses[0];
-                _version = ProcessVersion.DOSBox;
+                _processVersion = ProcessVersion.DOSBox;
                 _platform = Platform.PC;
             }
             else if (ePSXe180Running)
             {
                 _process = ePSXeProcesses[0];
-                _version = ProcessVersion.ePSXe180;
+                _processVersion = ProcessVersion.ePSXe180;
                 _platform = Platform.PSX;
             }
             else if (ePSXe190Running)
             {
                 _process = ePSXeProcesses[0];
-                _version = ProcessVersion.ePSXe190;
+                _processVersion = ProcessVersion.ePSXe190;
                 _platform = Platform.PSX;
             }
             else if (ePSXe1925Running)
             {
                 _process = ePSXeProcesses[0];
-                _version = ProcessVersion.ePSXe1925;
+                _processVersion = ProcessVersion.ePSXe1925;
                 _platform = Platform.PSX;
             }
             else if (ePSXe200Running)
             {
                 _process = ePSXeProcesses[0];
-                _version = ProcessVersion.ePSXe200;
+                _processVersion = ProcessVersion.ePSXe200;
                 _platform = Platform.PSX;
             }
             else
