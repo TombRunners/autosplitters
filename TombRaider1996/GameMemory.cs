@@ -51,12 +51,12 @@ namespace TR1
     }
 
     /// <summary>
-    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
+    ///     Manages the process's watched memory values for <see cref="Autosplitter"/>'s use.
     /// </summary>
-    internal class GameMemory
+    internal class ProcessMemory
     {
         private Process _process;
-        public GameData Data;
+        public GameData gameData;
         private EmulatorData emuData;
         private ProcessVersion _version;
         private Platform _platform;
@@ -76,7 +76,7 @@ namespace TR1
                     return false;
 
                 if (_platform == Platform.PC)
-                    Data = new GameData(_version);
+                    gameData = new GameData(_version, _platform);
                 else
                 {
                     emuData = new EmulatorData(_version);
@@ -87,7 +87,13 @@ namespace TR1
 
             if (_platform == Platform.PSX)
             {
-                // TODO update the emulator's watchers (name of the running executable and perhaps more)   
+                emuData.counter.Update(_process);
+
+                if (emuData.counter.Old == 0 && emuData.counter.Current != 0)
+                {
+                    emuData.rootDirectoryContents.Update(_process);
+                    PSXGameInitialized = false;
+                }
             }
 
             if (_platform == Platform.PSX && !PSXGameInitialized)
@@ -97,11 +103,11 @@ namespace TR1
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.LevelComplete.Update(_process);
-            Data.Level.Update(_process);
-            Data.LevelTime.Update(_process);
-            Data.PickedPassportFunction.Update(_process);
-            Data.DemoTimer.Update(_process);
+            gameData.LevelComplete.Update(_process);
+            gameData.Level.Update(_process);
+            gameData.LevelTime.Update(_process);
+            gameData.PickedPassportFunction.Update(_process);
+            gameData.DemoTimer.Update(_process);
 
             return true;
         }

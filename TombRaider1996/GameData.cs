@@ -76,7 +76,7 @@ namespace TR1
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
-        public GameData(ProcessVersion version)
+        public GameData(ProcessVersion version, Platform platform)
         {
             if (version == ProcessVersion.ATI)
             {
@@ -94,6 +94,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
             }
+            // TODO PSX
         }
     }
 }
