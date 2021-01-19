@@ -93,14 +93,14 @@ namespace TR1
 
                 if (emuData.serial.Changed)
                     PSXGameInitialized = false;
-            }
 
-            if (_platform == Platform.PSX && !PSXGameInitialized)
-            {
-                PSXGameInitialized = SetPSXGameVersion();
-                if (PSXGameInitialized)
-                    gameData = new GameData(_processVersion, _PSXGameVersion);
-                return PSXGameInitialized;
+                if (!PSXGameInitialized)
+                {
+                    PSXGameInitialized = SetPSXGameVersion();
+                    if (PSXGameInitialized)
+                        gameData = new GameData(_processVersion, _PSXGameVersion);
+                    return PSXGameInitialized;
+                }
             }
 
             // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
