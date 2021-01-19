@@ -3,6 +3,9 @@ using System;
 
 namespace TR1
 {
+    /// <summary>
+    /// The emulator's watched memory addresses.
+    /// </summary>
     internal class EmulatorData
     {
         /// <summary>
