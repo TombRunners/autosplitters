@@ -57,11 +57,11 @@ namespace TR1
     {
         private Process _process;
         public GameData gameData;
-        private EmulatorData emuData;
+        private EmulatorData _emuData;
         private ProcessVersion _processVersion;
         private Platform _platform;
         private PSXGameVersion? _PSXGameVersion = null;
-        private bool PSXGameInitialized = false; 
+        private bool _PSXGameInitialized = false; 
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -80,26 +80,26 @@ namespace TR1
                     gameData = new GameData(_processVersion, null);
                 else
                 {
-                    emuData = new EmulatorData(_processVersion);
-                    PSXGameInitialized = false;
+                    _emuData = new EmulatorData(_processVersion);
+                    _PSXGameInitialized = false;
                 }
                 return true;
             }
 
             if (_platform == Platform.PSX)
             {
-                emuData.rootDirectoryContents.Update(_process);
-                emuData.serial.Update(_process);
+                _emuData.rootDirectoryContents.Update(_process);
+                _emuData.serial.Update(_process);
 
-                if (emuData.serial.Changed)
-                    PSXGameInitialized = false;
+                if (_emuData.serial.Changed)
+                    _PSXGameInitialized = false;
 
-                if (!PSXGameInitialized)
+                if (!_PSXGameInitialized)
                 {
-                    PSXGameInitialized = SetPSXGameVersion();
-                    if (PSXGameInitialized)
+                    _PSXGameInitialized = SetPSXGameVersion();
+                    if (_PSXGameInitialized)
                         gameData = new GameData(_processVersion, _PSXGameVersion);
-                    return PSXGameInitialized;
+                    return _PSXGameInitialized;
                 }
             }
 
@@ -195,9 +195,9 @@ namespace TR1
         /// </returns>
         private bool SetPSXGameVersion()
         {
-            if (emuData.serial.Current.Contains("SLUS_001.52"))
+            if (_emuData.serial.Current.Contains("SLUS_001.52"))
             {
-                if (emuData.rootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
+                if (_emuData.rootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
                     _PSXGameVersion = PSXGameVersion.USA_final;
                 else
                     _PSXGameVersion = PSXGameVersion.USA_1_0;
@@ -205,25 +205,25 @@ namespace TR1
                 return true;
             }
 
-            if (emuData.serial.Current.Contains("SLPS_006.17"))
+            if (_emuData.serial.Current.Contains("SLPS_006.17"))
             {
                 _PSXGameVersion = PSXGameVersion.JP;
                 return true;
             }
 
-            if (emuData.serial.Current.Contains("SLES_000.24"))
+            if (_emuData.serial.Current.Contains("SLES_000.24"))
             {
                 _PSXGameVersion = PSXGameVersion.EU;
                 return true;
             }
 
-            if (emuData.serial.Current.Contains("SLES_004.85"))
+            if (_emuData.serial.Current.Contains("SLES_004.85"))
             {
                 _PSXGameVersion = PSXGameVersion.FR;
                 return true;
             }
 
-            if (emuData.serial.Current.Contains("SLES_004.86"))
+            if (_emuData.serial.Current.Contains("SLES_004.86"))
             {
                 _PSXGameVersion = PSXGameVersion.GER;
                 return true;
