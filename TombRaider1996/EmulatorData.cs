@@ -21,6 +21,10 @@ namespace TR1
         /// </summary>
         public StringWatcher rootDirectoryContents { get; }
 
+        /// <summary>
+        /// Initializes <see cref="EmulatorData"/> based on <paramref name="version"/>.
+        /// </summary>
+        /// <param name="version"></param>
         public EmulatorData(ProcessVersion version)
         {
             switch (version)
