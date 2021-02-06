@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System;
 
 namespace TR1
 {
@@ -71,46 +72,53 @@ namespace TR1
         /// </returns>
         public bool Update()
         {
-            if (_process == null || _process.HasExited)
+            try
             {
-                if (!SetProcessAndPlatformAndVersion()) 
-                    return false;
-
-                if (_platform == Platform.PC)
-                    gameData = new GameData(_processVersion, null);
-                else
+                if (_process == null || _process.HasExited)
                 {
-                    _emuData = new EmulatorData(_processVersion);
-                    _PSXGameInitialized = false;
+                    if (!SetProcessAndPlatformAndVersion())
+                        return false;
+
+                    if (_platform == Platform.PC)
+                        gameData = new GameData(_processVersion, null);
+                    else
+                    {
+                        _emuData = new EmulatorData(_processVersion);
+                        _PSXGameInitialized = false;
+                    }
                 }
+
+                if (_platform == Platform.PSX)
+                {
+                    _emuData.rootDirectoryContents.Update(_process);
+                    _emuData.serial.Update(_process);
+
+                    if (_emuData.serial.Changed)
+                        _PSXGameInitialized = false;
+
+                    if (!_PSXGameInitialized)
+                    {
+                        _PSXGameInitialized = SetPSXGameVersion();
+                        if (_PSXGameInitialized)
+                            gameData = new GameData(_processVersion, _PSXGameVersion);
+                        else
+                            return false;
+                    }
+                }
+
+                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
+                gameData.LevelComplete.Update(_process);
+                gameData.Level.Update(_process);
+                gameData.LevelTime.Update(_process);
+                gameData.PickedPassportFunction.Update(_process);
+                gameData.DemoTimer.Update(_process);
+
                 return true;
             }
-
-            if (_platform == Platform.PSX)
+            catch (Exception)
             {
-                _emuData.rootDirectoryContents.Update(_process);
-                _emuData.serial.Update(_process);
-
-                if (_emuData.serial.Changed)
-                    _PSXGameInitialized = false;
-
-                if (!_PSXGameInitialized)
-                {
-                    _PSXGameInitialized = SetPSXGameVersion();
-                    if (_PSXGameInitialized)
-                        gameData = new GameData(_processVersion, _PSXGameVersion);
-                    return _PSXGameInitialized;
-                }
+                return false;
             }
-
-            // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            gameData.LevelComplete.Update(_process);
-            gameData.Level.Update(_process);
-            gameData.LevelTime.Update(_process);
-            gameData.PickedPassportFunction.Update(_process);
-            gameData.DemoTimer.Update(_process);
-
-            return true;
         }
 
         /// <summary>
@@ -132,10 +140,10 @@ namespace TR1
             bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
             bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
 
-            bool ePSXe180Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe180;
-            bool ePSXe190Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe190;
-            bool ePSXe1925Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe1925;
-            bool ePSXe200Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0].MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe200;
+            bool ePSXe180Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe180;
+            bool ePSXe190Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe190;
+            bool ePSXe1925Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe1925;
+            bool ePSXe200Running = ePSXeProcesses.Length != 0 && ePSXeProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ePSXe200;
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
