@@ -7,4 +7,13 @@
       <change>Initial component rewrite version.</change>
     </changelog>
   </update>
+  <update version="2.2.0.0">
+    <files>
+      <file path="Component/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Minor bugfixes and performance improvements.</change>
+	  <change>ePSXe 1.8.0, 1.9.0, 1.9.25 and 2.0.0 support for all PSX versions added.</change>
+    </changelog>
+  </update>
 </updates>
