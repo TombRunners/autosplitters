@@ -1,6 +1,6 @@
 using System;                             // IDisposable
 using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlElement XmlNode
+using System.Xml;                         // XmlDocument, XmlElement, XmlNode
 using LiveSplit.Model;                    // LiveSplitState
 using LiveSplit.UI;                       // LayoutMode, SettingsHelper
 using LiveSplit.UI.Components;            // IComponent, LogicComponent
@@ -18,7 +18,7 @@ namespace TR1
     internal class Component : AutoSplitComponent
     {
         private Autosplitter _splitter;
-        private LiveSplitState _state;
+        private readonly LiveSplitState _state;
 
         /// <summary>
         ///     Initializes the component.

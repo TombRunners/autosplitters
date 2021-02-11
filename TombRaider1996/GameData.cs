@@ -75,8 +75,8 @@ namespace TR1
         /// <summary>
         ///     Initializes <see cref="GameData"/> based on <paramref name="procVersion"/> and <paramref name="psxGameVersion"/>.
         /// </summary>
-        /// <param name="procVersion"></param>
-        /// <param name="psxGameVersion"></param>
+        /// <param name="procVersion">ATI, DOSBox, or one of the ePSXe versions allowed on the leaderboards.</param>
+        /// <param name="psxGameVersion">One of the versions listed in <see cref="PSXGameVersion"/>.</param>
         public GameData(ProcessVersion procVersion, PSXGameVersion? psxGameVersion)
         {
             if (procVersion == ProcessVersion.ATI)

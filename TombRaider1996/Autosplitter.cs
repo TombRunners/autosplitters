@@ -57,9 +57,9 @@ namespace TR1
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            uint oldTime = ProcessMemory.gameData.LevelTime.Old;
-            uint currentTime = ProcessMemory.gameData.LevelTime.Current;
-            uint currentDemoTimer = ProcessMemory.gameData.DemoTimer.Current;
+            uint oldTime = ProcessMemory.GameData.LevelTime.Old;
+            uint currentTime = ProcessMemory.GameData.LevelTime.Current;
+            uint currentDemoTimer = ProcessMemory.GameData.DemoTimer.Current;
             const uint demoStartThreshold = 480;
 
             bool igtIsNotTicking = oldTime == currentTime;
@@ -67,7 +67,7 @@ namespace TR1
             // or when you transition from a level to the next,
             // or when you start new game.
             bool igtGotReset = oldTime != 0 && currentTime == 0;
-            Level? lastRealLevel = GetLastRealLevel(ProcessMemory.gameData.Level.Current);
+            Level? lastRealLevel = GetLastRealLevel(ProcessMemory.GameData.Level.Current);
             if (igtIsNotTicking || igtGotReset || currentDemoTimer > demoStartThreshold || lastRealLevel is null)
                 return null;
             
@@ -124,8 +124,8 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            Level currentLevel = ProcessMemory.gameData.Level.Current;
-            bool levelJustCompleted = !ProcessMemory.gameData.LevelComplete.Old && ProcessMemory.gameData.LevelComplete.Current;
+            Level currentLevel = ProcessMemory.GameData.Level.Current;
+            bool levelJustCompleted = !ProcessMemory.GameData.LevelComplete.Old && ProcessMemory.GameData.LevelComplete.Current;
 
             // Handle IL RTA-specific splitting logic first.
             if (!Settings.FullGame)
@@ -161,7 +161,7 @@ namespace TR1
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return ProcessMemory.gameData.PickedPassportFunction.Current == 2;
+            return ProcessMemory.GameData.PickedPassportFunction.Current == 2;
         }
 
         /// <summary>
@@ -171,11 +171,11 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            Level currentLevel = ProcessMemory.gameData.Level.Current;
-            Level oldLevel = ProcessMemory.gameData.Level.Old;
-            uint passportPage = ProcessMemory.gameData.PickedPassportFunction.Current;
-            bool oldLevelComplete = ProcessMemory.gameData.LevelComplete.Old;
-            bool currentLevelComplete = ProcessMemory.gameData.LevelComplete.Current;
+            Level currentLevel = ProcessMemory.GameData.Level.Current;
+            Level oldLevel = ProcessMemory.GameData.Level.Old;
+            uint passportPage = ProcessMemory.GameData.PickedPassportFunction.Current;
+            bool oldLevelComplete = ProcessMemory.GameData.LevelComplete.Old;
+            bool currentLevelComplete = ProcessMemory.GameData.LevelComplete.Current;
 
             // When the game process starts, currentLevel is initialized as Caves and IGT as 0.
             // Thus the code also checks if the user picked New Game from the passport.

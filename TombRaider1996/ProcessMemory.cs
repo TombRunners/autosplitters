@@ -57,7 +57,7 @@ namespace TR1
     internal class ProcessMemory
     {
         private Process _process;
-        public GameData gameData;
+        public GameData GameData;
         private EmulatorData _emuData;
         private ProcessVersion _processVersion;
         private Platform _platform;
@@ -80,7 +80,7 @@ namespace TR1
                         return false;
 
                     if (_platform == Platform.PC)
-                        gameData = new GameData(_processVersion, null);
+                        GameData = new GameData(_processVersion, null);
                     else
                     {
                         _emuData = new EmulatorData(_processVersion);
@@ -90,28 +90,28 @@ namespace TR1
 
                 if (_platform == Platform.PSX)
                 {
-                    _emuData.rootDirectoryContents.Update(_process);
-                    _emuData.serial.Update(_process);
+                    _emuData.RootDirectoryContents.Update(_process);
+                    _emuData.Serial.Update(_process);
 
-                    if (_emuData.serial.Changed)
+                    if (_emuData.Serial.Changed)
                         _PSXGameInitialized = false;
 
                     if (!_PSXGameInitialized)
                     {
                         _PSXGameInitialized = SetPSXGameVersion();
                         if (_PSXGameInitialized)
-                            gameData = new GameData(_processVersion, _PSXGameVersion);
+                            GameData = new GameData(_processVersion, _PSXGameVersion);
                         else
                             return false;
                     }
                 }
 
                 // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-                gameData.LevelComplete.Update(_process);
-                gameData.Level.Update(_process);
-                gameData.LevelTime.Update(_process);
-                gameData.PickedPassportFunction.Update(_process);
-                gameData.DemoTimer.Update(_process);
+                GameData.LevelComplete.Update(_process);
+                GameData.Level.Update(_process);
+                GameData.LevelTime.Update(_process);
+                GameData.PickedPassportFunction.Update(_process);
+                GameData.DemoTimer.Update(_process);
 
                 return true;
             }
@@ -203,9 +203,9 @@ namespace TR1
         /// </returns>
         private bool SetPSXGameVersion()
         {
-            if (_emuData.serial.Current.Contains("SLUS_001.52"))
+            if (_emuData.Serial.Current.Contains("SLUS_001.52"))
             {
-                if (_emuData.rootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
+                if (_emuData.RootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
                     _PSXGameVersion = PSXGameVersion.USA_final;
                 else
                     _PSXGameVersion = PSXGameVersion.USA_1_0;
@@ -213,25 +213,25 @@ namespace TR1
                 return true;
             }
 
-            if (_emuData.serial.Current.Contains("SLPS_006.17"))
+            if (_emuData.Serial.Current.Contains("SLPS_006.17"))
             {
                 _PSXGameVersion = PSXGameVersion.JP;
                 return true;
             }
 
-            if (_emuData.serial.Current.Contains("SLES_000.24"))
+            if (_emuData.Serial.Current.Contains("SLES_000.24"))
             {
                 _PSXGameVersion = PSXGameVersion.EU;
                 return true;
             }
 
-            if (_emuData.serial.Current.Contains("SLES_004.85"))
+            if (_emuData.Serial.Current.Contains("SLES_004.85"))
             {
                 _PSXGameVersion = PSXGameVersion.FR;
                 return true;
             }
 
-            if (_emuData.serial.Current.Contains("SLES_004.86"))
+            if (_emuData.Serial.Current.Contains("SLES_004.86"))
             {
                 _PSXGameVersion = PSXGameVersion.GER;
                 return true;
