@@ -58,11 +58,11 @@ namespace TR1
     {
         private Process _process;
         public GameData GameData;
-        private EmulatorData _emuData;
+        private EmulatorData _emulatorData;
         private ProcessVersion _processVersion;
         private Platform _platform;
-        private PSXGameVersion? _PSXGameVersion = null;
-        private bool _PSXGameInitialized = false; 
+        private PSXGameVersion? _psxGameVersion = null;
+        private bool _psxGameInitialized = false; 
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -83,24 +83,24 @@ namespace TR1
                         GameData = new GameData(_processVersion, null);
                     else
                     {
-                        _emuData = new EmulatorData(_processVersion);
-                        _PSXGameInitialized = false;
+                        _emulatorData = new EmulatorData(_processVersion);
+                        _psxGameInitialized = false;
                     }
                 }
 
                 if (_platform == Platform.PSX)
                 {
-                    _emuData.RootDirectoryContents.Update(_process);
-                    _emuData.Serial.Update(_process);
+                    _emulatorData.RootDirectoryContents.Update(_process);
+                    _emulatorData.Serial.Update(_process);
 
-                    if (_emuData.Serial.Changed)
-                        _PSXGameInitialized = false;
+                    if (_emulatorData.Serial.Changed)
+                        _psxGameInitialized = false;
 
-                    if (!_PSXGameInitialized)
+                    if (!_psxGameInitialized)
                     {
-                        _PSXGameInitialized = SetPSXGameVersion();
-                        if (_PSXGameInitialized)
-                            GameData = new GameData(_processVersion, _PSXGameVersion);
+                        _psxGameInitialized = SetPSXGameVersion();
+                        if (_psxGameInitialized)
+                            GameData = new GameData(_processVersion, _psxGameVersion);
                         else
                             return false;
                     }
@@ -203,37 +203,37 @@ namespace TR1
         /// </returns>
         private bool SetPSXGameVersion()
         {
-            if (_emuData.Serial.Current.Contains("SLUS_001.52"))
+            if (_emulatorData.Serial.Current.Contains("SLUS_001.52"))
             {
-                if (_emuData.RootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
-                    _PSXGameVersion = PSXGameVersion.USA_final;
+                if (_emulatorData.RootDirectoryContents.Current.Contains("CACKLOGO.RAW"))
+                    _psxGameVersion = PSXGameVersion.USA_final;
                 else
-                    _PSXGameVersion = PSXGameVersion.USA_1_0;
+                    _psxGameVersion = PSXGameVersion.USA_1_0;
 
                 return true;
             }
 
-            if (_emuData.Serial.Current.Contains("SLPS_006.17"))
+            if (_emulatorData.Serial.Current.Contains("SLPS_006.17"))
             {
-                _PSXGameVersion = PSXGameVersion.JP;
+                _psxGameVersion = PSXGameVersion.JP;
                 return true;
             }
 
-            if (_emuData.Serial.Current.Contains("SLES_000.24"))
+            if (_emulatorData.Serial.Current.Contains("SLES_000.24"))
             {
-                _PSXGameVersion = PSXGameVersion.EU;
+                _psxGameVersion = PSXGameVersion.EU;
                 return true;
             }
 
-            if (_emuData.Serial.Current.Contains("SLES_004.85"))
+            if (_emulatorData.Serial.Current.Contains("SLES_004.85"))
             {
-                _PSXGameVersion = PSXGameVersion.FR;
+                _psxGameVersion = PSXGameVersion.FR;
                 return true;
             }
 
-            if (_emuData.Serial.Current.Contains("SLES_004.86"))
+            if (_emulatorData.Serial.Current.Contains("SLES_004.86"))
             {
-                _PSXGameVersion = PSXGameVersion.GER;
+                _psxGameVersion = PSXGameVersion.GER;
                 return true;
             }
 

@@ -73,13 +73,13 @@ namespace TR1
         public MemoryWatcher<uint> DemoTimer { get; }
 
         /// <summary>
-        ///     Initializes <see cref="GameData"/> based on <paramref name="procVersion"/> and <paramref name="psxGameVersion"/>.
+        ///     Initializes <see cref="GameData"/> based on <paramref name="processVersion"/> and <paramref name="psxGameVersion"/>.
         /// </summary>
-        /// <param name="procVersion">ATI, DOSBox, or one of the ePSXe versions allowed on the leaderboards.</param>
+        /// <param name="processVersion">ATI, DOSBox, or one of the ePSXe versions allowed on the leaderboards.</param>
         /// <param name="psxGameVersion">One of the versions listed in <see cref="PSXGameVersion"/>.</param>
-        public GameData(ProcessVersion procVersion, PSXGameVersion? psxGameVersion)
+        public GameData(ProcessVersion processVersion, PSXGameVersion? psxGameVersion)
         {
-            if (procVersion == ProcessVersion.ATI)
+            if (processVersion == ProcessVersion.ATI)
             {
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0x5A014));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0x53C4C));
@@ -87,7 +87,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
             }
-            else if (procVersion == ProcessVersion.DOSBox)
+            else if (processVersion == ProcessVersion.DOSBox)
             {
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C));
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38));
@@ -95,7 +95,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
             }
-            else if (procVersion == ProcessVersion.ePSXe180)
+            else if (processVersion == ProcessVersion.ePSXe180)
             {
                 switch (psxGameVersion)
                 {
@@ -143,7 +143,7 @@ namespace TR1
                         break;
                 }
             }
-            else if (procVersion == ProcessVersion.ePSXe190)
+            else if (processVersion == ProcessVersion.ePSXe190)
             {
                 switch (psxGameVersion)
                 {
@@ -191,7 +191,7 @@ namespace TR1
                         break;
                 }
             }
-            else if (procVersion == ProcessVersion.ePSXe1925)
+            else if (processVersion == ProcessVersion.ePSXe1925)
             {
                 switch (psxGameVersion)
                 {
@@ -239,7 +239,7 @@ namespace TR1
                         break;
                 }
             }
-            else if (procVersion == ProcessVersion.ePSXe200)
+            else if (processVersion == ProcessVersion.ePSXe200)
             {
                 switch (psxGameVersion)
                 {

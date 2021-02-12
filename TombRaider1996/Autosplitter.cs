@@ -42,10 +42,10 @@ namespace TR1
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
-        private const uint NumberOfLevels = 15;
+        private const uint _numberOfLevels = 15;
         
         private Level _fullGameFarthestLevel = Level.Manor;
-        private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
+        private uint[] _fullGameLevelTimes = new uint[_numberOfLevels];
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal ProcessMemory ProcessMemory = new ProcessMemory();
@@ -203,7 +203,7 @@ namespace TR1
         public void ResetValues()
         {
             _fullGameFarthestLevel = Level.Manor;
-            _fullGameLevelTimes = new uint[NumberOfLevels];
+            _fullGameLevelTimes = new uint[_numberOfLevels];
         }
     }
 }

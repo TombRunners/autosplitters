@@ -21,12 +21,12 @@ namespace TR1
         public StringWatcher RootDirectoryContents { get; }
 
         /// <summary>
-        /// Initializes <see cref="EmulatorData"/> based on <paramref name="version"/>.
+        /// Initializes <see cref="EmulatorData"/> based on <paramref name="processVersion"/>.
         /// </summary>
-        /// <param name="version">One of the - currently only - ePSXe versions.</param>
-        public EmulatorData(ProcessVersion version)
+        /// <param name="processVersion">One of the - currently only - ePSXe versions.</param>
+        public EmulatorData(ProcessVersion processVersion)
         {
-            switch (version)
+            switch (processVersion)
             {
                 case ProcessVersion.ePSXe180:
                     Serial = new StringWatcher(new DeepPointer(0x927420), 11);
