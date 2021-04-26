@@ -50,6 +50,7 @@ namespace TR1
         {
             XmlElement settingsNode = document.CreateElement("Settings");
             settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
+            settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
             return settingsNode;
         }
 
@@ -63,15 +64,19 @@ namespace TR1
         public override void SetSettings(XmlNode settings)
         {
             _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
+            _splitter.Settings.Deathrun = settings["Deathrun"]?.InnerText == "True";
+
             if (_splitter.Settings.FullGame)
             {
                 _splitter.Settings.FullGameModeButton.Checked = true;
                 _splitter.Settings.ILModeButton.Checked = false;
+                _splitter.Settings.DeathrunModeButton.Checked = false;
             }
             else
             {
                 _splitter.Settings.FullGameModeButton.Checked = false;
-                _splitter.Settings.ILModeButton.Checked = true;
+                _splitter.Settings.ILModeButton.Checked = !_splitter.Settings.Deathrun;
+                _splitter.Settings.DeathrunModeButton.Checked = _splitter.Settings.Deathrun;
             }
         }
 

@@ -85,6 +85,14 @@ namespace TR1
         public MemoryWatcher<uint> DemoTimer { get; }
 
         /// <summary>
+        ///     Lara's current HP.
+        /// </summary>
+        /// <remarks>
+        ///     Max HP is 1000. When it hits 0, Lara dies.
+        /// </remarks>
+        public MemoryWatcher<short> Health { get; }
+
+        /// <summary>
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
@@ -97,6 +105,7 @@ namespace TR1
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x5BB0A));
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
+                Health = new MemoryWatcher<short>(new DeepPointer(0x5A02C));
             }
             else
             {
@@ -105,6 +114,7 @@ namespace TR1
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC));
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
+                Health = new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448));
             }
         }
     }
@@ -141,6 +151,7 @@ namespace TR1
             Data.LevelTime.Update(_game);
             Data.PickedPassportFunction.Update(_game);
             Data.DemoTimer.Update(_game);
+            Data.Health.Update(_game);
 
             return true;
         }
