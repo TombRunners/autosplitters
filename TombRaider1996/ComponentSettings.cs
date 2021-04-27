@@ -8,7 +8,9 @@ namespace TR1
         private GroupBox _modeSelect;
         public RadioButton ILModeButton;
         public RadioButton FullGameModeButton;
+        public RadioButton DeathrunModeButton;
         public bool FullGame = true;
+        public bool Deathrun = false;
 
         public ComponentSettings() => InitializeComponent();
 
@@ -17,15 +19,17 @@ namespace TR1
             _modeSelect = new GroupBox();
             ILModeButton = new RadioButton();
             FullGameModeButton = new RadioButton();
+            DeathrunModeButton = new RadioButton();
             _modeSelect.SuspendLayout();
             SuspendLayout();
 
             // _modeSelect
             _modeSelect.Controls.Add(ILModeButton);
             _modeSelect.Controls.Add(FullGameModeButton);
+            _modeSelect.Controls.Add(DeathrunModeButton);
             _modeSelect.Location = new System.Drawing.Point(4, 4);
             _modeSelect.Name = "_modeSelect";
-            _modeSelect.Size = new System.Drawing.Size(225, 53);
+            _modeSelect.Size = new System.Drawing.Size(297, 53);
             _modeSelect.TabIndex = 0;
             _modeSelect.TabStop = false;
             _modeSelect.Text = "Mode Selection";
@@ -52,17 +56,41 @@ namespace TR1
             FullGameModeButton.UseVisualStyleBackColor = true;
             FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
 
+            // DeathrunModeButton
+            DeathrunModeButton.AutoSize = true;
+            DeathrunModeButton.Location = new System.Drawing.Point(225, 20);
+            DeathrunModeButton.Name = "DeathrunModeButton";
+            DeathrunModeButton.Size = new System.Drawing.Size(69, 17);
+            DeathrunModeButton.TabIndex = 2;
+            DeathrunModeButton.Text = "Deathrun";
+            DeathrunModeButton.UseVisualStyleBackColor = true;
+            DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
+            
             // ComponentSettings
             Controls.Add(_modeSelect);
             Name = "ComponentSettings";
-            Size = new System.Drawing.Size(232, 60);
+            Size = new System.Drawing.Size(306, 60);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
             ResumeLayout(false);
         }
 
-        private void FullGameModeButtonCheckedChanged(object sender, EventArgs e) => FullGame = true;
-        
-        private void ILModeButtonCheckedChanged(object sender, EventArgs e) => FullGame = false;
+        private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
+        {
+            FullGame = true;
+            Deathrun = false;
+        }
+
+        private void ILModeButtonCheckedChanged(object sender, EventArgs e)
+        {
+            FullGame = false;
+            Deathrun = false;
+        }
+
+        private void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
+        {
+            FullGame = false;
+            Deathrun = true;
+        }
     }
 }

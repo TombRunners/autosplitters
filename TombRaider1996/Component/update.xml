@@ -7,4 +7,12 @@
       <change>Initial component rewrite version.</change>
     </changelog>
   </update>
+  <update version="2.1.0.0">
+    <files>
+      <file path="Component/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added deathrun mode.</change>
+    </changelog>
+  </update>
 </updates>

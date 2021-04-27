@@ -124,6 +124,11 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
+            if (Settings.Deathrun && GameMemory.Data.Health.Current == 0 && GameMemory.Data.Health.Old > 0)
+            {
+                return true;
+            }
+
             Level currentLevel = GameMemory.Data.Level.Current;
             bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
 
