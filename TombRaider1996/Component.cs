@@ -69,14 +69,14 @@ namespace TR1
             if (_splitter.Settings.FullGame)
             {
                 _splitter.Settings.FullGameModeButton.Checked = true;
-                _splitter.Settings.ILModeButton.Checked = false;
-                _splitter.Settings.DeathrunModeButton.Checked = false;
+            }
+            else if (_splitter.Settings.Deathrun)
+            {
+                _splitter.Settings.DeathrunModeButton.Checked = true;
             }
             else
             {
-                _splitter.Settings.FullGameModeButton.Checked = false;
-                _splitter.Settings.ILModeButton.Checked = !_splitter.Settings.Deathrun;
-                _splitter.Settings.DeathrunModeButton.Checked = _splitter.Settings.Deathrun;
+                _splitter.Settings.ILModeButton.Checked = true;
             }
         }
 
