@@ -49,6 +49,11 @@ namespace TR2
         internal GameMemory GameMemory = new GameMemory();
 
         /// <summary>
+        ///     A constructor that primarily exists to handle events/delegations.
+        /// </summary>
+        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
+
+        /// <summary>
         ///     Determines the IGT.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -153,9 +158,6 @@ namespace TR2
         /// <summary>
         ///     Resets values for full game runs.
         /// </summary>
-        public void ResetValues()
-        {
-            _fullGameFarthestLevel = Level.LarasHome;
-        }
+        public void ResetValues() => _fullGameFarthestLevel = Level.LarasHome;
     }
 }

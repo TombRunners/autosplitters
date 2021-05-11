@@ -9,6 +9,7 @@ namespace TR2
         public RadioButton ILModeButton;
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
+        public Label GameVersionLabel;
         public bool FullGame = true;
         public bool Deathrun = false;
 
@@ -20,6 +21,7 @@ namespace TR2
             ILModeButton = new RadioButton();
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
+            GameVersionLabel = new Label();
             _modeSelect.SuspendLayout();
             SuspendLayout();
 
@@ -65,14 +67,45 @@ namespace TR2
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
             DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
-            
+
+            // GameVersionLabel
+            GameVersionLabel.AutoSize = true;
+            GameVersionLabel.Location = new System.Drawing.Point(10, 64);
+            GameVersionLabel.Name = "GameVersionLabel";
+            GameVersionLabel.Size = new System.Drawing.Size(35, 13);
+            GameVersionLabel.TabIndex = 1;
+            GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+
             // ComponentSettings
+            Controls.Add(GameVersionLabel);
             Controls.Add(_modeSelect);
             Name = "ComponentSettings";
-            Size = new System.Drawing.Size(306, 60);
+            Size = new System.Drawing.Size(306, 90);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
+        }
+
+        internal void SetGameVersion(GameVersion version)
+        {
+            string versionText = "";
+            switch (version)
+            {
+                case GameVersion.MP:
+                    versionText = "Multipatch";
+                    break;
+                case GameVersion.EPC:
+                    versionText = "Eidos Premier Collection";
+                    break;
+                case GameVersion.P1:
+                    versionText = "CORE's Patch 1";
+                    break;
+                case GameVersion.UKB:
+                    versionText = "Eidos UK Box";
+                    break;
+            }
+            GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + version;
         }
 
         private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

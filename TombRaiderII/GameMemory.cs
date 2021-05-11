@@ -142,7 +142,10 @@ namespace TR2
     {
         public Process Game;
         public GameData Data;
-        private GameVersion _version;
+        public GameVersion Version;
+
+        public delegate void GameFoundDelegate(GameVersion version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -159,7 +162,8 @@ namespace TR2
                     if (!SetGameProcessAndVersion())
                         return false;
 
-                    Data = new GameData(_version);
+                    Data = new GameData(Version);
+                    OnGameFound.Invoke(Version);
                     return true;
                 }
 
@@ -202,7 +206,7 @@ namespace TR2
             bool sizeMatchesNonUKB = memoryModuleSize == (int)ExpectedSize.Others;
             if (sizeMatchesUKB)
             {
-                _version = GameVersion.UKB;
+                Version = GameVersion.UKB;
                 Game = process;
             }
             else if (sizeMatchesNonUKB)
@@ -213,11 +217,11 @@ namespace TR2
 
                 byte exeByte = process.ReadBytes(process.MainModule.BaseAddress + 0x88, 1)[0];
                 if (exeByte == mpByte)
-                    _version = GameVersion.MP;
+                    Version = GameVersion.MP;
                 else if (exeByte == epcByte)
-                    _version = GameVersion.EPC;
+                    Version = GameVersion.EPC;
                 else if (exeByte == p1Byte)
-                    _version = GameVersion.P1;
+                    Version = GameVersion.P1;
                 else
                     return false;                
                 Game = process;
