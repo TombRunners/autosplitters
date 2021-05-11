@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
 namespace TR2
@@ -149,25 +150,32 @@ namespace TR2
         /// </returns>
         public bool Update()
         {
-            if (_game == null || _game.HasExited)
+            try
             {
-                if (!SetGameProcessAndVersion())
-                    return false;
+                if (_game == null || _game.HasExited)
+                {
+                    if (!SetGameProcessAndVersion())
+                        return false;
 
-                Data = new GameData(_version);
+                    Data = new GameData(_version);
+                    return true;
+                }
+
+                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
+                Data.TitleScreen.Update(_game);
+                Data.LevelComplete.Update(_game);
+                Data.Level.Update(_game);
+                Data.LevelTime.Update(_game);
+                Data.PickedPassportFunction.Update(_game);
+                Data.DemoTimer.Update(_game);
+                Data.Health.Update(_game);
+
                 return true;
             }
-
-            // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.TitleScreen.Update(_game);
-            Data.LevelComplete.Update(_game);
-            Data.Level.Update(_game);
-            Data.LevelTime.Update(_game);
-            Data.PickedPassportFunction.Update(_game);
-            Data.DemoTimer.Update(_game);
-            Data.Health.Update(_game);
-
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
