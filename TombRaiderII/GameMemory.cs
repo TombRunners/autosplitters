@@ -29,6 +29,8 @@ namespace TR2
     /// </summary>
     internal class GameData : MemoryWatcherList
     {
+        public const int FirstLevelTimeAddress = 0x11E9F8;  // Valid for all supported game versions.
+
         /// <summary>
         ///     Indicates if the game is on the title screen (main menu).
         /// </summary>
@@ -138,7 +140,7 @@ namespace TR2
     /// </summary>
     internal class GameMemory
     {
-        private Process _game;
+        public Process Game;
         public GameData Data;
         private GameVersion _version;
 
@@ -152,7 +154,7 @@ namespace TR2
         {
             try
             {
-                if (_game == null || _game.HasExited)
+                if (Game == null || Game.HasExited)
                 {
                     if (!SetGameProcessAndVersion())
                         return false;
@@ -162,13 +164,13 @@ namespace TR2
                 }
 
                 // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-                Data.TitleScreen.Update(_game);
-                Data.LevelComplete.Update(_game);
-                Data.Level.Update(_game);
-                Data.LevelTime.Update(_game);
-                Data.PickedPassportFunction.Update(_game);
-                Data.DemoTimer.Update(_game);
-                Data.Health.Update(_game);
+                Data.TitleScreen.Update(Game);
+                Data.LevelComplete.Update(Game);
+                Data.Level.Update(Game);
+                Data.LevelTime.Update(Game);
+                Data.PickedPassportFunction.Update(Game);
+                Data.DemoTimer.Update(Game);
+                Data.Health.Update(Game);
 
                 return true;
             }
@@ -201,7 +203,7 @@ namespace TR2
             if (sizeMatchesUKB)
             {
                 _version = GameVersion.UKB;
-                _game = process;
+                Game = process;
             }
             else if (sizeMatchesNonUKB)
             {
@@ -218,7 +220,7 @@ namespace TR2
                     _version = GameVersion.P1;
                 else
                     return false;                
-                _game = process;
+                Game = process;
             }
             else
             {

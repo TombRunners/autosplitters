@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using LiveSplit.ComponentUtil;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
@@ -44,10 +43,7 @@ namespace TR2
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
-        private const uint NumberOfLevels = 15;
-
         private Level _fullGameFarthestLevel = Level.LarasHome;
-        private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -59,29 +55,19 @@ namespace TR2
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            // Check that IGT is active.
-            uint oldTime = GameMemory.Data.LevelTime.Old;
-            uint currentTime = GameMemory.Data.LevelTime.Current;
-            bool igtIsNotTicking = oldTime == currentTime;
-            bool igtGotReset = oldTime != 0 && currentTime == 0;  // New game started, next level started, or game re-launched.
-            // Check that IGT should be considered.
-            Level? currentLevel = GameMemory.Data.Level.Current;
-            bool demoIsRunning = currentLevel >= Level.DemoVenice;
-            bool onTitleScreen = GameMemory.Data.TitleScreen.Current;
-            if (onTitleScreen || demoIsRunning || igtIsNotTicking || igtGotReset)
-                return null;
-
             const uint igtTicksPerSecond = 30;
+            uint currentTime = GameMemory.Data.LevelTime.Current;
+            Level currentLevel = GameMemory.Data.Level.Current;
+            
             // IL
             if (!Settings.FullGame)
                 return TimeSpan.FromSeconds((double)currentTime / igtTicksPerSecond);
 
             // FG
-            _fullGameLevelTimes[(uint)currentLevel - 1] = currentTime;  // Set current level's time into 0-indexed array.
-            uint sumOfLevelTimes = (uint)_fullGameLevelTimes
-                .Take((int)currentLevel)  // Take's argument is the number of elements, not an index.
-                .Sum(x => x);
-            return TimeSpan.FromSeconds((double)sumOfLevelTimes / igtTicksPerSecond);
+            int finishedLevelsTime = 0;
+            for (int i = 0; i < ((int)currentLevel - 1); ++i)
+                finishedLevelsTime += GameMemory.Game.ReadValue<int>((IntPtr)(GameData.FirstLevelTimeAddress + (i * 0x2c)));
+            return TimeSpan.FromSeconds((double)finishedLevelsTime / igtTicksPerSecond);
         }
 
         /// <summary>
@@ -170,7 +156,6 @@ namespace TR2
         public void ResetValues()
         {
             _fullGameFarthestLevel = Level.LarasHome;
-            _fullGameLevelTimes = new uint[NumberOfLevels];
         }
     }
 }
