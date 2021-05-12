@@ -32,7 +32,7 @@ namespace TR2
     /// </summary>
     internal class GameData : MemoryWatcherList
     {
-        public const int FirstLevelTimeAddress = 0x11E9F8;  // Valid for all supported game versions.
+        public const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
 
         /// <summary>
         ///     Indicates if the game is on the title screen (main menu).
@@ -72,9 +72,6 @@ namespace TR2
         /// <summary>
         ///     Gives the IGT value for the current level.
         /// </summary>
-        /// <remarks>
-        ///     For TR1 specifically, this address does not track the cumulative level time; it only tracks the current level time.
-        /// </remarks>
         public MemoryWatcher<uint> LevelTime { get; }
 
         /// <summary>
