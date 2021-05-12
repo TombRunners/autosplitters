@@ -105,7 +105,7 @@ namespace TR2
                     versionText = "Eidos UK Box";
                     break;
             }
-            GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + version;
+            GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + versionText;
         }
 
         private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

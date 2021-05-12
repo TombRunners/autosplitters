@@ -95,7 +95,6 @@ namespace TR2
                 return true;
             
             // IL
-            Level currentLevel = GameMemory.Data.Level.Current;
             bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
             if (!Settings.FullGame)
                 // Assuming the runner only has one split in the layout.
@@ -103,6 +102,7 @@ namespace TR2
                 return levelJustCompleted;
             
             // FG
+            Level currentLevel = GameMemory.Data.Level.Current;
             if (!levelJustCompleted || _fullGameFarthestLevel != currentLevel - 1)
                 return false;
             _fullGameFarthestLevel++;
