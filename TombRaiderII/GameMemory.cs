@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
 using LiveSplit.ComponentUtil;
 
 namespace TR2
@@ -88,17 +91,6 @@ namespace TR2
         public MemoryWatcher<uint> PickedPassportFunction { get; }
 
         /// <summary>
-        ///     Timer determining whether to start Demo Mode or not.
-        /// </summary>
-        /// <remarks>
-        ///     Value is initialized to zero, and it doesn't change outside the menu.
-        ///     In the menu, value is set to zero if the user presses any key.
-        ///     If no menu item is activated, and the value gets higher than 900, Demo Mode is started.
-        ///     If any menu item is active, the value just increases and Demo Mode is not activated.
-        /// </remarks>
-        public MemoryWatcher<uint> DemoTimer { get; }
-
-        /// <summary>
         ///     Lara's current HP.
         /// </summary>
         /// <remarks>
@@ -119,7 +111,6 @@ namespace TR2
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xD9EC0));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x11EE00));
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xD7980));
-                DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xD7794));
                 Health = new MemoryWatcher<short>(new DeepPointer(0xD7928));
             }
             else // MP, EPC, P1
@@ -129,7 +120,6 @@ namespace TR2
                 Level = new MemoryWatcher<Level>(new DeepPointer(0xD9EB0));
                 LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x11EE00));
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xD7970));
-                DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xD7784));
                 Health = new MemoryWatcher<short>(new DeepPointer(0xD7918));
             }
         }
@@ -173,7 +163,6 @@ namespace TR2
                 Data.Level.Update(Game);
                 Data.LevelTime.Update(Game);
                 Data.PickedPassportFunction.Update(Game);
-                Data.DemoTimer.Update(Game);
                 Data.Health.Update(Game);
 
                 return true;
@@ -195,42 +184,43 @@ namespace TR2
             Process[] tomb2Processes = Process.GetProcessesByName("tomb2");  // Standard name
             Process[] tr2Processes = Process.GetProcessesByName("tr2");      // Some users rename the EXE to fix installation issues
 
+            // Get a process's filename, if found.
             Process process = null;
             if (tomb2Processes?.Length != 0)
                 process = tomb2Processes[0];
             else if (tr2Processes?.Length != 0)
                 process = tr2Processes[0];
-            int? memoryModuleSize = process?.MainModule?.ModuleMemorySize;
-
-            bool sizeMatchesUKB = memoryModuleSize == (int)ExpectedSize.UKB;
-            bool sizeMatchesNonUKB = memoryModuleSize == (int)ExpectedSize.Others;
-            if (sizeMatchesUKB)
-            {
-                Version = GameVersion.UKB;
-                Game = process;
-            }
-            else if (sizeMatchesNonUKB)
-            {
-                const byte mpByte = 0xE3;
-                const byte epcByte = 0x03;
-                const byte p1Byte = 0xBC;
-
-                byte exeByte = process.ReadBytes(process.MainModule.BaseAddress + 0x88, 1)[0];
-                if (exeByte == mpByte)
-                    Version = GameVersion.MP;
-                else if (exeByte == epcByte)
-                    Version = GameVersion.EPC;
-                else if (exeByte == p1Byte)
-                    Version = GameVersion.P1;
-                else
-                    return false;                
-                Game = process;
-            }
-            else
-            {
+            string exePath = process?.MainModule?.FileName;
+            if (string.IsNullOrEmpty(exePath))
                 return false;
+
+            // Compare the running EXE's hash to known values.
+            var versionHashes = new Dictionary<string, GameVersion>
+            {
+                {"964f0c4e08ff44a905e8fc9a78f605dc", GameVersion.MP},
+                {"793c67c79a50984d9bd17ad391f03c57", GameVersion.EPC},
+                {"39cab6b4ae3c761b67ae308a0ab22e44", GameVersion.P1},
+                {"12d56521ce038b55efba97463357a3d7", GameVersion.UKB}
+            };
+            string md5Hash = "";
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
             }
-            return true;
+            foreach (KeyValuePair<string, GameVersion> kvp in versionHashes)
+            {
+                if (kvp.Key == md5Hash)
+                {
+                    Game = process;
+                    Version = kvp.Value;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
