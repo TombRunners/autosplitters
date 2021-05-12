@@ -103,10 +103,13 @@ namespace TR2
             
             // FG
             Level currentLevel = GameMemory.Data.Level.Current;
-            if (!levelJustCompleted || _fullGameFarthestLevel != currentLevel - 1)
-                return false;
-            _fullGameFarthestLevel++;
-            return true;
+            bool onCorrectLevel = _fullGameFarthestLevel == currentLevel - 1;
+            if (levelJustCompleted && onCorrectLevel)
+            {
+                _fullGameFarthestLevel++;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -131,28 +134,26 @@ namespace TR2
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            // First, determine if a new game was started; it applies to FG runs and IL runs of the first level.
+            // Ignore non-levels
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
+            if (currentLevel >= Level.DemoVenice || currentLevel == Level.LarasHome)
+                return false;
+
+            // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
             uint time = GameMemory.Data.LevelTime.Current;
-            // The New Game page of the passport (page 2, index 1) can be accessed from the title screen or Lara's Home.
-            uint passportPage = GameMemory.Data.PickedPassportFunction.Current;
             bool cameFromTitleScreenOrLarasHome = GameMemory.Data.TitleScreen.Old && !GameMemory.Data.TitleScreen.Current || oldLevel == Level.LarasHome;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && currentLevel == Level.GreatWall && time == 0 && passportPage == 1;
+            bool justStartedGreatWall = currentLevel == Level.GreatWall && time == 0;
+            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall;
             if (newGameStarted)
                 return true;
 
-            // The remaining logic only applies to IL runs.
+            // The remaining logic only applies to IL runs of levels beyond the first.
             if (Settings.FullGame)  
                 return false;
-            // Ignore non-levels
-            if (currentLevel >= Level.DemoVenice || currentLevel == Level.LarasHome)
-                return false;
-            // LevelComplete is insufficient because it throws false positives at the start of end-level in-game cutscenes.
-            bool leftCompletedLevelOrStartedCutscene = GameMemory.Data.LevelComplete.Old && !GameMemory.Data.LevelComplete.Current;
+
             bool wentToNextLevel = oldLevel == currentLevel - 1;
-            bool startingNextLevel = leftCompletedLevelOrStartedCutscene && wentToNextLevel;
-            return startingNextLevel;
+            return wentToNextLevel && time == 0;
         }
 
         /// <summary>
