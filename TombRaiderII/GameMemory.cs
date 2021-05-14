@@ -131,7 +131,7 @@ namespace TR2
         public GameData Data;
         public GameVersion Version;
 
-        public delegate void GameFoundDelegate(GameVersion version);
+        public delegate void GameFoundDelegate(GameVersion? version);
         public GameFoundDelegate OnGameFound;
 
         /// <summary>
@@ -151,7 +151,10 @@ namespace TR2
 
                     Data = new GameData(Version);
                     OnGameFound.Invoke(Version);
+                    Game.EnableRaisingEvents = true;
+                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
+
                 }
 
                 // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
