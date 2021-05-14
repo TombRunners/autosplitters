@@ -87,7 +87,7 @@ namespace TR2
             PerformLayout();
         }
 
-        internal void SetGameVersion(GameVersion version)
+        internal void SetGameVersion(GameVersion? version)
         {
             string versionText = "";
             switch (version)
