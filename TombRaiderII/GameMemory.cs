@@ -154,7 +154,6 @@ namespace TR2
                     Game.EnableRaisingEvents = true;
                     Game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
-
                 }
 
                 // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
