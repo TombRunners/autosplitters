@@ -4,5 +4,5 @@ Not all TR franchise games' files will be available here, as they may be uploade
 If you're looking for the autosplitter files for a game and it isn't here, check that game's respective speedrun.com resources page.
 
 The following autosplitters and load removers are not hosted from this repository:
-* Tomb Raider II and Tomb Raider: Legend - https://github.com/FluxMonkii/Autosplitters
+* Tomb Raider: Legend - https://github.com/FluxMonkii/Autosplitters
 * Tomb Raider: The Lost Artifact and Tomb Raider: The Angel of Darkness - https://github.com/rtrger/Components
