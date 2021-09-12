@@ -132,8 +132,8 @@ start
     }
     else  // IL-specific logic
     {
-        bool goingToAnotherLevel = old.isStatsScreen && !current.isStatsScreen && current.currentLevelTime == 0;
-        return goingToAnotherLevel;
+        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0;
+        return goingFromOneLevelToAnother;
     }
 }
 
