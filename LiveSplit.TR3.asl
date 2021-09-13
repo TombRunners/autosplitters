@@ -132,7 +132,7 @@ start
     }
     else  // IL-specific logic
     {
-        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0;
+        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0 && !current.isTitle;
         return goingFromOneLevelToAnother;
     }
 }
@@ -146,12 +146,12 @@ split
 {
     // Determine if a split should occur.
     bool shouldSplit;
-    if (current.level == 19)
+    if (current.level == 19 && old.level == 19)
         shouldSplit = current.levelComplete && !old.levelComplete;
     else if (settings["IL"])
         shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
     else
-        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0;
+        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0 && !old.isTitle;
 
     var index = vars.completedLevels.IndexOf(current.level);
     bool levelWasAlreadyCompleted = index != -1;
