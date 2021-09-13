@@ -132,7 +132,7 @@ start
     }
     else  // IL-specific logic
     {
-        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0 && !current.isTitle;
+        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0;
         return goingFromOneLevelToAnother;
     }
 }
@@ -153,7 +153,7 @@ split
     else if (settings["IL"])
     {
         // For IL timing, the timer should stop when the end-level stats screen appears.
-        shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
+        shouldSplit = current.isStatsScreen && !old.isStatsScreen;
     }
     else
     {
