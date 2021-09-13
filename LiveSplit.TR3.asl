@@ -147,27 +147,24 @@ split
     bool shouldSplit;
     if (current.level == 19 && old.level == 19)
     {
-        // While playing the "last" level (regardless of IL/FG and if the bonus level, All Hallows, will be played)
-        // the timer should split when the player's control ends and the helicopter scene begins.
-        // This occurs when the player hits the end level trigger which sets levelComplete to true.
+        // During the "last" level (disregarding All Hallows), the timer should split when the player's control ends.
         shouldSplit = current.levelComplete && !old.levelComplete;
     }
     else if (settings["IL"])
     {
         // For IL timing, the timer should stop when the end-level stats screen appears.
-        // Checking levelComplete ensures this check works in all cases.
         shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
     }
     else
     {
-        // An easy way to check if the player has advanced into the next level is by checking currentLevelTime == 0.
-        // Because it is impossible to pause and make a save within the first few frames of a level, this check
-        // will not fail if the player happens to loads a save into the next level.
-        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0;
+        // Because it is impossible to make a save within the first few frames of a level, this check
+        // will not fail if the player loads a save into a non-completed level.
+        // The old.isTitle check prevents a split if the player selects New Game while already in a run.
+        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0 && !old.isTitle;
     }
 
     var index = vars.completedLevels.IndexOf(current.level);
-    bool levelWasAlreadyCompleted = index != -1;  // A result of -1 would indicate current.level was not found.
+    bool levelWasAlreadyCompleted = index != -1;
 
     // Update arrays for completed level numbers and times.
     if (shouldSplit && settings["FG"])
