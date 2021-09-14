@@ -158,7 +158,7 @@ split
     else
     {
         // Because it is impossible to make a save within the first few frames of a level, this check
-        // will not fail if the player loads a save into a non-completed level.
+        // will not falsely split if the player loads a save into a non-completed level.
         // The old.isTitle check prevents a split if the player selects New Game while already in a run.
         shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0 && !old.isTitle;
     }
