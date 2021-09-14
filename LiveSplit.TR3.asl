@@ -144,19 +144,29 @@ reset
 
 split
 {
-    // Determine if a split should occur.
     bool shouldSplit;
-    if (current.level == 19)
+    if (current.level == 19 && old.level == 19)
+    {
+        // During the "last" level (disregarding All Hallows), the timer should split when the player's control ends.
         shouldSplit = current.levelComplete && !old.levelComplete;
+    }
     else if (settings["IL"])
-        shouldSplit = current.levelComplete && current.isStatsScreen && !old.isStatsScreen;
+    {
+        // For IL timing, the timer should stop when the end-level stats screen appears.
+        shouldSplit = current.isStatsScreen && !old.isStatsScreen;
+    }
     else
-        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0;
+    {
+        // Because it is impossible to make a save within the first few frames of a level, this check
+        // will not falsely split if the player loads a save into a non-completed level.
+        // The old.isTitle check prevents a split if the player selects New Game while already in a run.
+        shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0 && !old.isTitle;
+    }
 
     var index = vars.completedLevels.IndexOf(current.level);
     bool levelWasAlreadyCompleted = index != -1;
 
-    // Handle completed level and time arrays for full-game runs.
+    // Update arrays for completed level numbers and times.
     if (shouldSplit && settings["FG"])
     {
         if (levelWasAlreadyCompleted)
