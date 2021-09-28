@@ -1,0 +1,18 @@
+<updates>
+  <update version="1.0.0.0">
+    <files>
+      <file path="Component/TR2.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Initial component rewrite version.</change>
+    </changelog>
+  </update>
+  <update version="1.0.0.1">
+    <files>
+      <file path="Component/TR2.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fix bug breaking autostart/split/reset.</change>
+    </changelog>
+  </update>
+</updates>

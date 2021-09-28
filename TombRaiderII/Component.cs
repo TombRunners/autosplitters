@@ -29,7 +29,7 @@ namespace TR2
         {
             _splitter = autoSplitter;
             _state = state;
-            _state.OnReset += (s, tp) => _splitter.ResetValues();
+            _state.OnReset += (s, tp) => _splitter?.ResetValues();
         }
 
         /// <inheritdoc/>
@@ -87,7 +87,7 @@ namespace TR2
         public override void Dispose()
         {
             _splitter.GameMemory = null;
-            _state.OnReset -= (s, tp) => _splitter.ResetValues();
+            _state.OnReset -= (s, tp) => _splitter?.ResetValues();
             _splitter = null;
         }
 
