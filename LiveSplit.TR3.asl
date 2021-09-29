@@ -118,7 +118,8 @@ init
 
 start
 {
-    bool newGameStarted = current.level <= 20 && current.currentLevelTime == 0 && old.isTitle;
+    bool levelTimeJustStarted = old.currentLevelTime == 0 && current.currentLevelTime != 0;
+    bool newGameStarted = levelTimeJustStarted && current.pickedPassportFunction == 1;
     if (newGameStarted)
     {
         vars.completedLevels.Clear();
@@ -127,14 +128,9 @@ start
     }
 
     if (settings["FG"])
-    {
         return false;
-    }
     else  // IL-specific logic
-    {
-        bool goingFromOneLevelToAnother = old.level != current.level && current.currentLevelTime == 0;
-        return goingFromOneLevelToAnother;
-    }
+        return levelTimeJustStarted && !old.isTitle;
 }
 
 reset
