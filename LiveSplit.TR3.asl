@@ -159,7 +159,7 @@ split
         shouldSplit = current.currentLevelTime == 0 && old.currentLevelTime > 0 && !old.isTitle;
     }
 
-    var index = vars.completedLevels.IndexOf(current.level);
+    var index = vars.completedLevels.IndexOf(old.level);
     bool levelWasAlreadyCompleted = index != -1;
 
     // Update arrays for completed level numbers and times.
@@ -168,13 +168,13 @@ split
         if (levelWasAlreadyCompleted)
         {
             // If the level was previously completed, overwrite the existing time.
-            vars.completedLevelTimes[index] = current.currentLevelTime;
+            vars.completedLevelTimes[index] = old.currentLevelTime;
         }
         else
         {
             // Otherwise, append the level and time to their respective arrays.
-            vars.completedLevels.Add(current.level);
-            vars.completedLevelTimes.Add(current.currentLevelTime);
+            vars.completedLevels.Add(old.level);
+            vars.completedLevelTimes.Add(old.currentLevelTime);
         }
     }
 
