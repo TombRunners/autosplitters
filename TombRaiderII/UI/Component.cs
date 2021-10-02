@@ -14,7 +14,7 @@ namespace TR2.UI
         public Component(LiveSplitState state) : base(state)
         {
             CounterNames = Names;
-            SplitCount = Names.Count;
+            Splits = Names.Count;
         }
     }
 }

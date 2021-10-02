@@ -127,6 +127,7 @@ namespace LiveSplit.UI.Components
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
+            NameLabel.Text = Settings.Name;
             ValueLabel.Text = Counter.Count.ToString();
 
             Cache.Restart();
@@ -137,8 +138,6 @@ namespace LiveSplit.UI.Components
                 invalidator.Invalidate(0, 0, width, height);
         }
 
-        public void Dispose()
-        {
-        }
+        public void Dispose() {}
     }
 }
