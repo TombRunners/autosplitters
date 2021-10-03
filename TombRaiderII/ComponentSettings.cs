@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TR2
@@ -10,6 +11,7 @@ namespace TR2
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
         public Label GameVersionLabel;
+        public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun = false;
 
@@ -22,10 +24,12 @@ namespace TR2
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
             GameVersionLabel = new Label();
+            AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
             SuspendLayout();
-
+            // 
             // _modeSelect
+            // 
             _modeSelect.Controls.Add(ILModeButton);
             _modeSelect.Controls.Add(FullGameModeButton);
             _modeSelect.Controls.Add(DeathrunModeButton);
@@ -35,18 +39,20 @@ namespace TR2
             _modeSelect.TabIndex = 0;
             _modeSelect.TabStop = false;
             _modeSelect.Text = "Mode Selection";
-
+            // 
             // ILModeButton
+            // 
             ILModeButton.AutoSize = true;
             ILModeButton.Location = new System.Drawing.Point(84, 20);
             ILModeButton.Name = "ILModeButton";
-            ILModeButton.Size = new System.Drawing.Size(135, 17);
+            ILModeButton.Size = new System.Drawing.Size(139, 17);
             ILModeButton.TabIndex = 1;
-            ILModeButton.Text = "Individual Levels (RTA)";
+            ILModeButton.Text = "IL or Section Run (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
             ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
-
+            // 
             // FullGameModeButton
+            // 
             FullGameModeButton.AutoSize = true;
             FullGameModeButton.Checked = true;
             FullGameModeButton.Location = new System.Drawing.Point(6, 20);
@@ -57,8 +63,9 @@ namespace TR2
             FullGameModeButton.Text = "Full Game";
             FullGameModeButton.UseVisualStyleBackColor = true;
             FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
-
+            // 
             // DeathrunModeButton
+            // 
             DeathrunModeButton.AutoSize = true;
             DeathrunModeButton.Location = new System.Drawing.Point(225, 20);
             DeathrunModeButton.Name = "DeathrunModeButton";
@@ -67,24 +74,37 @@ namespace TR2
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
             DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
-
+            // 
             // GameVersionLabel
+            // 
             GameVersionLabel.AutoSize = true;
             GameVersionLabel.Location = new System.Drawing.Point(10, 64);
             GameVersionLabel.Name = "GameVersionLabel";
-            GameVersionLabel.Size = new System.Drawing.Size(35, 13);
+            GameVersionLabel.Size = new System.Drawing.Size(186, 13);
             GameVersionLabel.TabIndex = 1;
             GameVersionLabel.Text = "Game Version: Unknown/Undetected";
-
+            // 
+            // AutosplitterVersionLabel
+            // 
+            AutosplitterVersionLabel.AutoSize = true;
+            AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
+            AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+            AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
+            AutosplitterVersionLabel.TabIndex = 2;
+            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+            // 
             // ComponentSettings
+            // 
+            Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
             Controls.Add(_modeSelect);
             Name = "ComponentSettings";
-            Size = new System.Drawing.Size(306, 90);
+            Size = new System.Drawing.Size(313, 110);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
+
         }
 
         internal void SetGameVersion(GameVersion? version)
