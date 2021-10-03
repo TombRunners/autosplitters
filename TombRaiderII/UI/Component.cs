@@ -15,6 +15,7 @@ namespace TR2.UI
         {
             CounterNames = Names;
             Splits = Names.Count;
+            RebuildCounters();
         }
     }
 }

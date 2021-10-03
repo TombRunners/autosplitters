@@ -10,7 +10,7 @@ using LiveSplit.UI.Components;
 
 namespace TR2.UI
 {
-    class MultiCounterComponent : IComponent
+    public class MultiCounterComponent : IComponent
     {
         readonly EventLog log = new EventLog("Application")
         {
@@ -18,11 +18,14 @@ namespace TR2.UI
         };
 
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
-
         public float PaddingTop => InternalComponent.PaddingTop;
         public float PaddingLeft => InternalComponent.PaddingLeft;
         public float PaddingBottom => InternalComponent.PaddingBottom;
         public float PaddingRight => InternalComponent.PaddingRight;
+        public float VerticalHeight => InternalComponent.VerticalHeight;
+        public float MinimumWidth => InternalComponent.MinimumWidth;
+        public float HorizontalWidth => InternalComponent.HorizontalWidth;
+        public float MinimumHeight => InternalComponent.MinimumHeight;
 
         protected IList<IComponent> Components { get; set; }
         protected IList<SimpleCounterComponent> CounterComponents { get; set; }
@@ -38,14 +41,6 @@ namespace TR2.UI
 
         public string ComponentName => "Multi-Counter";
 
-        public float VerticalHeight => InternalComponent.VerticalHeight;
-
-        public float MinimumWidth => InternalComponent.MinimumWidth;
-
-        public float HorizontalWidth => InternalComponent.HorizontalWidth;
-
-        public float MinimumHeight => InternalComponent.MinimumHeight;
-
         public IDictionary<string, Action> ContextMenuControls => null;
 
         public MultiCounterComponent(LiveSplitState state)
@@ -58,7 +53,7 @@ namespace TR2.UI
 
         public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
 
-        private void RebuildCounters()
+        public void RebuildCounters()
         {
             Components = new List<IComponent>();
             CounterComponents = new List<SimpleCounterComponent>();
@@ -72,9 +67,8 @@ namespace TR2.UI
                 currentSplit = 0;
             }
 
-            var currentSplitCounterNames = CounterNames[currentSplit];
-            log.WriteEntry(string.Join(", ", currentSplitCounterNames));
-                
+            List<string> currentSplitCounterNames = CounterNames[currentSplit];
+            log.WriteEntry($"Building level/split #{currentSplit}: {string.Join(", ", currentSplitCounterNames)}");     
             for (var i = 0; i < CountersInSplit; ++i)
             {
                 var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterNames[i]);

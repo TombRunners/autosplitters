@@ -38,8 +38,9 @@
     <Reference Include="LiveSplit.Core">
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
-    <Reference Include="LiveSplit.Counter">
-      <HintPath>..\..\..\..\vendor\LiveSplit.Counter\obj\Release\LiveSplit.Counter.dll</HintPath>
+    <Reference Include="LiveSplit.Counter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\Components\LiveSplit.Counter\obj\Release\LiveSplit.Counter.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
