@@ -49,6 +49,7 @@ namespace TR2
             ILModeButton.TabIndex = 1;
             ILModeButton.Text = "IL or Section Run (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
+            ILModeButton.CheckedChanged += new EventHandler(ILModeButtonCheckedChanged);
             // 
             // FullGameModeButton
             // 
@@ -61,6 +62,7 @@ namespace TR2
             FullGameModeButton.TabStop = true;
             FullGameModeButton.Text = "Full Game";
             FullGameModeButton.UseVisualStyleBackColor = true;
+            FullGameModeButton.CheckedChanged += new EventHandler(FullGameModeButtonCheckedChanged);
             // 
             // DeathrunModeButton
             // 
@@ -71,6 +73,7 @@ namespace TR2
             DeathrunModeButton.TabIndex = 2;
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
+            DeathrunModeButton.CheckedChanged += new EventHandler(DeathrunModeButtonCheckedChanged);
             // 
             // GameVersionLabel
             // 
@@ -86,7 +89,7 @@ namespace TR2
             AutosplitterVersionLabel.AutoSize = true;
             AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
             AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-            AutosplitterVersionLabel.Size = new System.Drawing.Size(212, 13);
+            AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
             AutosplitterVersionLabel.TabIndex = 2;
             AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
             // 

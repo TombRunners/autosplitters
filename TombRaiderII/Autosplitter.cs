@@ -103,7 +103,7 @@ namespace TR2
             if (Settings.Deathrun && onCorrectLevel && laraJustDied)
                 return true;
             
-            // FG & IL
+            // FG & IL/Section
             bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
             if (levelJustCompleted && onCorrectLevel)
             {
@@ -135,7 +135,7 @@ namespace TR2
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            // Ignore non-levels
+            // Ignore non-levels.
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
             if (currentLevel >= Level.DemoVenice || currentLevel == Level.LarasHome)
@@ -149,14 +149,17 @@ namespace TR2
             if (newGameStarted)
                 return true;
 
-            // The remaining logic only applies to IL or deathruns of levels beyond the first.
+            // The remaining logic only applies to non-FG runs starting on a level besides the first.
             if (Settings.FullGame)
                 return false;
 
             bool wentToNextLevel = oldLevel == currentLevel - 1;
-            if (wentToNextLevel)
+            if (wentToNextLevel && time == 0)
+            {
                 _farthestLevelCompleted = oldLevel;
-            return wentToNextLevel && time == 0;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
