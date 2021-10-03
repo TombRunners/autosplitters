@@ -49,7 +49,7 @@ namespace TR2
             ILModeButton.TabIndex = 1;
             ILModeButton.Text = "IL or Section Run (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
-            ILModeButton.CheckedChanged += new EventHandler(ILModeButtonCheckedChanged);
+            ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
             // 
             // FullGameModeButton
             // 
@@ -62,7 +62,7 @@ namespace TR2
             FullGameModeButton.TabStop = true;
             FullGameModeButton.Text = "Full Game";
             FullGameModeButton.UseVisualStyleBackColor = true;
-            FullGameModeButton.CheckedChanged += new EventHandler(FullGameModeButtonCheckedChanged);
+            FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
             // 
             // DeathrunModeButton
             // 
@@ -73,7 +73,7 @@ namespace TR2
             DeathrunModeButton.TabIndex = 2;
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
-            DeathrunModeButton.CheckedChanged += new EventHandler(DeathrunModeButtonCheckedChanged);
+            DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
             // 
             // GameVersionLabel
             // 
