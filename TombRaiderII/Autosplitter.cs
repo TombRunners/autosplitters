@@ -43,7 +43,7 @@ namespace TR2
     /// </summary>
     internal class Autosplitter : IAutoSplitter
     {
-        private Level _fullGameFarthestLevel = Level.LarasHome;
+        private Level _farthestLevelCompleted = Level.LarasHome;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -95,24 +95,19 @@ namespace TR2
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
+            Level currentLevel = GameMemory.Data.Level.Current;
+            bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
+
             // Deathrun
             bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
-            if (Settings.Deathrun && laraJustDied)
+            if (Settings.Deathrun && onCorrectLevel && laraJustDied)
                 return true;
             
-            // IL
+            // FG & IL
             bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
-            if (!Settings.FullGame)
-                // Assuming the runner only has one split in the layout.
-                // If not, this causes multiple splits on levels ending with an in-game cutscene.
-                return levelJustCompleted;
-            
-            // FG
-            Level currentLevel = GameMemory.Data.Level.Current;
-            bool onCorrectLevel = _fullGameFarthestLevel == currentLevel - 1;
             if (levelJustCompleted && onCorrectLevel)
             {
-                _fullGameFarthestLevel++;
+                _farthestLevelCompleted++;
                 return true;
             }
             return false;
@@ -154,17 +149,19 @@ namespace TR2
             if (newGameStarted)
                 return true;
 
-            // The remaining logic only applies to IL runs of levels beyond the first.
-            if (Settings.FullGame)  
+            // The remaining logic only applies to IL or deathruns of levels beyond the first.
+            if (Settings.FullGame)
                 return false;
 
             bool wentToNextLevel = oldLevel == currentLevel - 1;
+            if (wentToNextLevel)
+                _farthestLevelCompleted = oldLevel;
             return wentToNextLevel && time == 0;
         }
 
         /// <summary>
         ///     Resets values for full game runs.
         /// </summary>
-        public void ResetValues() => _fullGameFarthestLevel = Level.LarasHome;
+        public void ResetValues() => _farthestLevelCompleted = Level.LarasHome;
     }
 }

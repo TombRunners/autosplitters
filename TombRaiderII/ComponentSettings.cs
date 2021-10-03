@@ -42,7 +42,7 @@ namespace TR2
             ILModeButton.Name = "ILModeButton";
             ILModeButton.Size = new System.Drawing.Size(135, 17);
             ILModeButton.TabIndex = 1;
-            ILModeButton.Text = "Individual Levels (RTA)";
+            ILModeButton.Text = "Individual Levels or Sections (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
             ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
 
