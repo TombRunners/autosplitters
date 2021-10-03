@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TR2
@@ -10,6 +11,7 @@ namespace TR2
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
         public Label GameVersionLabel;
+        public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun = false;
 
@@ -17,77 +19,88 @@ namespace TR2
 
         private void InitializeComponent()
         {
-            this._modeSelect = new System.Windows.Forms.GroupBox();
-            this.ILModeButton = new System.Windows.Forms.RadioButton();
-            this.FullGameModeButton = new System.Windows.Forms.RadioButton();
-            this.DeathrunModeButton = new System.Windows.Forms.RadioButton();
-            this.GameVersionLabel = new System.Windows.Forms.Label();
-            this._modeSelect.SuspendLayout();
-            this.SuspendLayout();
+            _modeSelect = new GroupBox();
+            ILModeButton = new RadioButton();
+            FullGameModeButton = new RadioButton();
+            DeathrunModeButton = new RadioButton();
+            GameVersionLabel = new Label();
+            AutosplitterVersionLabel = new Label();
+            _modeSelect.SuspendLayout();
+            SuspendLayout();
             // 
             // _modeSelect
             // 
-            this._modeSelect.Controls.Add(this.ILModeButton);
-            this._modeSelect.Controls.Add(this.FullGameModeButton);
-            this._modeSelect.Controls.Add(this.DeathrunModeButton);
-            this._modeSelect.Location = new System.Drawing.Point(4, 4);
-            this._modeSelect.Name = "_modeSelect";
-            this._modeSelect.Size = new System.Drawing.Size(297, 53);
-            this._modeSelect.TabIndex = 0;
-            this._modeSelect.TabStop = false;
-            this._modeSelect.Text = "Mode Selection";
+            _modeSelect.Controls.Add(ILModeButton);
+            _modeSelect.Controls.Add(FullGameModeButton);
+            _modeSelect.Controls.Add(DeathrunModeButton);
+            _modeSelect.Location = new System.Drawing.Point(4, 4);
+            _modeSelect.Name = "_modeSelect";
+            _modeSelect.Size = new System.Drawing.Size(297, 53);
+            _modeSelect.TabIndex = 0;
+            _modeSelect.TabStop = false;
+            _modeSelect.Text = "Mode Selection";
             // 
             // ILModeButton
             // 
-            this.ILModeButton.AutoSize = true;
-            this.ILModeButton.Location = new System.Drawing.Point(84, 20);
-            this.ILModeButton.Name = "ILModeButton";
-            this.ILModeButton.Size = new System.Drawing.Size(191, 17);
-            this.ILModeButton.TabIndex = 1;
-            this.ILModeButton.Text = "IL or Section Run (RTA)";
-            this.ILModeButton.UseVisualStyleBackColor = true;
+            ILModeButton.AutoSize = true;
+            ILModeButton.Location = new System.Drawing.Point(84, 20);
+            ILModeButton.Name = "ILModeButton";
+            ILModeButton.Size = new System.Drawing.Size(139, 17);
+            ILModeButton.TabIndex = 1;
+            ILModeButton.Text = "IL or Section Run (RTA)";
+            ILModeButton.UseVisualStyleBackColor = true;
             // 
             // FullGameModeButton
             // 
-            this.FullGameModeButton.AutoSize = true;
-            this.FullGameModeButton.Checked = true;
-            this.FullGameModeButton.Location = new System.Drawing.Point(6, 20);
-            this.FullGameModeButton.Name = "FullGameModeButton";
-            this.FullGameModeButton.Size = new System.Drawing.Size(72, 17);
-            this.FullGameModeButton.TabIndex = 0;
-            this.FullGameModeButton.TabStop = true;
-            this.FullGameModeButton.Text = "Full Game";
-            this.FullGameModeButton.UseVisualStyleBackColor = true;
+            FullGameModeButton.AutoSize = true;
+            FullGameModeButton.Checked = true;
+            FullGameModeButton.Location = new System.Drawing.Point(6, 20);
+            FullGameModeButton.Name = "FullGameModeButton";
+            FullGameModeButton.Size = new System.Drawing.Size(72, 17);
+            FullGameModeButton.TabIndex = 0;
+            FullGameModeButton.TabStop = true;
+            FullGameModeButton.Text = "Full Game";
+            FullGameModeButton.UseVisualStyleBackColor = true;
             // 
             // DeathrunModeButton
             // 
-            this.DeathrunModeButton.AutoSize = true;
-            this.DeathrunModeButton.Location = new System.Drawing.Point(225, 20);
-            this.DeathrunModeButton.Name = "DeathrunModeButton";
-            this.DeathrunModeButton.Size = new System.Drawing.Size(69, 17);
-            this.DeathrunModeButton.TabIndex = 2;
-            this.DeathrunModeButton.Text = "Deathrun";
-            this.DeathrunModeButton.UseVisualStyleBackColor = true;
+            DeathrunModeButton.AutoSize = true;
+            DeathrunModeButton.Location = new System.Drawing.Point(225, 20);
+            DeathrunModeButton.Name = "DeathrunModeButton";
+            DeathrunModeButton.Size = new System.Drawing.Size(69, 17);
+            DeathrunModeButton.TabIndex = 2;
+            DeathrunModeButton.Text = "Deathrun";
+            DeathrunModeButton.UseVisualStyleBackColor = true;
             // 
             // GameVersionLabel
             // 
-            this.GameVersionLabel.AutoSize = true;
-            this.GameVersionLabel.Location = new System.Drawing.Point(10, 64);
-            this.GameVersionLabel.Name = "GameVersionLabel";
-            this.GameVersionLabel.Size = new System.Drawing.Size(186, 13);
-            this.GameVersionLabel.TabIndex = 1;
-            this.GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+            GameVersionLabel.AutoSize = true;
+            GameVersionLabel.Location = new System.Drawing.Point(10, 64);
+            GameVersionLabel.Name = "GameVersionLabel";
+            GameVersionLabel.Size = new System.Drawing.Size(186, 13);
+            GameVersionLabel.TabIndex = 1;
+            GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+            // 
+            // AutosplitterVersionLabel
+            // 
+            AutosplitterVersionLabel.AutoSize = true;
+            AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
+            AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+            AutosplitterVersionLabel.Size = new System.Drawing.Size(212, 13);
+            AutosplitterVersionLabel.TabIndex = 2;
+            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
             // 
             // ComponentSettings
             // 
-            this.Controls.Add(this.GameVersionLabel);
-            this.Controls.Add(this._modeSelect);
-            this.Name = "ComponentSettings";
-            this.Size = new System.Drawing.Size(313, 90);
-            this._modeSelect.ResumeLayout(false);
-            this._modeSelect.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            Controls.Add(AutosplitterVersionLabel);
+            Controls.Add(GameVersionLabel);
+            Controls.Add(_modeSelect);
+            Name = "ComponentSettings";
+            Size = new System.Drawing.Size(313, 110);
+            _modeSelect.ResumeLayout(false);
+            _modeSelect.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
