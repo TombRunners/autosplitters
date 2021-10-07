@@ -17,7 +17,10 @@ namespace TR2.UI
             Source = "LiveSplit"
         };
 
-        public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
+        #region IComponent implementations
+
+        public string ComponentName => "Multi-Counter";
+        public IDictionary<string, Action> ContextMenuControls => null;
         public float PaddingTop => InternalComponent.PaddingTop;
         public float PaddingLeft => InternalComponent.PaddingLeft;
         public float PaddingBottom => InternalComponent.PaddingBottom;
@@ -27,21 +30,45 @@ namespace TR2.UI
         public float HorizontalWidth => InternalComponent.HorizontalWidth;
         public float MinimumHeight => InternalComponent.MinimumHeight;
 
+        public XmlNode GetSettings(XmlDocument document) => Settings.GetSettings(document);
+
+        public Control GetSettingsControl(LayoutMode mode) => Settings;
+
+        public void SetSettings(XmlNode settings)
+        {
+            Settings.SetSettings(settings);
+            RebuildCounters();
+        }
+
+        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
+        {
+            Prepare(state);
+            InternalComponent.DrawVertical(g, state, width, clipRegion);
+        }
+
+        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
+        {
+            Prepare(state);
+            InternalComponent.DrawHorizontal(g, state, height, clipRegion);
+        }
+
+        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+        {
+            if (invalidator != null)
+                InternalComponent.Update(invalidator, state, width, height, mode);
+        }
+
+        #endregion IComponent implementations
+
+        public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
         protected IList<SimpleCounterComponent> CounterComponents { get; set; }
         protected int NumSplits { get; set; }
         protected int CountersInSplit { get; set; }
-        protected Dictionary<int, List<SimpleCounterSettings>> CounterSettings { get; set;}
-
+        protected IDictionary<int, List<SimpleCounterSettings>> CounterSettings { get; set;}
         protected MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
-
         protected int ScrollOffset { get; set; }
-
         protected LiveSplitState State { get; set; }
-
-        public string ComponentName => "Multi-Counter";
-
-        public IDictionary<string, Action> ContextMenuControls => null;
 
         public MultiCounterComponent(LiveSplitState state)
         {
@@ -99,34 +126,6 @@ namespace TR2.UI
         void OnReset(object sender, TimerPhase e) => RebuildCounters();
 
         void OnStart(object sender, EventArgs e) => RebuildCounters();
-
-        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
-        {
-            Prepare(state);
-            InternalComponent.DrawVertical(g, state, width, clipRegion);
-        }
-
-        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
-        {
-            Prepare(state);
-            InternalComponent.DrawHorizontal(g, state, height, clipRegion);
-        }
-
-        public XmlNode GetSettings(XmlDocument document) => Settings.GetSettings(document);
-
-        public Control GetSettingsControl(LayoutMode mode) => Settings;
-
-        public void SetSettings(XmlNode settings)
-        {
-            Settings.SetSettings(settings);
-            RebuildCounters();
-        }        
-
-        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
-        {
-            if (invalidator != null)
-                InternalComponent.Update(invalidator, state, width, height, mode);
-        }
 
         public void Dispose() {}
     }
