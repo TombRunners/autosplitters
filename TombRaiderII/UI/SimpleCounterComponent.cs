@@ -10,13 +10,16 @@ namespace LiveSplit.UI.Components
 {
     public class SimpleCounterComponent : IComponent
     {
-        public SimpleCounterComponent(MultiCounterComponentSettings settings, string counterName)
+        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings)
         {
             Settings = settings;
-            Settings.Name = counterName;
+            Name = counterSettings.Name;
+            Counter.SetCount(counterSettings.Start);
+            Target = counterSettings.Target;
+            Counter.SetIncrement(counterSettings.Increment);
         }
 
-        public MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
+        public MultiCounterComponentSettings Settings { get; set; }
 
         public ICounter Counter { get; set; } = new Counter();
 
@@ -37,8 +40,19 @@ namespace LiveSplit.UI.Components
         public float PaddingBottom { get; set; }
         public float PaddingRight => 7f;
 
+        public string Name 
+        { 
+            get => NameLabel.Text;
+            set => NameLabel.Text = value;
+        }
+
+        public int Value { get => Counter.Count; }
+        public int? Target { get; set; }
+
         protected SimpleLabel NameLabel = new SimpleLabel();
         protected SimpleLabel ValueLabel = new SimpleLabel();
+
+        protected string ValueLabelSuffix => Target is null ? string.Empty : $" / {Target}";
 
         public void Increment() => Counter.Increment();
 
@@ -76,7 +90,7 @@ namespace LiveSplit.UI.Components
             float fourCharWidth = g.MeasureString("1000", TextFont).Width;
             HorizontalWidth = NameLabel.X + NameLabel.ActualWidth + (fourCharWidth > ValueLabel.ActualWidth ? fourCharWidth : ValueLabel.ActualWidth) + 5; 
 
-            // Set Counter Name Label
+            // Set Counter Name Label.
             NameLabel.HorizontalAlignment = mode == LayoutMode.Horizontal ? StringAlignment.Near : StringAlignment.Near;
             NameLabel.VerticalAlignment = StringAlignment.Center;
             NameLabel.X = 5;
@@ -127,8 +141,8 @@ namespace LiveSplit.UI.Components
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            NameLabel.Text = Settings.Name;
-            ValueLabel.Text = Counter.Count.ToString();
+            NameLabel.Text = Name;
+            ValueLabel.Text = Counter.Count.ToString() + ValueLabelSuffix;
 
             Cache.Restart();
             Cache["CounterNameLabel"] = NameLabel.Text;

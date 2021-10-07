@@ -29,9 +29,9 @@ namespace TR2.UI
 
         protected IList<IComponent> Components { get; set; }
         protected IList<SimpleCounterComponent> CounterComponents { get; set; }
-        protected int Splits { get; set; }
+        protected int NumSplits { get; set; }
         protected int CountersInSplit { get; set; }
-        protected Dictionary<int, List<string>> CounterNames { get; set; }
+        protected Dictionary<int, List<SimpleCounterSettings>> CounterSettings { get; set;}
 
         protected MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
 
@@ -67,16 +67,16 @@ namespace TR2.UI
                 currentSplit = 0;
             }
 
-            List<string> currentSplitCounterNames = CounterNames[currentSplit];
-            log.WriteEntry($"Building level/split #{currentSplit}: {string.Join(", ", currentSplitCounterNames)}");     
+            var currentSplitCounterSettings = CounterSettings[currentSplit]; 
             for (var i = 0; i < CountersInSplit; ++i)
             {
-                var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterNames[i]);
+                var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterSettings[i]);
                 Components.Add(counterComponent);
                 CounterComponents.Add(counterComponent);
                 if (i < CountersInSplit - 1)
                     Components.Add(new ThinSeparatorComponent());
             }
+            log.WriteEntry($"Finished building {CounterComponents.Count} counters for split #{currentSplit}.");
         }
 
         private void Prepare(LiveSplitState state)
@@ -84,12 +84,11 @@ namespace TR2.UI
             int currentSplit = state.CurrentSplitIndex;
             if (currentSplit == -1)  // Run hasn't started, show first level/split counters.
                 currentSplit = 0;
-            log.WriteEntry($"In Prepare: CounterNames.Count = {CounterNames.Count}");
-            var currentSplitCounterNames = CounterNames[currentSplit];
-            var splitCounterCount = currentSplitCounterNames.Count;
-            if (Splits != CounterNames.Count || CountersInSplit != splitCounterCount)
+            var currentSplitCounterSettings = CounterSettings[currentSplit];
+            var splitCounterCount = currentSplitCounterSettings.Count;
+            if (NumSplits != CounterSettings.Count || CountersInSplit != splitCounterCount)
             {
-                Splits = CounterNames.Count;
+                NumSplits = CounterSettings.Count;
                 CountersInSplit = splitCounterCount;
                 RebuildCounters();
             }
@@ -104,14 +103,12 @@ namespace TR2.UI
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
         {
             Prepare(state);
-            log.WriteEntry("DrawVertical Prepare successful.");
             InternalComponent.DrawVertical(g, state, width, clipRegion);
         }
 
         public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
         {
             Prepare(state);
-            log.WriteEntry("DrawHorizontal Prepare successful.");
             InternalComponent.DrawHorizontal(g, state, height, clipRegion);
         }
 
