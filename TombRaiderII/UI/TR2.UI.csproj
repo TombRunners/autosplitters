@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAutoMultiCounter.cs" />
     <Compile Include="MultiCounterComponent.cs" />
     <Compile Include="SimpleCounterComponent.cs" />
     <Compile Include="MultiCounterComponentSettings.cs">
@@ -71,6 +72,12 @@
     <EmbeddedResource Include="MultiCounterComponentSettings.resx">
       <DependentUpon>MultiCounterComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TR2.csproj">
+      <Project>{b4a46173-6df7-435a-a218-11641766536a}</Project>
+      <Name>TR2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

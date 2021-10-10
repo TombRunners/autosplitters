@@ -5,10 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
 using LiveSplit.Model;
-using LiveSplit.UI;
-using LiveSplit.UI.Components;
 
-namespace TR2.UI
+namespace LiveSplit.UI.Components
 {
     public class MultiCounterComponent : IComponent
     {
@@ -16,6 +14,8 @@ namespace TR2.UI
         {
             Source = "LiveSplit"
         };
+
+        IAutoMultiCounter AutoMultiCounter { get; set; }
 
         #region IComponent implementations
 
@@ -54,6 +54,21 @@ namespace TR2.UI
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
+            if (state.CurrentPhase == TimerPhase.Running || state.CurrentPhase == TimerPhase.Paused)
+            {
+                var countersToIncrement = AutoMultiCounter.ShouldIncrement(state);
+                foreach(int index in countersToIncrement)
+                    IncrementCounter(index);
+                
+                var countersToSet = AutoMultiCounter.ShouldSet(state);
+                foreach(KeyValuePair<int, int> entry in countersToSet)
+                    SetCounter(entry.Key, entry.Value);
+
+                var countersToReset = AutoMultiCounter.ShouldReset(state);
+                foreach(int index in countersToReset)
+                    ResetCounter(index);
+            }
+
             if (invalidator != null)
                 InternalComponent.Update(invalidator, state, width, height, mode);
         }
@@ -79,6 +94,8 @@ namespace TR2.UI
         }
 
         public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
+        public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Value = value;
+        public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Value = 0;
 
         public void RebuildCounters()
         {

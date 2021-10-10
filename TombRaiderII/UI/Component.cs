@@ -40,12 +40,15 @@ namespace TR2.UI
                 }
             }
         };
+
+        internal GameMemory GameMemory = new GameMemory();
         
         public Component(LiveSplitState state) : base(state)
         {
             CounterSettings = Tr2CounterSettings;
             NumSplits = CounterSettings.Count;
-            RebuildCounters();
         }
+
+
     }
 }

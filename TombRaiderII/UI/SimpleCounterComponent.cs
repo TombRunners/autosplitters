@@ -46,7 +46,11 @@ namespace LiveSplit.UI.Components
             set => NameLabel.Text = value;
         }
 
-        public int Value { get => Counter.Count; }
+        public int Value { 
+            get => Counter.Count;
+            set => Counter.SetCount(value);
+        }
+
         public int? Target { get; set; }
 
         protected SimpleLabel NameLabel = new SimpleLabel();
