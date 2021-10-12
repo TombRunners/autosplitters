@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Xml;
 using LiveSplit.Model.Input;
@@ -8,38 +9,84 @@ namespace LiveSplit.UI.Components
 {
     public partial class MultiCounterComponentSettings : UserControl
     {
+        public Font TextFont { get; set; }
+
+        public string TextFontString => SettingsHelper.FormatFont(TextFont);
+
+        public bool OverrideFont
+        {
+            get => CheckBoxFontOverride.Checked;
+            set => CheckBoxFontOverride.Checked = value;
+        }
+
+        public Color NameColor
+        {
+            get => ButtonNameColor.BackColor;
+            set => ButtonNameColor.BackColor = value;
+        }
+
+        public Color ValueColor
+        {
+            get => ButtonValueColor.BackColor;
+            set => ButtonValueColor.BackColor = value;
+        }
+
+        public bool OverrideTextColor
+        {
+            get => CheckBoxForegroundColorOverride.Checked;
+            set => CheckBoxForegroundColorOverride.Checked = value;
+        }
+
+        /// <remarks>
+        ///     If <see cref="BackgroundGradient"/> != <see cref="GradientType.Plain"/>, <see cref="ButtonBackgroundColor1"/>
+        ///     will be hidden and the value in <see cref="ButtonBackgroundColor2"/> should be used.
+        /// </remarks>
+        public Color BackgroundColor1
+        {
+            get => ButtonBackgroundColor1.Visible ? ButtonBackgroundColor1.BackColor : ButtonBackgroundColor2.BackColor;
+            set
+            {
+                ButtonBackgroundColor1.BackColor = value;
+                if (!ButtonBackgroundColor1.Visible)
+                    BackgroundColor2 = value;
+            }
+        }
+
+        /// <remarks>
+        ///     <see cref="ButtonBackgroundColor2"/> is visible regardless of <see cref="BackgroundGradient"/>.
+        /// </remarks>
+        public Color BackgroundColor2
+        {
+            get => ButtonBackgroundColor2.BackColor;
+            set => ButtonBackgroundColor2.BackColor = value;
+        }
+
+        public GradientType BackgroundGradient { get; set; }
+        
+        public string GradientString
+        {
+            get => BackgroundGradient.ToString();
+            set => BackgroundGradient = (GradientType)Enum.Parse(typeof(GradientType), value);
+        }
+
         public MultiCounterComponentSettings()
         {
             InitializeComponent();
 
             // Set default values.
-            TextFont = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+            var defaultFont = new Font("Segoe UI", 13, FontStyle.Regular, GraphicsUnit.Pixel);
+            TextFont = defaultFont;
             OverrideFont = false;
-            NameColor = Color.FromArgb(255, 255, 255, 255);
-            ValueColor = Color.FromArgb(255, 255, 255, 255);
+            NameColor = Color.FromArgb(255, 255, 255);
+            ValueColor = Color.FromArgb(255, 255, 255);
             OverrideTextColor = false;
             BackgroundColor1 = Color.Transparent;
             BackgroundColor2 = Color.Transparent;
             BackgroundGradient = GradientType.Plain;
+            LabelFontSample.Font = OverrideFont ? TextFont : defaultFont;
+            LabelFontSample.Text = TextFontString;
 
             Load += CounterSettings_Load;
-        }
-
-        public Color NameColor { get; set; }
-        public Color ValueColor { get; set; }
-        public bool OverrideTextColor { get; set; }
-
-        public string FontString => string.Format("{0} {1}", TextFont.FontFamily.Name, TextFont.Style);
-        public Font TextFont { get; set; }
-        public bool OverrideFont { get; set; }
-
-        public Color BackgroundColor1 { get; set; }
-        public Color BackgroundColor2 { get; set; }
-        public GradientType BackgroundGradient { get; set; }
-        public string GradientString
-        {
-            get => BackgroundGradient.ToString();
-            set => BackgroundGradient = (GradientType)Enum.Parse(typeof(GradientType), value);
         }
 
         public void SetSettings(XmlNode node)
@@ -47,7 +94,14 @@ namespace LiveSplit.UI.Components
             var element = (XmlElement)node;
             BackgroundColor1 = SettingsHelper.ParseColor(element["BackgroundColor1"]);
             BackgroundColor2 = SettingsHelper.ParseColor(element["BackgroundColor2"]);
-            GradientString = SettingsHelper.ParseString(element["BackgroundGradient"]);
+            try
+            {
+                GradientString = SettingsHelper.ParseString(element["BackgroundGradient"]);
+            }
+            catch (ArgumentException)
+            {
+                BackgroundGradient = GradientType.Plain;
+            }
             OverrideFont = SettingsHelper.ParseBool(element["OverrideTextFont"]);
             TextFont = SettingsHelper.GetFontFromElement(element["TextFont"]);
             OverrideTextColor = SettingsHelper.ParseBool(element["OverrideTextColor"]);
@@ -61,8 +115,6 @@ namespace LiveSplit.UI.Components
             CreateSettingsNode(document, parent);
             return parent;
         }
-
-        public int GetSettingsHashCode => CreateSettingsNode(null, null);
 
         private int CreateSettingsNode(XmlDocument document, XmlElement parent) =>
             SettingsHelper.CreateSetting(document, parent, "BackgroundColor1", BackgroundColor1) ^
@@ -92,6 +144,7 @@ namespace LiveSplit.UI.Components
         private Button ButtonNameColor;
         private Label LabelValueColor;
         private Button ButtonValueColor;
+        private Label AutosplitterVersionLabel;
 
         /// <summary>
         /// Required designer variable.
@@ -117,6 +170,7 @@ namespace LiveSplit.UI.Components
         {
             MainTableLayoutPanel = new TableLayoutPanel();
             GroupBoxForegroundColor = new GroupBox();
+            AutosplitterVersionLabel = new Label();
             TableLayoutPanelForegroundColor = new TableLayoutPanel();
             CheckBoxForegroundColorOverride = new CheckBox();
             ButtonNameColor = new Button();
@@ -152,6 +206,7 @@ namespace LiveSplit.UI.Components
             MainTableLayoutPanel.Controls.Add(LabelBackgroundColor, 0, 0);
             MainTableLayoutPanel.Controls.Add(ButtonBackgroundColor1, 1, 0);
             MainTableLayoutPanel.Controls.Add(ButtonBackgroundColor2, 2, 0);
+            MainTableLayoutPanel.Controls.Add(AutosplitterVersionLabel, 0, 3);
             MainTableLayoutPanel.Dock = DockStyle.Fill;
             MainTableLayoutPanel.Location = new Point(7, 7);
             MainTableLayoutPanel.Name = "MainTableLayoutPanel";
@@ -159,8 +214,8 @@ namespace LiveSplit.UI.Components
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 82F));
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 112F));
-            MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
-            MainTableLayoutPanel.Size = new Size(442, 224);
+            MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
+            MainTableLayoutPanel.Size = new Size(442, 196);
             MainTableLayoutPanel.TabIndex = 0;
 
             // GroupBoxColor
@@ -282,7 +337,7 @@ namespace LiveSplit.UI.Components
             LabelFontSample.TabIndex = 4;
             LabelFontSample.Text = "Font";
 
-            // btButtonFontnFont
+            // ButtonFont
             ButtonFont.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             ButtonFont.Location = new Point(352, 32);
             ButtonFont.Name = "ButtonFont";
@@ -319,11 +374,12 @@ namespace LiveSplit.UI.Components
             ComboBoxGradientType.DropDownStyle = ComboBoxStyle.DropDownList;
             ComboBoxGradientType.FormattingEnabled = true;
             ComboBoxGradientType.Items.AddRange(new object[] { "Plain", "Vertical", "Horizontal" });
+            ComboBoxGradientType.SelectedIndex = 0;
             ComboBoxGradientType.Location = new Point(212, 4);
             ComboBoxGradientType.Name = "ComboBoxGradientType";
             ComboBoxGradientType.Size = new Size(227, 21);
             ComboBoxGradientType.TabIndex = 2;
-            ComboBoxGradientType.SelectedIndexChanged += ComboBoxGradientTypeSelectedIndexChanged;
+            ComboBoxGradientType.SelectedIndexChanged += ComboBoxGradientType_SelectedIndexChanged;
 
             // LabelBackgroundColor
             LabelBackgroundColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -354,13 +410,21 @@ namespace LiveSplit.UI.Components
             ButtonBackgroundColor2.UseVisualStyleBackColor = false;
             ButtonBackgroundColor2.Click += ColorButton_Click;
 
+            // AutosplitterVersionLabel
+            AutosplitterVersionLabel.AutoSize = true;
+            AutosplitterVersionLabel.Location = new Point(3, 223);
+            AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+            AutosplitterVersionLabel.Size = new Size(35, 13);
+            AutosplitterVersionLabel.TabIndex = 40;
+            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+
             // MultiCounterComponentSettings
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(MainTableLayoutPanel);
-            base.Name = "MultiCounterComponentSettings";
+            Name = "MultiCounterComponentSettings";
             Padding = new Padding(7);
-            Size = new Size(456, 238);
+            Size = new Size(456, 250);
             MainTableLayoutPanel.ResumeLayout(false);
             MainTableLayoutPanel.PerformLayout();
             GroupBoxForegroundColor.ResumeLayout(false);
@@ -374,31 +438,38 @@ namespace LiveSplit.UI.Components
 
         #endregion
 
-        private void ColorButton_Click(object sender, EventArgs e) => SettingsHelper.ColorButtonClick((Button)sender, this);
-        
+        private void ColorButton_Click(object sender, EventArgs e)
+            => SettingsHelper.ColorButtonClick((Button)sender, this);
+
         private void FontButton_Click(object sender, EventArgs e)
         {
             var dialog = SettingsHelper.GetFontDialog(TextFont, 7, 20);
             dialog.FontChanged += (s, ev) => TextFont = ((CustomFontDialog.FontChangedEventArgs)ev).NewFont;
             dialog.ShowDialog(this);
-            LabelFontSample.Text = FontString;
+            LabelFontSample.Text = TextFontString;
         }
 
-        private void ComboBoxGradientTypeSelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxGradientType_SelectedIndexChanged(object sender, EventArgs e)
         {
             ButtonBackgroundColor1.Visible = ComboBoxGradientType.SelectedItem.ToString() != "Plain";
-            ButtonBackgroundColor2.DataBindings.Clear();
-            ButtonBackgroundColor2.DataBindings.Add("BackColor", this, ButtonBackgroundColor1.Visible ? "BackgroundColor2" : "BackgroundColor", false, DataSourceUpdateMode.OnPropertyChanged);
             GradientString = ComboBoxGradientType.SelectedItem.ToString();
         }
 
-        private void CheckBoxFont_CheckedChanged(object sender, EventArgs e) => LabelFont.Enabled = LabelFontSample.Enabled = ButtonFont.Enabled = CheckBoxFontOverride.Checked;
+        private void CheckBoxFont_CheckedChanged(object sender, EventArgs e)
+            => LabelFont.Enabled = LabelFontSample.Enabled = ButtonFont.Enabled = CheckBoxFontOverride.Checked;
 
-        private void CheckBoxColor_CheckedChanged(object sender, EventArgs e) => LabelNameColor.Enabled = ButtonNameColor.Enabled = LabelValueColor.Enabled = ButtonValueColor.Enabled = CheckBoxForegroundColorOverride.Checked;
+        private void CheckBoxColor_CheckedChanged(object sender, EventArgs e)
+            => LabelNameColor.Enabled = ButtonNameColor.Enabled = LabelValueColor.Enabled = ButtonValueColor.Enabled = CheckBoxForegroundColorOverride.Checked;
 
         private void CounterSettings_Load(object sender, EventArgs e)
         {
+            // Force a check on background color elements' visibility.
+            ComboBoxGradientType_SelectedIndexChanged(null, null);
+            // Force enable/disble of foreground color elements.
+            CheckBoxForegroundColorOverride.Checked = OverrideTextColor;
             CheckBoxColor_CheckedChanged(null, null);
+            // Force enable/disable of font elements.
+            CheckBoxFontOverride.Checked = OverrideFont;
             CheckBoxFont_CheckedChanged(null, null);
         }
     }
