@@ -10,57 +10,23 @@ namespace LiveSplit.UI.Components
 {
     public class SimpleCounterComponent : IComponent
     {
-        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings)
-        {
-            Settings = settings;
-            Name = counterSettings.Name;
-            Counter.SetCount(counterSettings.Start);
-            Target = counterSettings.Target;
-            Counter.SetIncrement(counterSettings.Increment);
-        }
+        #region IComponent implementations
 
-        public MultiCounterComponentSettings Settings { get; set; }
-
-        public ICounter Counter { get; set; } = new Counter();
-
-        public GraphicsCache Cache { get; set; } = new GraphicsCache();
-
-        public float VerticalHeight { get; set; } = 10;
-
-        public float MinimumHeight { get; set; }
-
-        public float MinimumWidth => NameLabel.X + ValueLabel.ActualWidth;
-
-        public float HorizontalWidth { get; set; }
-
+        public string ComponentName => "SimpleCounter";
         public IDictionary<string, Action> ContextMenuControls => null;
-
         public float PaddingTop { get; set; }
         public float PaddingLeft => 7f;
         public float PaddingBottom { get; set; }
         public float PaddingRight => 7f;
-
-        public string Name 
-        { 
-            get => NameLabel.Text;
-            set => NameLabel.Text = value;
-        }
-
-        public int Value { 
-            get => Counter.Count;
-            set => Counter.SetCount(value);
-        }
-
-        public int? Target { get; set; }
-
-        protected SimpleLabel NameLabel = new SimpleLabel();
-        protected SimpleLabel ValueLabel = new SimpleLabel();
-
-        protected string ValueLabelSuffix => Target is null ? string.Empty : $" / {Target}";
-
-        public void Increment() => Counter.Increment();
-
-        protected Font TextFont { get; set; }
+        public float VerticalHeight { get; set; } = 10;
+        public float MinimumHeight { get; set; }
+        public float MinimumWidth => NameLabel.X + ValueLabel.ActualWidth;
+        public float HorizontalWidth { get; set; }
+        public Control GetSettingsControl(LayoutMode mode) => Settings;
+        public XmlNode GetSettings(XmlDocument document) => Settings.GetSettings(document);
+        public void SetSettings(XmlNode settings) => Settings.SetSettings(settings);
+        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion) => DrawGeneral(g, state, HorizontalWidth, height, LayoutMode.Horizontal);
+        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion) => DrawGeneral(g, state, width, VerticalHeight, LayoutMode.Vertical);
 
         private void DrawGeneral(Graphics g, LiveSplitState state, float width, float height, LayoutMode mode)
         {
@@ -92,7 +58,7 @@ namespace LiveSplit.UI.Components
 
             // Assume most users won't count past four digits (will cause a layout resize in Horizontal Mode).
             float fourCharWidth = g.MeasureString("1000", TextFont).Width;
-            HorizontalWidth = NameLabel.X + NameLabel.ActualWidth + (fourCharWidth > ValueLabel.ActualWidth ? fourCharWidth : ValueLabel.ActualWidth) + 5; 
+            HorizontalWidth = NameLabel.X + NameLabel.ActualWidth + (fourCharWidth > ValueLabel.ActualWidth ? fourCharWidth : ValueLabel.ActualWidth) + 5;
 
             // Set Counter Name Label.
             NameLabel.HorizontalAlignment = mode == LayoutMode.Horizontal ? StringAlignment.Near : StringAlignment.Near;
@@ -123,26 +89,6 @@ namespace LiveSplit.UI.Components
             ValueLabel.Draw(g);
         }
 
-        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
-        {
-            DrawGeneral(g, state, HorizontalWidth, height, LayoutMode.Horizontal);
-        }
-
-        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
-        {
-            DrawGeneral(g, state, width, VerticalHeight, LayoutMode.Vertical);
-        }
-
-        public string ComponentName => "Counter";
-
-        public Control GetSettingsControl(LayoutMode mode) => Settings;
-
-        public XmlNode GetSettings(XmlDocument document) => Settings.GetSettings(document);
-
-        public void SetSettings(XmlNode settings) => Settings.SetSettings(settings);
-        
-        public int GetSettingsHashCode => Settings.GetSettingsHashCode;
-
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             NameLabel.Text = Name;
@@ -155,6 +101,43 @@ namespace LiveSplit.UI.Components
             if (invalidator != null && Cache.HasChanged)
                 invalidator.Invalidate(0, 0, width, height);
         }
+
+        #endregion IComponent implementations
+
+        public ICounter Counter { get; set; }
+        public MultiCounterComponentSettings Settings { get; set; }
+        public GraphicsCache Cache { get; set; } = new GraphicsCache();
+        public int InitialValue { get; }
+        public int? Target { get; set; }
+        protected Font TextFont { get; set; }
+        protected SimpleLabel NameLabel = new SimpleLabel();
+        protected SimpleLabel ValueLabel = new SimpleLabel();
+        protected string ValueLabelSuffix => Target is null ? string.Empty : $" / {Target}";
+
+        public string Name
+        {
+            get => NameLabel.Text;
+            set => NameLabel.Text = value;
+        }
+
+        public int Value
+        {
+            get => Counter.Count;
+            set => Counter.SetCount(value);
+        }
+
+        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings)
+        {
+            Settings = settings;
+            Name = counterSettings.Name;
+            Counter = new Counter(counterSettings.Start);
+            InitialValue = Counter.Count;
+            Counter.SetIncrement(counterSettings.Increment);
+            Target = counterSettings.Target;
+        }
+
+        public void Increment() => Counter.Increment();
+        public void Reset() => Counter.Reset();
 
         public void Dispose() {}
     }

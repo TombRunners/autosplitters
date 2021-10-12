@@ -20,7 +20,7 @@ namespace LiveSplit.UI.Components
         Dictionary<int, int> ShouldSet(LiveSplitState state);
 
         /// <summary>
-        ///     Returns the indices of <see cref="MultiCounterComponent.CounterComponents"/> to be reset to 0, if any.
+        ///     Returns the indices of <see cref="MultiCounterComponent.CounterComponents"/> to be reset to their starting value, if any.
         /// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns><A <see cref="HashSet{int}"/> of counters to be reset, otherwise an empty <see cref="HashSet{int}"/>/returns>

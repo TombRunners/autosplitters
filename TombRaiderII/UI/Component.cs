@@ -48,7 +48,5 @@ namespace TR2.UI
             CounterSettings = Tr2CounterSettings;
             NumSplits = CounterSettings.Count;
         }
-
-
     }
 }

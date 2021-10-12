@@ -15,8 +15,6 @@ namespace LiveSplit.UI.Components
             Source = "LiveSplit"
         };
 
-        IAutoMultiCounter AutoMultiCounter { get; set; }
-
         #region IComponent implementations
 
         public string ComponentName => "Multi-Counter";
@@ -75,6 +73,7 @@ namespace LiveSplit.UI.Components
 
         #endregion IComponent implementations
 
+        IAutoMultiCounter AutoMultiCounter { get; set; }
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
         protected IList<SimpleCounterComponent> CounterComponents { get; set; }
@@ -95,7 +94,11 @@ namespace LiveSplit.UI.Components
 
         public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
         public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Value = value;
-        public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Value = 0;
+        public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Reset();
+
+        void OnSplit(object sender, EventArgs e) => RebuildCounters();
+        void OnReset(object sender, TimerPhase e) => RebuildCounters();
+        void OnStart(object sender, EventArgs e) => RebuildCounters();
 
         public void RebuildCounters()
         {
@@ -137,12 +140,6 @@ namespace LiveSplit.UI.Components
                 RebuildCounters();
             }
         }
-
-        void OnSplit(object sender, EventArgs e) => RebuildCounters();
-
-        void OnReset(object sender, TimerPhase e) => RebuildCounters();
-
-        void OnStart(object sender, EventArgs e) => RebuildCounters();
 
         public void Dispose() {}
     }
