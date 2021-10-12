@@ -22,9 +22,9 @@ namespace LiveSplit.UI.Components
         public float MinimumHeight { get; set; }
         public float MinimumWidth => NameLabel.X + ValueLabel.ActualWidth;
         public float HorizontalWidth { get; set; }
-        public Control GetSettingsControl(LayoutMode mode) => Settings;
-        public XmlNode GetSettings(XmlDocument document) => Settings.GetSettings(document);
-        public void SetSettings(XmlNode settings) => Settings.SetSettings(settings);
+        public Control GetSettingsControl(LayoutMode mode) => throw new NotSupportedException();
+        public XmlNode GetSettings(XmlDocument document) => throw new NotSupportedException();
+        public void SetSettings(XmlNode settings) => throw new NotSupportedException();
         public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion) => DrawGeneral(g, state, HorizontalWidth, height, LayoutMode.Horizontal);
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion) => DrawGeneral(g, state, width, VerticalHeight, LayoutMode.Vertical);
 
@@ -107,19 +107,41 @@ namespace LiveSplit.UI.Components
         public ICounter Counter { get; set; }
         public MultiCounterComponentSettings Settings { get; set; }
         public GraphicsCache Cache { get; set; } = new GraphicsCache();
+        /// <summary>
+        ///     Amount by which to increment/decrement <see cref="Value"/>.
+        /// </summary>
+        public int IncrementValue { get; }
+        /// <summary>
+        ///     Amount at which <see cref="Value"/> should start when initialized or reset.
+        /// </summary>
         public int InitialValue { get; }
+        /// <summary>
+        ///     Displayed as the target in text appended to <see cref="Value"/> for <see cref="ValueLabel"/>.
+        /// </summary>
+        /// <remarks>
+        ///     Defaults to <see langword="null"/>, which results in no extraneous text shown after <see cref="Value"/>.
+        /// </remarks>
         public int? Target { get; set; }
         protected Font TextFont { get; set; }
         protected SimpleLabel NameLabel = new SimpleLabel();
         protected SimpleLabel ValueLabel = new SimpleLabel();
+        /// <summary>
+        ///     The string appended after <see cref="Value"/> for the right-aligned string of the component.
+        /// </summary>
         protected string ValueLabelSuffix => Target is null ? string.Empty : $" / {Target}";
 
+        /// <summary>
+        ///     The left-aligned string of the counter component.
+        /// </summary>
         public string Name
         {
             get => NameLabel.Text;
             set => NameLabel.Text = value;
         }
 
+        /// <summary>
+        ///     The value (<see cref="ICounter.Count"/>) used in the right-aligned string of the counter component.
+        /// </summary>
         public int Value
         {
             get => Counter.Count;
@@ -133,10 +155,21 @@ namespace LiveSplit.UI.Components
             Counter = new Counter(counterSettings.Start);
             InitialValue = Counter.Count;
             Counter.SetIncrement(counterSettings.Increment);
+            IncrementValue = counterSettings.Increment;
             Target = counterSettings.Target;
         }
 
+        /// <summary>
+        ///     Decreases <see cref="Value"/> by <see cref="IncrementValue"/>.
+        /// </summary>
+        public void Decrement() => Counter.Decrement();
+        /// <summary>
+        ///     Increases <see cref="Value"/> by <see cref="IncrementValue"/>.
+        /// </summary>
         public void Increment() => Counter.Increment();
+        /// <summary>
+        ///     Sets <see cref="Value"/> to <see cref="InitialValue"/>.
+        /// </summary>
         public void Reset() => Counter.Reset();
 
         public void Dispose() {}
