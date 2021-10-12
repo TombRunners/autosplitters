@@ -144,7 +144,7 @@ namespace LiveSplit.UI.Components
         private Button ButtonNameColor;
         private Label LabelValueColor;
         private Button ButtonValueColor;
-        private Label AutosplitterVersionLabel;
+        private Label AutoMultiCounterVersionLabel;
 
         /// <summary>
         /// Required designer variable.
@@ -170,7 +170,7 @@ namespace LiveSplit.UI.Components
         {
             MainTableLayoutPanel = new TableLayoutPanel();
             GroupBoxForegroundColor = new GroupBox();
-            AutosplitterVersionLabel = new Label();
+            AutoMultiCounterVersionLabel = new Label();
             TableLayoutPanelForegroundColor = new TableLayoutPanel();
             CheckBoxForegroundColorOverride = new CheckBox();
             ButtonNameColor = new Button();
@@ -206,7 +206,7 @@ namespace LiveSplit.UI.Components
             MainTableLayoutPanel.Controls.Add(LabelBackgroundColor, 0, 0);
             MainTableLayoutPanel.Controls.Add(ButtonBackgroundColor1, 1, 0);
             MainTableLayoutPanel.Controls.Add(ButtonBackgroundColor2, 2, 0);
-            MainTableLayoutPanel.Controls.Add(AutosplitterVersionLabel, 0, 3);
+            MainTableLayoutPanel.Controls.Add(AutoMultiCounterVersionLabel, 0, 3);
             MainTableLayoutPanel.Dock = DockStyle.Fill;
             MainTableLayoutPanel.Location = new Point(7, 7);
             MainTableLayoutPanel.Name = "MainTableLayoutPanel";
@@ -410,13 +410,14 @@ namespace LiveSplit.UI.Components
             ButtonBackgroundColor2.UseVisualStyleBackColor = false;
             ButtonBackgroundColor2.Click += ColorButton_Click;
 
-            // AutosplitterVersionLabel
-            AutosplitterVersionLabel.AutoSize = true;
-            AutosplitterVersionLabel.Location = new Point(3, 223);
-            AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-            AutosplitterVersionLabel.Size = new Size(35, 13);
-            AutosplitterVersionLabel.TabIndex = 40;
-            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+            // AutoMultiCounterVersionLabel
+            TableLayoutPanelFont.SetColumnSpan(AutoMultiCounterVersionLabel, 4);
+            AutoMultiCounterVersionLabel.AutoSize = true;
+            AutoMultiCounterVersionLabel.Location = new Point(3, 223);
+            AutoMultiCounterVersionLabel.Name = "AutosplitterVersionLabel";
+            AutoMultiCounterVersionLabel.Size = new Size(35, 30);
+            AutoMultiCounterVersionLabel.TabIndex = 40;
+            AutoMultiCounterVersionLabel.Text = "Auto Multi-Counter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
 
             // MultiCounterComponentSettings
             AutoScaleDimensions = new SizeF(6F, 13F);
