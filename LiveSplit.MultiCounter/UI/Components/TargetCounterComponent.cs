@@ -8,11 +8,11 @@ using System.Xml;
 
 namespace LiveSplit.UI.Components
 {
-    public class SimpleCounterComponent : IComponent
+    public class TargetCounterComponent : IComponent
     {
         #region IComponent implementations
 
-        public string ComponentName => "SimpleCounter";
+        public string ComponentName => "TargetCounter";
         public IDictionary<string, Action> ContextMenuControls => null;
         public float PaddingTop { get; set; }
         public float PaddingLeft => 7f;
@@ -114,14 +114,17 @@ namespace LiveSplit.UI.Components
         public ICounter Counter { get; set; }
         public MultiCounterComponentSettings Settings { get; set; }
         public GraphicsCache Cache { get; set; } = new GraphicsCache();
+
         /// <summary>
         ///     Amount by which to increment/decrement <see cref="Value"/>.
         /// </summary>
         public int IncrementValue { get; }
+
         /// <summary>
         ///     Amount at which <see cref="Value"/> should start when initialized or reset.
         /// </summary>
         public int InitialValue { get; }
+
         /// <summary>
         ///     Displayed as the target in text appended to <see cref="Value"/> for <see cref="ValueLabel"/>.
         /// </summary>
@@ -129,6 +132,7 @@ namespace LiveSplit.UI.Components
         ///     Defaults to <see langword="null"/>, which results in no extraneous text shown after <see cref="Value"/>.
         /// </remarks>
         public int? Target { get; set; }
+        
         protected int Index { get; }
         protected Font TextFont { get; set; }
         protected SimpleLabel NameLabel = new SimpleLabel();
@@ -156,7 +160,7 @@ namespace LiveSplit.UI.Components
             set => Counter.SetCount(value);
         }
 
-        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings, int index = 0)
+        public TargetCounterComponent(MultiCounterComponentSettings settings, TargetCounterSettings counterSettings, int index = 0)
         {
             Settings = settings;
             Name = counterSettings.Name;

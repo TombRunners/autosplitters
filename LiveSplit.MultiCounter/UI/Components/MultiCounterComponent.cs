@@ -76,10 +76,10 @@ namespace LiveSplit.UI.Components
         IAutoMultiCounter AutoMultiCounter { get; set; }
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
-        protected IList<SimpleCounterComponent> CounterComponents { get; set; }
+        protected IList<TargetCounterComponent> CounterComponents { get; set; }
         protected int NumSplits { get; set; }
         protected int CountersInSplit { get; set; }
-        protected IDictionary<int, List<SimpleCounterSettings>> CounterSettings { get; set;}
+        protected IDictionary<int, List<TargetCounterSettings>> CounterSettings { get; set;}
         protected MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
         protected int ScrollOffset { get; set; }
         protected LiveSplitState State { get; set; }
@@ -106,7 +106,7 @@ namespace LiveSplit.UI.Components
         public void RebuildCounters()
         {
             Components = new List<IComponent>();
-            CounterComponents = new List<SimpleCounterComponent>();
+            CounterComponents = new List<TargetCounterComponent>();
             InternalComponent.VisibleComponents = Components;
                         
             int currentSplit = State.CurrentSplitIndex;
@@ -116,7 +116,7 @@ namespace LiveSplit.UI.Components
             var currentSplitCounterSettings = CounterSettings[currentSplit]; 
             for (var i = 0; i < CountersInSplit; ++i)
             {
-                var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterSettings[i], i);
+                var counterComponent = new TargetCounterComponent(Settings, currentSplitCounterSettings[i], i);
                 Components.Add(counterComponent);
                 CounterComponents.Add(counterComponent);
                 if (i < CountersInSplit - 1)

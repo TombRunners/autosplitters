@@ -39,9 +39,11 @@
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\CustomFontDialog.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.Core">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.Counter">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\Components\LiveSplit.Counter.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -60,8 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\Components\IAutoMultiCounter.cs" />
-    <Compile Include="UI\Components\SimpleCounterComponent.cs" />
-    <Compile Include="UI\Components\SimpleCounterSettings.cs" />
+    <Compile Include="UI\Components\TargetCounterComponent.cs" />
+    <Compile Include="UI\Components\TargetCounterSettings.cs" />
     <Compile Include="UI\Components\MultiCounterComponent.cs" />
     <Compile Include="UI\Components\MultiCounterComponentSettings.cs">
       <SubType>UserControl</SubType>

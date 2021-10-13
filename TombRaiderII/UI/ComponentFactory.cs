@@ -26,19 +26,19 @@ namespace TR2.UI
         /// <remarks>
         ///     Using <see cref="ComponentCategory.Timer"/> makes the component appear in the <c>Timer</c> section of the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
-        public ComponentCategory Category => ComponentCategory.Information;
+        public ComponentCategory Category => ComponentCategory.List;
 
         /// <inheritdoc/>
         /// <remarks>
         ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
         /// </remarks>
-        public string ComponentName => "TR2 Info Display";
+        public string ComponentName => "TR2 AutoMultiCounter";
 
         /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
-        public string Description => "Additional info for Tomb Raider II";
+        public string Description => "Automatic Multi-Counter for Tomb Raider II";
             
         /// <inheritdoc/>
         /// <param name="state">State passed by LiveSplit</param>
