@@ -1,5 +1,4 @@
 ﻿using System;                   // Version
-using System.Collections.Generic;
 using System.Reflection;        // Assembly
 using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory

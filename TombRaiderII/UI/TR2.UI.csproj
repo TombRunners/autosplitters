@@ -31,14 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CustomFontDialog, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="CustomFontDialog">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\CustomFontDialog.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.Core">
+	  <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
-    <Reference Include="LiveSplit.Counter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LiveSplit.Counter">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\Components\LiveSplit.Counter\obj\Release\LiveSplit.Counter.dll</HintPath>
     </Reference>
@@ -57,24 +58,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtendedGradientType.cs" />
-    <Compile Include="IAutoMultiCounter.cs" />
-    <Compile Include="MultiCounterComponent.cs" />
-    <Compile Include="SimpleCounterComponent.cs" />
-    <Compile Include="MultiCounterComponentSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Component.cs" />
     <Compile Include="ComponentFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleCounterSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MultiCounterComponentSettings.resx">
-      <DependentUpon>MultiCounterComponentSettings.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\..\LiveSplit.MultiCounter\LiveSplit.MultiCounter.csproj">
+      <Project>{ee6fce04-acf5-4ab7-b081-be075e36f88c}</Project>
+      <Name>LiveSplit.MultiCounter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TR2.csproj">
       <Project>{b4a46173-6df7-435a-a218-11641766536a}</Project>
       <Name>TR2</Name>
