@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExtendedGradientType.cs" />
     <Compile Include="IAutoMultiCounter.cs" />
     <Compile Include="MultiCounterComponent.cs" />
     <Compile Include="SimpleCounterComponent.cs" />

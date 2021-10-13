@@ -90,12 +90,15 @@ namespace LiveSplit.UI.Components
             state.OnStart += OnStart;
             state.OnReset += OnReset;
             state.OnSplit += OnSplit;
+
+            Settings.CounterLayoutChanged += OnCounterLayoutChanged;
         }
 
         public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
         public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Value = value;
         public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Reset();
 
+        void OnCounterLayoutChanged(object sender, EventArgs e) => RebuildCounters();
         void OnSplit(object sender, EventArgs e) => RebuildCounters();
         void OnReset(object sender, TimerPhase e) => RebuildCounters();
         void OnStart(object sender, EventArgs e) => RebuildCounters();
@@ -108,20 +111,21 @@ namespace LiveSplit.UI.Components
                         
             int currentSplit = State.CurrentSplitIndex;
             if (currentSplit == -1)
-            {
-                // Run hasn't started, show first level/split counters.
-                log.WriteEntry($"CurrentSplitIndex was -1, changing to 0.");
-                currentSplit = 0;
-            }
+                currentSplit = 0;  // Run hasn't started, show first level/split counters.
 
             var currentSplitCounterSettings = CounterSettings[currentSplit]; 
             for (var i = 0; i < CountersInSplit; ++i)
             {
-                var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterSettings[i]);
+                var counterComponent = new SimpleCounterComponent(Settings, currentSplitCounterSettings[i], i);
                 Components.Add(counterComponent);
                 CounterComponents.Add(counterComponent);
                 if (i < CountersInSplit - 1)
-                    Components.Add(new ThinSeparatorComponent());
+                {
+                    if (Settings.UseThinSeparators)
+                        Components.Add(new ThinSeparatorComponent());
+                    else
+                        Components.Add(new SeparatorComponent());
+                }
             }
             log.WriteEntry($"Finished building {CounterComponents.Count} counters for split #{currentSplit}.");
         }

@@ -33,16 +33,23 @@ namespace LiveSplit.UI.Components
             // Set background coloration.
             bool bgColor1IsNotTransparent = Settings.BackgroundColor1.A > 0;
             bool bgColor2IsNotTransparent = Settings.BackgroundColor2.A > 0;
-            if (bgColor1IsNotTransparent || Settings.BackgroundGradient != GradientType.Plain && bgColor2IsNotTransparent)
+            if (bgColor1IsNotTransparent || Settings.BackgroundGradient != ExtendedGradientType.Plain && bgColor2IsNotTransparent)
             {
-                var gradientBrush = new LinearGradientBrush(
-                    new PointF(0, 0),
-                    Settings.BackgroundGradient == GradientType.Horizontal ? new PointF(width, 0) : new PointF(0, height),
-                    Settings.BackgroundColor1,
-                    Settings.BackgroundGradient == GradientType.Plain ? Settings.BackgroundColor1 : Settings.BackgroundColor2
-                );
-
-                g.FillRectangle(gradientBrush, 0, 0, width, height);
+                if (Settings.BackgroundGradient == ExtendedGradientType.Alternating)
+                {
+                    var gradientBrush = new SolidBrush(Index % 2 == 1 ? Settings.BackgroundColor2 : Settings.BackgroundColor1);
+                    g.FillRectangle(gradientBrush, 0, 0, width, height);
+                }
+                else
+                {
+                    var gradientBrush = new LinearGradientBrush(
+                        new PointF(0, 0),
+                        Settings.BackgroundGradient == ExtendedGradientType.Horizontal ? new PointF(width, 0) : new PointF(0, height),
+                        Settings.BackgroundColor1,
+                        Settings.BackgroundGradient == ExtendedGradientType.Plain ? Settings.BackgroundColor1 : Settings.BackgroundColor2
+                    );
+                    g.FillRectangle(gradientBrush, 0, 0, width, height);
+                }
             }
 
             // Set font.
@@ -122,6 +129,7 @@ namespace LiveSplit.UI.Components
         ///     Defaults to <see langword="null"/>, which results in no extraneous text shown after <see cref="Value"/>.
         /// </remarks>
         public int? Target { get; set; }
+        protected int Index { get; }
         protected Font TextFont { get; set; }
         protected SimpleLabel NameLabel = new SimpleLabel();
         protected SimpleLabel ValueLabel = new SimpleLabel();
@@ -148,7 +156,7 @@ namespace LiveSplit.UI.Components
             set => Counter.SetCount(value);
         }
 
-        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings)
+        public SimpleCounterComponent(MultiCounterComponentSettings settings, SimpleCounterSettings counterSettings, int index = 0)
         {
             Settings = settings;
             Name = counterSettings.Name;
@@ -157,6 +165,7 @@ namespace LiveSplit.UI.Components
             Counter.SetIncrement(counterSettings.Increment);
             IncrementValue = counterSettings.Increment;
             Target = counterSettings.Target;
+            Index = index;
         }
 
         /// <summary>
