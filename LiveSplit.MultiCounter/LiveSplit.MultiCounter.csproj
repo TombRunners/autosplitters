@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\Components\IAutoMultiCounter.cs" />
+    <Compile Include="UI\Components\TargetCounter.cs" />
     <Compile Include="UI\Components\TargetCounterComponent.cs" />
     <Compile Include="UI\Components\TargetCounterSettings.cs" />
     <Compile Include="UI\Components\MultiCounterComponent.cs" />

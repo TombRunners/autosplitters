@@ -293,7 +293,7 @@ namespace LiveSplit.UI.Components
             LabelValueColor.Name = "LabelValueColor";
             LabelValueColor.Size = new Size(64, 13);
             LabelValueColor.TabIndex = 12;
-            LabelValueColor.Text = "Value Color:";
+            LabelValueColor.Text = "Count Color:";
 
             // ButtonValueColor
             ButtonValueColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;

@@ -36,7 +36,7 @@
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\CustomFontDialog.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.Core">
-	  <SpecificVersion>False</SpecificVersion>
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.Counter">

@@ -95,7 +95,7 @@ namespace LiveSplit.UI.Components
         }
 
         public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
-        public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Value = value;
+        public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Count = value;
         public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Reset();
 
         void OnCounterLayoutChanged(object sender, EventArgs e) => RebuildCounters();

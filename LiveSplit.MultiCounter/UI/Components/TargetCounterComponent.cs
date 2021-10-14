@@ -28,7 +28,7 @@ namespace LiveSplit.UI.Components
         public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion) => DrawGeneral(g, state, HorizontalWidth, height, LayoutMode.Horizontal);
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion) => DrawGeneral(g, state, width, VerticalHeight, LayoutMode.Vertical);
 
-        private void DrawGeneral(Graphics g, LiveSplitState state, float width, float height, LayoutMode mode)
+        protected void DrawGeneral(Graphics g, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             // Set background coloration.
             bool bgColor1IsNotTransparent = Settings.BackgroundColor1.A > 0;
@@ -55,13 +55,11 @@ namespace LiveSplit.UI.Components
             // Set font.
             TextFont = Settings.OverrideFont ? Settings.TextFont : state.LayoutSettings.TextFont;
 
-            // Calculate Height from Font.
+            // Calculate Height and Padding from Font.
             var textHeight = g.MeasureString("A", TextFont).Height;
             VerticalHeight = 1.2f * textHeight;
             MinimumHeight = MinimumHeight;
-
-            PaddingTop = Math.Max(0, ((VerticalHeight - 0.75f * textHeight) / 2f));
-            PaddingBottom = PaddingTop;
+            PaddingBottom = PaddingTop = Math.Max(0, ((VerticalHeight - 0.75f * textHeight) / 2f));
 
             // Assume most users won't count past four digits (will cause a layout resize in Horizontal Mode).
             float fourCharWidth = g.MeasureString("1000", TextFont).Width;
@@ -81,7 +79,7 @@ namespace LiveSplit.UI.Components
             NameLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
             NameLabel.Draw(g);
 
-            // Set Counter Value Label.
+            // Set Counter Count Label.
             ValueLabel.HorizontalAlignment = mode == LayoutMode.Horizontal ? StringAlignment.Far : StringAlignment.Far;
             ValueLabel.VerticalAlignment = StringAlignment.Center;
             ValueLabel.X = 5;
@@ -95,15 +93,17 @@ namespace LiveSplit.UI.Components
             ValueLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
             ValueLabel.Draw(g);
         }
+        
+        protected readonly GraphicsCache Cache = new GraphicsCache();
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            NameLabel.Text = Name;
-            ValueLabel.Text = Counter.Count.ToString() + ValueLabelSuffix;
+            NameLabel.Text = $"{Name}";
+            ValueLabel.Text = $"{Counter}";
 
             Cache.Restart();
-            Cache["CounterNameLabel"] = NameLabel.Text;
-            Cache["CounterValueLabel"] = ValueLabel.Text;
+            Cache["NameLabel"] = NameLabel.Text;
+            Cache["ValueLabel"] = ValueLabel.Text;
 
             if (invalidator != null && Cache.HasChanged)
                 invalidator.Invalidate(0, 0, width, height);
@@ -111,78 +111,86 @@ namespace LiveSplit.UI.Components
 
         #endregion IComponent implementations
 
-        public ICounter Counter { get; set; }
         public MultiCounterComponentSettings Settings { get; set; }
-        public GraphicsCache Cache { get; set; } = new GraphicsCache();
 
         /// <summary>
-        ///     Amount by which to increment/decrement <see cref="Value"/>.
+        ///     If within a parent component, this can be set to match counter's index within a list.
+        ///     Useful for determining <see cref="ExtendedGradientType.Alternating"/> row coloration.
         /// </summary>
-        public int IncrementValue { get; }
+        public int Index { get; set; }
 
-        /// <summary>
-        ///     Amount at which <see cref="Value"/> should start when initialized or reset.
-        /// </summary>
-        public int InitialValue { get; }
+        private Font TextFont { get; set; }
+        protected readonly SimpleLabel NameLabel = new SimpleLabel();
+        protected readonly SimpleLabel ValueLabel = new SimpleLabel();
 
-        /// <summary>
-        ///     Displayed as the target in text appended to <see cref="Value"/> for <see cref="ValueLabel"/>.
-        /// </summary>
-        /// <remarks>
-        ///     Defaults to <see langword="null"/>, which results in no extraneous text shown after <see cref="Value"/>.
-        /// </remarks>
-        public int? Target { get; set; }
-        
-        protected int Index { get; }
-        protected Font TextFont { get; set; }
-        protected SimpleLabel NameLabel = new SimpleLabel();
-        protected SimpleLabel ValueLabel = new SimpleLabel();
-        /// <summary>
-        ///     The string appended after <see cref="Value"/> for the right-aligned string of the component.
-        /// </summary>
-        protected string ValueLabelSuffix => Target is null ? string.Empty : $" / {Target}";
+        protected readonly TargetCounter Counter;
 
-        /// <summary>
-        ///     The left-aligned string of the counter component.
-        /// </summary>
+        /// <inheritdoc cref="TargetCounter.Name"/>
         public string Name
         {
-            get => NameLabel.Text;
-            set => NameLabel.Text = value;
+            get => Counter.Name;
+            set => Counter.Name = value;
         }
 
-        /// <summary>
-        ///     The value (<see cref="ICounter.Count"/>) used in the right-aligned string of the counter component.
-        /// </summary>
-        public int Value
+        /// <summary><inheritdoc cref="TargetCounter.Count"/></summary>
+        /// <remarks>This value always shows first in the component's right-aligned string.</remarks>
+        public int Count
         {
             get => Counter.Count;
-            set => Counter.SetCount(value);
+            set => Counter.Count = value;
         }
 
+        /// <inheritdoc cref="TargetCounter.IncrementValue"/>
+        public int IncrementValue
+        {
+            get => Counter.IncrementValue; 
+            set => Counter.IncrementValue = value;
+        }
+
+        /// <inheritdoc cref="TargetCounter.Start"/>
+        public int Start 
+        { 
+            get => Counter.Start;
+            set => Counter.Start = value; 
+        }
+
+        /// <summary><inheritdoc cref="TargetCounter.Target"/></summary>
+        /// <remarks>
+        ///     Displayed as the target in text appended to <see cref="Count"/> for <see cref="ValueLabel"/>.
+        ///     Defaults to <see langword="null"/>, which yields no extraneous text after <see cref="Count"/>.
+        /// </remarks>
+        public int? Target
+        { 
+            get => Counter.Target;
+            set => Counter.Target = value; 
+        }
+
+        /// <inheritdoc cref="TargetCounter.InvertTargetCondition"/>
+        public bool InvertTargetCondition
+        {
+            get => Counter.InvertTargetCondition;
+            set => Counter.InvertTargetCondition = value;
+        }
+
+        /// <summary><inheritdoc cref="TargetCounter.TargetReached"/></summary>
+        public bool TargetReached => Counter.TargetReached;
+
+        /// <summary>Initializes the <see cref="TargetCounterComponent"/>.</summary>
+        /// <param name="settings">Settings passed by <see cref="MultiCounterComponent"/></param>
+        /// <param name="counterSettings">Values to apply to the <see cref="Counter"/></param>
+        /// <param name="index">Determines row color if <see cref="MultiCounterComponentSettings.BackgroundGradient"/> is <see cref="ExtendedGradientType.Alternating"/></param>
         public TargetCounterComponent(MultiCounterComponentSettings settings, TargetCounterSettings counterSettings, int index = 0)
         {
             Settings = settings;
-            Name = counterSettings.Name;
-            Counter = new Counter(counterSettings.Start);
-            InitialValue = Counter.Count;
-            Counter.SetIncrement(counterSettings.Increment);
-            IncrementValue = counterSettings.Increment;
-            Target = counterSettings.Target;
+            Counter = new TargetCounter(counterSettings);
             Index = index;
         }
 
-        /// <summary>
-        ///     Decreases <see cref="Value"/> by <see cref="IncrementValue"/>.
-        /// </summary>
+        /// <inheritdoc cref="TargetCounter.Decrement"/>
         public void Decrement() => Counter.Decrement();
-        /// <summary>
-        ///     Increases <see cref="Value"/> by <see cref="IncrementValue"/>.
-        /// </summary>
+        /// <inheritdoc cref="TargetCounter.Increment"/>
         public void Increment() => Counter.Increment();
-        /// <summary>
-        ///     Sets <see cref="Value"/> to <see cref="InitialValue"/>.
-        /// </summary>
+        /// <inheritdoc cref="TargetCounter.Reset"/>
         public void Reset() => Counter.Reset();
 
         public void Dispose() {}
