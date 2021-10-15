@@ -77,7 +77,7 @@ namespace LiveSplit.UI.Components
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
         protected IList<TargetCounterComponent> CounterComponents { get; set; }
-        protected int NumSplits { get; set; }
+        protected int PreviousNumSplits { get; set; }
         protected int CountersInSplit { get; set; }
         protected IDictionary<int, List<TargetCounterSettings>> CounterSettings { get; set;}
         protected MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
@@ -137,9 +137,9 @@ namespace LiveSplit.UI.Components
                 currentSplit = 0;
             var currentSplitCounterSettings = CounterSettings[currentSplit];
             var splitCounterCount = currentSplitCounterSettings.Count;
-            if (NumSplits != CounterSettings.Count || CountersInSplit != splitCounterCount)
+            if (PreviousNumSplits != CounterSettings.Count || CountersInSplit != splitCounterCount)
             {
-                NumSplits = CounterSettings.Count;
+                PreviousNumSplits = CounterSettings.Count;
                 CountersInSplit = splitCounterCount;
                 RebuildCounters();
             }

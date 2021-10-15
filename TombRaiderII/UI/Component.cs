@@ -46,7 +46,7 @@ namespace TR2.UI
         public Component(LiveSplitState state) : base(state)
         {
             CounterSettings = Tr2CounterSettings;
-            NumSplits = CounterSettings.Count;
+            PreviousNumSplits = CounterSettings.Count;
         }
     }
 }

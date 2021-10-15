@@ -24,6 +24,18 @@ namespace LiveSplit.UI.Components
             set => CheckBoxFontOverride.Checked = value;
         }
 
+        public bool ExpandTargetColor
+        {
+            get => CheckBoxExpandTargetColor.Checked;
+            set => CheckBoxExpandTargetColor.Checked = value;
+        }
+
+        public Color TargetColor
+        {
+            get => ButtonTargetColor.BackColor;
+            set => ButtonTargetColor.BackColor = value;
+        }
+
         public Color NameColor
         {
             get => ButtonNameColor.BackColor;
@@ -108,6 +120,8 @@ namespace LiveSplit.UI.Components
             OverrideTextColor = SettingsHelper.ParseBool(element["OverrideTextColor"], false);
             NameColor = SettingsHelper.ParseColor(element["NameColor"], Color.FromArgb(255, 255, 255));
             ValueColor = SettingsHelper.ParseColor(element["ValueColor"], Color.FromArgb(255, 255, 255));
+            TargetColor = SettingsHelper.ParseColor(element["TargetColor"], Color.FromArgb(255, 255, 255));
+            ExpandTargetColor = SettingsHelper.ParseBool(element["ExpandTargetColor"], false);
         }
 
         public XmlNode GetSettings(XmlDocument document)
@@ -126,7 +140,9 @@ namespace LiveSplit.UI.Components
             SettingsHelper.CreateSetting(document, parent, "TextFont", TextFont) ^
             SettingsHelper.CreateSetting(document, parent, "OverrideTextColor", OverrideTextColor) ^
             SettingsHelper.CreateSetting(document, parent, "NameColor", NameColor) ^
-            SettingsHelper.CreateSetting(document, parent, "ValueColor", ValueColor);
+            SettingsHelper.CreateSetting(document, parent, "ValueColor", ValueColor) ^
+            SettingsHelper.CreateSetting(document, parent, "TargetColor", TargetColor) ^
+            SettingsHelper.CreateSetting(document, parent, "ExpandTargetColor", ExpandTargetColor);
 
         private TableLayoutPanel MainTableLayoutPanel;
         private Label LabelBackgroundColor;
@@ -147,6 +163,9 @@ namespace LiveSplit.UI.Components
         private Button ButtonNameColor;
         private Label LabelValueColor;
         private Button ButtonValueColor;
+        private Label LabelTargetColor;
+        private Button ButtonTargetColor;
+        private CheckBox CheckBoxExpandTargetColor;
         private Label AutoMultiCounterVersionLabel;
 
         /// <summary>
@@ -172,30 +191,33 @@ namespace LiveSplit.UI.Components
         private void InitializeComponent()
         {
             MainTableLayoutPanel = new TableLayoutPanel();
-            GroupBoxForegroundColor = new GroupBox();
-            AutoMultiCounterVersionLabel = new Label();
-            TableLayoutPanelForegroundColor = new TableLayoutPanel();
-            CheckBoxForegroundColorOverride = new CheckBox();
-            ButtonNameColor = new Button();
-            LabelNameColor = new Label();
-            LabelValueColor = new Label();
-            ButtonValueColor = new Button();
+            LabelBackgroundColor = new Label();
+            ButtonBackgroundColor1 = new Button();
+            ButtonBackgroundColor2 = new Button();
+            ComboBoxGradientType = new ComboBox();
+            CheckBoxUseThinSeparators = new CheckBox();
             GroupBoxFont = new GroupBox();
             TableLayoutPanelFont = new TableLayoutPanel();
             LabelFontSample = new Label();
             ButtonFont = new Button();
             CheckBoxFontOverride = new CheckBox();
             LabelFont = new Label();
-            CheckBoxUseThinSeparators = new CheckBox();
-            ComboBoxGradientType = new ComboBox();
-            LabelBackgroundColor = new Label();
-            ButtonBackgroundColor1 = new Button();
-            ButtonBackgroundColor2 = new Button();
+            AutoMultiCounterVersionLabel = new Label();
+            GroupBoxForegroundColor = new GroupBox();
+            TableLayoutPanelForegroundColor = new TableLayoutPanel();
+            CheckBoxForegroundColorOverride = new CheckBox();
+            ButtonNameColor = new Button();
+            LabelNameColor = new Label();
+            LabelValueColor = new Label();
+            ButtonValueColor = new Button();
+            LabelTargetColor = new Label();
+            ButtonTargetColor = new Button();
+            CheckBoxExpandTargetColor = new CheckBox();
             MainTableLayoutPanel.SuspendLayout();
-            GroupBoxForegroundColor.SuspendLayout();
-            TableLayoutPanelForegroundColor.SuspendLayout();
             GroupBoxFont.SuspendLayout();
             TableLayoutPanelFont.SuspendLayout();
+            GroupBoxForegroundColor.SuspendLayout();
+            TableLayoutPanelForegroundColor.SuspendLayout();
             SuspendLayout();
 
             // MainTableLayoutPanel
@@ -219,187 +241,10 @@ namespace LiveSplit.UI.Components
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 82F));
-            MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 112F));
+            MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 141F));
             MainTableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
-            MainTableLayoutPanel.Size = new Size(442, 282);
+            MainTableLayoutPanel.Size = new Size(442, 316);
             MainTableLayoutPanel.TabIndex = 0;
-
-            // GroupBoxColor
-            MainTableLayoutPanel.SetColumnSpan(GroupBoxForegroundColor, 4);
-            GroupBoxForegroundColor.Controls.Add(TableLayoutPanelForegroundColor);
-            GroupBoxForegroundColor.Dock = DockStyle.Fill;
-            GroupBoxForegroundColor.Location = new Point(3, 114);
-            GroupBoxForegroundColor.Name = "GroupBoxColor";
-            GroupBoxForegroundColor.Size = new Size(436, 106);
-            GroupBoxForegroundColor.TabIndex = 4;
-            GroupBoxForegroundColor.TabStop = false;
-            GroupBoxForegroundColor.Text = "Counter Colors";
-
-            // TableLayoutPanelColor
-            TableLayoutPanelForegroundColor.ColumnCount = 2;
-            TableLayoutPanelForegroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 145F));
-            TableLayoutPanelForegroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TableLayoutPanelForegroundColor.Controls.Add(CheckBoxForegroundColorOverride, 0, 0);
-            TableLayoutPanelForegroundColor.Controls.Add(ButtonNameColor, 1, 1);
-            TableLayoutPanelForegroundColor.Controls.Add(LabelNameColor, 0, 1);
-            TableLayoutPanelForegroundColor.Controls.Add(LabelValueColor, 0, 2);
-            TableLayoutPanelForegroundColor.Controls.Add(ButtonValueColor, 1, 2);
-            TableLayoutPanelForegroundColor.Dock = DockStyle.Fill;
-            TableLayoutPanelForegroundColor.Location = new Point(3, 16);
-            TableLayoutPanelForegroundColor.Name = "TableLayoutPanelColor";
-            TableLayoutPanelForegroundColor.RowCount = 3;
-            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            TableLayoutPanelForegroundColor.Size = new Size(430, 87);
-            TableLayoutPanelForegroundColor.TabIndex = 0;
-
-            // CheckBoxForegroundColorOverride
-            CheckBoxForegroundColorOverride.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            CheckBoxForegroundColorOverride.AutoSize = true;
-            TableLayoutPanelForegroundColor.SetColumnSpan(CheckBoxForegroundColorOverride, 2);
-            CheckBoxForegroundColorOverride.Location = new Point(7, 6);
-            CheckBoxForegroundColorOverride.Margin = new Padding(7, 3, 3, 3);
-            CheckBoxForegroundColorOverride.Name = "CheckBoxForegroundColorOverride";
-            CheckBoxForegroundColorOverride.Size = new Size(420, 17);
-            CheckBoxForegroundColorOverride.TabIndex = 0;
-            CheckBoxForegroundColorOverride.Text = "Override Layout Settings";
-            CheckBoxForegroundColorOverride.UseVisualStyleBackColor = true;
-            CheckBoxForegroundColorOverride.CheckedChanged += CheckBoxColor_CheckedChanged;
-
-            // ButtonNameColor
-            ButtonNameColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            ButtonNameColor.FlatStyle = FlatStyle.Popup;
-            ButtonNameColor.Location = new Point(148, 32);
-            ButtonNameColor.Name = "ButtonNameColor";
-            ButtonNameColor.Size = new Size(23, 23);
-            ButtonNameColor.TabIndex = 1;
-            ButtonNameColor.UseVisualStyleBackColor = false;
-            ButtonNameColor.Click += ColorButton_Click;
-
-            // LabelNameColor
-            LabelNameColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            LabelNameColor.AutoSize = true;
-            LabelNameColor.Location = new Point(3, 37);
-            LabelNameColor.Name = "LabelNameColor";
-            LabelNameColor.Size = new Size(139, 13);
-            LabelNameColor.TabIndex = 11;
-            LabelNameColor.Text = "Text Color:";
-
-            // LabelValueColor
-            LabelValueColor.Anchor = AnchorStyles.Left;
-            LabelValueColor.AutoSize = true;
-            LabelValueColor.Location = new Point(3, 66);
-            LabelValueColor.Name = "LabelValueColor";
-            LabelValueColor.Size = new Size(64, 13);
-            LabelValueColor.TabIndex = 12;
-            LabelValueColor.Text = "Count Color:";
-
-            // ButtonValueColor
-            ButtonValueColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            ButtonValueColor.FlatStyle = FlatStyle.Popup;
-            ButtonValueColor.Location = new Point(148, 61);
-            ButtonValueColor.Name = "ButtonValueColor";
-            ButtonValueColor.Size = new Size(23, 23);
-            ButtonValueColor.TabIndex = 13;
-            ButtonValueColor.UseVisualStyleBackColor = false;
-            ButtonValueColor.Click += ColorButton_Click;
-
-            // GroupBoxFont
-            MainTableLayoutPanel.SetColumnSpan(GroupBoxFont, 4);
-            GroupBoxFont.Controls.Add(TableLayoutPanelFont);
-            GroupBoxFont.Dock = DockStyle.Fill;
-            GroupBoxFont.Location = new Point(3, 32);
-            GroupBoxFont.Name = "GroupBoxFont";
-            GroupBoxFont.Size = new Size(436, 76);
-            GroupBoxFont.TabIndex = 3;
-            GroupBoxFont.TabStop = false;
-            GroupBoxFont.Text = "Counter Font";
-
-            // TableLayoutPanelFont
-            TableLayoutPanelFont.ColumnCount = 3;
-            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 145F));
-            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 81F));
-            TableLayoutPanelFont.Controls.Add(LabelFontSample, 1, 1);
-            TableLayoutPanelFont.Controls.Add(ButtonFont, 2, 1);
-            TableLayoutPanelFont.Controls.Add(CheckBoxFontOverride, 0, 0);
-            TableLayoutPanelFont.Controls.Add(LabelFont, 0, 1);
-            TableLayoutPanelFont.Dock = DockStyle.Fill;
-            TableLayoutPanelFont.Location = new Point(3, 16);
-            TableLayoutPanelFont.Name = "TableLayoutPanelFont";
-            TableLayoutPanelFont.RowCount = 2;
-            TableLayoutPanelFont.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            TableLayoutPanelFont.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
-            TableLayoutPanelFont.Size = new Size(430, 57);
-            TableLayoutPanelFont.TabIndex = 0;
-
-            // LabelFontSample
-            LabelFontSample.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            LabelFontSample.AutoSize = true;
-            LabelFontSample.Location = new Point(148, 37);
-            LabelFontSample.Name = "LabelFontSample";
-            LabelFontSample.Size = new Size(198, 13);
-            LabelFontSample.TabIndex = 4;
-            LabelFontSample.Text = "Font";
-
-            // ButtonFont
-            ButtonFont.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            ButtonFont.Location = new Point(352, 32);
-            ButtonFont.Name = "ButtonFont";
-            ButtonFont.Size = new Size(75, 23);
-            ButtonFont.TabIndex = 1;
-            ButtonFont.Text = "Choose...";
-            ButtonFont.UseVisualStyleBackColor = true;
-            ButtonFont.Click += FontButton_Click;
-
-            // CheckBoxFontOverride
-            CheckBoxFontOverride.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            CheckBoxFontOverride.AutoSize = true;
-            TableLayoutPanelFont.SetColumnSpan(CheckBoxFontOverride, 2);
-            CheckBoxFontOverride.Location = new Point(7, 6);
-            CheckBoxFontOverride.Margin = new Padding(7, 3, 3, 3);
-            CheckBoxFontOverride.Name = "CheckBoxFontOverride";
-            CheckBoxFontOverride.Size = new Size(339, 17);
-            CheckBoxFontOverride.TabIndex = 0;
-            CheckBoxFontOverride.Text = "Override Layout Settings";
-            CheckBoxFontOverride.UseVisualStyleBackColor = true;
-            CheckBoxFontOverride.CheckedChanged += CheckBoxFont_CheckedChanged;
-
-            // LabelFont
-            LabelFont.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            LabelFont.AutoSize = true;
-            LabelFont.Location = new Point(3, 37);
-            LabelFont.Name = "LabelFont";
-            LabelFont.Size = new Size(139, 13);
-            LabelFont.TabIndex = 5;
-            LabelFont.Text = "Font:";
-
-            // CheckBoxUseThinSeparators
-            CheckBoxUseThinSeparators.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            CheckBoxUseThinSeparators.AutoSize = true;
-            TableLayoutPanelForegroundColor.SetColumnSpan(CheckBoxUseThinSeparators, 2);           
-            CheckBoxUseThinSeparators.Location = new Point(7, 6);
-            CheckBoxUseThinSeparators.Margin = new Padding(7, 3, 3, 3);
-            CheckBoxUseThinSeparators.Name = "CheckBoxUseThinSeparators";
-            CheckBoxUseThinSeparators.Size = new Size(420, 17);
-            CheckBoxUseThinSeparators.TabIndex = 0;
-            CheckBoxUseThinSeparators.Text = "Use Thin Separators";
-            CheckBoxUseThinSeparators.UseVisualStyleBackColor = true;
-            CheckBoxUseThinSeparators.Checked = true;
-            CheckBoxUseThinSeparators.CheckedChanged += CheckBoxUseThinSeparators_CheckedChanged;
-
-            // ComboBoxGradientType
-            ComboBoxGradientType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            ComboBoxGradientType.DropDownStyle = ComboBoxStyle.DropDownList;
-            ComboBoxGradientType.FormattingEnabled = true;
-            ComboBoxGradientType.Items.AddRange(new object[] { "Plain", "Vertical", "Horizontal", "Alternating" });
-            ComboBoxGradientType.SelectedIndex = 0;
-            ComboBoxGradientType.Location = new Point(212, 4);
-            ComboBoxGradientType.Name = "ComboBoxGradientType";
-            ComboBoxGradientType.Size = new Size(227, 21);
-            ComboBoxGradientType.TabIndex = 2;
-            ComboBoxGradientType.SelectedIndexChanged += ComboBoxGradientType_SelectedIndexChanged;
 
             // LabelBackgroundColor
             LabelBackgroundColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -430,14 +275,228 @@ namespace LiveSplit.UI.Components
             ButtonBackgroundColor2.UseVisualStyleBackColor = false;
             ButtonBackgroundColor2.Click += ColorButton_Click;
 
+            // ComboBoxGradientType
+            ComboBoxGradientType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            ComboBoxGradientType.DropDownStyle = ComboBoxStyle.DropDownList;
+            ComboBoxGradientType.FormattingEnabled = true;
+            ComboBoxGradientType.Items.AddRange(new object[] {"Plain", "Vertical", "Horizontal", "Alternating"});
+            ComboBoxGradientType.Location = new Point(212, 4);
+            ComboBoxGradientType.Name = "ComboBoxGradientType";
+            ComboBoxGradientType.Size = new Size(227, 21);
+            ComboBoxGradientType.TabIndex = 2;
+            ComboBoxGradientType.SelectedIndexChanged += ComboBoxGradientType_SelectedIndexChanged;
+
+            // CheckBoxUseThinSeparators
+            CheckBoxUseThinSeparators.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            CheckBoxUseThinSeparators.AutoSize = true;
+            CheckBoxUseThinSeparators.Checked = true;
+            CheckBoxUseThinSeparators.CheckState = CheckState.Checked;
+            MainTableLayoutPanel.SetColumnSpan(CheckBoxUseThinSeparators, 2);
+            CheckBoxUseThinSeparators.Location = new Point(7, 35);
+            CheckBoxUseThinSeparators.Margin = new Padding(7, 3, 3, 3);
+            CheckBoxUseThinSeparators.Name = "CheckBoxUseThinSeparators";
+            CheckBoxUseThinSeparators.Size = new Size(170, 17);
+            CheckBoxUseThinSeparators.TabIndex = 0;
+            CheckBoxUseThinSeparators.Text = "Use Thin Separators";
+            CheckBoxUseThinSeparators.UseVisualStyleBackColor = true;
+            CheckBoxUseThinSeparators.CheckedChanged += CheckBoxUseThinSeparators_CheckedChanged;
+
+            // GroupBoxFont
+            MainTableLayoutPanel.SetColumnSpan(GroupBoxFont, 4);
+            GroupBoxFont.Controls.Add(TableLayoutPanelFont);
+            GroupBoxFont.Dock = DockStyle.Fill;
+            GroupBoxFont.Location = new Point(3, 61);
+            GroupBoxFont.Name = "GroupBoxFont";
+            GroupBoxFont.Size = new Size(436, 76);
+            GroupBoxFont.TabIndex = 3;
+            GroupBoxFont.TabStop = false;
+            GroupBoxFont.Text = "Counter Font";
+            
+            // TableLayoutPanelFont
+            TableLayoutPanelFont.ColumnCount = 3;
+            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 145F));
+            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TableLayoutPanelFont.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 81F));
+            TableLayoutPanelFont.Controls.Add(LabelFontSample, 1, 1);
+            TableLayoutPanelFont.Controls.Add(ButtonFont, 2, 1);
+            TableLayoutPanelFont.Controls.Add(CheckBoxFontOverride, 0, 0);
+            TableLayoutPanelFont.Controls.Add(LabelFont, 0, 1);
+            TableLayoutPanelFont.Dock = DockStyle.Fill;
+            TableLayoutPanelFont.Location = new Point(3, 16);
+            TableLayoutPanelFont.Name = "TableLayoutPanelFont";
+            TableLayoutPanelFont.RowCount = 2;
+            TableLayoutPanelFont.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelFont.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelFont.Size = new Size(430, 57);
+            TableLayoutPanelFont.TabIndex = 0;
+
+            // LabelFontSample
+            LabelFontSample.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            LabelFontSample.AutoSize = true;
+            LabelFontSample.Location = new Point(148, 37);
+            LabelFontSample.Name = "LabelFontSample";
+            LabelFontSample.Size = new Size(198, 13);
+            LabelFontSample.TabIndex = 4;
+            LabelFontSample.Text = "Font";
+            
+            // ButtonFont
+            ButtonFont.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            ButtonFont.Location = new Point(352, 32);
+            ButtonFont.Name = "ButtonFont";
+            ButtonFont.Size = new Size(75, 23);
+            ButtonFont.TabIndex = 1;
+            ButtonFont.Text = "Choose...";
+            ButtonFont.UseVisualStyleBackColor = true;
+            ButtonFont.Click += FontButton_Click;
+
+            // CheckBoxFontOverride
+            CheckBoxFontOverride.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            CheckBoxFontOverride.AutoSize = true;
+            TableLayoutPanelFont.SetColumnSpan(CheckBoxFontOverride, 2);
+            CheckBoxFontOverride.Location = new Point(7, 6);
+            CheckBoxFontOverride.Margin = new Padding(7, 3, 3, 3);
+            CheckBoxFontOverride.Name = "CheckBoxFontOverride";
+            CheckBoxFontOverride.Size = new Size(339, 17);
+            CheckBoxFontOverride.TabIndex = 0;
+            CheckBoxFontOverride.Text = "Override Layout Settings";
+            CheckBoxFontOverride.UseVisualStyleBackColor = true;
+            CheckBoxFontOverride.CheckedChanged += CheckBoxFontOverride_CheckedChanged;
+
+            // LabelFont
+            LabelFont.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            LabelFont.AutoSize = true;
+            LabelFont.Location = new Point(3, 37);
+            LabelFont.Name = "LabelFont";
+            LabelFont.Size = new Size(139, 13);
+            LabelFont.TabIndex = 5;
+            LabelFont.Text = "Font:";
+
             // AutoMultiCounterVersionLabel
-            TableLayoutPanelFont.SetColumnSpan(AutoMultiCounterVersionLabel, 4);
             AutoMultiCounterVersionLabel.AutoSize = true;
-            AutoMultiCounterVersionLabel.Location = new Point(3, 223);
-            AutoMultiCounterVersionLabel.Name = "AutosplitterVersionLabel";
-            AutoMultiCounterVersionLabel.Size = new Size(35, 30);
+            MainTableLayoutPanel.SetColumnSpan(AutoMultiCounterVersionLabel, 4);
+            AutoMultiCounterVersionLabel.Location = new Point(3, 281);
+            AutoMultiCounterVersionLabel.Name = "AutoMultiCounterVersionLabel";
+            AutoMultiCounterVersionLabel.Size = new Size(138, 13);
             AutoMultiCounterVersionLabel.TabIndex = 40;
-            AutoMultiCounterVersionLabel.Text = "Auto Multi-Counter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+            AutoMultiCounterVersionLabel.Text = "Auto Multi-Counter Version: ";
+
+            // GroupBoxForegroundColor
+            MainTableLayoutPanel.SetColumnSpan(GroupBoxForegroundColor, 4);
+            GroupBoxForegroundColor.Controls.Add(TableLayoutPanelForegroundColor);
+            GroupBoxForegroundColor.Dock = DockStyle.Fill;
+            GroupBoxForegroundColor.Location = new Point(3, 143);
+            GroupBoxForegroundColor.Name = "GroupBoxForegroundColor";
+            GroupBoxForegroundColor.Size = new Size(436, 135);
+            GroupBoxForegroundColor.TabIndex = 4;
+            GroupBoxForegroundColor.TabStop = false;
+            GroupBoxForegroundColor.Text = "Counter Colors";
+
+            // TableLayoutPanelForegroundColor
+            TableLayoutPanelForegroundColor.ColumnCount = 3;
+            TableLayoutPanelForegroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 145F));
+            TableLayoutPanelForegroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelForegroundColor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            TableLayoutPanelForegroundColor.Controls.Add(CheckBoxForegroundColorOverride, 0, 0);
+            TableLayoutPanelForegroundColor.Controls.Add(ButtonNameColor, 1, 1);
+            TableLayoutPanelForegroundColor.Controls.Add(LabelNameColor, 0, 1);
+            TableLayoutPanelForegroundColor.Controls.Add(LabelValueColor, 0, 2);
+            TableLayoutPanelForegroundColor.Controls.Add(ButtonValueColor, 1, 2);
+            TableLayoutPanelForegroundColor.Controls.Add(LabelTargetColor, 0, 3);
+            TableLayoutPanelForegroundColor.Controls.Add(ButtonTargetColor, 1, 3);
+            TableLayoutPanelForegroundColor.Controls.Add(CheckBoxExpandTargetColor, 2, 3);
+            TableLayoutPanelForegroundColor.Dock = DockStyle.Fill;
+            TableLayoutPanelForegroundColor.Location = new Point(3, 16);
+            TableLayoutPanelForegroundColor.Name = "TableLayoutPanelForegroundColor";
+            TableLayoutPanelForegroundColor.RowCount = 4;
+            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 29F));
+            TableLayoutPanelForegroundColor.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            TableLayoutPanelForegroundColor.Size = new Size(430, 116);
+            TableLayoutPanelForegroundColor.TabIndex = 0;
+
+            // CheckBoxForegroundColorOverride
+            CheckBoxForegroundColorOverride.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            CheckBoxForegroundColorOverride.AutoSize = true;
+            TableLayoutPanelForegroundColor.SetColumnSpan(CheckBoxForegroundColorOverride, 2);
+            CheckBoxForegroundColorOverride.Location = new Point(7, 6);
+            CheckBoxForegroundColorOverride.Margin = new Padding(7, 3, 3, 3);
+            CheckBoxForegroundColorOverride.Name = "CheckBoxForegroundColorOverride";
+            CheckBoxForegroundColorOverride.Size = new Size(420, 17);
+            CheckBoxForegroundColorOverride.TabIndex = 0;
+            CheckBoxForegroundColorOverride.Text = "Override Layout Settings";
+            CheckBoxForegroundColorOverride.UseVisualStyleBackColor = true;
+            CheckBoxForegroundColorOverride.CheckedChanged += CheckBoxCheckBoxForegroundColorOverride_CheckedChanged;
+
+            // ButtonNameColor
+            ButtonNameColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            ButtonNameColor.FlatStyle = FlatStyle.Popup;
+            ButtonNameColor.Location = new Point(148, 32);
+            ButtonNameColor.Name = "ButtonNameColor";
+            ButtonNameColor.Size = new Size(23, 23);
+            ButtonNameColor.TabIndex = 1;
+            ButtonNameColor.UseVisualStyleBackColor = false;
+            ButtonNameColor.Click += ColorButton_Click;
+
+            // LabelNameColor
+            LabelNameColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            LabelNameColor.AutoSize = true;
+            LabelNameColor.Location = new Point(3, 37);
+            LabelNameColor.Name = "LabelNameColor";
+            LabelNameColor.Size = new Size(139, 13);
+            LabelNameColor.TabIndex = 11;
+            LabelNameColor.Text = "Text Color:";
+
+            // LabelValueColor
+            LabelValueColor.Anchor = AnchorStyles.Left;
+            LabelValueColor.AutoSize = true;
+            LabelValueColor.Location = new Point(3, 66);
+            LabelValueColor.Name = "LabelValueColor";
+            LabelValueColor.Size = new Size(65, 13);
+            LabelValueColor.TabIndex = 12;
+            LabelValueColor.Text = "Count Color:";
+
+            // ButtonValueColor
+            ButtonValueColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            ButtonValueColor.FlatStyle = FlatStyle.Popup;
+            ButtonValueColor.Location = new Point(148, 61);
+            ButtonValueColor.Name = "ButtonValueColor";
+            ButtonValueColor.Size = new Size(23, 23);
+            ButtonValueColor.TabIndex = 13;
+            ButtonValueColor.UseVisualStyleBackColor = false;
+            ButtonValueColor.Click += ColorButton_Click;
+
+            // LabelTargetColor
+            LabelTargetColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            LabelTargetColor.AutoSize = true;
+            LabelTargetColor.Location = new Point(3, 95);
+            LabelTargetColor.Name = "LabelTargetColor";
+            LabelTargetColor.Size = new Size(139, 13);
+            LabelTargetColor.TabIndex = 11;
+            LabelTargetColor.Text = "Target Reached Color:";
+
+            // ButtonTargetColor
+            ButtonTargetColor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            ButtonTargetColor.FlatStyle = FlatStyle.Popup;
+            ButtonTargetColor.Location = new Point(148, 90);
+            ButtonTargetColor.Name = "ButtonTargetColor";
+            ButtonTargetColor.Size = new Size(23, 23);
+            ButtonTargetColor.TabIndex = 1;
+            ButtonTargetColor.UseVisualStyleBackColor = false;
+            ButtonTargetColor.Click += ColorButton_Click;
+
+            // CheckBoxExpandTargetColor
+            CheckBoxExpandTargetColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            CheckBoxExpandTargetColor.AutoSize = true;
+            CheckBoxExpandTargetColor.Location = new Point(7, 119);
+            CheckBoxExpandTargetColor.Margin = new Padding(7, 3, 3, 3);
+            CheckBoxExpandTargetColor.Name = "CheckBoxExpandTargetColor";
+            CheckBoxExpandTargetColor.Size = new Size(200, 14);
+            CheckBoxExpandTargetColor.TabIndex = 0;
+            CheckBoxExpandTargetColor.Text = "Also apply to name";
+            CheckBoxExpandTargetColor.UseVisualStyleBackColor = true;
+            CheckBoxExpandTargetColor.CheckedChanged += CheckBoxExpandTargetColor_CheckedChanged;
 
             // MultiCounterComponentSettings
             AutoScaleDimensions = new SizeF(6F, 13F);
@@ -445,15 +504,15 @@ namespace LiveSplit.UI.Components
             Controls.Add(MainTableLayoutPanel);
             Name = "MultiCounterComponentSettings";
             Padding = new Padding(7);
-            Size = new Size(456, 300);
+            Size = new Size(456, 330);
             MainTableLayoutPanel.ResumeLayout(false);
             MainTableLayoutPanel.PerformLayout();
-            GroupBoxForegroundColor.ResumeLayout(false);
-            TableLayoutPanelForegroundColor.ResumeLayout(false);
-            TableLayoutPanelForegroundColor.PerformLayout();
             GroupBoxFont.ResumeLayout(false);
             TableLayoutPanelFont.ResumeLayout(false);
             TableLayoutPanelFont.PerformLayout();
+            GroupBoxForegroundColor.ResumeLayout(false);
+            TableLayoutPanelForegroundColor.ResumeLayout(false);
+            TableLayoutPanelForegroundColor.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -468,7 +527,7 @@ namespace LiveSplit.UI.Components
             BackgroundGradient = (ExtendedGradientType)Enum.Parse(typeof(ExtendedGradientType), gradientText);
             ButtonBackgroundColor1.Visible = gradientText != "Plain";
         }
-        
+
         private void CheckBoxUseThinSeparators_CheckedChanged(object sender, EventArgs e)
         {
             UseThinSeparators = CheckBoxUseThinSeparators.Checked;
@@ -483,11 +542,14 @@ namespace LiveSplit.UI.Components
             LabelFontSample.Text = TextFontString;
         }
 
-        private void CheckBoxFont_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxFontOverride_CheckedChanged(object sender, EventArgs e)
             => LabelFont.Enabled = LabelFontSample.Enabled = ButtonFont.Enabled = CheckBoxFontOverride.Checked;
 
-        private void CheckBoxColor_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxCheckBoxForegroundColorOverride_CheckedChanged(object sender, EventArgs e)
             => LabelNameColor.Enabled = ButtonNameColor.Enabled = LabelValueColor.Enabled = ButtonValueColor.Enabled = CheckBoxForegroundColorOverride.Checked;
+
+        private void CheckBoxExpandTargetColor_CheckedChanged(object sender, EventArgs e)
+            => ExpandTargetColor = CheckBoxExpandTargetColor.Checked;
 
         private void CounterSettings_Load(object sender, EventArgs e)
         {
@@ -498,10 +560,10 @@ namespace LiveSplit.UI.Components
             ComboBoxGradientType.SelectedItem = BackgroundGradient.ToString();
             // Force enable/disable of foreground color elements.
             CheckBoxForegroundColorOverride.Checked = OverrideTextColor;
-            CheckBoxColor_CheckedChanged(null, null);
+            CheckBoxCheckBoxForegroundColorOverride_CheckedChanged(null, null);
             // Force enable/disable of font elements.
             CheckBoxFontOverride.Checked = OverrideFont;
-            CheckBoxFont_CheckedChanged(null, null);
+            CheckBoxFontOverride_CheckedChanged(null, null);
         }
     }
 }

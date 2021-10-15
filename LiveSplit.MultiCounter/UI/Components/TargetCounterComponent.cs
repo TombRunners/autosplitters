@@ -73,7 +73,12 @@ namespace LiveSplit.UI.Components
             NameLabel.Width = (width - fourCharWidth - 5);
             NameLabel.Height = height;
             NameLabel.Font = TextFont;
-            NameLabel.Brush = new SolidBrush(Settings.OverrideTextColor ? Settings.NameColor : state.LayoutSettings.TextColor);
+            Color nameBrushColor;
+            if (!Settings.OverrideTextColor)
+                nameBrushColor = state.LayoutSettings.TextColor;
+            else
+                nameBrushColor = TargetReached && Settings.ExpandTargetColor ? Settings.TargetColor : Settings.NameColor;
+            NameLabel.Brush = new SolidBrush(nameBrushColor);
             NameLabel.HasShadow = state.LayoutSettings.DropShadows;
             NameLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
             NameLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
@@ -87,7 +92,12 @@ namespace LiveSplit.UI.Components
             ValueLabel.Width = (width - 10);
             ValueLabel.Height = height;
             ValueLabel.Font = TextFont;
-            ValueLabel.Brush = new SolidBrush(Settings.OverrideTextColor ? Settings.ValueColor : state.LayoutSettings.TextColor);
+            Color valueBrushColor;
+            if (!Settings.OverrideTextColor)
+                valueBrushColor = TargetReached ? state.LayoutSettings.AheadGainingTimeColor : state.LayoutSettings.TextColor;
+            else
+                valueBrushColor = TargetReached ? Settings.TargetColor : Settings.ValueColor;
+            ValueLabel.Brush = new SolidBrush(valueBrushColor);
             ValueLabel.HasShadow = state.LayoutSettings.DropShadows;
             ValueLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
             ValueLabel.OutlineColor = state.LayoutSettings.TextOutlineColor;
