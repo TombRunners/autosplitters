@@ -6,37 +6,37 @@ namespace TR2.UI
 {
     class Component : MultiCounterComponent
     {
-        private readonly Dictionary<int, List<TargetCounterSettings>> Tr2CounterSettings = new Dictionary<int, List<TargetCounterSettings>>
+        private readonly Dictionary<int, List<NamedTargetCounterSettings>> Tr2CounterSettings = new Dictionary<int, List<NamedTargetCounterSettings>>
         {
             // Level 1: Great Wall
             {
                 0, 
-                new List<TargetCounterSettings>
+                new List<NamedTargetCounterSettings>
                 {
-                    new TargetCounterSettings("Key", target: 2),
-                    new TargetCounterSettings("Flare", target: 1),
-                    new TargetCounterSettings("Small Med", target: 2),
-                    new TargetCounterSettings("Large Med", target: 1),
-                    new TargetCounterSettings("Shotgun", target: 1),
-                    new TargetCounterSettings("Autos", target: 1),
-                    new TargetCounterSettings("Grenades", target: 3),
-                    new TargetCounterSettings("Secrets", target: 3)
+                    new NamedTargetCounterSettings("Key", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Flare", target: 1, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Small Med", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Large Med", target: 1, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Shotgun", target: 1, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Autos", target: 1, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Grenades", target: 0, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Secrets", target: 3, targetCondition: TargetCondition.GE)
                 }
             },
             // Level 2: Venice
             { 
                 1,
-                new List<TargetCounterSettings>()
+                new List<NamedTargetCounterSettings>()
                 {
-                    new TargetCounterSettings("Key", target: 3),
-                    new TargetCounterSettings("Flare", target: 2),
-                    new TargetCounterSettings("Small Med", target: 4),
-                    new TargetCounterSettings("Large Med", target: 2),
-                    new TargetCounterSettings("Shotgun", target: 3),
-                    new TargetCounterSettings("Autos", target: 9),
-                    new TargetCounterSettings("Uzi", target: 2),
-                    new TargetCounterSettings("M16", target: 2),
-                    new TargetCounterSettings("Secrets", target: 3)
+                    new NamedTargetCounterSettings("Key", target: 3, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Flare", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Small Med", target: 4, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Large Med", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Shotgun", target: 3, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Autos", target: 9, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Uzi", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("M16", target: 2, targetCondition: TargetCondition.GE),
+                    new NamedTargetCounterSettings("Secrets", target: 3, targetCondition: TargetCondition.GE)
                 }
             }
         };

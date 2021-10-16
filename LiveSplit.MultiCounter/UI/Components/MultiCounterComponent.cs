@@ -54,6 +54,10 @@ namespace LiveSplit.UI.Components
         {
             if (state.CurrentPhase == TimerPhase.Running || state.CurrentPhase == TimerPhase.Paused)
             {
+                var countersToDecrement = AutoMultiCounter.ShouldDecrement(state);
+                foreach (int index in countersToDecrement)
+                    DecrementCounter(index);
+
                 var countersToIncrement = AutoMultiCounter.ShouldIncrement(state);
                 foreach(int index in countersToIncrement)
                     IncrementCounter(index);
@@ -76,10 +80,10 @@ namespace LiveSplit.UI.Components
         IAutoMultiCounter AutoMultiCounter { get; set; }
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
-        protected IList<TargetCounterComponent> CounterComponents { get; set; }
+        protected IList<NamedTargetCounterComponent> CounterComponents { get; set; }
         protected int PreviousNumSplits { get; set; }
         protected int CountersInSplit { get; set; }
-        protected IDictionary<int, List<TargetCounterSettings>> CounterSettings { get; set;}
+        protected IDictionary<int, List<NamedTargetCounterSettings>> CounterSettings { get; set;}
         protected MultiCounterComponentSettings Settings { get; set; } = new MultiCounterComponentSettings();
         protected int ScrollOffset { get; set; }
         protected LiveSplitState State { get; set; }
@@ -94,9 +98,10 @@ namespace LiveSplit.UI.Components
             Settings.CounterLayoutChanged += OnCounterLayoutChanged;
         }
 
-        public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Increment();
-        public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Count = value;
-        public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Reset();
+        public void DecrementCounter(int counterIndex) => CounterComponents[counterIndex].Counter.Decrement();
+        public void IncrementCounter(int counterIndex) => CounterComponents[counterIndex].Counter.Increment();
+        public void SetCounter(int counterIndex, int value) => CounterComponents[counterIndex].Counter.SetCount(value);
+        public void ResetCounter(int counterIndex) => CounterComponents[counterIndex].Counter.Reset();
 
         void OnCounterLayoutChanged(object sender, EventArgs e) => RebuildCounters();
         void OnSplit(object sender, EventArgs e) => RebuildCounters();
@@ -106,7 +111,7 @@ namespace LiveSplit.UI.Components
         public void RebuildCounters()
         {
             Components = new List<IComponent>();
-            CounterComponents = new List<TargetCounterComponent>();
+            CounterComponents = new List<NamedTargetCounterComponent>();
             InternalComponent.VisibleComponents = Components;
                         
             int currentSplit = State.CurrentSplitIndex;
@@ -116,7 +121,7 @@ namespace LiveSplit.UI.Components
             var currentSplitCounterSettings = CounterSettings[currentSplit]; 
             for (var i = 0; i < CountersInSplit; ++i)
             {
-                var counterComponent = new TargetCounterComponent(Settings, currentSplitCounterSettings[i], i);
+                var counterComponent = new NamedTargetCounterComponent(Settings, currentSplitCounterSettings[i], i);
                 Components.Add(counterComponent);
                 CounterComponents.Add(counterComponent);
                 if (i < CountersInSplit - 1)

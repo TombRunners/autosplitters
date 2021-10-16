@@ -62,9 +62,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UI\Components\IAutoMultiCounter.cs" />
-    <Compile Include="UI\Components\TargetCounter.cs" />
-    <Compile Include="UI\Components\TargetCounterComponent.cs" />
-    <Compile Include="UI\Components\TargetCounterSettings.cs" />
+    <Compile Include="UI\Components\ICounterSettings.cs" />
+    <Compile Include="UI\Components\ITargetCounter.cs" />
+    <Compile Include="UI\Components\TargetCondition.cs" />
+    <Compile Include="UI\Components\NamedTargetCounter.cs" />
+    <Compile Include="UI\Components\NamedTargetCounterComponent.cs" />
+    <Compile Include="UI\Components\NamedTargetCounterSettings.cs" />
     <Compile Include="UI\Components\MultiCounterComponent.cs" />
     <Compile Include="UI\Components\MultiCounterComponentSettings.cs">
       <SubType>UserControl</SubType>

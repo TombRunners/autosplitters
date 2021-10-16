@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace LiveSplit.UI.Components
 {
-    public class TargetCounterComponent : IComponent
+    public class NamedTargetCounterComponent : IComponent
     {
         #region IComponent implementations
 
@@ -77,7 +77,7 @@ namespace LiveSplit.UI.Components
             if (!Settings.OverrideTextColor)
                 nameBrushColor = state.LayoutSettings.TextColor;
             else
-                nameBrushColor = TargetReached && Settings.ExpandTargetColor ? Settings.TargetColor : Settings.NameColor;
+                nameBrushColor = Counter.TargetReached && Settings.ExpandTargetColor ? Settings.TargetColor : Settings.NameColor;
             NameLabel.Brush = new SolidBrush(nameBrushColor);
             NameLabel.HasShadow = state.LayoutSettings.DropShadows;
             NameLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
@@ -94,9 +94,9 @@ namespace LiveSplit.UI.Components
             ValueLabel.Font = TextFont;
             Color valueBrushColor;
             if (!Settings.OverrideTextColor)
-                valueBrushColor = TargetReached ? state.LayoutSettings.AheadGainingTimeColor : state.LayoutSettings.TextColor;
+                valueBrushColor = Counter.TargetReached ? state.LayoutSettings.AheadGainingTimeColor : state.LayoutSettings.TextColor;
             else
-                valueBrushColor = TargetReached ? Settings.TargetColor : Settings.ValueColor;
+                valueBrushColor = Counter.TargetReached ? Settings.TargetColor : Settings.ValueColor;
             ValueLabel.Brush = new SolidBrush(valueBrushColor);
             ValueLabel.HasShadow = state.LayoutSettings.DropShadows;
             ValueLabel.ShadowColor = state.LayoutSettings.ShadowsColor;
@@ -108,7 +108,7 @@ namespace LiveSplit.UI.Components
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            NameLabel.Text = $"{Name}";
+            NameLabel.Text = $"{Counter.Name}";
             ValueLabel.Text = $"{Counter}";
 
             Cache.Restart();
@@ -123,6 +123,8 @@ namespace LiveSplit.UI.Components
 
         public MultiCounterComponentSettings Settings { get; set; }
 
+        public readonly INamedTargetCounter Counter;
+
         /// <summary>
         ///     If within a parent component, this can be set to match counter's index within a list.
         ///     Useful for determining <see cref="ExtendedGradientType.Alternating"/> row coloration.
@@ -133,75 +135,16 @@ namespace LiveSplit.UI.Components
         protected readonly SimpleLabel NameLabel = new SimpleLabel();
         protected readonly SimpleLabel ValueLabel = new SimpleLabel();
 
-        protected readonly TargetCounter Counter;
-
-        /// <inheritdoc cref="TargetCounter.Name"/>
-        public string Name
-        {
-            get => Counter.Name;
-            set => Counter.Name = value;
-        }
-
-        /// <summary><inheritdoc cref="TargetCounter.Count"/></summary>
-        /// <remarks>This value always shows first in the component's right-aligned string.</remarks>
-        public int Count
-        {
-            get => Counter.Count;
-            set => Counter.Count = value;
-        }
-
-        /// <inheritdoc cref="TargetCounter.IncrementValue"/>
-        public int IncrementValue
-        {
-            get => Counter.IncrementValue; 
-            set => Counter.IncrementValue = value;
-        }
-
-        /// <inheritdoc cref="TargetCounter.Start"/>
-        public int Start 
-        { 
-            get => Counter.Start;
-            set => Counter.Start = value; 
-        }
-
-        /// <summary><inheritdoc cref="TargetCounter.Target"/></summary>
-        /// <remarks>
-        ///     Displayed as the target in text appended to <see cref="Count"/> for <see cref="ValueLabel"/>.
-        ///     Defaults to <see langword="null"/>, which yields no extraneous text after <see cref="Count"/>.
-        /// </remarks>
-        public int? Target
-        { 
-            get => Counter.Target;
-            set => Counter.Target = value; 
-        }
-
-        /// <inheritdoc cref="TargetCounter.InvertTargetCondition"/>
-        public bool InvertTargetCondition
-        {
-            get => Counter.InvertTargetCondition;
-            set => Counter.InvertTargetCondition = value;
-        }
-
-        /// <summary><inheritdoc cref="TargetCounter.TargetReached"/></summary>
-        public bool TargetReached => Counter.TargetReached;
-
-        /// <summary>Initializes the <see cref="TargetCounterComponent"/>.</summary>
+        /// <summary>Initializes the <see cref="NamedTargetCounterComponent"/>.</summary>
         /// <param name="settings">Settings passed by <see cref="MultiCounterComponent"/></param>
         /// <param name="counterSettings">Values to apply to the <see cref="Counter"/></param>
         /// <param name="index">Determines row color if <see cref="MultiCounterComponentSettings.BackgroundGradient"/> is <see cref="ExtendedGradientType.Alternating"/></param>
-        public TargetCounterComponent(MultiCounterComponentSettings settings, TargetCounterSettings counterSettings, int index = 0)
+        public NamedTargetCounterComponent(MultiCounterComponentSettings settings, NamedTargetCounterSettings counterSettings, int index = 0)
         {
             Settings = settings;
-            Counter = new TargetCounter(counterSettings);
+            Counter = new NamedTargetCounter(counterSettings);
             Index = index;
         }
-
-        /// <inheritdoc cref="TargetCounter.Decrement"/>
-        public void Decrement() => Counter.Decrement();
-        /// <inheritdoc cref="TargetCounter.Increment"/>
-        public void Increment() => Counter.Increment();
-        /// <inheritdoc cref="TargetCounter.Reset"/>
-        public void Reset() => Counter.Reset();
 
         public void Dispose() {}
     }
