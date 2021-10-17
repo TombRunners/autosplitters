@@ -40,7 +40,7 @@ namespace TR1
     /// <summary>
     ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
     /// </summary>
-    internal class Autosplitter : IAutoSplitter
+    internal class Autosplitter : IAutoSplitter, IDisposable
     {
         private const uint NumberOfLevels = 15;
         
@@ -49,6 +49,9 @@ namespace TR1
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
+
+        /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
+        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -209,6 +212,12 @@ namespace TR1
         {
             _fullGameFarthestLevel = Level.Manor;
             _fullGameLevelTimes = new uint[NumberOfLevels];
+        }
+
+        public void Dispose()
+        {
+            GameMemory.OnGameFound -= Settings.SetGameVersion;
+            GameMemory = null;
         }
     }
 }

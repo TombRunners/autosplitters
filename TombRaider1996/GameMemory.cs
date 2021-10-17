@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
 namespace TR1
@@ -124,9 +125,12 @@ namespace TR1
     /// </summary>
     internal class GameMemory
     {
-        private Process _game;
+        public Process Game;
         public GameData Data;
         private GameVersion _version;
+
+        public delegate void GameFoundDelegate(GameVersion? version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -136,24 +140,34 @@ namespace TR1
         /// </returns>
         public bool Update()
         {
-            if (_game == null || _game.HasExited)
+            try
             {
-                if (!SetGameProcessAndVersion()) 
-                    return false;
-                
-                Data = new GameData(_version);
+                if (Game == null || Game.HasExited)
+                {
+                    if (!SetGameProcessAndVersion())
+                        return false;
+
+                    Data = new GameData(_version);
+                    OnGameFound.Invoke(_version);
+                    Game.EnableRaisingEvents = true;
+                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
+                    return true;
+                }
+
+                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
+                Data.LevelComplete.Update(Game);
+                Data.Level.Update(Game);
+                Data.LevelTime.Update(Game);
+                Data.PickedPassportFunction.Update(Game);
+                Data.DemoTimer.Update(Game);
+                Data.Health.Update(Game);
+
                 return true;
             }
-
-            // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.LevelComplete.Update(_game);
-            Data.Level.Update(_game);
-            Data.LevelTime.Update(_game);
-            Data.PickedPassportFunction.Update(_game);
-            Data.DemoTimer.Update(_game);
-            Data.Health.Update(_game);
-
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -176,17 +190,17 @@ namespace TR1
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                _game = atiProcesses[0];
+                Game = atiProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                _game = dosProcesses[0];
+                Game = dosProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeDOS)
             {
-                _game = dosProcesses[0];
+                Game = dosProcesses[0];
                 _version = GameVersion.DOSBox;
             }
             else

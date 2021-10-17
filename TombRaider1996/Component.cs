@@ -17,7 +17,8 @@ namespace TR1
     /// </remarks>
     internal class Component : AutoSplitComponent
     {
-        private Autosplitter _splitter;
+        private readonly Autosplitter _splitter;
+        private readonly LiveSplitState _state;
 
         /// <summary>
         ///     Initializes the component.
@@ -27,6 +28,8 @@ namespace TR1
         public Component(Autosplitter autoSplitter, LiveSplitState state) : base(autoSplitter, state)
         {
             _splitter = autoSplitter;
+            _state = state;
+            _state.OnReset += (s, tp) => _splitter?.ResetValues();
         }
 
         /// <inheritdoc/>
@@ -83,8 +86,8 @@ namespace TR1
         /// <inheritdoc/>
         public override void Dispose()
         {
-            _splitter.GameMemory = null;
-            _splitter = null;
+            _state.OnReset -= (s, tp) => _splitter?.ResetValues();
+            _splitter.Dispose();
         }
 
         /// <inheritdoc/>
@@ -106,13 +109,8 @@ namespace TR1
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (!_splitter.GameMemory.Update()) 
-                return;
-
-            if (state.CurrentPhase == TimerPhase.NotRunning && _splitter.Settings.FullGame)
-                _splitter.ResetValues();
-
-            base.Update(invalidator, state, width, height, mode);
+            if (_splitter.GameMemory.Update()) 
+                base.Update(invalidator, state, width, height, mode);
         }
     }
 }

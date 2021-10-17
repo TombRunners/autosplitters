@@ -129,7 +129,7 @@ namespace TR2
     {
         public Process Game;
         public GameData Data;
-        public GameVersion Version;
+        private GameVersion Version;
 
         public delegate void GameFoundDelegate(GameVersion? version);
         public GameFoundDelegate OnGameFound;

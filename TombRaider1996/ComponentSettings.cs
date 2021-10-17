@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TR1
@@ -9,6 +10,8 @@ namespace TR1
         public RadioButton ILModeButton;
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
+        public Label GameVersionLabel;
+        public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun = false;
 
@@ -20,6 +23,8 @@ namespace TR1
             ILModeButton = new RadioButton();
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
+            GameVersionLabel = new Label();
+            AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
             SuspendLayout();
 
@@ -38,9 +43,9 @@ namespace TR1
             ILModeButton.AutoSize = true;
             ILModeButton.Location = new System.Drawing.Point(84, 20);
             ILModeButton.Name = "ILModeButton";
-            ILModeButton.Size = new System.Drawing.Size(135, 17);
+            ILModeButton.Size = new System.Drawing.Size(139, 17);
             ILModeButton.TabIndex = 1;
-            ILModeButton.Text = "Individual Levels (RTA)";
+            ILModeButton.Text = "IL or Section Run (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
             ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
 
@@ -65,14 +70,48 @@ namespace TR1
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
             DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
-            
+
+            // GameVersionLabel
+            GameVersionLabel.AutoSize = true;
+            GameVersionLabel.Location = new System.Drawing.Point(10, 64);
+            GameVersionLabel.Name = "GameVersionLabel";
+            GameVersionLabel.Size = new System.Drawing.Size(186, 13);
+            GameVersionLabel.TabIndex = 1;
+            GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+
+            // AutosplitterVersionLabel
+            AutosplitterVersionLabel.AutoSize = true;
+            AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
+            AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+            AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
+            AutosplitterVersionLabel.TabIndex = 2;
+            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+
             // ComponentSettings
+            Controls.Add(AutosplitterVersionLabel);
+            Controls.Add(GameVersionLabel);
             Controls.Add(_modeSelect);
             Name = "ComponentSettings";
-            Size = new System.Drawing.Size(306, 60);
+            Size = new System.Drawing.Size(313, 110);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
+        }
+
+        internal void SetGameVersion(GameVersion? version)
+        {
+            string versionText = "";
+            switch (version)
+            {
+                case GameVersion.DOSBox:
+                    versionText = "DOSBox";
+                    break;
+                case GameVersion.ATI:
+                    versionText = "ATI Patched";
+                    break;
+            }
+            GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + versionText;
         }
 
         private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

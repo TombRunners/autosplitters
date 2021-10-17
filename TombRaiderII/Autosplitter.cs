@@ -41,16 +41,14 @@ namespace TR2
     /// <summary>
     ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
     /// </summary>
-    internal class Autosplitter : IAutoSplitter
+    internal class Autosplitter : IAutoSplitter, IDisposable
     {
         private Level _farthestLevelCompleted = Level.LarasHome;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
 
-        /// <summary>
-        ///     A constructor that primarily exists to handle events/delegations.
-        /// </summary>
+        /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
         public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
@@ -166,5 +164,11 @@ namespace TR2
         ///     Resets values for full game runs.
         /// </summary>
         public void ResetValues() => _farthestLevelCompleted = Level.LarasHome;
+
+        public void Dispose() 
+        {
+            GameMemory.OnGameFound -= Settings.SetGameVersion;
+            GameMemory = null;
+        }
     }
 }

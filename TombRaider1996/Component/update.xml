@@ -15,4 +15,12 @@
       <change>Added deathrun mode.</change>
     </changelog>
   </update>
+    <update version="2.1.1.0">
+    <files>
+      <file path="Component/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added game and autosplitter version labels to settings.</change>
+    </changelog>
+  </update>
 </updates>
