@@ -108,7 +108,7 @@ namespace TR1
                     versionText = "DOSBox";
                     break;
                 case GameVersion.ATI:
-                    versionText = "ATI Patched";
+                    versionText = "TombATI";
                     break;
             }
             GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + versionText;

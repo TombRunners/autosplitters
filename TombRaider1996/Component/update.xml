@@ -20,7 +20,9 @@
       <file path="Component/TR1996.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Added game and autosplitter version labels to settings.</change>
+      <change>Add game version indicator to settings.</change>
+	  <change>Fix start bug.</change>
+	  <change>Section run support.</change>
     </changelog>
   </update>
 </updates>
