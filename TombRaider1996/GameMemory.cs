@@ -94,6 +94,15 @@ namespace TR1
         public MemoryWatcher<short> Health { get; }
 
         /// <summary>
+        ///     Tell if the game is on the title screen or not.
+        /// </summary>    
+        /// <remarks>
+        ///     True if on the title screen, false otherwise.
+        ///     This is a 4 byte integer under the hood (helps DOSBox search).
+        /// </remarks>
+        public MemoryWatcher<bool> IsTitle { get; }
+
+        /// <summary>
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
@@ -107,6 +116,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
                 Health = new MemoryWatcher<short>(new DeepPointer(0x5A02C));
+                IsTitle = new MemoryWatcher<bool>(new DeepPointer(0x5A324));
             }
             else
             {
@@ -116,6 +126,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
                 Health = new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448));
+                IsTitle = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34));
             }
         }
     }
@@ -161,6 +172,7 @@ namespace TR1
                 Data.PickedPassportFunction.Update(Game);
                 Data.DemoTimer.Update(Game);
                 Data.Health.Update(Game);
+                Data.IsTitle.Update(Game);
 
                 return true;
             }
