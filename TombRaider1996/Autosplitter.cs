@@ -44,7 +44,7 @@ namespace TR1
     {
         private const uint NumberOfLevels = 15;
         
-        private Level _fullGameFarthestLevel = Level.Manor;
+        private Level _farthestLevelCompleted = Level.Manor;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
         private bool newGameSelected = false;
 
@@ -128,34 +128,22 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            if (Settings.Deathrun && GameMemory.Data.Health.Current == 0 && GameMemory.Data.Health.Old > 0)
+            Level currentLevel = GameMemory.Data.Level.Current;
+            bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
+
+            // Deathrun
+            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
+            if (Settings.Deathrun && onCorrectLevel && laraJustDied)
+                return true;
+
+            // FG & IL/Section
+            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
+            if (levelJustCompleted && onCorrectLevel)
             {
+                _farthestLevelCompleted++;
                 return true;
             }
-
-            Level currentLevel = GameMemory.Data.Level.Current;
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
-
-            // Handle IL RTA-specific splitting logic first.
-            if (!Settings.FullGame)
-            {
-                // Assuming the runner only has one split in the layout.
-                // If not, this causes multiple splits on levels ending with a cutscene.
-                return levelJustCompleted;
-            }
-
-            // Do not split on these levels because cutscenes/FMVs around them cause issues.
-            if (currentLevel == Level.Qualopec || 
-                currentLevel == Level.Tihocan  || 
-                currentLevel == Level.Atlantis || 
-                currentLevel == Level.MinesToAtlantis)
-                return false;
-
-            if (!levelJustCompleted || _fullGameFarthestLevel >= currentLevel) 
-                return false;
-
-            _fullGameFarthestLevel++;
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -165,7 +153,7 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should reset, <see langword="false"/> otherwise</returns>
         public bool ShouldReset(LiveSplitState state)
         {
-            /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
+            /* It is hypothetically reasonable to use _farthestLevelCompleted to reset
              * if the player loads into a level ahead of their current level.
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
@@ -216,7 +204,7 @@ namespace TR1
         /// </summary>
         public void ResetValues()
         {
-            _fullGameFarthestLevel = Level.Manor;
+            _farthestLevelCompleted = Level.Manor;
             _fullGameLevelTimes = new uint[NumberOfLevels];
             newGameSelected = false;
         }
