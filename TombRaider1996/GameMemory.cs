@@ -94,7 +94,7 @@ namespace TR1
         public MemoryWatcher<short> Health { get; }
 
         /// <summary>
-        ///     Tell if the game is on the title screen or not.
+        ///     Tells if the game is on the title screen or not.
         /// </summary>    
         /// <remarks>
         ///     True if on the title screen, false otherwise.
