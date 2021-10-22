@@ -61,9 +61,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CounterModel.cs" />
+    <Compile Include="UI\Components\AutoMultiCounterComponent.cs" />
     <Compile Include="UI\Components\IAutoMultiCounter.cs" />
     <Compile Include="UI\Components\ICounterSettings.cs" />
     <Compile Include="UI\Components\ITargetCounter.cs" />
+    <Compile Include="UI\Components\MultiCounterComponentFactory.cs" />
     <Compile Include="UI\Components\TargetCondition.cs" />
     <Compile Include="UI\Components\NamedTargetCounter.cs" />
     <Compile Include="UI\Components\NamedTargetCounterComponent.cs" />
@@ -80,5 +83,9 @@
       <DependentUpon>MultiCounterComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Component\ /y)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

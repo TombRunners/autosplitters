@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using LiveSplit.Model;
+using LiveSplit.UI;
 using LiveSplit.UI.Components;
 
 namespace TR2.UI
@@ -41,12 +42,29 @@ namespace TR2.UI
             }
         };
 
-        internal GameMemory GameMemory = new GameMemory();
+        private readonly AutoMultiCounter _multiCounter = new AutoMultiCounter();
         
         public Component(LiveSplitState state) : base(state)
         {
             CounterSettings = Tr2CounterSettings;
             PreviousNumSplits = CounterSettings.Count;
+        }
+
+        /// <summary>
+        ///     Adds <see cref="GameMemory"/> and <see cref="AutoMultiCounter"/> management to <see cref="MultiCounterComponent.Update"/>.
+        /// </summary>
+        /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <param name="width">width passed by LiveSplit</param>
+        /// <param name="height">height passed by LiveSplit</param>
+        /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+        /// <remarks>
+        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameMemory"/> in its logic.
+        /// </remarks>
+        public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+        {
+            if (_multiCounter.GameMemory.Update())
+                base.Update(invalidator, state, width, height, mode);
         }
     }
 }

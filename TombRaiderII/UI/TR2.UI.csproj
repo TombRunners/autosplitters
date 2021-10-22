@@ -58,8 +58,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoMultiCounter.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentFactory.cs" />
+    <Compile Include="ComponentSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +75,11 @@
       <Project>{b4a46173-6df7-435a-a218-11641766536a}</Project>
       <Name>TR2</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ComponentSettings.resx">
+      <DependentUpon>ComponentSettings.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

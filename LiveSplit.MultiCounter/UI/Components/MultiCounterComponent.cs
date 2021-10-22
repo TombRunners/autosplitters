@@ -50,27 +50,8 @@ namespace LiveSplit.UI.Components
             InternalComponent.DrawHorizontal(g, state, height, clipRegion);
         }
 
-        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+        public virtual void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (state.CurrentPhase == TimerPhase.Running || state.CurrentPhase == TimerPhase.Paused)
-            {
-                var countersToDecrement = AutoMultiCounter.ShouldDecrement(state);
-                foreach (int index in countersToDecrement)
-                    DecrementCounter(index);
-
-                var countersToIncrement = AutoMultiCounter.ShouldIncrement(state);
-                foreach(int index in countersToIncrement)
-                    IncrementCounter(index);
-                
-                var countersToSet = AutoMultiCounter.ShouldSet(state);
-                foreach(KeyValuePair<int, int> entry in countersToSet)
-                    SetCounter(entry.Key, entry.Value);
-
-                var countersToReset = AutoMultiCounter.ShouldReset(state);
-                foreach(int index in countersToReset)
-                    ResetCounter(index);
-            }
-
             if (invalidator != null)
                 InternalComponent.Update(invalidator, state, width, height, mode);
         }
@@ -81,6 +62,7 @@ namespace LiveSplit.UI.Components
         public ComponentRendererComponent InternalComponent { get; protected set; } = new ComponentRendererComponent();
         protected IList<IComponent> Components { get; set; }
         protected IList<NamedTargetCounterComponent> CounterComponents { get; set; }
+        protected int CurrentCountersIndex { get; set; } = 0;
         protected int PreviousNumSplits { get; set; }
         protected int CountersInSplit { get; set; }
         protected IDictionary<int, List<NamedTargetCounterSettings>> CounterSettings { get; set;}

@@ -5,16 +5,17 @@ namespace LiveSplit.UI.Components
 {
     public interface IAutoMultiCounter
     {
-        /// <summary>
-        ///     Returns the indices of <see cref="MultiCounterComponent.CounterComponents"/> to be decremented, if any.
-        /// </summary>
+        /// <summary>Returns if the multi-counter should advance to the next set of counters.</summary>
+        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+        /// <returns></returns>
+        bool ShouldAdvance(LiveSplitState state);
+        
+        /// <summary>Returns the indices of counter components to be decremented, if any./// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns>A <see cref="HashSet{int}"/> of counters to decrement, otherwise an empty <see cref="HashSet{int}"/></returns>
         HashSet<int> ShouldDecrement(LiveSplitState state);
 
-        /// <summary>
-        ///     Returns the indices of <see cref="MultiCounterComponent.CounterComponents"/> to be incremented, if any.
-        /// </summary>
+        /// <summary>Returns the indices of counter components to be incremented, if any./// </summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns>A <see cref="HashSet{int}"/> of counters to increment, otherwise an empty <see cref="HashSet{int}"/></returns>
         HashSet<int> ShouldIncrement(LiveSplitState state);
