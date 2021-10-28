@@ -4,7 +4,7 @@
       <file path="Component/TR2.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Refactored code and versioning.</change>
+      <change>Fix occasional start bug.</change>
     </changelog>
   </update>
   <update version="1.0.0.2">

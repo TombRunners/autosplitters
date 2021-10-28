@@ -44,6 +44,7 @@ namespace TR2
     internal class Autosplitter : IAutoSplitter, IDisposable
     {
         private Level _farthestLevelCompleted = Level.LarasHome;
+        private bool newGameSelected = false;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -133,17 +134,20 @@ namespace TR2
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            // Ignore non-levels.
+            // Ignore demos.
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
-            if (currentLevel >= Level.DemoVenice || currentLevel == Level.LarasHome)
+            if (currentLevel >= Level.DemoVenice)
                 return false;
 
             // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
-            uint time = GameMemory.Data.LevelTime.Current;
+            uint oldPassportPage = GameMemory.Data.PickedPassportFunction.Old;
+            uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
+            if (oldPassportPage == 0 && currentPassportPage == 1)
+                newGameSelected = true;
             bool cameFromTitleScreenOrLarasHome = GameMemory.Data.TitleScreen.Old && !GameMemory.Data.TitleScreen.Current || oldLevel == Level.LarasHome;
-            bool justStartedGreatWall = currentLevel == Level.GreatWall && time == 0;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall;
+            bool justStartedGreatWall = currentLevel == Level.GreatWall;
+            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && newGameSelected;
             if (newGameStarted)
                 return true;
 
@@ -151,8 +155,10 @@ namespace TR2
             if (Settings.FullGame)
                 return false;
 
+            uint oldTime = GameMemory.Data.LevelTime.Old;
+            uint currentTime = GameMemory.Data.LevelTime.Current;
             bool wentToNextLevel = oldLevel == currentLevel - 1;
-            if (wentToNextLevel && time == 0)
+            if (wentToNextLevel && oldTime > currentTime)
             {
                 _farthestLevelCompleted = oldLevel;
                 return true;
@@ -163,7 +169,11 @@ namespace TR2
         /// <summary>
         ///     Resets values for full game runs.
         /// </summary>
-        public void ResetValues() => _farthestLevelCompleted = Level.LarasHome;
+        public void ResetValues()
+        {
+            _farthestLevelCompleted = Level.LarasHome;
+            newGameSelected = false;
+        }
 
         public void Dispose() 
         {
