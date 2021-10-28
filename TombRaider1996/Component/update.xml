@@ -15,4 +15,15 @@
       <change>Added deathrun mode.</change>
     </changelog>
   </update>
+    <update version="2.1.1.0">
+    <files>
+      <file path="Component/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Add game version indicator to settings.</change>
+      <change>Fix start bug.</change>
+      <change>Section run support.</change>
+      <change>Fix event viewer message spam.</change>
+    </changelog>
+  </update>
 </updates>

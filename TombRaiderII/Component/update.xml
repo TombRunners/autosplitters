@@ -1,4 +1,12 @@
 <updates>
+  <update version="1.1.0.0">
+    <files>
+      <file path="Component/TR2.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fix occasional start bug.</change>
+    </changelog>
+  </update>
   <update version="1.0.0.2">
     <files>
       <file path="Component/TR2.dll" status="changed"/>

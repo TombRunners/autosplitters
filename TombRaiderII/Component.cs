@@ -17,7 +17,7 @@ namespace TR2
     /// </remarks>
     internal class Component : AutoSplitComponent
     {
-        private Autosplitter _splitter;
+        private readonly Autosplitter _splitter;
         private readonly LiveSplitState _state;
 
         /// <summary>
@@ -86,9 +86,8 @@ namespace TR2
         /// <inheritdoc/>
         public override void Dispose()
         {
-            _splitter.GameMemory = null;
             _state.OnReset -= (s, tp) => _splitter?.ResetValues();
-            _splitter = null;
+            _splitter.Dispose();
         }
 
         /// <inheritdoc/>

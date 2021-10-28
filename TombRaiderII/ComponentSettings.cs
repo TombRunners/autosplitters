@@ -27,9 +27,8 @@ namespace TR2
             AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
             SuspendLayout();
-            // 
+
             // _modeSelect
-            // 
             _modeSelect.Controls.Add(ILModeButton);
             _modeSelect.Controls.Add(FullGameModeButton);
             _modeSelect.Controls.Add(DeathrunModeButton);
@@ -39,9 +38,8 @@ namespace TR2
             _modeSelect.TabIndex = 0;
             _modeSelect.TabStop = false;
             _modeSelect.Text = "Mode Selection";
-            // 
+
             // ILModeButton
-            // 
             ILModeButton.AutoSize = true;
             ILModeButton.Location = new System.Drawing.Point(84, 20);
             ILModeButton.Name = "ILModeButton";
@@ -50,9 +48,8 @@ namespace TR2
             ILModeButton.Text = "IL or Section Run (RTA)";
             ILModeButton.UseVisualStyleBackColor = true;
             ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
-            // 
+
             // FullGameModeButton
-            // 
             FullGameModeButton.AutoSize = true;
             FullGameModeButton.Checked = true;
             FullGameModeButton.Location = new System.Drawing.Point(6, 20);
@@ -63,9 +60,8 @@ namespace TR2
             FullGameModeButton.Text = "Full Game";
             FullGameModeButton.UseVisualStyleBackColor = true;
             FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
-            // 
+
             // DeathrunModeButton
-            // 
             DeathrunModeButton.AutoSize = true;
             DeathrunModeButton.Location = new System.Drawing.Point(225, 20);
             DeathrunModeButton.Name = "DeathrunModeButton";
@@ -74,27 +70,24 @@ namespace TR2
             DeathrunModeButton.Text = "Deathrun";
             DeathrunModeButton.UseVisualStyleBackColor = true;
             DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
-            // 
+
             // GameVersionLabel
-            // 
             GameVersionLabel.AutoSize = true;
             GameVersionLabel.Location = new System.Drawing.Point(10, 64);
             GameVersionLabel.Name = "GameVersionLabel";
             GameVersionLabel.Size = new System.Drawing.Size(186, 13);
             GameVersionLabel.TabIndex = 1;
             GameVersionLabel.Text = "Game Version: Unknown/Undetected";
-            // 
+
             // AutosplitterVersionLabel
-            // 
             AutosplitterVersionLabel.AutoSize = true;
             AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
             AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
             AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
             AutosplitterVersionLabel.TabIndex = 2;
             AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
-            // 
+
             // ComponentSettings
-            // 
             Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
             Controls.Add(_modeSelect);
@@ -104,7 +97,6 @@ namespace TR2
             _modeSelect.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
-
         }
 
         internal void SetGameVersion(GameVersion? version)

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
 namespace TR1
@@ -93,6 +94,15 @@ namespace TR1
         public MemoryWatcher<short> Health { get; }
 
         /// <summary>
+        ///     Tells if the game is on the title screen or not.
+        /// </summary>    
+        /// <remarks>
+        ///     True if on the title screen, false otherwise.
+        ///     This is a 4 byte integer under the hood (helps DOSBox search).
+        /// </remarks>
+        public MemoryWatcher<bool> TitleScreen { get; }
+
+        /// <summary>
         ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
@@ -106,6 +116,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0x5A080));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0x59F4C));
                 Health = new MemoryWatcher<short>(new DeepPointer(0x5A02C));
+                TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0x5A324));
             }
             else
             {
@@ -115,6 +126,7 @@ namespace TR1
                 PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04));
                 DemoTimer = new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4));
                 Health = new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448));
+                TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34));
             }
         }
     }
@@ -124,9 +136,12 @@ namespace TR1
     /// </summary>
     internal class GameMemory
     {
-        private Process _game;
+        public Process Game;
         public GameData Data;
         private GameVersion _version;
+
+        public delegate void GameFoundDelegate(GameVersion? version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -136,24 +151,35 @@ namespace TR1
         /// </returns>
         public bool Update()
         {
-            if (_game == null || _game.HasExited)
+            try
             {
-                if (!SetGameProcessAndVersion()) 
-                    return false;
-                
-                Data = new GameData(_version);
+                if (Game == null || Game.HasExited)
+                {
+                    if (!SetGameProcessAndVersion())
+                        return false;
+
+                    Data = new GameData(_version);
+                    OnGameFound.Invoke(_version);
+                    Game.EnableRaisingEvents = true;
+                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
+                    return true;
+                }
+
+                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
+                Data.LevelComplete.Update(Game);
+                Data.Level.Update(Game);
+                Data.LevelTime.Update(Game);
+                Data.PickedPassportFunction.Update(Game);
+                Data.DemoTimer.Update(Game);
+                Data.Health.Update(Game);
+                Data.TitleScreen.Update(Game);
+
                 return true;
             }
-
-            // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-            Data.LevelComplete.Update(_game);
-            Data.Level.Update(_game);
-            Data.LevelTime.Update(_game);
-            Data.PickedPassportFunction.Update(_game);
-            Data.DemoTimer.Update(_game);
-            Data.Health.Update(_game);
-
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -176,17 +202,17 @@ namespace TR1
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                _game = atiProcesses[0];
+                Game = atiProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                _game = dosProcesses[0];
+                Game = dosProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeDOS)
             {
-                _game = dosProcesses[0];
+                Game = dosProcesses[0];
                 _version = GameVersion.DOSBox;
             }
             else

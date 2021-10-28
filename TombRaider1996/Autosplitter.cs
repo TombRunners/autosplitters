@@ -40,15 +40,19 @@ namespace TR1
     /// <summary>
     ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
     /// </summary>
-    internal class Autosplitter : IAutoSplitter
+    internal class Autosplitter : IAutoSplitter, IDisposable
     {
         private const uint NumberOfLevels = 15;
         
-        private Level _fullGameFarthestLevel = Level.Manor;
+        private Level _farthestLevelCompleted = Level.Manor;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
+        private bool newGameSelected = false;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
+
+        /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
+        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -124,34 +128,22 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            if (Settings.Deathrun && GameMemory.Data.Health.Current == 0 && GameMemory.Data.Health.Old > 0)
+            Level currentLevel = GameMemory.Data.Level.Current;
+            bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
+
+            // Deathrun
+            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
+            if (Settings.Deathrun && onCorrectLevel && laraJustDied)
+                return true;
+
+            // FG & IL/Section
+            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
+            if (levelJustCompleted && onCorrectLevel)
             {
+                _farthestLevelCompleted++;
                 return true;
             }
-
-            Level currentLevel = GameMemory.Data.Level.Current;
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
-
-            // Handle IL RTA-specific splitting logic first.
-            if (!Settings.FullGame)
-            {
-                // Assuming the runner only has one split in the layout.
-                // If not, this causes multiple splits on levels ending with a cutscene.
-                return levelJustCompleted;
-            }
-
-            // Do not split on these levels because cutscenes/FMVs around them cause issues.
-            if (currentLevel == Level.Qualopec || 
-                currentLevel == Level.Tihocan  || 
-                currentLevel == Level.Atlantis || 
-                currentLevel == Level.MinesToAtlantis)
-                return false;
-
-            if (!levelJustCompleted || _fullGameFarthestLevel >= currentLevel) 
-                return false;
-
-            _fullGameFarthestLevel++;
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -161,7 +153,7 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should reset, <see langword="false"/> otherwise</returns>
         public bool ShouldReset(LiveSplitState state)
         {
-            /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
+            /* It is hypothetically reasonable to use _farthestLevelCompleted to reset
              * if the player loads into a level ahead of their current level.
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
@@ -178,17 +170,22 @@ namespace TR1
         {
             Level currentLevel = GameMemory.Data.Level.Current;
             Level oldLevel = GameMemory.Data.Level.Old;
-            uint passportPage = GameMemory.Data.PickedPassportFunction.Current;
+            uint oldPassportPage = GameMemory.Data.PickedPassportFunction.Old;
+            uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
             bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
             bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
+            bool titleScreen = GameMemory.Data.TitleScreen.Current;
+
+            if (oldPassportPage == 0 && currentPassportPage == 1 && (titleScreen || currentLevel == Level.Manor))
+                newGameSelected = true;
 
             // When the game process starts, currentLevel is initialized as Caves and IGT as 0.
             // Thus the code also checks if the user picked New Game from the passport.
             // A new game starts from the New Game page of the passport (page 2, index 1).
-            bool goingToFirstLevel = oldLevel != Level.Caves && currentLevel == Level.Caves && passportPage == 1;
+            bool goingToFirstLevel = oldLevel != Level.Caves && currentLevel == Level.Caves && newGameSelected;
             if (goingToFirstLevel)
                 return true;
-            
+
             if (Settings.FullGame) 
                 return false;
 
@@ -199,7 +196,12 @@ namespace TR1
                 return false;
 
             bool goingToNextRealLevel = oldRealLevel == currentRealLevel - 1 && oldLevelComplete && !currentLevelComplete;
-            return goingToNextRealLevel;
+            if (goingToNextRealLevel)
+            {
+                _farthestLevelCompleted = oldLevel;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -207,8 +209,15 @@ namespace TR1
         /// </summary>
         public void ResetValues()
         {
-            _fullGameFarthestLevel = Level.Manor;
+            _farthestLevelCompleted = Level.Manor;
             _fullGameLevelTimes = new uint[NumberOfLevels];
+            newGameSelected = false;
+        }
+
+        public void Dispose()
+        {
+            GameMemory.OnGameFound -= Settings.SetGameVersion;
+            GameMemory = null;
         }
     }
 }
