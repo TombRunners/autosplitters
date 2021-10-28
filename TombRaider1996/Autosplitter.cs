@@ -174,9 +174,9 @@ namespace TR1
             uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
             bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
             bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
-            bool isTitle = GameMemory.Data.IsTitle.Current;
+            bool titleScreen = GameMemory.Data.TitleScreen.Current;
 
-            if (oldPassportPage == 0 && currentPassportPage == 1 && (isTitle || currentLevel == Level.Manor))
+            if (oldPassportPage == 0 && currentPassportPage == 1 && (titleScreen || currentLevel == Level.Manor))
                 newGameSelected = true;
 
             // When the game process starts, currentLevel is initialized as Caves and IGT as 0.
