@@ -198,7 +198,7 @@ namespace TR1
             bool goingToNextRealLevel = oldRealLevel == currentRealLevel - 1 && oldLevelComplete && !currentLevelComplete;
             if (goingToNextRealLevel)
             {
-                _farthestLevelCompleted = oldLevel;
+                _farthestLevelCompleted = (Level) oldRealLevel;
                 return true;
             }
             return false;

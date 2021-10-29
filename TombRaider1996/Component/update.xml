@@ -26,4 +26,12 @@
       <change>Fix event viewer message spam.</change>
     </changelog>
   </update>
+    <update version="2.1.1.1">
+    <files>
+      <file path="Component/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fix LiveSplit not splitting after Qualopec in IL mode.</change>
+    </changelog>
+    </update>
 </updates>
