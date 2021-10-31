@@ -75,7 +75,7 @@ namespace TR2
         /// <remarks>
         ///     It must be a raw link.
         /// </remarks>
-        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaiderII";
+        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaiderII/";
 
         /// <summary>
         ///     XML file which is checked to see if the component needs updated.
