@@ -1,7 +1,7 @@
 <updates>
   <update version="1.0.0.0">
     <files>
-      <file path="Component/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="changed"/>
     </files>
     <changelog>
       <change>Initial component rewrite version.</change>
@@ -9,7 +9,7 @@
   </update>
   <update version="1.0.0.1">
     <files>
-      <file path="Component/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix bug breaking autostart/split/reset.</change>
@@ -17,7 +17,7 @@
   </update>
   <update version="1.0.0.2">
     <files>
-      <file path="Component/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added support for "section" runs by improving Split logic.</change>
@@ -25,7 +25,7 @@
   </update>
   <update version="1.1.0.0">
     <files>
-      <file path="Component/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix occasional start bug.</change>
@@ -33,7 +33,7 @@
   </update>
   <update version="1.2.0.0">
     <files>
-      <file path="Component/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix updater not starting if there's a new version.</change>
