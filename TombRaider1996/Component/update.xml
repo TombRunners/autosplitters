@@ -1,7 +1,7 @@
 <updates>
   <update version="2.0.0.0">
     <files>
-      <file path="Component/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Initial component rewrite version.</change>
@@ -9,7 +9,7 @@
   </update>
   <update version="2.1.0.0">
     <files>
-      <file path="Component/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added deathrun mode.</change>
@@ -17,7 +17,7 @@
   </update>
   <update version="2.1.1.0">
     <files>
-      <file path="Component/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Add game version indicator to settings.</change>
@@ -28,7 +28,7 @@
   </update>
   <update version="2.1.1.1">
     <files>
-      <file path="Component/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix LiveSplit not splitting after Qualopec in IL mode.</change>
@@ -36,7 +36,7 @@
   </update>
   <update version="2.2.0.0">
     <files>
-      <file path="Component/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix updater not starting if there's a new version.</change>
