@@ -84,7 +84,7 @@ namespace TR1
         /// <remarks>
         ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
         /// </remarks>
-        public string XMLURL => UpdateURL + "Component/update.xml";
+        public string XMLURL => UpdateURL + "Components/update.xml";
 
         #endregion
     }
