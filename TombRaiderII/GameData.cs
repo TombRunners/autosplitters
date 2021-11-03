@@ -5,7 +5,7 @@ using TRUtil;
 namespace TR2
 {
     /// <summary>The supported game versions.</summary>
-    internal enum GameVersion
+    public enum GameVersion
     {
         None              = 0,
         MP                = 1, // Multipatch (Steam/GoG default)
@@ -17,13 +17,13 @@ namespace TR2
     }
 
     /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
-    internal sealed class GameData : ClassicGameData
+    public sealed class GameData : ClassicGameData
     {
-        private const uint _tr2FirstLevelTimeAddress = 0x51EA24;
-        private const uint _tr2gFirstLevelTimeAddress = 0x521A84;
+        private const uint TR2FirstLevelTimeAddress = 0x51EA24;
+        private const uint TR2GFirstLevelTimeAddress = 0x521A84;
 
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
-        internal GameData()
+        public GameData()
         {
             VersionHashes.Add("964f0c4e08ff44a905e8fc9a78f605dc", (uint)GameVersion.MP);
             VersionHashes.Add("793c67c79a50984d9bd17ad391f03c57", (uint)GameVersion.EPC);
@@ -51,7 +51,7 @@ namespace TR2
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
-                    FirstLevelTimeAddress = _tr2FirstLevelTimeAddress;
+                    FirstLevelTimeAddress = TR2FirstLevelTimeAddress;
                     break;
                 case GameVersion.EPC:
                 case GameVersion.MP:
@@ -62,7 +62,7 @@ namespace TR2
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
-                    FirstLevelTimeAddress = _tr2FirstLevelTimeAddress;
+                    FirstLevelTimeAddress = TR2FirstLevelTimeAddress;
                     break;
                 case GameVersion.StellaGold:
                 case GameVersion.StellaGoldCracked:
@@ -72,7 +72,7 @@ namespace TR2
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x121E60)) { Name = "LevelTime" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xDA9A0)) { Name = "PickedPassportFunction" });
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xDA948)) { Name = "Health" });
-                    FirstLevelTimeAddress = _tr2gFirstLevelTimeAddress;
+                    FirstLevelTimeAddress = TR2GFirstLevelTimeAddress;
                     break;
                 case GameVersion.None:
                 default:

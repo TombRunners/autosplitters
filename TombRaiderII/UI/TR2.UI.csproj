@@ -71,6 +71,10 @@
       <Project>{ee6fce04-acf5-4ab7-b081-be075e36f88c}</Project>
       <Name>LiveSplit.MultiCounter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TRUtil\TRUtil.csproj">
+      <Project>{29196311-2D7C-428B-A058-6BBFC8452909}</Project>
+      <Name>TRUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TR2.csproj">
       <Project>{b4a46173-6df7-435a-a218-11641766536a}</Project>
       <Name>TR2</Name>
@@ -79,10 +83,11 @@
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">
       <DependentUpon>ComponentSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Component\ /y)</PostBuildEvent>
+    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y)</PostBuildEvent>
   </PropertyGroup>
 </Project>

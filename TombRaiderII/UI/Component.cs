@@ -5,7 +5,7 @@ using LiveSplit.UI.Components;
 
 namespace TR2.UI
 {
-    class Component : MultiCounterComponent
+    internal class Component : MultiCounterComponent
     {
         private readonly Dictionary<int, List<NamedTargetCounterSettings>> Tr2CounterSettings = new Dictionary<int, List<NamedTargetCounterSettings>>
         {
@@ -51,7 +51,7 @@ namespace TR2.UI
         }
 
         /// <summary>
-        ///     Adds <see cref="GameMemory"/> and <see cref="AutoMultiCounter"/> management to <see cref="MultiCounterComponent.Update"/>.
+        ///     Adds <see cref="GameData"/> and <see cref="AutoMultiCounter"/> management to <see cref="MultiCounterComponent.Update"/>.
         /// </summary>
         /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -59,11 +59,11 @@ namespace TR2.UI
         /// <param name="height">height passed by LiveSplit</param>
         /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
-        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameMemory"/> in its logic.
+        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameData"/> in its logic.
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (_multiCounter.GameMemory.Update())
+            if (_multiCounter.GameData.Update())
                 base.Update(invalidator, state, width, height, mode);
         }
     }

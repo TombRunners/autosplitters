@@ -2,6 +2,7 @@
 using LiveSplit.UI.Components;
 using System;
 using System.Collections.Generic;
+using TRUtil;
 
 namespace TR2.UI
 {
@@ -12,9 +13,9 @@ namespace TR2.UI
         private bool RunIsActive(LiveSplitState state) => state.CurrentPhase == TimerPhase.Running;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameMemory GameMemory = new GameMemory();
+        internal GameData GameData = new GameData();
 
-        public AutoMultiCounter() => GameMemory.OnGameFound += Settings.SetGameVersion;
+        public AutoMultiCounter() => GameData.OnGameFound += Settings.SetGameVersion;
 
         public bool ShouldAdvance(LiveSplitState state)
         {
@@ -29,7 +30,7 @@ namespace TR2.UI
         
         public HashSet<int> ShouldIncrement(LiveSplitState state)
         {
-            if (GameMemory.Data.Level.Current == Level.GreatWall && GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0)
+            if (BaseGameData.Level.Current == (uint)Tr2Level.GreatWall && BaseGameData.Health.Old > 0 && BaseGameData.Health.Current == 0)
                 return new HashSet<int>() ;
             else
                 return new HashSet<int>() { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -41,19 +42,18 @@ namespace TR2.UI
             {
                 return new HashSet<int>();
             }
-            if (state.CurrentSplitIndex == 0)
-            {
-                return new HashSet<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
-            }
-            return new HashSet<int>();
+
+            return state.CurrentSplitIndex == 0
+                ? new HashSet<int> { 0, 1, 2, 3, 4, 5, 6, 7 }
+                : new HashSet<int>();
         }
 
         public Dictionary<int, int> ShouldSet(LiveSplitState state) => new Dictionary<int, int>();
 
         public void Dispose()
         {
-            GameMemory.OnGameFound -= Settings.SetGameVersion;
-            GameMemory = null;
+            GameData.OnGameFound -= Settings.SetGameVersion;
+            GameData = null;
         }
     }
 }

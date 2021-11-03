@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -17,7 +18,6 @@ namespace TR2.UI
         public Label GameVersionLabel;
         public Label AutoMultiCounterVersionLabel;
         
-
         public ComponentSettings() => InitializeComponent();
 
         private void InitializeComponent()
@@ -75,10 +75,12 @@ namespace TR2.UI
             PerformLayout();
         }
 
-        internal void SetGameVersion(GameVersion? version)
+        internal void SetGameVersion(uint version)
         {
-            string versionText = "";
-            switch (version)
+            var gameVersion = (GameVersion)version;
+
+            var versionText = "";
+            switch (gameVersion)
             {
                 case GameVersion.MP:
                     versionText = "Multipatch";
@@ -92,7 +94,18 @@ namespace TR2.UI
                 case GameVersion.UKB:
                     versionText = "Eidos UK Box";
                     break;
+                case GameVersion.None:
+                    break;
+                case GameVersion.StellaGold:
+                    versionText = "Stella's TR2 Gold";
+                    break;
+                case GameVersion.StellaGoldCracked:
+                    versionText = "Stella's TR2";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(gameVersion), gameVersion, null);
             }
+
             GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + versionText;
         }
     }

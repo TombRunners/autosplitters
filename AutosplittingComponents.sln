@@ -7,7 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR1", "TombRaider1996\TR1.c
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR2", "TombRaiderII\TR2.csproj", "{B4A46173-6DF7-435A-A218-11641766536A}"
 EndProject
-<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR3", "TombRaiderIII\TR3.csproj", "{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRUtil", "TRUtil\TRUtil.csproj", "{29196311-2D7C-428B-A058-6BBFC8452909}"
@@ -15,9 +14,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR4", "TombRaiderIV\TR4.csproj", "{7555D155-EFCB-48C2-8540-B719753FFEE1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR5", "TombRaiderV\TR5.csproj", "{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}"
-=======
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR2.UI", "TombRaiderII\UI\TR2.UI.csproj", "{D111CD56-E92B-4A5F-BF78-5E6857502D44}"
->>>>>>> 68cbcf1 ((SQUASH) Got it loading into LS but getting 'object' does not contain a definition for 'GetSettingsHashCode' error.)
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiveSplit.MultiCounter", "LiveSplit.MultiCounter\LiveSplit.MultiCounter.csproj", "{EE6FCE04-ACF5-4AB7-B081-BE075E36F88C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,7 +33,6 @@ Global
 		{B4A46173-6DF7-435A-A218-11641766536A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4A46173-6DF7-435A-A218-11641766536A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4A46173-6DF7-435A-A218-11641766536A}.Release|Any CPU.Build.0 = Release|Any CPU
-<<<<<<< HEAD
 		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,12 +49,14 @@ Global
 		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Release|Any CPU.Build.0 = Release|Any CPU
-=======
 		{D111CD56-E92B-4A5F-BF78-5E6857502D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D111CD56-E92B-4A5F-BF78-5E6857502D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D111CD56-E92B-4A5F-BF78-5E6857502D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D111CD56-E92B-4A5F-BF78-5E6857502D44}.Release|Any CPU.Build.0 = Release|Any CPU
->>>>>>> 68cbcf1 ((SQUASH) Got it loading into LS but getting 'object' does not contain a definition for 'GetSettingsHashCode' error.)
+		{EE6FCE04-ACF5-4AB7-B081-BE075E36F88C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE6FCE04-ACF5-4AB7-B081-BE075E36F88C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE6FCE04-ACF5-4AB7-B081-BE075E36F88C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE6FCE04-ACF5-4AB7-B081-BE075E36F88C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
