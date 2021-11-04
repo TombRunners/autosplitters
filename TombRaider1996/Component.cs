@@ -109,7 +109,7 @@ namespace TR1
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (_splitter.GameDataManager.Update()) 
+            if (_splitter.GameData.Update()) 
                 base.Update(invalidator, state, width, height, mode);
         }
     }

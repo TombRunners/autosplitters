@@ -47,10 +47,10 @@ namespace TR2
         private bool newGameSelected = false;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameData GameDataManager = new GameData();
+        internal GameData GameData = new GameData();
 
         /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
-        public Autosplitter() => GameDataManager.OnGameFound += Settings.SetGameVersion;
+        public Autosplitter() => GameData.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -74,7 +74,7 @@ namespace TR2
             for (int i = 0; i < ((int)currentLevel - 1); i++)
             {
                 var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + (i * 0x2c));
-                finishedLevelsTicks += GameDataManager.Game.ReadValue<int>(levelAddress);
+                finishedLevelsTicks += GameData.Game.ReadValue<int>(levelAddress);
             }
             var finishedLevelsTime = (double)finishedLevelsTicks / igtTicksPerSecond;
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
@@ -177,8 +177,8 @@ namespace TR2
 
         public void Dispose() 
         {
-            GameDataManager.OnGameFound -= Settings.SetGameVersion;
-            GameDataManager = null;
+            GameData.OnGameFound -= Settings.SetGameVersion;
+            GameData = null;
         }
     }
 }
