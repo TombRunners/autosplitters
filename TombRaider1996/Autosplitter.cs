@@ -49,7 +49,7 @@ namespace TR1
         private bool newGameSelected = false;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameDataManager GameDataManager = new GameDataManager();
+        internal GameData GameDataManager = new GameData();
 
         /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
         public Autosplitter() => GameDataManager.OnGameFound += Settings.SetGameVersion;

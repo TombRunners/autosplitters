@@ -253,11 +253,16 @@ namespace TR1
     }
 
     /// <summary>
-    ///     The game's watched memory addresses.
+    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
     /// </summary>
-    internal static class GameData
+    internal class GameData
     {
         private static readonly MemoryWatcherList _addresses = new MemoryWatcherList();
+        private GameVersion _version;
+        public Process Game;
+
+        public delegate void GameFoundDelegate(GameVersion? version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Tells if the game is on the title screen or not.
@@ -364,22 +369,6 @@ namespace TR1
             }
         }
 
-        public static void UpdateAll(Process process) => _addresses.UpdateAll(process);
-
-        public static void ResetAll() => _addresses.ResetAll();
-    }
-
-    /// <summary>
-    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
-    /// </summary>
-    internal class GameDataManager
-    {
-        public Process Game;
-        private GameVersion _version;
-
-        public delegate void GameFoundDelegate(GameVersion? version);
-        public GameFoundDelegate OnGameFound;
-
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
         /// </summary>
@@ -395,14 +384,14 @@ namespace TR1
                     if (!SetGameProcessAndVersion())
                         return false;
 
-                    GameData.SetAddresses(_version);
+                    SetAddresses(_version);
                     OnGameFound.Invoke(_version);
                     Game.EnableRaisingEvents = true;
                     Game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
                 }
 
-                GameData.UpdateAll(Game);
+                _addresses.UpdateAll(Game);
 
                 return true;
             }

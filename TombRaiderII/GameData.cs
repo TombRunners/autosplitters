@@ -28,13 +28,17 @@ namespace TR2
     }
 
     /// <summary>
-    ///     The game's watched memory addresses.
+    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
     /// </summary>
-    internal static class GameData
+    internal class GameData
     {
-        private static readonly MemoryWatcherList _addresses = new MemoryWatcherList();
-
         public const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
+        private static readonly MemoryWatcherList _addresses = new MemoryWatcherList();
+        private GameVersion _version;
+        public Process Game;        
+
+        public delegate void GameFoundDelegate(GameVersion? version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Indicates if the game is on the title screen (main menu).
@@ -98,7 +102,7 @@ namespace TR2
         public static MemoryWatcher<short> Health => (MemoryWatcher<short>)_addresses["Health"];
 
         /// <summary>
-        ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
+        ///     Sets <see cref="Addresses"/> addresses based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
         public static void SetAddresses(GameVersion version)
@@ -125,24 +129,8 @@ namespace TR2
             }
         }
 
-        public static void UpdateAll(Process process) => _addresses.UpdateAll(process);
-
-        public static void ResetAll() => _addresses.ResetAll();
-    }
-
-    /// <summary>
-    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
-    /// </summary>
-    internal class GameDataManager
-    {
-        public Process Game;
-        private GameVersion _version;
-
-        public delegate void GameFoundDelegate(GameVersion? version);
-        public GameFoundDelegate OnGameFound;
-
         /// <summary>
-        ///     Updates <see cref="GameData"/> and its addresses' values.
+        ///     Updates <see cref="Addresses"/> and its addresses' values.
         /// </summary>
         /// <returns>
         ///     <see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise
@@ -156,12 +144,7 @@ namespace TR2
                     if (!SetGameProcessAndVersion())
                         return false;
 
-<<<<<<< HEAD:TombRaiderII/GameMemory.cs
-                    Data = new GameData(Version);
-                    OnGameFound.Invoke(Version);
-                    /* crashes LiveSplit so temporarily disabled
-=======
-                    GameData.SetAddresses(_version);
+                    SetAddresses(_version);
                     OnGameFound.Invoke(_version);
 >>>>>>> Made GameData classes static and encapsulate a MemoryWatcherList; renamed GameMemory to GameDataManager.:TombRaiderII/GameDataManager.cs
                     Game.EnableRaisingEvents = true;
@@ -170,7 +153,7 @@ namespace TR2
                     return true;
                 }
 
-                GameData.UpdateAll(Game);
+                _addresses.UpdateAll(Game);
 
                 return true;
             }
