@@ -257,7 +257,16 @@ namespace TR1
     /// </summary>
     internal class GameData
     {
-        private static readonly MemoryWatcherList _addresses = new MemoryWatcherList();
+        private static readonly MemoryWatcherList _watchers = new MemoryWatcherList()
+        {
+            new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" },
+            new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" },
+            new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" },
+            new MemoryWatcher<Level>(new DeepPointer(0x53C4C)) { Name = "Level" },
+            new MemoryWatcher<uint>(new DeepPointer(0x5BB0A)) { Name = "LevelTime" },
+            new MemoryWatcher<uint>(new DeepPointer(0x5A080)) { Name = "PickedPassportFunction" },
+            new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" }
+        };
         private GameVersion _version;
         public Process Game;
 
@@ -271,7 +280,7 @@ namespace TR1
         ///     True if on the title screen, false otherwise.
         ///     This is a 4 byte integer under the hood (helps DOSBox search).
         /// </remarks>
-        public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)_addresses["TitleScreen"];
+        public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)_watchers["TitleScreen"];
 
         /// <summary>
         ///     Timer determining whether to start Demo Mode or not.
@@ -282,7 +291,7 @@ namespace TR1
         ///     If no menu item is activated, and the value gets higher than 480, Demo Mode is started.
         ///     If any menu item is active, the value just increases and Demo Mode is not activated.
         /// </remarks>
-        public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)_addresses["DemoTimer"];
+        public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)_watchers["DemoTimer"];
 
         /// <summary>
         ///     Indicates if the current <see cref="Level"/> is finished.
@@ -294,7 +303,7 @@ namespace TR1
         ///     At the end of Tomb of Qualopec and Tihocan, just before the in-game cutscene, the value changes from 0 to 1 then back to 0 immediately.
         ///     Otherwise the value is zero.
         /// </remarks>
-        public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)_addresses["LevelComplete"];
+        public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)_watchers["LevelComplete"];
 
         /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
@@ -308,7 +317,7 @@ namespace TR1
         ///     19: Atlantis cutscene after the FMV until next level start.
         ///     20: Title screen and opening FMV.
         /// </remarks>
-        public static MemoryWatcher<Level> Level => (MemoryWatcher<Level>)_addresses["Level"];
+        public static MemoryWatcher<Level> Level => (MemoryWatcher<Level>)_watchers["Level"];
 
         /// <summary>
         ///     Gives the IGT value for the current level.
@@ -316,7 +325,7 @@ namespace TR1
         /// <remarks>
         ///     For TR1 specifically, this address does not track the cumulative level time; it only tracks the current level time.
         /// </remarks>
-        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)_addresses["LevelTime"];
+        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)_watchers["LevelTime"];
 
         /// <summary>
         ///     Indicates the passport function chosen by the user.
@@ -329,7 +338,7 @@ namespace TR1
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
-        public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)_addresses["PickedPassportFunction"];
+        public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)_watchers["PickedPassportFunction"];
 
         /// <summary>
         ///     Lara's current HP.
@@ -337,7 +346,7 @@ namespace TR1
         /// <remarks>
         ///     Max HP is 1000. When it hits 0, Lara dies.
         /// </remarks>
-        public static MemoryWatcher<short> Health => (MemoryWatcher<short>)_addresses["Health"];
+        public static MemoryWatcher<short> Health => (MemoryWatcher<short>)_watchers["Health"];
 
         /// <summary>
         ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
@@ -347,25 +356,25 @@ namespace TR1
         {
             if (version == GameVersion.ATI)
             {
-                _addresses.Clear();
-                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" });
-                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" });
-                _addresses.Add(new MemoryWatcher<Level>(new DeepPointer(0x53C4C)) { Name = "Level" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0x5BB0A)) { Name = "LevelTime" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0x5A080)) { Name = "PickedPassportFunction" });
-                _addresses.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
+                _watchers.Clear();
+                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" });
+                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" });
+                _watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0x53C4C)) { Name = "Level" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x5BB0A)) { Name = "LevelTime" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x5A080)) { Name = "PickedPassportFunction" });
+                _watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
             }
             else
             {
-                _addresses.Clear();
-                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4)) { Name = "DemoTimer" });
-                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C)) { Name = "LevelComplete" });
-                _addresses.Add(new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38)) { Name = "Level" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC)) { Name = "LevelTime" });
-                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04)) { Name = "PickedPassportFunction" });
-                _addresses.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
+                _watchers.Clear();
+                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4)) { Name = "DemoTimer" });
+                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C)) { Name = "LevelComplete" });
+                _watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xA786B4, 0x243D38)) { Name = "Level" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC)) { Name = "LevelTime" });
+                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04)) { Name = "PickedPassportFunction" });
+                _watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
             }
         }
 
@@ -391,7 +400,7 @@ namespace TR1
                     return true;
                 }
 
-                _addresses.UpdateAll(Game);
+                _watchers.UpdateAll(Game);
 
                 return true;
             }
