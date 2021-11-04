@@ -49,10 +49,10 @@ namespace TR1
         private bool newGameSelected = false;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameMemory GameMemory = new GameMemory();
+        internal GameDataManager GameDataManager = new GameDataManager();
 
         /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
-        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
+        public Autosplitter() => GameDataManager.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -61,9 +61,9 @@ namespace TR1
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            uint oldTime = GameMemory.Data.LevelTime.Old;
-            uint currentTime = GameMemory.Data.LevelTime.Current;
-            uint currentDemoTimer = GameMemory.Data.DemoTimer.Current;
+            uint oldTime = GameData.LevelTime.Old;
+            uint currentTime = GameData.LevelTime.Current;
+            uint currentDemoTimer = GameData.DemoTimer.Current;
             const uint demoStartThreshold = 480;
 
             bool igtIsNotTicking = oldTime == currentTime;
@@ -71,7 +71,7 @@ namespace TR1
             // or when you transition from a level to the next,
             // or when you start new game.
             bool igtGotReset = oldTime != 0 && currentTime == 0;
-            Level? lastRealLevel = GetLastRealLevel(GameMemory.Data.Level.Current);
+            Level? lastRealLevel = GetLastRealLevel(GameData.Level.Current);
             if (igtIsNotTicking || igtGotReset || currentDemoTimer > demoStartThreshold || lastRealLevel is null)
                 return null;
             
@@ -128,16 +128,16 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            Level currentLevel = GameMemory.Data.Level.Current;
+            Level currentLevel = GameData.Level.Current;
             bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
 
             // Deathrun
-            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
+            bool laraJustDied = GameData.Health.Old > 0 && GameData.Health.Current == 0;
             if (Settings.Deathrun && onCorrectLevel && laraJustDied)
                 return true;
 
             // FG & IL/Section
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
+            bool levelJustCompleted = !GameData.LevelComplete.Old && GameData.LevelComplete.Current;
             if (levelJustCompleted && onCorrectLevel)
             {
                 _farthestLevelCompleted++;
@@ -158,7 +158,7 @@ namespace TR1
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return GameMemory.Data.PickedPassportFunction.Current == 2;
+            return GameData.PickedPassportFunction.Current == 2;
         }
 
         /// <summary>
@@ -168,13 +168,13 @@ namespace TR1
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            Level currentLevel = GameMemory.Data.Level.Current;
-            Level oldLevel = GameMemory.Data.Level.Old;
-            uint oldPassportPage = GameMemory.Data.PickedPassportFunction.Old;
-            uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
-            bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
-            bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
-            bool titleScreen = GameMemory.Data.TitleScreen.Current;
+            Level currentLevel = GameData.Level.Current;
+            Level oldLevel = GameData.Level.Old;
+            uint oldPassportPage = GameData.PickedPassportFunction.Old;
+            uint currentPassportPage = GameData.PickedPassportFunction.Current;
+            bool oldLevelComplete = GameData.LevelComplete.Old;
+            bool currentLevelComplete = GameData.LevelComplete.Current;
+            bool titleScreen = GameData.TitleScreen.Current;
 
             if (oldPassportPage == 0 && currentPassportPage == 1 && (titleScreen || currentLevel == Level.Manor))
                 newGameSelected = true;
@@ -216,8 +216,8 @@ namespace TR1
 
         public void Dispose()
         {
-            GameMemory.OnGameFound -= Settings.SetGameVersion;
-            GameMemory = null;
+            GameDataManager.OnGameFound -= Settings.SetGameVersion;
+            GameDataManager = null;
         }
     }
 }

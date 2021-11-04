@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using LiveSplit.ComponentUtil;
 
 namespace TR2
-{       
+{
     /// <summary>
     ///     The supported game versions.
     /// </summary>
@@ -30,8 +30,10 @@ namespace TR2
     /// <summary>
     ///     The game's watched memory addresses.
     /// </summary>
-    internal class GameData : MemoryWatcherList
+    internal static class GameData
     {
+        private static readonly MemoryWatcherList _addresses = new MemoryWatcherList();
+
         public const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace TR2
         /// <remarks>
         ///     Goes back to 0 during demos.
         /// </remarks>
-        public MemoryWatcher<bool> TitleScreen { get; }
+        public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)_addresses["TitleScreen"];
 
         /// <summary>
         ///     Indicates if the current <see cref="Level"/> is finished.
@@ -53,7 +55,7 @@ namespace TR2
         ///         Applies to Great Wall, Opera House, Diving Area, Temple of Xian, but NOT Home Sweet Home.
         ///     Otherwise, the value is 0.
         /// </remarks>
-        public MemoryWatcher<bool> LevelComplete { get; }
+        public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)_addresses["LevelComplete"];
 
         /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
@@ -67,12 +69,12 @@ namespace TR2
         ///     19: Atlantis cutscene after the FMV until next level start.
         ///     20: Title screen and opening FMV.
         /// </remarks>
-        public MemoryWatcher<Level> Level { get; }
+        public static MemoryWatcher<Level> Level => (MemoryWatcher<Level>)_addresses["Level"];
 
         /// <summary>
         ///     Gives the IGT value for the current level.
         /// </summary>
-        public MemoryWatcher<uint> LevelTime { get; }
+        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)_addresses["LevelTime"];
 
         /// <summary>
         ///     Indicates the passport function chosen by the user.
@@ -85,7 +87,7 @@ namespace TR2
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
-        public MemoryWatcher<uint> PickedPassportFunction { get; }
+        public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)_addresses["PickedPassportFunction"];
 
         /// <summary>
         ///     Lara's current HP.
@@ -93,43 +95,48 @@ namespace TR2
         /// <remarks>
         ///     Max HP is 1000. When it hits 0, Lara dies.
         /// </remarks>
-        public MemoryWatcher<short> Health { get; }
+        public static MemoryWatcher<short> Health => (MemoryWatcher<short>)_addresses["Health"];
 
         /// <summary>
-        ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
+        ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
-        public GameData(GameVersion version)
+        public static void SetAddresses(GameVersion version)
         {
             if (version == GameVersion.UKB)
             {
-                TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0x11BDA0));
-                LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xD9EC4));
-                Level = new MemoryWatcher<Level>(new DeepPointer(0xD9EC0));
-                LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x11EE00));
-                PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xD7980));
-                Health = new MemoryWatcher<short>(new DeepPointer(0xD7928));
+                _addresses.Clear();
+                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
+                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" });
+                _addresses.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EC0)) { Name = "Level" });
+                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
+                _addresses.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
             }
-            else // MP, EPC, P1
+            else
             {
-                TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0x11BD90));
-                LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xD9EB4));
-                Level = new MemoryWatcher<Level>(new DeepPointer(0xD9EB0));
-                LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x11EE00));
-                PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xD7970));
-                Health = new MemoryWatcher<short>(new DeepPointer(0xD7918));
+                _addresses.Clear();
+                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BD90)) { Name = "TitleScreen" });
+                _addresses.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EB4)) { Name = "LevelComplete" });
+                _addresses.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EB0)) { Name = "Level" });
+                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                _addresses.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
+                _addresses.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
             }
         }
+
+        public static void UpdateAll(Process process) => _addresses.UpdateAll(process);
+
+        public static void ResetAll() => _addresses.ResetAll();
     }
 
     /// <summary>
     ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
     /// </summary>
-    internal class GameMemory
+    internal class GameDataManager
     {
         public Process Game;
-        public GameData Data;
-        private GameVersion Version;
+        private GameVersion _version;
 
         public delegate void GameFoundDelegate(GameVersion? version);
         public GameFoundDelegate OnGameFound;
@@ -149,22 +156,21 @@ namespace TR2
                     if (!SetGameProcessAndVersion())
                         return false;
 
+<<<<<<< HEAD:TombRaiderII/GameMemory.cs
                     Data = new GameData(Version);
                     OnGameFound.Invoke(Version);
                     /* crashes LiveSplit so temporarily disabled
+=======
+                    GameData.SetAddresses(_version);
+                    OnGameFound.Invoke(_version);
+>>>>>>> Made GameData classes static and encapsulate a MemoryWatcherList; renamed GameMemory to GameDataManager.:TombRaiderII/GameDataManager.cs
                     Game.EnableRaisingEvents = true;
                     Game.Exited += (s, e) => OnGameFound.Invoke(null);
                     */
                     return true;
                 }
 
-                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-                Data.TitleScreen.Update(Game);
-                Data.LevelComplete.Update(Game);
-                Data.Level.Update(Game);
-                Data.LevelTime.Update(Game);
-                Data.PickedPassportFunction.Update(Game);
-                Data.Health.Update(Game);
+                GameData.UpdateAll(Game);
 
                 return true;
             }
@@ -217,7 +223,7 @@ namespace TR2
                 if (kvp.Key == md5Hash)
                 {
                     Game = process;
-                    Version = kvp.Value;
+                    _version = kvp.Value;
                     return true;
                 }
             }
