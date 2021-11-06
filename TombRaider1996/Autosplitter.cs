@@ -46,7 +46,7 @@ namespace TR1
         
         private Level _farthestLevelCompleted = Level.Manor;
         private uint[] _fullGameLevelTimes = new uint[NumberOfLevels];
-        private bool newGameSelected = false;
+        private bool _newGameSelected;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameData GameData = new GameData();
@@ -177,12 +177,12 @@ namespace TR1
             bool titleScreen = GameData.TitleScreen.Current;
 
             if (oldPassportPage == 0 && currentPassportPage == 1 && (titleScreen || currentLevel == Level.Manor))
-                newGameSelected = true;
+                _newGameSelected = true;
 
             // When the game process starts, currentLevel is initialized as Caves and IGT as 0.
             // Thus the code also checks if the user picked New Game from the passport.
             // A new game starts from the New Game page of the passport (page 2, index 1).
-            bool goingToFirstLevel = oldLevel != Level.Caves && currentLevel == Level.Caves && newGameSelected;
+            bool goingToFirstLevel = oldLevel != Level.Caves && currentLevel == Level.Caves && _newGameSelected;
             if (goingToFirstLevel)
                 return true;
 
@@ -211,7 +211,7 @@ namespace TR1
         {
             _farthestLevelCompleted = Level.Manor;
             _fullGameLevelTimes = new uint[NumberOfLevels];
-            newGameSelected = false;
+            _newGameSelected = false;
         }
 
         public void Dispose()

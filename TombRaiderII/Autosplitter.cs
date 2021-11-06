@@ -44,7 +44,7 @@ namespace TR2
     internal class Autosplitter : IAutoSplitter, IDisposable
     {
         private Level _farthestLevelCompleted = Level.LarasHome;
-        private bool newGameSelected = false;
+        private bool _newGameSelected;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameData GameData = new GameData();
@@ -71,9 +71,9 @@ namespace TR2
             Level currentLevel = GameData.Level.Current;
             int finishedLevelsTicks = 0;
             // Add up the level times stored in the game's memory.
-            for (int i = 0; i < ((int)currentLevel - 1); i++)
+            for (int i = 0; i < (int)currentLevel - 1; i++)
             {
-                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + (i * 0x2c));
+                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + i * 0x2c);
                 finishedLevelsTicks += GameData.Game.ReadValue<int>(levelAddress);
             }
             var finishedLevelsTime = (double)finishedLevelsTicks / igtTicksPerSecond;
@@ -144,10 +144,10 @@ namespace TR2
             uint oldPassportPage = GameData.PickedPassportFunction.Old;
             uint currentPassportPage = GameData.PickedPassportFunction.Current;
             if (oldPassportPage == 0 && currentPassportPage == 1)
-                newGameSelected = true;
+                _newGameSelected = true;
             bool cameFromTitleScreenOrLarasHome = GameData.TitleScreen.Old && !GameData.TitleScreen.Current || oldLevel == Level.LarasHome;
             bool justStartedGreatWall = currentLevel == Level.GreatWall;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && newGameSelected;
+            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && _newGameSelected;
             if (newGameStarted)
                 return true;
 
@@ -172,7 +172,7 @@ namespace TR2
         public void ResetValues()
         {
             _farthestLevelCompleted = Level.LarasHome;
-            newGameSelected = false;
+            _newGameSelected = false;
         }
 
         public void Dispose() 

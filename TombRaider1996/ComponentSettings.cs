@@ -13,7 +13,7 @@ namespace TR1
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
-        public bool Deathrun = false;
+        public bool Deathrun;
 
         public ComponentSettings() => InitializeComponent();
 
@@ -101,7 +101,7 @@ namespace TR1
 
         internal void SetGameVersion(GameVersion? version)
         {
-            string versionText = "";
+            string versionText;
             switch (version)
             {
                 case GameVersion.DOSBox:
@@ -110,8 +110,11 @@ namespace TR1
                 case GameVersion.ATI:
                     versionText = "TombATI";
                     break;
+                default:
+                    versionText = "Unknown/Undetected";
+                    break;
             }
-            GameVersionLabel.Text = string.IsNullOrEmpty(versionText) ? "Game Version: Unknown/Undetected" : "Game Version: " + versionText;
+            GameVersionLabel.Text = "Game Version: " + versionText;
         }
 
         private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

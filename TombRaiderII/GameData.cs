@@ -33,7 +33,7 @@ namespace TR2
     internal class GameData
     {
         public const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
-        private static readonly MemoryWatcherList _watchers = new MemoryWatcherList()
+        private static readonly MemoryWatcherList Watchers = new MemoryWatcherList
         {
             new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" },
             new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" },
@@ -54,7 +54,7 @@ namespace TR2
         /// <remarks>
         ///     Goes back to 0 during demos.
         /// </remarks>
-        public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)_watchers["TitleScreen"];
+        public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers["TitleScreen"];
 
         /// <summary>
         ///     Indicates if the current <see cref="Level"/> is finished.
@@ -67,7 +67,7 @@ namespace TR2
         ///         Applies to Great Wall, Opera House, Diving Area, Temple of Xian, but NOT Home Sweet Home.
         ///     Otherwise, the value is 0.
         /// </remarks>
-        public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)_watchers["LevelComplete"];
+        public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers["LevelComplete"];
 
         /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
@@ -81,12 +81,12 @@ namespace TR2
         ///     19: Atlantis cutscene after the FMV until next level start.
         ///     20: Title screen and opening FMV.
         /// </remarks>
-        public static MemoryWatcher<Level> Level => (MemoryWatcher<Level>)_watchers["Level"];
+        public static MemoryWatcher<Level> Level => (MemoryWatcher<Level>)Watchers["Level"];
 
         /// <summary>
         ///     Gives the IGT value for the current level.
         /// </summary>
-        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)_watchers["LevelTime"];
+        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers["LevelTime"];
 
         /// <summary>
         ///     Indicates the passport function chosen by the user.
@@ -99,7 +99,7 @@ namespace TR2
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
-        public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)_watchers["PickedPassportFunction"];
+        public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers["PickedPassportFunction"];
 
         /// <summary>
         ///     Lara's current HP.
@@ -107,38 +107,38 @@ namespace TR2
         /// <remarks>
         ///     Max HP is 1000. When it hits 0, Lara dies.
         /// </remarks>
-        public static MemoryWatcher<short> Health => (MemoryWatcher<short>)_watchers["Health"];
+        public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers["Health"];
 
         /// <summary>
-        ///     Sets <see cref="Addresses"/> addresses based on <paramref name="version"/>.
+        ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
-        public static void SetAddresses(GameVersion version)
+        private static void SetAddresses(GameVersion version)
         {
             if (version == GameVersion.UKB)
             {
-                _watchers.Clear();
-                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
-                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" });
-                _watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EC0)) { Name = "Level" });
-                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
-                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
-                _watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
+                Watchers.Clear();
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" });
+                Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EC0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
             }
             else
             {
-                _watchers.Clear();
-                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BD90)) { Name = "TitleScreen" });
-                _watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EB4)) { Name = "LevelComplete" });
-                _watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EB0)) { Name = "Level" });
-                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
-                _watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
-                _watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
+                Watchers.Clear();
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BD90)) { Name = "TitleScreen" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EB4)) { Name = "LevelComplete" });
+                Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EB0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
             }
         }
 
         /// <summary>
-        ///     Updates <see cref="Addresses"/> and its addresses' values.
+        ///     Updates <see cref="GameData"/> and its addresses' values.
         /// </summary>
         /// <returns>
         ///     <see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise
@@ -161,7 +161,7 @@ namespace TR2
                     return true;
                 }
 
-                _watchers.UpdateAll(Game);
+                Watchers.UpdateAll(Game);
 
                 return true;
             }
@@ -184,9 +184,9 @@ namespace TR2
 
             // Get a process's filename, if found.
             Process process = null;
-            if (tomb2Processes?.Length != 0)
+            if (tomb2Processes.Length != 0)
                 process = tomb2Processes[0];
-            else if (tr2Processes?.Length != 0)
+            else if (tr2Processes.Length != 0)
                 process = tr2Processes[0];
             string exePath = process?.MainModule?.FileName;
             if (string.IsNullOrEmpty(exePath))
@@ -200,7 +200,7 @@ namespace TR2
                 {"39cab6b4ae3c761b67ae308a0ab22e44", GameVersion.P1},
                 {"12d56521ce038b55efba97463357a3d7", GameVersion.UKB}
             };
-            string md5Hash = "";
+            string md5Hash;
             using (var md5 = MD5.Create())
             {
                 using (var stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -209,16 +209,13 @@ namespace TR2
                     md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                 }
             }
-            foreach (KeyValuePair<string, GameVersion> kvp in versionHashes)
-            {
-                if (kvp.Key == md5Hash)
-                {
-                    Game = process;
-                    _version = kvp.Value;
-                    return true;
-                }
-            }
-            return false;
+
+            if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
+                return false;
+
+            _version = version;
+            Game = process;
+            return true;
         }
     }
 }
