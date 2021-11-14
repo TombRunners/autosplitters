@@ -46,7 +46,6 @@ namespace TR1
         ///     This loads the component's code into LiveSplit.
         /// </remarks>
         public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(), state);
-        
 
         #endregion
 

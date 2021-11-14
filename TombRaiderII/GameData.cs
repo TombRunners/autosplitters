@@ -32,7 +32,9 @@ namespace TR2
     /// </summary>
     internal class GameData
     {
-        public const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
+        private const int IGTTicksPerSecond = 30;
+        private const int FirstLevelTimeAddress = 0x51EA24;  // Valid for all supported game versions.
+
         private static readonly MemoryWatcherList Watchers = new MemoryWatcherList
         {
             new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" },
@@ -43,7 +45,7 @@ namespace TR2
             new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" }
         };
         private GameVersion _version;
-        public Process Game;        
+        private Process _game;
 
         public delegate void GameFoundDelegate(GameVersion? version);
         public GameFoundDelegate OnGameFound;
@@ -110,6 +112,27 @@ namespace TR2
         public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers["Health"];
 
         /// <summary>
+        ///     Converts level time ticks to a double representing time elapsed.
+        /// </summary>
+        public static double LevelTimeAsDouble(uint ticks) => (double)ticks / IGTTicksPerSecond;
+        
+        /// <summary>
+        ///     Sums completed levels' times.
+        /// </summary>
+        /// <returns>The sum of completed levels' times</returns>
+        public double SumCompletedLevelTimes()
+        {
+            // Add up the level times stored in the game's memory.
+            int finishedLevelsTicks = 0;
+            for (int i = 0; i < (int)Level.Current - 1; i++)
+            {
+                var levelAddress = (IntPtr)(FirstLevelTimeAddress + i * 0x2c);
+                finishedLevelsTicks += _game.ReadValue<int>(levelAddress);
+            }
+            return (double)finishedLevelsTicks / IGTTicksPerSecond;
+        }
+
+        /// <summary>
         ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
@@ -147,21 +170,19 @@ namespace TR2
         {
             try
             {
-                if (Game == null || Game.HasExited)
+                if (_game == null || _game.HasExited)
                 {
                     if (!SetGameProcessAndVersion())
                         return false;
 
                     SetAddresses(_version);
                     OnGameFound.Invoke(_version);
->>>>>>> Made GameData classes static and encapsulate a MemoryWatcherList; renamed GameMemory to GameDataManager.:TombRaiderII/GameDataManager.cs
                     Game.EnableRaisingEvents = true;
                     Game.Exited += (s, e) => OnGameFound.Invoke(null);
-                    */
                     return true;
                 }
 
-                Watchers.UpdateAll(Game);
+                Watchers.UpdateAll(_game);
 
                 return true;
             }
@@ -214,7 +235,7 @@ namespace TR2
                 return false;
 
             _version = version;
-            Game = process;
+            _game = process;
             return true;
         }
     }

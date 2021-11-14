@@ -59,25 +59,10 @@ namespace TR2
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            const uint igtTicksPerSecond = 30;
-            uint currentLevelTicks = GameData.LevelTime.Current;
-            var currentLevelTime = (double)currentLevelTicks / igtTicksPerSecond;
-
-            // IL
-            if (!Settings.FullGame)
-                return TimeSpan.FromSeconds(currentLevelTime);
-
-            // FG
-            Level currentLevel = GameData.Level.Current;
-            int finishedLevelsTicks = 0;
-            // Add up the level times stored in the game's memory.
-            for (int i = 0; i < (int)currentLevel - 1; i++)
-            {
-                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + i * 0x2c);
-                finishedLevelsTicks += GameData.Game.ReadValue<int>(levelAddress);
-            }
-            var finishedLevelsTime = (double)finishedLevelsTicks / igtTicksPerSecond;
-            return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
+            double currentLevelTime = GameData.LevelTimeAsDouble(GameData.LevelTime.Current);
+            return Settings.FullGame
+                ? TimeSpan.FromSeconds(currentLevelTime + GameData.SumCompletedLevelTimes()) // FG
+                : TimeSpan.FromSeconds(currentLevelTime); // IL
         }
 
         /// <summary>

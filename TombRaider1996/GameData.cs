@@ -257,6 +257,8 @@ namespace TR1
     /// </summary>
     internal class GameData
     {
+        private const int IGTTicksPerSecond = 30;
+
         private static readonly MemoryWatcherList Watchers = new MemoryWatcherList
         {
             new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" },
@@ -268,7 +270,7 @@ namespace TR1
             new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" }
         };
         private GameVersion _version;
-        public Process Game;
+        private Process _game;
 
         public delegate void GameFoundDelegate(GameVersion? version);
         public GameFoundDelegate OnGameFound;
@@ -349,6 +351,11 @@ namespace TR1
         public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers["Health"];
 
         /// <summary>
+        ///     Converts level time ticks to a double representing time elapsed.
+        /// </summary>
+        public static double LevelTimeAsDouble(uint ticks) => (double)ticks / IGTTicksPerSecond;
+
+        /// <summary>
         ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
         /// <param name="version"></param>
@@ -388,19 +395,19 @@ namespace TR1
         {
             try
             {
-                if (Game == null || Game.HasExited)
+                if (_game == null || _game.HasExited)
                 {
                     if (!SetGameProcessAndVersion())
                         return false;
 
                     SetAddresses(_version);
                     OnGameFound.Invoke(_version);
-                    Game.EnableRaisingEvents = true;
-                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
+                    _game.EnableRaisingEvents = true;
+                    _game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
                 }
 
-                Watchers.UpdateAll(Game);
+                Watchers.UpdateAll(_game);
 
                 return true;
             }
@@ -430,17 +437,17 @@ namespace TR1
 
             if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
             {
-                Game = atiProcesses[0];
+                _game = atiProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeATI)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 _version = GameVersion.ATI;
             }
             else if (dosLooksLikeDOS)
             {
-                Game = dosProcesses[0];
+                _game = dosProcesses[0];
                 _version = GameVersion.DOSBox;
             }
             else

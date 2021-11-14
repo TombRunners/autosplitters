@@ -75,17 +75,16 @@ namespace TR1
             if (igtIsNotTicking || igtGotReset || currentDemoTimer > demoStartThreshold || lastRealLevel is null)
                 return null;
             
-            const uint igtTicksPerSecond = 30;
             if (!Settings.FullGame) 
-                return TimeSpan.FromSeconds((double) currentTime / igtTicksPerSecond);
+                return TimeSpan.FromSeconds(GameData.LevelTimeAsDouble(currentTime));
 
-            // The array is 0-indexed.
+            // Update the array with the current level's time.
             _fullGameLevelTimes[(uint) lastRealLevel - 1] = currentTime;
-            // But Take's argument is the number of elements, not an index.
+            // The array is 0-indexed but Take's argument is the number of elements.
             uint sumOfLevelTimes = (uint) _fullGameLevelTimes
                 .Take((int) lastRealLevel)
                 .Sum(x => x);
-            return TimeSpan.FromSeconds((double) sumOfLevelTimes / igtTicksPerSecond);
+            return TimeSpan.FromSeconds(GameData.LevelTimeAsDouble(sumOfLevelTimes));
         }
 
         /// <summary>
