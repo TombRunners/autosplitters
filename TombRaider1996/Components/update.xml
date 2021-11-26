@@ -42,4 +42,12 @@
       <change>Fix updater not starting if there's a new version.</change>
     </changelog>
   </update>
+  <update version="2.3.0.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Temporary fix for the component crashing LiveSplit on quit.</change>
+    </changelog>
+  </update>
 </updates>

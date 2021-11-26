@@ -151,8 +151,10 @@ namespace TR2
 
                     Data = new GameData(Version);
                     OnGameFound.Invoke(Version);
+                    /* crashes LiveSplit so temporarily disabled
                     Game.EnableRaisingEvents = true;
                     Game.Exited += (s, e) => OnGameFound.Invoke(null);
+                    */
                     return true;
                 }
 
