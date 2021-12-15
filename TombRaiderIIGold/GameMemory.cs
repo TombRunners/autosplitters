@@ -12,6 +12,7 @@ namespace TR2Gold
     /// </summary>
     internal enum GameVersion
     {
+        Stella,
         StellaCracked
     }
 
@@ -20,6 +21,7 @@ namespace TR2Gold
     /// </summary>
     internal enum ExpectedSize
     {
+        Stella = 1695744,
         StellaCracked = 1695744
     }
 
@@ -89,7 +91,7 @@ namespace TR2Gold
         /// <param name="version"></param>
         public GameData(GameVersion version)
         {
-            if (version == GameVersion.StellaCracked)
+            if (version == GameVersion.Stella || version == GameVersion.StellaCracked)
             {
                 TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0x11EE00));
                 LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xDCF28));
@@ -178,6 +180,7 @@ namespace TR2Gold
             // Compare the running EXE's hash to known values.
             var versionHashes = new Dictionary<string, GameVersion>
             {
+                {"13fa4e8585d1a1d52d342a513f65f19f", GameVersion.Stella},
                 {"3f262621d07a3c6c6fdd6f654814f988", GameVersion.StellaCracked}
             };
             string md5Hash;

@@ -127,8 +127,8 @@ namespace TR2Gold
             if (oldPassportPage == 0 && currentPassportPage == 1)
                 _newGameSelected = true;
             bool cameFromTitleScreenOrLarasHome = GameMemory.Data.TitleScreen.Old && !GameMemory.Data.TitleScreen.Current || oldLevel == Level.LarasHome;
-            bool justStartedGreatWall = currentLevel == Level.TheColdWar;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && _newGameSelected;
+            bool justStartedColdWar = currentLevel == Level.TheColdWar;
+            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedColdWar && _newGameSelected;
             if (newGameStarted)
                 return true;
 

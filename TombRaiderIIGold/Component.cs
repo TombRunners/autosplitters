@@ -94,7 +94,7 @@ namespace TR2Gold
         /// <remarks>
         ///     This is the text that is displayed in the white area of LiveSplit's Layout Editor.
         /// </remarks>
-        public override string ComponentName => "TR2 Gold";
+        public override string ComponentName => "Tomb Raider II Gold";
 
         /// <summary>
         ///     Adds <see cref="GameMemory"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
