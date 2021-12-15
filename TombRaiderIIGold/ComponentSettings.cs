@@ -104,6 +104,9 @@ namespace TR2Gold
             string versionText;
             switch (version)
             {
+                case GameVersion.Stella:
+                    versionText = "Stella";
+                    break;
                 case GameVersion.StellaCracked:
                     versionText = "Stella No-CD";
                     break;
