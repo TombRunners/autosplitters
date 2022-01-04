@@ -166,12 +166,12 @@ namespace TR3
         /// </returns>
         private bool SetGameProcessAndVersion()
         {
-            Process[] t2GoldProcesses = Process.GetProcessesByName("tomb3");
+            Process[] gameProcesses = Process.GetProcessesByName("tomb3");
 
             // Get a process's filename, if found.
             Process process = null;
-            if (t2GoldProcesses.Length != 0)
-                process = t2GoldProcesses[0];
+            if (gameProcesses.Length != 0)
+                process = gameProcesses[0];
             string exePath = process?.MainModule?.FileName;
             if (string.IsNullOrEmpty(exePath))
                 return false;

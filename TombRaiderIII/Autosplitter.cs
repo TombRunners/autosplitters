@@ -87,11 +87,13 @@ namespace TR3
         /// </remarks>
         private double SumCompletedLevelTimes()
         {
-            var finishedLevelsTicks = 0;
+            const int levelSaveStructSize = 0x2c;
+
             // Add up the level times of interest from the game's memory.
+            var finishedLevelsTicks = 0;
             foreach (Level completedLevel in _completedLevels)
             {
-                int levelOffset = ((int)completedLevel - 1) * 0x2c; // - 1 because FirstLevelTimeAddress is already on the first address
+                int levelOffset = ((int)completedLevel - 1) * levelSaveStructSize; // - 1 because FirstLevelTimeAddress is already on the first address
                 var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + levelOffset);
                 finishedLevelsTicks += GameMemory.Game.ReadValue<int>(levelAddress);
             }
