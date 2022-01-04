@@ -70,7 +70,7 @@ namespace TR3
         {
             // Check that IGT is ticking.
             uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
-            uint oldLevelTicks = GameMemory.Data.LevelTime.Current;
+            uint oldLevelTicks = GameMemory.Data.LevelTime.Old;
             if (currentLevelTicks - oldLevelTicks == 0)
                 return null;
 
