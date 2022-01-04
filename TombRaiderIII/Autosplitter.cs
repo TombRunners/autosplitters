@@ -70,11 +70,7 @@ namespace TR3
         {
             uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
             double currentLevelTime = (double)currentLevelTicks / IgtTicksPerSecond;
-
-            bool noLevelsCompleted = _completedLevels.Count != 0;
-            return noLevelsCompleted 
-                ? TimeSpan.FromSeconds(currentLevelTime)
-                : TimeSpan.FromSeconds(currentLevelTime + SumCompletedLevelTimes());
+            return TimeSpan.FromSeconds(currentLevelTime + SumCompletedLevelTimes());
         }
 
         /// <summary>
