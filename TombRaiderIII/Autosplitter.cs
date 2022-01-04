@@ -53,7 +53,7 @@ namespace TR3
         private const int IgtTicksPerSecond = 30;
         private const int LevelCount = 20; // This considers Lara's Home as 0 and includes the bonus level.
 
-        private readonly HashSet<Level> _completedLevels = new HashSet<Level>(LevelCount);
+        private readonly List<Level> _completedLevels = new List<Level>(LevelCount);
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -95,6 +95,8 @@ namespace TR3
             var finishedLevelsTicks = 0;
             foreach (Level completedLevel in _completedLevels)
             {
+                if (completedLevel == GameMemory.Data.Level.Current)
+                    break;
                 int levelOffset = ((int)completedLevel - 1) * levelSaveStructSize; // - 1 because FirstLevelTimeAddress is already on the first address
                 var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + levelOffset);
                 finishedLevelsTicks += GameMemory.Game.ReadValue<int>(levelAddress);
@@ -178,6 +180,11 @@ namespace TR3
         /// </summary>
         public void OnSplit() => _completedLevels.Add(GameMemory.Data.Level.Current);
 
+        /// <summary>
+        ///     On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.
+        /// </summary>
+        public void OnUndoSplit() => _completedLevels.RemoveAt(_completedLevels.Count - 1);
+        
         public void Dispose() 
         {
             GameMemory.OnGameFound -= Settings.SetGameVersion;

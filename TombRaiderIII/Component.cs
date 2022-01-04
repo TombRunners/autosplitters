@@ -31,6 +31,7 @@ namespace TR3
             _state = state;
             _state.OnSplit += (s, e) => _splitter?.OnSplit();
             _state.OnStart += (s, e) => _splitter?.OnStart();
+            _state.OnUndoSplit += (s, e) => _splitter.OnUndoSplit();
         }
 
         /// <inheritdoc/>
@@ -89,6 +90,7 @@ namespace TR3
         {
             _state.OnSplit -= (s, e) => _splitter?.OnSplit();
             _state.OnStart -= (s, e) => _splitter?.OnStart();
+            _state.OnUndoSplit -= (s, e) => _splitter.OnUndoSplit();
             _splitter.Dispose();
         }
 
