@@ -54,7 +54,6 @@ namespace TR3
         private const int LevelCount = 20; // This considers Lara's Home as 0 and includes the bonus level.
 
         private readonly HashSet<Level> _completedLevels = new HashSet<Level>(LevelCount);
-        private Level _startingLevel;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
         internal GameMemory GameMemory = new GameMemory();
@@ -115,9 +114,7 @@ namespace TR3
         {
             // Determine if the player is on the correct level to split; if not, we stop.
             Level currentLevel = GameMemory.Data.Level.Current;
-            bool onCorrectLevelToSplit = _completedLevels.Count == 0
-                ? currentLevel == _startingLevel
-                : !_completedLevels.Contains(currentLevel);
+            bool onCorrectLevelToSplit = !_completedLevels.Contains(currentLevel);
             if (!onCorrectLevelToSplit)
                 return false;
 
@@ -170,11 +167,7 @@ namespace TR3
         /// <summary>
         ///     On <see cref="LiveSplitState.OnStart"/>, updates values.
         /// </summary>
-        public void OnStart()
-        {
-            _completedLevels.Clear();
-            _startingLevel = GameMemory.Data.Level.Current;
-        }
+        public void OnStart() => _completedLevels.Clear();
 
         /// <summary>
         ///     On <see cref="LiveSplitState.OnSplit"/>, updates values.
