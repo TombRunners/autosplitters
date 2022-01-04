@@ -68,7 +68,13 @@ namespace TR3
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
+            // Check that IGT is ticking.
             uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
+            uint oldLevelTicks = GameMemory.Data.LevelTime.Current;
+            if (currentLevelTicks - oldLevelTicks == 0)
+                return null;
+
+            // Sum the current and completed levels' IGT.
             double currentLevelTime = (double)currentLevelTicks / IgtTicksPerSecond;
             return TimeSpan.FromSeconds(currentLevelTime + SumCompletedLevelTimes());
         }
@@ -83,7 +89,7 @@ namespace TR3
         /// </remarks>
         private double SumCompletedLevelTimes()
         {
-            const int levelSaveStructSize = 0x2c;
+            const int levelSaveStructSize = 0x33;
 
             // Add up the level times of interest from the game's memory.
             var finishedLevelsTicks = 0;
