@@ -74,6 +74,14 @@ namespace TR3
             if (currentLevelTicks - oldLevelTicks == 0)
                 return null;
 
+            // TR3's IGT ticks during globe level selection; the saved end-level IGT is unaffected, thus the overall FG IGT is also unaffected.
+            // If a runner is watching LS's IGT, this may confuse them, despite it being a non-issue for the level/FG IGT.
+            // To prevent the ticks from showing in LS, we use the fact that LevelComplete isn't reset to 0 until the next level is loaded.
+            Level currentLevel = GameMemory.Data.Level.Current;
+            bool levelComplete = GameMemory.Data.LevelComplete.Current;
+            if (_completedLevels.Contains(currentLevel) && levelComplete)
+                return null;
+
             // Sum the current and completed levels' IGT.
             double currentLevelTime = (double)currentLevelTicks / IgtTicksPerSecond;
             return TimeSpan.FromSeconds(currentLevelTime + SumCompletedLevelTimes());
