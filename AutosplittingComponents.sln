@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR2", "TombRaiderII\TR2.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR2Gold", "TombRaiderIIGold\TR2Gold.csproj", "{45961D67-081C-4C01-B1EA-9E4A79F80DAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR3", "TombRaiderIII\TR3.csproj", "{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{45961D67-081C-4C01-B1EA-9E4A79F80DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45961D67-081C-4C01-B1EA-9E4A79F80DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45961D67-081C-4C01-B1EA-9E4A79F80DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C332F76B-86CC-4519-A3B6-3AD6FAC4C3E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
