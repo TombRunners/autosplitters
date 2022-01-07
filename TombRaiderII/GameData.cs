@@ -123,40 +123,45 @@ namespace TR2
         public double SumCompletedLevelTimes()
         {
             // Add up the level times stored in the game's memory.
-            int finishedLevelsTicks = 0;
+            uint finishedLevelsTicks = 0;
             for (int i = 0; i < (int)Level.Current - 1; i++)
             {
                 var levelAddress = (IntPtr)(FirstLevelTimeAddress + i * 0x2c);
-                finishedLevelsTicks += _game.ReadValue<int>(levelAddress);
+                finishedLevelsTicks += _game.ReadValue<uint>(levelAddress);
             }
-            return (double)finishedLevelsTicks / IGTTicksPerSecond;
+            return LevelTimeAsDouble(finishedLevelsTicks);
         }
 
         /// <summary>
         ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
-        /// <param name="version"></param>
+        /// <param name="version"><see cref="GameVersion"/> for which addresses should be assigned</param>
         private static void SetAddresses(GameVersion version)
         {
-            if (version == GameVersion.UKB)
+            switch (version)
             {
-                Watchers.Clear();
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" });
-                Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EC0)) { Name = "Level" });
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
-            }
-            else
-            {
-                Watchers.Clear();
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BD90)) { Name = "TitleScreen" });
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EB4)) { Name = "LevelComplete" });
-                Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EB0)) { Name = "Level" });
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
+                case GameVersion.UKB:
+                    Watchers.Clear();
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EC4)) { Name = "LevelComplete" });
+                    Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EC0)) { Name = "Level" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7980)) { Name = "PickedPassportFunction" });
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
+                    break;
+                case GameVersion.EPC:
+                case GameVersion.MP:
+                case GameVersion.P1:
+                    Watchers.Clear();
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BD90)) { Name = "TitleScreen" });
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xD9EB4)) { Name = "LevelComplete" });
+                    Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xD9EB0)) { Name = "Level" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x11EE00)) { Name = "LevelTime" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD7970)) { Name = "PickedPassportFunction" });
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
         }
 
@@ -177,8 +182,8 @@ namespace TR2
 
                     SetAddresses(_version);
                     OnGameFound.Invoke(_version);
-                    Game.EnableRaisingEvents = true;
-                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
+                    _game.EnableRaisingEvents = true;
+                    _game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
                 }
 

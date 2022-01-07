@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using LiveSplit.ComponentUtil;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
