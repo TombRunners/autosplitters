@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using LiveSplit.ComponentUtil;
 
 namespace TR1
@@ -11,15 +15,6 @@ namespace TR1
     {
         ATI,
         DOSBox
-    }
-
-    /// <summary>
-    ///     The memory sizes of supported game versions (in bytes).
-    /// </summary>
-    internal enum ExpectedSize
-    {
-        ATI = 3092480,
-        DOSBox = 40321024
     }
 
     /// <summary>
@@ -198,37 +193,50 @@ namespace TR1
         /// </returns>
         private bool SetGameProcessAndVersion()
         {
+            var versionHashes = new Dictionary<string, GameVersion>
+            {
+                {"e4b95c0479d7256af56b8a9897ed4b13", GameVersion.ATI },
+                {"de6b2bf4c04a93f0833b9717386e4a3b", GameVersion.DOSBox }
+            };
+
             Process[] atiProcesses = Process.GetProcessesByName("tombati");
             Process[] dosProcesses = Process.GetProcessesByName("dosbox");
+            foreach (Process process in atiProcesses.Concat(dosProcesses))
+            {
+                string exePath = process?.MainModule?.FileName;
+                if (string.IsNullOrEmpty(exePath))
+                    break;
 
-            // The Steam Workshop launcher uses the name "dosbox" and remains as a background process after launching the game.
-            bool workshopLauncherAndATIGameAreBothRunning = atiProcesses.Length != 0 && dosProcesses.Length != 0;
-            bool atiLooksLikeATI = atiProcesses.Length != 0 && atiProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
-            // Some Workshop guides have the user rename the ATI EXE back to "dosbox" for Steam compatibility.
-            bool dosLooksLikeATI = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.ATI;
-            bool dosLooksLikeDOS = dosProcesses.Length != 0 && dosProcesses[0]?.MainModule?.ModuleMemorySize == (int) ExpectedSize.DOSBox;
+                string md5Hash = GetMd5Hash(exePath);
+                if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
+                    break;
 
-            if (workshopLauncherAndATIGameAreBothRunning || atiLooksLikeATI)
-            {
-                _game = atiProcesses[0];
-                _version = GameVersion.ATI;
-            }
-            else if (dosLooksLikeATI)
-            {
-                _game = dosProcesses[0];
-                _version = GameVersion.ATI;
-            }
-            else if (dosLooksLikeDOS)
-            {
-                _game = dosProcesses[0];
-                _version = GameVersion.DOSBox;
-            }
-            else
-            {
-                return false;
+                _version = version;
+                _game = process;
+                return true;
             }
 
-            return true;
+            return false;
+        }
+
+        /// <summary>
+        ///     Computes the MD5 hash and formats as a simple, lowercased string.
+        /// </summary>
+        /// <param name="exePath">The file to hash</param>
+        /// <returns>Lowercased, invariant string representing the MD5 <paramref name="exePath"/></returns>
+        private static string GetMd5Hash(string exePath)
+        {
+            string md5Hash;
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
+
+            return md5Hash;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using LiveSplit.ComponentUtil;
 
@@ -16,15 +17,6 @@ namespace TR2
         EPC,  // Eidos Premier Collection
         P1,   // CORE's Patch 1
         UKB   // Eidos UK Box
-    }
-
-    /// <summary>
-    ///     The memory sizes of supported game versions (in bytes).
-    /// </summary>
-    internal enum ExpectedSize
-    {
-        Others = 1691648,
-        UKB = 1724416
     }
 
     /// <summary>
@@ -205,20 +197,6 @@ namespace TR2
         /// </returns>
         private bool SetGameProcessAndVersion()
         {
-            Process[] tomb2Processes = Process.GetProcessesByName("tomb2");  // Standard name
-            Process[] tr2Processes = Process.GetProcessesByName("tr2");      // Some users rename the EXE to fix installation issues
-
-            // Get a process's filename, if found.
-            Process process = null;
-            if (tomb2Processes.Length != 0)
-                process = tomb2Processes[0];
-            else if (tr2Processes.Length != 0)
-                process = tr2Processes[0];
-            string exePath = process?.MainModule?.FileName;
-            if (string.IsNullOrEmpty(exePath))
-                return false;
-
-            // Compare the running EXE's hash to known values.
             var versionHashes = new Dictionary<string, GameVersion>
             {
                 {"964f0c4e08ff44a905e8fc9a78f605dc", GameVersion.MP},
@@ -226,6 +204,29 @@ namespace TR2
                 {"39cab6b4ae3c761b67ae308a0ab22e44", GameVersion.P1},
                 {"12d56521ce038b55efba97463357a3d7", GameVersion.UKB}
             };
+
+            Process[] tomb2Processes = Process.GetProcessesByName("tomb2");  // Standard name
+            Process[] tr2Processes = Process.GetProcessesByName("tr2");      // Some users rename the EXE to fix installation issues
+            foreach (Process process in tomb2Processes.Concat(tr2Processes))
+            {
+                string exePath = process?.MainModule?.FileName;
+                if (string.IsNullOrEmpty(exePath))
+                    break;
+
+                string md5Hash = GetMd5Hash(exePath);
+                if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
+                    break;
+
+                _version = version;
+                _game = process;
+                return true;
+            }
+
+            return false;
+        }
+
+        private static string GetMd5Hash(string exePath)
+        {
             string md5Hash;
             using (var md5 = MD5.Create())
             {
@@ -236,12 +237,7 @@ namespace TR2
                 }
             }
 
-            if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
-                return false;
-
-            _version = version;
-            _game = process;
-            return true;
+            return md5Hash;
         }
     }
 }

@@ -17,15 +17,6 @@ namespace TR2Gold
     }
 
     /// <summary>
-    ///     The memory sizes of supported game versions (in bytes).
-    /// </summary>
-    internal enum ExpectedSize
-    {
-        Stella = 1695744,
-        StellaCracked = 1695744
-    }
-
-    /// <summary>
     ///     The game's watched memory addresses.
     /// </summary>
     internal class GameData
@@ -191,22 +182,38 @@ namespace TR2Gold
         /// </returns>
         private bool SetGameProcessAndVersion()
         {
-            Process[] t2GoldProcesses = Process.GetProcessesByName("t2gold");
-
-            // Get a process's filename, if found.
-            Process process = null;
-            if (t2GoldProcesses.Length != 0)
-                process = t2GoldProcesses[0];
-            string exePath = process?.MainModule?.FileName;
-            if (string.IsNullOrEmpty(exePath))
-                return false;
-
-            // Compare the running EXE's hash to known values.
             var versionHashes = new Dictionary<string, GameVersion>
             {
                 {"13fa4e8585d1a1d52d342a513f65f19f", GameVersion.Stella},
                 {"3f262621d07a3c6c6fdd6f654814f988", GameVersion.StellaCracked}
             };
+
+            Process[] t2GoldProcesses = Process.GetProcessesByName("t2gold");
+            foreach (Process process in t2GoldProcesses)
+            {
+                string exePath = process?.MainModule?.FileName;
+                if (string.IsNullOrEmpty(exePath))
+                    break;
+
+                string md5Hash = GetMd5Hash(exePath);
+                if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
+                    break;
+
+                _version = version;
+                _game = process;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Computes the MD5 hash and formats as a simple, lowercased string.
+        /// </summary>
+        /// <param name="exePath">The file to hash</param>
+        /// <returns>Lowercased, invariant string representing the MD5 <paramref name="exePath"/></returns>
+        private static string GetMd5Hash(string exePath)
+        {
             string md5Hash;
             using (var md5 = MD5.Create())
             {
@@ -216,16 +223,8 @@ namespace TR2Gold
                     md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                 }
             }
-            foreach (KeyValuePair<string, GameVersion> kvp in versionHashes)
-            {
-                if (kvp.Key == md5Hash)
-                {
-                    _game = process;
-                    _version = kvp.Value;
-                    return true;
-                }
-            }
-            return false;
+
+            return md5Hash;
         }
     }
 }

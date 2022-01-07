@@ -189,22 +189,38 @@ namespace TR3
         /// </returns>
         private bool SetGameProcessAndVersion()
         {
-            Process[] gameProcesses = Process.GetProcessesByName("tomb3");
-
-            // Get a process's filename, if found.
-            Process process = null;
-            if (gameProcesses.Length != 0)
-                process = gameProcesses[0];
-            string exePath = process?.MainModule?.FileName;
-            if (string.IsNullOrEmpty(exePath))
-                return false;
-
-            // Compare the running EXE's hash to known values.
             var versionHashes = new Dictionary<string, GameVersion>
             {
                 {"4044dc2c58f02bfea2572e80dd8f2abb", GameVersion.Int},
                 {"66404f58bb5dbf30707abfd245692cd2", GameVersion.JpCracked}
             };
+
+            Process[] gameProcesses = Process.GetProcessesByName("tomb3");
+            foreach (Process process in gameProcesses)
+            {
+                string exePath = process?.MainModule?.FileName;
+                if (string.IsNullOrEmpty(exePath))
+                    break;
+
+                string md5Hash = GetMd5Hash(exePath);
+                if (!versionHashes.TryGetValue(md5Hash, out GameVersion version)) 
+                    break;
+
+                _version = version;
+                _game = process;
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Computes the MD5 hash and formats as a simple, lowercased string.
+        /// </summary>
+        /// <param name="exePath">The file to hash</param>
+        /// <returns>Lowercased, invariant string representing the MD5 <paramref name="exePath"/></returns>
+        private static string GetMd5Hash(string exePath)
+        {
             string md5Hash;
             using (var md5 = MD5.Create())
             {
@@ -214,16 +230,8 @@ namespace TR3
                     md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                 }
             }
-            foreach (KeyValuePair<string, GameVersion> kvp in versionHashes)
-            {
-                if (kvp.Key == md5Hash)
-                {
-                    _game = process;
-                    _version = kvp.Value;
-                    return true;
-                }
-            }
-            return false;
+
+            return md5Hash;
         }
     }
 }
