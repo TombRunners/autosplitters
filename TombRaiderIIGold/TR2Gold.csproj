@@ -55,7 +55,7 @@
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameMemory.cs" />
+    <Compile Include="GameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

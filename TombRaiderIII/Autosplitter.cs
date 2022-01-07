@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using LiveSplit.ComponentUtil;
 using LiveSplit.Model;
-using LiveSplit.Options;
 using LiveSplit.UI.Components.AutoSplit;
 
 namespace TR3
@@ -50,16 +46,15 @@ namespace TR3
     /// </summary>
     internal class Autosplitter : IAutoSplitter, IDisposable
     {
-        private const int IgtTicksPerSecond = 30;
         private const int LevelCount = 20; // This considers Lara's Home as 0 and includes the bonus level.
 
         private readonly List<Level> _completedLevels = new List<Level>(LevelCount);
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameMemory GameMemory = new GameMemory();
+        internal GameData GameData = new GameData();
 
         /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
-        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
+        public Autosplitter() => GameData.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -69,49 +64,25 @@ namespace TR3
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
             // Check that IGT is ticking.
-            uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
-            uint oldLevelTicks = GameMemory.Data.LevelTime.Old;
+            uint currentLevelTicks = GameData.LevelTime.Current;
+            uint oldLevelTicks = GameData.LevelTime.Old;
             if (currentLevelTicks - oldLevelTicks == 0)
                 return null;
 
             // TR3's IGT ticks during globe level selection; the saved end-level IGT is unaffected, thus the overall FG IGT is also unaffected.
             // If a runner is watching LS's IGT, this may confuse them, despite it being a non-issue for the level/FG IGT.
             // To prevent the ticks from showing in LS, we use the fact that LevelComplete isn't reset to 0 until the next level is loaded.
-            Level currentLevel = GameMemory.Data.Level.Current;
-            bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
-            bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
+            Level currentLevel = GameData.Level.Current;
+            bool oldLevelComplete = GameData.LevelComplete.Old;
+            bool currentLevelComplete = GameData.LevelComplete.Current;
             bool levelStillComplete = oldLevelComplete && currentLevelComplete;
             if (_completedLevels.Contains(currentLevel) && levelStillComplete)
                 return null;
 
             // Sum the current and completed levels' IGT.
-            double currentLevelTime = (double)currentLevelTicks / IgtTicksPerSecond;
-            return TimeSpan.FromSeconds(currentLevelTime + SumCompletedLevelTimes());
-        }
-
-        /// <summary>
-        ///     Sums completed levels' times.
-        /// </summary>
-        /// <returns>The sum of completed levels' times as a double.</returns>
-        /// <remarks>
-        ///     Because TR3's level order is variable and we must maintain compatibility with Section and NG+ runs,
-        ///     we read addresses based on <c>_completedLevels</c>.
-        /// </remarks>
-        private double SumCompletedLevelTimes()
-        {
-            const int levelSaveStructSize = 0x33;
-
-            // Add up the level times of interest from the game's memory.
-            var finishedLevelsTicks = 0;
-            foreach (Level completedLevel in _completedLevels)
-            {
-                if (completedLevel == GameMemory.Data.Level.Current)
-                    break;
-                int levelOffset = ((int)completedLevel - 1) * levelSaveStructSize; // - 1 because FirstLevelTimeAddress is already on the first address
-                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + levelOffset);
-                finishedLevelsTicks += GameMemory.Game.ReadValue<int>(levelAddress);
-            }
-            return (double)finishedLevelsTicks / IgtTicksPerSecond;
+            double currentLevelTime = GameData.LevelTimeAsDouble(currentLevelTicks);
+            double finishedLevelsTime = GameData.SumCompletedLevelTimes(_completedLevels);
+            return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 
         /// <summary>
@@ -129,18 +100,18 @@ namespace TR3
         public bool ShouldSplit(LiveSplitState state)
         {
             // Determine if the player is on the correct level to split; if not, we stop.
-            Level currentLevel = GameMemory.Data.Level.Current;
+            Level currentLevel = GameData.Level.Current;
             bool onCorrectLevelToSplit = !_completedLevels.Contains(currentLevel);
             if (!onCorrectLevelToSplit)
                 return false;
 
             // Deathrun
-            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
+            bool laraJustDied = GameData.Health.Old > 0 && GameData.Health.Current == 0;
             if (Settings.Deathrun && laraJustDied)
                 return true;
             
             // FG & IL/Section
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
+            bool levelJustCompleted = !GameData.LevelComplete.Old && GameData.LevelComplete.Current;
             return levelJustCompleted;
         }
 
@@ -156,7 +127,7 @@ namespace TR3
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return GameMemory.Data.PickedPassportFunction.Current == 2;
+            return GameData.PickedPassportFunction.Current == 2;
         }
 
         /// <summary>
@@ -166,10 +137,10 @@ namespace TR3
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            uint oldLevelTime = GameMemory.Data.LevelTime.Old;
-            uint currentLevelTime = GameMemory.Data.LevelTime.Current;
-            uint currentPickedPassportFunction = GameMemory.Data.PickedPassportFunction.Current;
-            bool oldTitleScreen = GameMemory.Data.TitleScreen.Old;
+            uint oldLevelTime = GameData.LevelTime.Old;
+            uint currentLevelTime = GameData.LevelTime.Current;
+            uint currentPickedPassportFunction = GameData.PickedPassportFunction.Current;
+            bool oldTitleScreen = GameData.TitleScreen.Old;
 
             // Perform new game logic first, since it is the only place where FG should start.
             bool levelTimeJustStarted = oldLevelTime == 0 && currentLevelTime != 0 && currentLevelTime < 50;
@@ -188,7 +159,7 @@ namespace TR3
         /// <summary>
         ///     On <see cref="LiveSplitState.OnSplit"/>, updates values.
         /// </summary>
-        public void OnSplit() => _completedLevels.Add(GameMemory.Data.Level.Current);
+        public void OnSplit() => _completedLevels.Add(GameData.Level.Current);
 
         /// <summary>
         ///     On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.
@@ -197,8 +168,8 @@ namespace TR3
         
         public void Dispose() 
         {
-            GameMemory.OnGameFound -= Settings.SetGameVersion;
-            GameMemory = null;
+            GameData.OnGameFound -= Settings.SetGameVersion;
+            GameData = null;
         }
     }
 }

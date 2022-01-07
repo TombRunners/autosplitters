@@ -28,9 +28,27 @@ namespace TR2Gold
     /// <summary>
     ///     The game's watched memory addresses.
     /// </summary>
-    internal class GameData : MemoryWatcherList
+    internal class GameData
     {
-        public const int FirstLevelTimeAddress = 0x521A84;  // Valid for all supported game versions.
+        private const int IGTTicksPerSecond = 30;
+        private const int FirstLevelTimeAddress = 0x521A84;  // Valid for all supported game versions.
+        private const int LevelSaveStructSize = 0x2C;
+
+        private static readonly MemoryWatcherList Watchers = new MemoryWatcherList
+        {
+            new MemoryWatcher<bool>(new DeepPointer(0x11EE00)) { Name = "TitleScreen" },
+            new MemoryWatcher<bool>(new DeepPointer(0xDCF28)) { Name = "LevelComplete" },
+            new MemoryWatcher<Level>(new DeepPointer(0xDCF24)) { Name = "Level" },
+            new MemoryWatcher<uint>(new DeepPointer(0x121E60)) { Name = "LevelTime" },
+            new MemoryWatcher<uint>(new DeepPointer(0xDA9A0)) { Name = "PickedPassportFunction" },
+            new MemoryWatcher<short>(new DeepPointer(0xDA948)) { Name = "Health" }
+        };
+
+        private Process _game;
+        private GameVersion _version;
+
+        public delegate void GameFoundDelegate(GameVersion? version);
+        public GameFoundDelegate OnGameFound;
 
         /// <summary>
         ///     Indicates if the game is on the title screen (main menu).
@@ -38,7 +56,7 @@ namespace TR2Gold
         /// <remarks>
         ///     Goes back to 0 during demos.
         /// </remarks>
-        public MemoryWatcher<bool> TitleScreen { get; }
+        public MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers["TitleScreen"];
 
         /// <summary>
         ///     Indicates if the current <see cref="Level"/> is finished.
@@ -49,7 +67,7 @@ namespace TR2Gold
         ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
         ///     Otherwise, the value is 0.
         /// </remarks>
-        public MemoryWatcher<bool> LevelComplete { get; }
+        public MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers["LevelComplete"];
 
         /// <summary>
         ///     Gives the value of the active level, cutscene, or FMV.
@@ -57,12 +75,12 @@ namespace TR2Gold
         /// <remarks>
         ///     Matches the chronological number of the current level.
         /// </remarks>
-        public MemoryWatcher<Level> Level { get; }
+        public MemoryWatcher<Level> Level => (MemoryWatcher<Level>)Watchers["Level"];
 
         /// <summary>
         ///     Gives the IGT value for the current level.
         /// </summary>
-        public MemoryWatcher<uint> LevelTime { get; }
+        public MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers["LevelTime"];
 
         /// <summary>
         ///     Indicates the passport function chosen by the user.
@@ -75,7 +93,7 @@ namespace TR2Gold
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
         ///     Anywhere else the value is 0.
         /// </remarks>
-        public MemoryWatcher<uint> PickedPassportFunction { get; }
+        public MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers["PickedPassportFunction"];
 
         /// <summary>
         ///     Lara's current HP.
@@ -83,41 +101,55 @@ namespace TR2Gold
         /// <remarks>
         ///     Max HP is 1000. When it hits 0, Lara dies.
         /// </remarks>
-        public MemoryWatcher<short> Health { get; }
+        public MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers["Health"];
 
         /// <summary>
-        ///     Initializes <see cref="GameData"/> based on <paramref name="version"/>.
+        ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
         /// </summary>
-        /// <param name="version"></param>
-        public GameData(GameVersion version)
+        /// <param name="version"><see cref="GameVersion"/> for which addresses should be assigned</param>
+        private static void SetAddresses(GameVersion version)
         {
-            if (version == GameVersion.Stella || version == GameVersion.StellaCracked)
+            switch (version)
             {
-                TitleScreen = new MemoryWatcher<bool>(new DeepPointer(0x11EE00));
-                LevelComplete = new MemoryWatcher<bool>(new DeepPointer(0xDCF28));
-                Level = new MemoryWatcher<Level>(new DeepPointer(0xDCF24));
-                LevelTime = new MemoryWatcher<uint>(new DeepPointer(0x121E60));
-                PickedPassportFunction = new MemoryWatcher<uint>(new DeepPointer(0xDA9A0));
-                Health = new MemoryWatcher<short>(new DeepPointer(0xDA948));
-            }
-            else
-            {
-                throw new NotImplementedException();
+                case GameVersion.Stella:
+                case GameVersion.StellaCracked:
+                    Watchers.Clear();
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11EE00)) { Name = "TitleScreen" });
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xDCF28)) { Name = "LevelComplete" });
+                    Watchers.Add(new MemoryWatcher<Level>(new DeepPointer(0xDCF24)) { Name = "Level" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x121E60)) { Name = "LevelTime" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xDA9A0)) { Name = "PickedPassportFunction" });
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xDA948)) { Name = "Health" });
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
         }
-    }
 
-    /// <summary>
-    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
-    /// </summary>
-    internal class GameMemory
-    {
-        public Process Game;
-        public GameData Data;
-        private GameVersion Version;
+        /// <summary>
+        ///     Converts level time ticks to a double representing time elapsed.
+        /// </summary>
+        public static double LevelTimeAsDouble(uint ticks) => (double)ticks / IGTTicksPerSecond;
 
-        public delegate void GameFoundDelegate(GameVersion? version);
-        public GameFoundDelegate OnGameFound;
+        /// <summary>
+        ///     Sums completed levels' times.
+        /// </summary>
+        /// <returns>The sum of completed levels' times as a double.</returns>
+        /// <remarks>
+        ///     Because TR3's level order is variable and we must maintain compatibility with Section and NG+ runs,
+        ///     we read addresses based on <c>_completedLevels</c>.
+        /// </remarks>
+        public double SumCompletedLevelTimes(Level currentLevel)
+        {
+            uint finishedLevelsTicks = 0;
+            for (int i = 0; i < (int)currentLevel - 1; i++)
+            {
+                var levelAddress = (IntPtr)(FirstLevelTimeAddress + i * LevelSaveStructSize);
+                finishedLevelsTicks += _game.ReadValue<uint>(levelAddress);
+            }
+
+            return LevelTimeAsDouble(finishedLevelsTicks);
+        }
 
         /// <summary>
         ///     Updates <see cref="GameData"/> and its addresses' values.
@@ -129,27 +161,19 @@ namespace TR2Gold
         {
             try
             {
-                if (Game == null || Game.HasExited)
+                if (_game == null || _game.HasExited)
                 {
                     if (!SetGameProcessAndVersion())
                         return false;
 
-                    Data = new GameData(Version);
-                    OnGameFound.Invoke(Version);
-                    /* Crashes LiveSplit so temporarily disabled
-                    Game.EnableRaisingEvents = true;
-                    Game.Exited += (s, e) => OnGameFound.Invoke(null);
-                    */
+                    SetAddresses(_version);
+                    OnGameFound.Invoke(_version);
+                    _game.EnableRaisingEvents = true;
+                    _game.Exited += (s, e) => OnGameFound.Invoke(null);
                     return true;
                 }
 
-                // Due to issues with UpdateAll and AutoSplitComponent, these are done individually.
-                Data.TitleScreen.Update(Game);
-                Data.LevelComplete.Update(Game);
-                Data.Level.Update(Game);
-                Data.LevelTime.Update(Game);
-                Data.PickedPassportFunction.Update(Game);
-                Data.Health.Update(Game);
+                Watchers.UpdateAll(_game);
 
                 return true;
             }
@@ -196,8 +220,8 @@ namespace TR2Gold
             {
                 if (kvp.Key == md5Hash)
                 {
-                    Game = process;
-                    Version = kvp.Value;
+                    _game = process;
+                    _version = kvp.Value;
                     return true;
                 }
             }

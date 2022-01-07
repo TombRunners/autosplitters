@@ -13,7 +13,7 @@ namespace TR2Gold
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
-        public bool Deathrun = false;
+        public bool Deathrun;
 
         public ComponentSettings() => InitializeComponent();
 

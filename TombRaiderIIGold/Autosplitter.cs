@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using LiveSplit.ComponentUtil;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
@@ -31,10 +30,10 @@ namespace TR2Gold
         private bool _newGameSelected;
 
         internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameMemory GameMemory = new GameMemory();
+        internal GameData GameData = new GameData();
 
         /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
-        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
+        public Autosplitter() => GameData.OnGameFound += Settings.SetGameVersion;
 
         /// <summary>
         ///     Determines the IGT.
@@ -43,24 +42,16 @@ namespace TR2Gold
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public TimeSpan? GetGameTime(LiveSplitState state)
         {
-            const uint igtTicksPerSecond = 30;
-            uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
-            var currentLevelTime = (double)currentLevelTicks / igtTicksPerSecond;
+            uint currentLevelTicks = GameData.LevelTime.Current;
+            double currentLevelTime = GameData.LevelTimeAsDouble(currentLevelTicks);
 
             // IL
             if (!Settings.FullGame)
                 return TimeSpan.FromSeconds(currentLevelTime);
 
             // FG
-            Level currentLevel = GameMemory.Data.Level.Current;
-            int finishedLevelsTicks = 0;
-            // Add up the level times stored in the game's memory.
-            for (int i = 0; i < (int)currentLevel - 1; i++)
-            {
-                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + i * 0x2c);
-                finishedLevelsTicks += GameMemory.Game.ReadValue<int>(levelAddress);
-            }
-            var finishedLevelsTime = (double)finishedLevelsTicks / igtTicksPerSecond;
+            Level currentLevel = GameData.Level.Current;
+            double finishedLevelsTime = GameData.SumCompletedLevelTimes(currentLevel);
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 
@@ -78,16 +69,16 @@ namespace TR2Gold
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public bool ShouldSplit(LiveSplitState state)
         {
-            Level currentLevel = GameMemory.Data.Level.Current;
+            Level currentLevel = GameData.Level.Current;
             bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
 
             // Deathrun
-            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
+            bool laraJustDied = GameData.Health.Old > 0 && GameData.Health.Current == 0;
             if (Settings.Deathrun && onCorrectLevel && laraJustDied)
                 return true;
             
             // FG & IL/Section
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
+            bool levelJustCompleted = !GameData.LevelComplete.Old && GameData.LevelComplete.Current;
             if (levelJustCompleted && onCorrectLevel)
             {
                 _farthestLevelCompleted++;
@@ -108,7 +99,7 @@ namespace TR2Gold
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
              */
-            return GameMemory.Data.PickedPassportFunction.Current == 2;
+            return GameData.PickedPassportFunction.Current == 2;
         }
 
         /// <summary>
@@ -118,15 +109,15 @@ namespace TR2Gold
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public bool ShouldStart(LiveSplitState state)
         {
-            Level currentLevel = GameMemory.Data.Level.Current;
-            Level oldLevel = GameMemory.Data.Level.Old;
+            Level currentLevel = GameData.Level.Current;
+            Level oldLevel = GameData.Level.Old;
 
             // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
-            uint oldPassportPage = GameMemory.Data.PickedPassportFunction.Old;
-            uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
+            uint oldPassportPage = GameData.PickedPassportFunction.Old;
+            uint currentPassportPage = GameData.PickedPassportFunction.Current;
             if (oldPassportPage == 0 && currentPassportPage == 1)
                 _newGameSelected = true;
-            bool cameFromTitleScreenOrLarasHome = GameMemory.Data.TitleScreen.Old && !GameMemory.Data.TitleScreen.Current || oldLevel == Level.LarasHome;
+            bool cameFromTitleScreenOrLarasHome = GameData.TitleScreen.Old && !GameData.TitleScreen.Current || oldLevel == Level.LarasHome;
             bool justStartedColdWar = currentLevel == Level.TheColdWar;
             bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedColdWar && _newGameSelected;
             if (newGameStarted)
@@ -136,8 +127,8 @@ namespace TR2Gold
             if (Settings.FullGame)
                 return false;
 
-            uint oldTime = GameMemory.Data.LevelTime.Old;
-            uint currentTime = GameMemory.Data.LevelTime.Current;
+            uint oldTime = GameData.LevelTime.Old;
+            uint currentTime = GameData.LevelTime.Current;
             bool wentToNextLevel = oldLevel == currentLevel - 1;
             if (wentToNextLevel && oldTime > currentTime)
             {
@@ -158,8 +149,8 @@ namespace TR2Gold
 
         public void Dispose() 
         {
-            GameMemory.OnGameFound -= Settings.SetGameVersion;
-            GameMemory = null;
+            GameData.OnGameFound -= Settings.SetGameVersion;
+            GameData = null;
         }
     }
 }

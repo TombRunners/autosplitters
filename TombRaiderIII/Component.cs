@@ -101,7 +101,7 @@ namespace TR3
         public override string ComponentName => "Tomb Raider III";
 
         /// <summary>
-        ///     Adds <see cref="GameMemory"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
+        ///     Adds <see cref="GameData"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
         /// </summary>
         /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -109,11 +109,11 @@ namespace TR3
         /// <param name="height">height passed by LiveSplit</param>
         /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
-        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameMemory"/> in its logic.
+        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameData"/> in its logic.
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (_splitter.GameMemory.Update())
+            if (_splitter.GameData.Update())
                 base.Update(invalidator, state, width, height, mode);
         }
     }
