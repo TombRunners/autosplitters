@@ -80,7 +80,7 @@ namespace TR3
             Level currentLevel = GameMemory.Data.Level.Current;
             bool oldLevelComplete = GameMemory.Data.LevelComplete.Old;
             bool currentLevelComplete = GameMemory.Data.LevelComplete.Current;
-            bool levelStillComplete = oldLevelComplete == currentLevelComplete == true;
+            bool levelStillComplete = oldLevelComplete && currentLevelComplete;
             if (_completedLevels.Contains(currentLevel) && levelStillComplete)
                 return null;
 
