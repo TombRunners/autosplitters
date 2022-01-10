@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B4A46173-6DF7-435A-A218-11641766536A}</ProjectGuid>
+    <ProjectGuid>{29196311-2D7C-428B-A058-6BBFC8452909}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TR2</RootNamespace>
-    <AssemblyName>TR2</AssemblyName>
+    <RootNamespace>TRUtil</RootNamespace>
+    <AssemblyName>TRUtil</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -24,14 +24,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveSplit.Core">
@@ -40,6 +37,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ObjectEnum, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3417009a98c7b227, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectEnum.1.0.0\lib\netstandard2.0\System.ObjectEnum.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,36 +47,20 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="UpdateManager, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\UpdateManager.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Autosplitter.cs" />
-    <Compile Include="ComponentFactory.cs" />
-    <Compile Include="Component.cs" />
-    <Compile Include="ComponentSettings.cs">
+    <Compile Include="ClassicAutosplitter.cs" />
+    <Compile Include="ClassicComponent.cs" />
+    <Compile Include="ClassicGameData.cs" />
+    <Compile Include="ClassicComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ComponentSettings.resx">
-      <DependentUpon>ComponentSettings.cs</DependentUpon>
+    <EmbeddedResource Include="ClassicComponentSettings.resx">
+      <DependentUpon>ClassicComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
-      <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
-      <Name>TRUtil</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y &amp; xcopy $(SolutionDir)TRUtil\bin\Release\TRUtil.dll $(ProjectDir)\Components\  /y)</PostBuildEvent>
-  </PropertyGroup>
 </Project>
