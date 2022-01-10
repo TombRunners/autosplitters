@@ -19,7 +19,7 @@ namespace TR2
     /// <summary>
     ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
     /// </summary>
-    internal class GameData : ClassicGameData
+    internal sealed class GameData : ClassicGameData
     {
         /// <summary>
         ///     A constructor that primarily exists to set/modify static values/objects.
