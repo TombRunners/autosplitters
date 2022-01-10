@@ -1,11 +1,20 @@
-﻿using System.Windows.Forms;               // Control, TableLayoutPanel
+﻿using System;                             // IDisposable
+using System.Windows.Forms;               // Control, TableLayoutPanel
 using System.Xml;                         // XmlDocument, XmlElement XmlNode
 using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // LayoutMode, SettingsHelper
+using LiveSplit.UI;                       // LayoutMode
+using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 
 namespace TRUtil
 {
+    /// <summary>
+    ///     Implementation of <see cref="AutoSplitComponent"/>.
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
+    ///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
+    /// </remarks>
     public abstract class ClassicComponent : AutoSplitComponent
     {
         private readonly ClassicAutosplitter _splitter;

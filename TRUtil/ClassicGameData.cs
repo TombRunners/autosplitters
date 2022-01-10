@@ -10,40 +10,52 @@ namespace TRUtil
 {
     public abstract class ClassicGameData
     {
+        /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
         protected const int IGTTicksPerSecond = 30;
 
-        protected static readonly Dictionary<string, uint> VersionHashes = new Dictionary<string, uint>();
-        protected static readonly MemoryWatcherList Watchers = new MemoryWatcherList();
+        /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
         protected static readonly List<string> ProcessSearchNames = new List<string>();
 
+        /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
+        /// <remarks>Ideally, this will be converted from an <see cref="Enum"/> for clarity.</remarks>
+        protected static readonly Dictionary<string, uint> VersionHashes = new Dictionary<string, uint>();
+
+        /// <summary>Contains memory addresses, accessible by named members, used in autosplitting logic.</summary>
+        protected static readonly MemoryWatcherList Watchers = new MemoryWatcherList();
+
+        /// <summary>Used to locate the first in-memory saved level time.</summary>
         protected static int FirstLevelTimeAddress;
+
+        /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
         protected static int LevelSaveStructSize;
-        protected static uint Version;
+
+        /// <summary>Sometimes directly read, especially for reading level times.</summary>
         protected static Process Game;
 
+        /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
+        protected static uint Version;
+
+        /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
+        /// <param name="version">The version found; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
         public delegate void GameFoundDelegate(uint version);
+        
+        /// <summary>Allows subscribers to know when and what game version was found.</summary>
         public GameFoundDelegate OnGameFound;
 
+        /// <summary>A constructor existing primarily to clear static fields expected to be managed only in derived classes' constructors.</summary>
         protected ClassicGameData()
         {
-            // Clear static fields we expect to be managed only in derived classes' constructors.
             VersionHashes.Clear();
             ProcessSearchNames.Clear();
         }
         
         #region MemoryWatcherList Items
         
-        /// <summary>
-        ///     Indicates if the game is on the title screen (main menu).
-        /// </summary>
-        /// <remarks>
-        ///     Goes back to 0 during demos.
-        /// </remarks>
+        /// <summary>Indicates if the game is on the title screen (main menu).</summary>
+        /// <remarks>Goes back to 0 during demos, if applicable to the game.</remarks>
         public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers?["TitleScreen"];
 
-        /// <summary>
-        ///     Indicates if the current <see cref="Level"/> is finished.
-        /// </summary>
+        /// <summary>Indicates if the current level is finished.</summary>
         /// <remarks>
         ///     1 while an end-level stats screen is active.
         ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
@@ -54,60 +66,36 @@ namespace TRUtil
         /// </remarks>
         public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers?["LevelComplete"];
 
-        /// <summary>
-        ///     Gives the value of the active level, cutscene, or FMV.
-        /// </summary>
-        /// <remarks>
-        ///     Matches the chronological number of the current level, but also matches the file number for in-game cutscenes and FMVs.
-        ///     0 through 15: Active level
-        ///     16: Qualopec cutscene until next level start.
-        ///     17: Tihocan cutscene until next level start.
-        ///     18: After Natla's Mines stats screen until next level start.
-        ///     19: Atlantis cutscene after the FMV until next level start.
-        ///     20: Title screen and opening FMV.
-        /// </remarks>
+        /// <summary>Gives the value of the active level; for TR1, also matches active cutscene, FMV, or demo.</summary>
+        /// <remarks>Usually matches chronological number (TR3 is an exception)</remarks>
         public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
-        /// <summary>
-        ///     Gives the IGT value for the current level.
-        /// </summary>
+        /// <summary>Gives the IGT value for the current level.</summary>
         public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers?["LevelTime"];
 
-        /// <summary>
-        ///     Indicates the passport function chosen by the user.
-        /// </summary>
+        /// <summary>Indicates the passport function chosen by the user.</summary>
         /// <remarks>
         ///     0 if <c>Load Game</c> was picked.
         ///     Changes to 1 when choosing <c>New Game</c> or <c>Save Game</c>.
         ///     The value stays 1 until the inventory is reopened.
-        ///     The value is also 1 during the first FMV if you pick <c>New Game</c> from Lara's Home.
+        ///     The value stays 1 through opening FMVs if you pick <c>New Game</c> from Lara's Home.
         ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
-        ///     Anywhere else the value is 0.
+        ///     Elsewhere, the value is 0.
         /// </remarks>
         public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers?["PickedPassportFunction"];
 
-        /// <summary>
-        ///     Lara's current HP.
-        /// </summary>
-        /// <remarks>
-        ///     Max HP is 1000. When it hits 0, Lara dies.
-        /// </remarks>
+        /// <summary>Lara's current HP.</summary>
+        /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
         public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
 
         #endregion
 
-        /// <summary>
-        ///     Sets addresses based on <paramref name="version"/>.
-        /// </summary>
-        /// <param name="version">version for which addresses should be assigned</param>
+        /// <summary>Sets addresses based on <paramref name="version"/>.</summary>
+        /// <param name="version">Version to base addresses on; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
         protected abstract void SetAddresses(uint version);
 
-        /// <summary>
-        ///     Updates <see cref="ClassicGameData"/> implementation and its addresses' values.
-        /// </summary>
-        /// <returns>
-        ///     <see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise
-        /// </returns>
+        /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
+        /// <returns><see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise</returns>
         public bool Update()
         {
             try
@@ -132,12 +120,8 @@ namespace TRUtil
             }
         }
 
-        /// <summary>
-        ///     If applicable, finds a <see cref="Process"/> running an expected version of the game.
-        /// </summary>
-        /// <returns>
-        ///     <see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were set to non-default values, <see langword="false"/> otherwise
-        /// </returns>
+        /// <summary>If applicable, finds a <see cref="Process"/> running an expected version of the game.</summary>
+        /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
         private bool SetGameProcessAndVersion()
         {
             var processes = new List<Process>();
@@ -167,17 +151,15 @@ namespace TRUtil
             return false;
         }
 
-        /// <summary>
-        ///     Computes the MD5 hash formatted as a simple, lowercased string.
-        /// </summary>
-        /// <param name="exePath">The file to hash</param>
-        /// <returns>Lowercased, invariant string representing the MD5 <paramref name="exePath"/></returns>
-        private static string GetMd5Hash(string exePath)
+        /// <summary>Computes the MD5 hash formatted as a simple, lowercased string.</summary>
+        /// <param name="filePath">The file to hash</param>
+        /// <returns>Lowercased, invariant string representing the MD5 hash of <paramref name="filePath"/></returns>
+        private static string GetMd5Hash(string filePath)
         {
             string md5Hash;
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     var hash = md5.ComputeHash(stream);
                     md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
@@ -187,14 +169,10 @@ namespace TRUtil
             return md5Hash;
         }
 
-        /// <summary>
-        ///     Converts level time ticks to a double representing time elapsed.
-        /// </summary>
+        /// <summary>Converts level time ticks to a double representing time elapsed in decimal seconds.</summary>
         public static double LevelTimeAsDouble(uint ticks) => (double)ticks / IGTTicksPerSecond;
 
-        /// <summary>
-        ///     Sums completed levels' times.
-        /// </summary>
+        /// <summary>Sums completed levels' times.</summary>
         /// <returns>The sum of completed levels' times</returns>
         public static double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
         {

@@ -7,15 +7,19 @@ namespace TRUtil
 {
     public abstract class ClassicAutosplitter : IAutoSplitter, IDisposable
     {
-        protected readonly List<uint> CompletedLevels = new List<uint>();
-        protected internal ClassicComponentSettings Settings = new ClassicComponentSettings();
+        /// <summary>Used to size CompletedLevels.</summary>
         protected int LevelCount = 0;
+        
+        /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
+        protected readonly List<uint> CompletedLevels = new List<uint>();
 
+        /// <summary>The GUI for the user to select timing options.</summary>
+        protected internal ClassicComponentSettings Settings = new ClassicComponentSettings();
+
+        /// <summary>Contains data needed for start, split, reset, and IGT logic.</summary>
         public ClassicGameData Data;
 
-        /// <summary>
-        ///     Determines the IGT.
-        /// </summary>
+        /// <summary>Determines the IGT.</summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
         public virtual TimeSpan? GetGameTime(LiveSplitState state)
@@ -42,16 +46,12 @@ namespace TRUtil
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 
-        /// <summary>
-        ///     Determines if IGT should be paused when the game is quit or <see cref="GetGameTime"/> returns <see langword="null"/>
-        /// </summary>
+        /// <summary>Determines if IGT pauses when the game is quit or <see cref="GetGameTime"/> returns <see langword="null"/></summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> if IGT should be paused, <see langword="false"/> otherwise</returns>
+        /// <returns><see langword="true"/> when IGT should be paused during the conditions, <see langword="false"/> otherwise</returns>
         public bool IsGameTimePaused(LiveSplitState state) => true;
 
-        /// <summary>
-        ///     Determines if the timer should split.
-        /// </summary>
+        /// <summary>Determines if the timer should split.</summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
         public virtual bool ShouldSplit(LiveSplitState state)
@@ -72,14 +72,12 @@ namespace TRUtil
             return levelJustCompleted;
         }
 
-        /// <summary>
-        ///     Determines if the timer should reset.
-        /// </summary>
+        /// <summary>Determines if the timer should reset.</summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns><see langword="true"/> if the timer should reset, <see langword="false"/> otherwise</returns>
         public virtual bool ShouldReset(LiveSplitState state)
         {
-            /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
+            /* It is hypothetically reasonable to use CompletedLevels to reset
              * if the player loads into a level ahead of their current level.
              * However, considering a case where a runner accidentally loads an incorrect
              * save after dying, it's clear that this should be avoided.
@@ -87,9 +85,7 @@ namespace TRUtil
             return ClassicGameData.PickedPassportFunction.Current == 2;
         }
 
-        /// <summary>
-        ///     Determines if the timer should start.
-        /// </summary>
+        /// <summary>Determines if the timer should start.</summary>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
         /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
         public virtual bool ShouldStart(LiveSplitState state)
@@ -108,20 +104,14 @@ namespace TRUtil
             return !Settings.FullGame && levelTimeJustStarted && !oldTitleScreen;
         }
 
-        /// <summary>
-        ///     On <see cref="LiveSplitState.OnStart"/>, updates values.
-        /// </summary>
+        /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
         public virtual void OnStart() => CompletedLevels.Clear();
 
-        /// <summary>
-        ///     On <see cref="LiveSplitState.OnSplit"/>, updates values.
-        /// </summary>
+        /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
         /// <param name="completedLevel">What to add to <see cref="CompletedLevels"/></param>
         public virtual void OnSplit(uint completedLevel) => CompletedLevels.Add(completedLevel);
 
-        /// <summary>
-        ///     On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.
-        /// </summary>
+        /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
         public virtual void OnUndoSplit() => CompletedLevels.RemoveAt(CompletedLevels.Count - 1);
 
         /// <inheritdoc/>

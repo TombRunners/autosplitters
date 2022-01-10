@@ -4,9 +4,7 @@ using TRUtil;
 
 namespace TR2
 {
-    /// <summary>
-    ///     The supported game versions.
-    /// </summary>
+    /// <summary>The supported game versions.</summary>
     internal enum GameVersion
     {
         None = 0,
@@ -16,14 +14,10 @@ namespace TR2
         UKB  = 4  // Eidos UK Box
     }
 
-    /// <summary>
-    ///     Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.
-    /// </summary>
+    /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
     internal sealed class GameData : ClassicGameData
     {
-        /// <summary>
-        ///     A constructor that primarily exists to set/modify static values/objects.
-        /// </summary>
+        /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
             VersionHashes.Add("964f0c4e08ff44a905e8fc9a78f605dc", (uint)GameVersion.MP);
@@ -38,11 +32,7 @@ namespace TR2
             FirstLevelTimeAddress = 0x51EA24;
             LevelSaveStructSize = 0x2C;
         }
-
-        /// <summary>
-        ///     Sets <see cref="GameData"/> addresses based on <paramref name="version"/>.
-        /// </summary>
-        /// <param name="version"><see cref="GameVersion"/> for which addresses should be assigned</param>
+        
         protected override void SetAddresses(uint version)
         {
             switch ((GameVersion)version)

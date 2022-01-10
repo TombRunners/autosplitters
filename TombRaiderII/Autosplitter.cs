@@ -1,15 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using LiveSplit.Model;
-using LiveSplit.UI.Components.AutoSplit;
 using TRUtil;
 
 namespace TR2
 {
-    /// <summary>
-    ///     The game's level and demo values.
-    /// </summary>
+    /// <summary>The game's level and demo values.</summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum Level
     {
@@ -39,16 +34,12 @@ namespace TR2
         DemoTibetanFoothills = 21
     }
 
-    /// <summary>
-    ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
-    /// </summary>
+    /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
-        private bool _newGameSelected = false;
+        private bool _newGameSelected;
 
-        /// <summary>
-        ///     A constructor that primarily exists to handle events/delegations and set static values.
-        /// </summary>
+        /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
             Settings = new ComponentSettings();
