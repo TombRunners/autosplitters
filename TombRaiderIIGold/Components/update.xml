@@ -7,4 +7,13 @@
       <change>Initial autosplit component.</change>
     </changelog>
   </update>
+  <update version="1.0.1.0">
+    <files>
+      <file path="Components/TR2Gold.dll" status="changed"/>
+	  <file path="Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Backend code simplification</change>
+    </changelog>
+  </update>
 </updates>

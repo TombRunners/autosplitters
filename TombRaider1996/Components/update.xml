@@ -50,4 +50,13 @@
       <change>Temporary fix for the component crashing LiveSplit on quit.</change>
     </changelog>
   </update>
+  <update version="2.3.1.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+	  <file path="Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Backend code simplification.</change>
+    </changelog>
+  </update>
 </updates>
