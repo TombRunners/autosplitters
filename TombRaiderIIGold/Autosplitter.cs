@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using LiveSplit.Model;
-using LiveSplit.UI.Components.AutoSplit;
 using TRUtil;
 
 namespace TR2Gold
