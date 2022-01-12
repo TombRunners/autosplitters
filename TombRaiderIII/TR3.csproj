@@ -63,8 +63,14 @@
       <DependentUpon>ComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
+      <Project>{29196311-2D7C-428B-A058-6BBFC8452909}</Project>
+      <Name>TRUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y)</PostBuildEvent>
+    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y &amp; xcopy $(SolutionDir)TRUtil\bin\Release\TRUtil.dll $(ProjectDir)\Components\  /y)</PostBuildEvent>
   </PropertyGroup>
 </Project>
