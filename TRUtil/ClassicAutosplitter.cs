@@ -63,9 +63,11 @@ namespace TRUtil
                 return false;
 
             // Deathrun
-            bool laraJustDied = ClassicGameData.Health.Old > 0 && ClassicGameData.Health.Current == 0;
-            if (Settings.Deathrun && laraJustDied)
-                return true;
+            if (Settings.Deathrun)
+            {
+                bool laraJustDied = ClassicGameData.Health.Old > 0 && ClassicGameData.Health.Current == 0;
+                return laraJustDied;
+            }
             
             // FG & IL/Section
             bool levelJustCompleted = !ClassicGameData.LevelComplete.Old && ClassicGameData.LevelComplete.Current;
