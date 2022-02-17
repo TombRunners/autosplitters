@@ -55,6 +55,7 @@
     <Compile Include="ClassicComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

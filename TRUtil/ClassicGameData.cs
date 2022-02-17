@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using LiveSplit.ComponentUtil;
+using ExtensionMethods;
+
 
 namespace TRUtil
 {
@@ -124,49 +124,21 @@ namespace TRUtil
         /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
         private bool SetGameProcessAndVersion()
         {
-            var processes = new List<Process>();
-            foreach (Process[] namedProcesses in ProcessSearchNames.Select(Process.GetProcessesByName))
+            // Find game Process, if any, and set Version member accordingly.
+            Process gameProcess = ProcessSearchNames.SelectMany(Process.GetProcessesByName)
+                                                    .First(p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+            if (gameProcess is null)
             {
-                processes.AddRange(namedProcesses);
-            }
-
-            foreach (Process process in processes)
-            {
-                string exePath = process?.MainModule?.FileName;
-                if (string.IsNullOrEmpty(exePath))
-                    break;
-
-                string md5Hash = GetMd5Hash(exePath);
-                if (!VersionHashes.TryGetValue(md5Hash, out Version)) // Sets Version
-                    break;
-                
-                // Set Game and do some event management.
-                Game = process;
-                Game.EnableRaisingEvents = true;
-                Game.Exited += (s, e) => OnGameFound.Invoke(0);
-                return true;
+                // Leave game unset and ensure Version is at its default value.
+                Version = 0;
+                return false;
             }
             
-            Version = 0;
-            return false;
-        }
-
-        /// <summary>Computes the MD5 hash formatted as a simple, lowercased string.</summary>
-        /// <param name="filePath">The file to hash</param>
-        /// <returns>Lowercased, invariant string representing the MD5 hash of <paramref name="filePath"/></returns>
-        private static string GetMd5Hash(string filePath)
-        {
-            string md5Hash;
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    var hash = md5.ComputeHash(stream);
-                    md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
-                }
-            }
-
-            return md5Hash;
+            // Set Game and do some event management.
+            Game = gameProcess;
+            Game.EnableRaisingEvents = true;
+            Game.Exited += (s, e) => OnGameFound.Invoke(0);
+            return true;
         }
 
         /// <summary>Converts level time ticks to a double representing time elapsed in decimal seconds.</summary>
