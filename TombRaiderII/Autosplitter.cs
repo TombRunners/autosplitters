@@ -6,7 +6,7 @@ namespace TR2
 {
     /// <summary>The game's level and demo values.</summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum Level
+    public enum Tr2Level
     {
         // Levels
         LarasHome = 00,
@@ -34,17 +34,30 @@ namespace TR2
         DemoTibetanFoothills = 21
     }
 
+    /// <summary>The game's level and demo values.</summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    public enum Tr2GoldLevel
+    {
+        // Levels
+        TheColdWar = 01,
+        FoolsGold = 02,
+        FurnaceOfTheGods = 03,
+        Kingdom = 04,
+        // Bonus
+        NightmareInVegas = 05
+    }
+
     /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
-        private bool _newGameSelected;
+        private bool _newGamePageSelected;
 
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
             Settings = new ComponentSettings();
             
-            LevelCount = 18;
+            LevelCount = 18; // This is the highest between TR2 at 18 and TR2G at 5.
             CompletedLevels.Capacity = LevelCount;
 
             Data = new GameData();
@@ -53,33 +66,46 @@ namespace TR2
 
         public override bool ShouldStart(LiveSplitState state)
         {
-            // Ignore demos.
             uint currentLevel = ClassicGameData.Level.Current;
             uint oldLevel = ClassicGameData.Level.Old;
-            if (currentLevel >= (uint)Level.DemoVenice)
+
+            // Ignore demos. 
+            if (currentLevel >= (uint)Tr2Level.DemoVenice) // Never true for TR2G; level values are never so high.
                 return false;
 
-            // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
+            // Check to see if the player has navigated to the New Game page of the passport.
+            // This prevent some misfires from LiveSplit hooking late.
+            // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
             uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
             uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
             if (oldPassportPage == 0 && currentPassportPage == 1)
-                _newGameSelected = true;
-            bool cameFromTitleScreenOrLarasHome = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current || oldLevel == (uint)Level.LarasHome;
-            bool justStartedGreatWall = currentLevel == (uint)Level.GreatWall;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && _newGameSelected;
-            if (newGameStarted)
-                return true;
+                _newGamePageSelected = true;
 
+            // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+            if (_newGamePageSelected)
+            {
+                bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
+                bool cameFromLarasHome = oldLevel == (uint)Tr2Level.LarasHome; // Never true for TR2G.
+                bool justStartedFirstLevel = currentLevel == 1; // This value is good for GreatWall and TheColdWar.
+                bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
+                if (newGameStarted)
+                    return true;
+            }
+            else if (Settings.FullGame)
+            {
+                return false;
+            }
+            
             // The remaining logic only applies to non-FG runs starting on a level besides the first.
             uint oldTime = ClassicGameData.LevelTime.Old;
             uint currentTime = ClassicGameData.LevelTime.Current;
             bool wentToNextLevel = oldLevel == currentLevel - 1;
-            return !Settings.FullGame && wentToNextLevel && oldTime > currentTime;
+            return wentToNextLevel && oldTime > currentTime;
         }
 
         public override void OnStart()
         {
-            _newGameSelected = false;
+            _newGamePageSelected = false;
             base.OnStart();
         }
     }
