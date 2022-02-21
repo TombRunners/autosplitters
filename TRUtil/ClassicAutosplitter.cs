@@ -36,13 +36,13 @@ namespace TRUtil
             uint currentLevel = ClassicGameData.Level.Current;
             bool oldLevelComplete = ClassicGameData.LevelComplete.Old;
             bool currentLevelComplete = ClassicGameData.LevelComplete.Current;
-            bool levelStillComplete = oldLevelComplete && currentLevelComplete;
-            if (CompletedLevels.Contains(currentLevel) && levelStillComplete)
+            bool stillOnCompletedLevel = oldLevelComplete && currentLevelComplete;
+            if (CompletedLevels.Contains(currentLevel) && stillOnCompletedLevel)
                 return null;
 
             // Sum the current and completed levels' IGT.
             double currentLevelTime = ClassicGameData.LevelTimeAsDouble(currentLevelTicks);
-            double finishedLevelsTime = ClassicGameData.SumCompletedLevelTimes(CompletedLevels, currentLevel);
+            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, currentLevel);
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 

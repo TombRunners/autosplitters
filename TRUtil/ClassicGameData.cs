@@ -24,16 +24,16 @@ namespace TRUtil
         protected static readonly MemoryWatcherList Watchers = new MemoryWatcherList();
 
         /// <summary>Used to locate the first in-memory saved level time.</summary>
-        protected static int FirstLevelTimeAddress;
+        protected static uint FirstLevelTimeAddress;
 
         /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
-        protected static int LevelSaveStructSize;
+        protected static uint LevelSaveStructSize;
 
         /// <summary>Sometimes directly read, especially for reading level times.</summary>
         protected static Process Game;
 
         /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-        protected static uint Version;
+        public static uint Version;
 
         /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
         /// <param name="version">The version found; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
@@ -146,7 +146,7 @@ namespace TRUtil
 
         /// <summary>Sums completed levels' times.</summary>
         /// <returns>The sum of completed levels' times</returns>
-        public static double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
+        public virtual double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
         {
             uint finishedLevelsTicks = completedLevels
                 .TakeWhile(completedLevel => completedLevel != currentLevel)
