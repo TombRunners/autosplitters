@@ -32,13 +32,13 @@ namespace TR2
         /// <remarks>
         ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
         /// </remarks>
-        public string ComponentName => "Tomb Raider II";
+        public string ComponentName => "Tomb Raider II and Golden Mask";
 
         /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
-        public string Description => "Autosplitter for Tomb Raider II";
+        public string Description => "Autosplitter for Tomb Raider II and Golden Mask";
 
         /// <inheritdoc/>
         /// <param name="state">State passed by LiveSplit</param>

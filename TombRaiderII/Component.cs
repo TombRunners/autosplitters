@@ -11,6 +11,6 @@ namespace TR2
         {
         }
         
-        public override string ComponentName => "Tomb Raider II";
+        public override string ComponentName => "Tomb Raider II and Golden Mask";
     }
 }

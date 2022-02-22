@@ -24,7 +24,7 @@ namespace TRUtil
         protected static readonly MemoryWatcherList Watchers = new MemoryWatcherList();
 
         /// <summary>Used to locate the first in-memory saved level time.</summary>
-        protected static uint FirstLevelTimeAddress;
+        protected uint FirstLevelTimeAddress;
 
         /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
         protected static uint LevelSaveStructSize;

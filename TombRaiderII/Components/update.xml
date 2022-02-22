@@ -53,7 +53,7 @@
 	  <file path="Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
-      <change>Backend code simplification.</change>
+      <change>Added TR2Gold support; backend code simplification.</change>
     </changelog>
   </update>
 </updates>
