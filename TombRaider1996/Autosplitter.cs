@@ -39,7 +39,8 @@ namespace TR1
     /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
-        private bool _newGameSelected;
+        private bool _newGamePageSelected;
+        private uint LastRealLevel => (uint)GetLastRealLevel(ClassicGameData.Level.Current);
 
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
@@ -74,13 +75,13 @@ namespace TR1
                 return null;
 
             uint currentLevel = ClassicGameData.Level.Current;
-            Level? lastRealLevel = GetLastRealLevel((Level)currentLevel);
+            Level? lastRealLevel = GetLastRealLevel(currentLevel);
             if (lastRealLevel is null)
                 return null;
 
             // Sum the current and completed levels' IGT.
             double currentLevelTime = ClassicGameData.LevelTimeAsDouble(currentLevelTicks);
-            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, currentLevel);
+            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, (uint)lastRealLevel);
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 
@@ -89,13 +90,14 @@ namespace TR1
         /// </summary>
         /// <param name="level"><see cref="Level"/></param>
         /// <returns>The last non-cutscene <see cref="Level"/></returns>
-        private static Level? GetLastRealLevel(Level level)
+        private static Level? GetLastRealLevel(uint level)
         {
-            if (level <= Level.TheGreatPyramid)
-                return level;
+            var lastLevel = (Level)level;
+            if (lastLevel <= Level.TheGreatPyramid)
+                return lastLevel;
             
             // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (level)
+            switch (lastLevel)
             {
                 case Level.QualopecCutscene:
                     return Level.Qualopec;
@@ -110,39 +112,59 @@ namespace TR1
             }
         }
 
+        public override bool ShouldSplit(LiveSplitState state) => !CompletedLevels.Contains(LastRealLevel) && base.ShouldSplit(state);            
+        
         public override bool ShouldStart(LiveSplitState state)
         {
-            // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
             uint currentLevel = ClassicGameData.Level.Current;
             uint oldLevel = ClassicGameData.Level.Old;
+
+            // Check to see if the player has navigated to the New Game page of the passport.
+            // This prevent some misfires from LiveSplit hooking late.
+            // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
             uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
             uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
             if (oldPassportPage == 0 && currentPassportPage == 1)
-                _newGameSelected = true;
-            bool cameFromTitleScreenOrLarasHome = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current || oldLevel == (uint)Level.LarasHome;
-            bool justStartedCaves = currentLevel == (uint)Level.Caves;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedCaves && _newGameSelected;
-            if (newGameStarted)
-                return true;
+                _newGamePageSelected = true;
+
+            // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+            if (_newGamePageSelected)
+            {
+                bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
+                bool cameFromLarasHome = oldLevel == (uint)Level.LarasHome; // Never true for TR2G.
+                bool justStartedFirstLevel = currentLevel == 1; // This value is good for GreatWall and TheColdWar.
+                bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
+                if (newGameStarted)
+                    return true;
+            }
+            else if (Settings.FullGame)
+            {
+                return false;
+            }
+
+            Level? oldRealLevel = GetLastRealLevel(oldLevel);
+            Level? currentRealLevel = GetLastRealLevel(currentLevel);
+            if (oldRealLevel is null || currentRealLevel is null)
+                return false;
 
             // The remaining logic only applies to non-FG runs starting on a level besides the first.
             uint oldTime = ClassicGameData.LevelTime.Old;
             uint currentTime = ClassicGameData.LevelTime.Current;
-            bool wentToNextLevel = oldLevel == currentLevel - 1;
-            return !Settings.FullGame && wentToNextLevel && oldTime > currentTime;
+            bool wentToNextLevel = oldRealLevel == currentRealLevel - 1;
+            return wentToNextLevel && oldTime > currentTime;
         }
 
         public override void OnStart()
         {
             GameData.CompletedLevelTicks.Clear();
-            _newGameSelected = false;
+            _newGamePageSelected = false;
             base.OnStart();
         }
 
         public override void OnSplit(uint completedLevel)
         {
             GameData.CompletedLevelTicks.Add(ClassicGameData.LevelTime.Current);
-            base.OnSplit(completedLevel);
+            base.OnSplit(LastRealLevel);
         }
 
         public override void OnUndoSplit()
