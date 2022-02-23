@@ -39,7 +39,6 @@ namespace TR1
     /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
-        private static readonly List<uint> CompletedLevelTicks = new List<uint>();
         private bool _newGameSelected;
 
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
@@ -49,7 +48,7 @@ namespace TR1
 
             LevelCount = 15;
             CompletedLevels.Capacity = LevelCount;
-            CompletedLevelTicks.Capacity = LevelCount;
+            GameData.CompletedLevelTicks.Capacity = LevelCount;
 
             Data = new GameData();
             Data.OnGameFound += Settings.SetGameVersion;
@@ -81,20 +80,8 @@ namespace TR1
 
             // Sum the current and completed levels' IGT.
             double currentLevelTime = ClassicGameData.LevelTimeAsDouble(currentLevelTicks);
-            double finishedLevelsTime = SumCompletedLevelTimes(CompletedLevels, currentLevel);
+            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, currentLevel);
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
-        }
-
-        /// <summary>Sums completed levels' times.</summary>
-        /// <returns>The sum of completed levels' times</returns>
-        private static double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
-        {
-            int validLevelCount = completedLevels.TakeWhile(completedLevel => completedLevel != currentLevel).Count();
-            var finishedLevelsTicks = (uint)CompletedLevelTicks
-                .Take(validLevelCount)
-                .Sum(x => x);
-
-            return ClassicGameData.LevelTimeAsDouble(finishedLevelsTicks);
         }
 
         /// <summary>
@@ -147,20 +134,20 @@ namespace TR1
 
         public override void OnStart()
         {
-            CompletedLevelTicks.Clear();
+            GameData.CompletedLevelTicks.Clear();
             _newGameSelected = false;
             base.OnStart();
         }
 
         public override void OnSplit(uint completedLevel)
         {
-            CompletedLevelTicks.Add(ClassicGameData.LevelTime.Current);
+            GameData.CompletedLevelTicks.Add(ClassicGameData.LevelTime.Current);
             base.OnSplit(completedLevel);
         }
 
         public override void OnUndoSplit()
         {
-            CompletedLevelTicks.RemoveAt(CompletedLevelTicks.Count - 1);
+            GameData.CompletedLevelTicks.RemoveAt(GameData.CompletedLevelTicks.Count - 1);
             base.OnUndoSplit();
         }
     }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using LiveSplit.ComponentUtil;
 using TRUtil;
 
@@ -14,6 +16,8 @@ namespace TR1
     /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
     internal sealed class GameData : ClassicGameData
     {
+        internal static readonly List<uint> CompletedLevelTicks = new List<uint>();
+
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
@@ -37,10 +41,10 @@ namespace TR1
         
         protected override void SetAddresses(uint version)
         {
+            Watchers.Clear();
             switch ((GameVersion)version)
             {
                 case GameVersion.ATI:
-                    Watchers.Clear();
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" });
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" });
@@ -50,7 +54,6 @@ namespace TR1
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
                     break;
                 case GameVersion.DOSBox:
-                    Watchers.Clear();
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4)) { Name = "DemoTimer" });
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C)) { Name = "LevelComplete" });
@@ -62,6 +65,16 @@ namespace TR1
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
+        }
+
+        public override double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
+        {
+            int validLevelCount = completedLevels.TakeWhile(completedLevel => completedLevel != currentLevel).Count();
+            var finishedLevelsTicks = (uint)CompletedLevelTicks
+                .Take(validLevelCount)
+                .Sum(x => x);
+
+            return LevelTimeAsDouble(finishedLevelsTicks);
         }
     }
 }
