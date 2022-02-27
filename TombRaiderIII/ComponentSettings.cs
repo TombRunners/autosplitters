@@ -10,9 +10,11 @@ namespace TR3
             switch ((GameVersion)version)
             {
                 case GameVersion.Int:
+                case GameVersion.Int16x9AspectRatio:
                     versionText = "International [INT]";
                     break;
                 case GameVersion.JpCracked:
+                case GameVersion.JpCracked16x9AspectRatio:
                     versionText = "Japanese [JP]";
                     break;
                 default:
