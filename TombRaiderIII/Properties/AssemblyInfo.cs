@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TombRaider3")]
-[assembly: AssemblyDescription("A LiveSplit Component for autosplitting Tomb Raider II.")]
+[assembly: AssemblyDescription("A LiveSplit Component for autosplitting Tomb Raider III.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TombRaider3")]
