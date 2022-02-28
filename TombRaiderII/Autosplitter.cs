@@ -1,16 +1,12 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using LiveSplit.ComponentUtil;
+﻿using System.Diagnostics.CodeAnalysis;
 using LiveSplit.Model;
-using LiveSplit.UI.Components.AutoSplit;
+using TRUtil;
 
 namespace TR2
 {
-    /// <summary>
-    ///     The game's level and demo values.
-    /// </summary>
+    /// <summary>The game's level and demo values.</summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    internal enum Level : uint
+    public enum Tr2Level
     {
         // Levels
         LarasHome = 00,
@@ -38,147 +34,79 @@ namespace TR2
         DemoTibetanFoothills = 21
     }
 
-    /// <summary>
-    ///     Implementation of <see cref="IAutoSplitter"/> for an <see cref="AutoSplitComponent"/>'s use.
-    /// </summary>
-    internal class Autosplitter : IAutoSplitter, IDisposable
+    /// <summary>The game's level and demo values.</summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    public enum Tr2GoldLevel
     {
-        private Level _farthestLevelCompleted = Level.LarasHome;
-        private bool newGameSelected = false;
+        // Levels
+        TheColdWar = 01,
+        FoolsGold = 02,
+        FurnaceOfTheGods = 03,
+        Kingdom = 04,
+        // Bonus
+        NightmareInVegas = 05
+    }
 
-        internal readonly ComponentSettings Settings = new ComponentSettings();
-        internal GameMemory GameMemory = new GameMemory();
+    /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
+    internal sealed class Autosplitter : ClassicAutosplitter
+    {
+        private bool _newGamePageSelected;
 
-        /// <summary>A constructor that primarily exists to handle events/delegations.</summary>
-        public Autosplitter() => GameMemory.OnGameFound += Settings.SetGameVersion;
-
-        /// <summary>
-        ///     Determines the IGT.
-        /// </summary>
-        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns>IGT as a <see cref="TimeSpan"/> if available, otherwise <see langword="null"/></returns>
-        public TimeSpan? GetGameTime(LiveSplitState state)
+        /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
+        public Autosplitter()
         {
-            const uint igtTicksPerSecond = 30;
-            uint currentLevelTicks = GameMemory.Data.LevelTime.Current;
-            var currentLevelTime = (double)currentLevelTicks / igtTicksPerSecond;
-
-            // IL
-            if (!Settings.FullGame)
-                return TimeSpan.FromSeconds(currentLevelTime);
-
-            // FG
-            Level currentLevel = GameMemory.Data.Level.Current;
-            int finishedLevelsTicks = 0;
-            // Add up the level times stored in the game's memory.
-            for (int i = 0; i < ((int)currentLevel - 1); i++)
-            {
-                var levelAddress = (IntPtr)(GameData.FirstLevelTimeAddress + (i * 0x2c));
-                finishedLevelsTicks += GameMemory.Game.ReadValue<int>(levelAddress);
-            }
-            var finishedLevelsTime = (double)finishedLevelsTicks / igtTicksPerSecond;
-            return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
-        }
-
-        /// <summary>
-        ///     Determines if IGT should be paused when the game is quit or <see cref="GetGameTime"/> returns <see langword="null"/>
-        /// </summary>
-        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> if IGT should be paused, <see langword="false"/> otherwise</returns>
-        public bool IsGameTimePaused(LiveSplitState state) => true;
-
-        /// <summary>
-        ///     Determines if the timer should split.
-        /// </summary>
-        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> if the timer should split, <see langword="false"/> otherwise</returns>
-        public bool ShouldSplit(LiveSplitState state)
-        {
-            Level currentLevel = GameMemory.Data.Level.Current;
-            bool onCorrectLevel = _farthestLevelCompleted == currentLevel - 1;
-
-            // Deathrun
-            bool laraJustDied = GameMemory.Data.Health.Old > 0 && GameMemory.Data.Health.Current == 0;
-            if (Settings.Deathrun && onCorrectLevel && laraJustDied)
-                return true;
+            Settings = new ComponentSettings();
             
-            // FG & IL/Section
-            bool levelJustCompleted = !GameMemory.Data.LevelComplete.Old && GameMemory.Data.LevelComplete.Current;
-            if (levelJustCompleted && onCorrectLevel)
-            {
-                _farthestLevelCompleted++;
-                return true;
-            }
-            return false;
+            LevelCount = 18; // This is the highest between TR2 at 18 and TR2G at 5.
+            CompletedLevels.Capacity = LevelCount;
+
+            Data = new GameData();
+            Data.OnGameFound += Settings.SetGameVersion;
         }
 
-        /// <summary>
-        ///     Determines if the timer should reset.
-        /// </summary>
-        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> if the timer should reset, <see langword="false"/> otherwise</returns>
-        public bool ShouldReset(LiveSplitState state)
+        public override bool ShouldStart(LiveSplitState state)
         {
-            /* It is hypothetically reasonable to use _fullGameFarthestLevel to reset
-             * if the player loads into a level ahead of their current level.
-             * However, considering a case where a runner accidentally loads an incorrect
-             * save after dying, it's clear that this should be avoided.
-             */
-            return GameMemory.Data.PickedPassportFunction.Current == 2;
-        }
+            uint currentLevel = ClassicGameData.Level.Current;
+            uint oldLevel = ClassicGameData.Level.Old;
 
-        /// <summary>
-        ///     Determines if the timer should start.
-        /// </summary>
-        /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        /// <returns><see langword="true"/> if the timer should start, <see langword="false"/> otherwise</returns>
-        public bool ShouldStart(LiveSplitState state)
-        {
-            // Ignore demos.
-            Level currentLevel = GameMemory.Data.Level.Current;
-            Level oldLevel = GameMemory.Data.Level.Old;
-            if (currentLevel >= Level.DemoVenice)
+            // Ignore demos. 
+            if (currentLevel >= (uint)Tr2Level.DemoVenice) // Never true for TR2G; level values are never so high.
                 return false;
 
-            // Determine if a new game was started; it applies to FG runs and IL runs of the first level.
-            uint oldPassportPage = GameMemory.Data.PickedPassportFunction.Old;
-            uint currentPassportPage = GameMemory.Data.PickedPassportFunction.Current;
+            // Check to see if the player has navigated to the New Game page of the passport.
+            // This prevent some misfires from LiveSplit hooking late.
+            // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
+            uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
+            uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
             if (oldPassportPage == 0 && currentPassportPage == 1)
-                newGameSelected = true;
-            bool cameFromTitleScreenOrLarasHome = GameMemory.Data.TitleScreen.Old && !GameMemory.Data.TitleScreen.Current || oldLevel == Level.LarasHome;
-            bool justStartedGreatWall = currentLevel == Level.GreatWall;
-            bool newGameStarted = cameFromTitleScreenOrLarasHome && justStartedGreatWall && newGameSelected;
-            if (newGameStarted)
-                return true;
+                _newGamePageSelected = true;
 
-            // The remaining logic only applies to non-FG runs starting on a level besides the first.
-            if (Settings.FullGame)
-                return false;
-
-            uint oldTime = GameMemory.Data.LevelTime.Old;
-            uint currentTime = GameMemory.Data.LevelTime.Current;
-            bool wentToNextLevel = oldLevel == currentLevel - 1;
-            if (wentToNextLevel && oldTime > currentTime)
+            // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+            if (_newGamePageSelected)
             {
-                _farthestLevelCompleted = oldLevel;
-                return true;
+                bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
+                bool cameFromLarasHome = oldLevel == (uint)Tr2Level.LarasHome; // Never true for TR2G.
+                bool justStartedFirstLevel = currentLevel == 1; // This value is good for GreatWall and TheColdWar.
+                bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
+                if (newGameStarted)
+                    return true;
             }
-            return false;
+            else if (Settings.FullGame)
+            {
+                return false;
+            }
+            
+            // The remaining logic only applies to non-FG runs starting on a level besides the first.
+            uint oldTime = ClassicGameData.LevelTime.Old;
+            uint currentTime = ClassicGameData.LevelTime.Current;
+            bool wentToNextLevel = oldLevel == currentLevel - 1;
+            return wentToNextLevel && oldTime > currentTime;
         }
 
-        /// <summary>
-        ///     Resets values for full game runs.
-        /// </summary>
-        public void ResetValues()
+        public override void OnStart()
         {
-            _farthestLevelCompleted = Level.LarasHome;
-            newGameSelected = false;
-        }
-
-        public void Dispose() 
-        {
-            GameMemory.OnGameFound -= Settings.SetGameVersion;
-            GameMemory = null;
+            _newGamePageSelected = false;
+            base.OnStart();
         }
     }
 }

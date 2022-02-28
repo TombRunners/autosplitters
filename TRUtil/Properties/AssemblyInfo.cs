@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TR2Gold")]
-[assembly: AssemblyDescription("A LiveSplit Component for autosplitting Tomb Raider II Gold expansion levels.")]
+[assembly: AssemblyTitle("TRComponentUtil")]
+[assembly: AssemblyDescription("Library for classic Tomb Raider autosplitting components.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TR2Gold")]
-[assembly: AssemblyCopyright("Copyright © 2021")]
+[assembly: AssemblyProduct("TRComponentUtil")]
+[assembly: AssemblyCopyright("Copyright © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("45961d67-081c-4c01-b1ea-9e4a79f80dad")]
+[assembly: Guid("29196311-2d7c-428b-a058-6bbfc8452909")]
 
 // Version information for an assembly consists of the following four values:
 //

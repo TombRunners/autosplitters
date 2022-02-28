@@ -47,4 +47,13 @@
       <change>Temporary fix for the component crashing LiveSplit on quit.</change>
     </changelog>
   </update>
+  <update version="1.3.1.0">
+    <files>
+      <file path="Components/TR2.dll" status="changed"/>
+	  <file path="Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Added TR2Gold support; backend code simplification.</change>
+    </changelog>
+  </update>
 </updates>

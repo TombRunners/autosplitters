@@ -2,9 +2,9 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace TR2Gold
+namespace TRUtil
 {
-    public class ComponentSettings : UserControl
+    public class ClassicComponentSettings : UserControl
     {
         private GroupBox _modeSelect;
         public RadioButton ILModeButton;
@@ -13,9 +13,9 @@ namespace TR2Gold
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
-        public bool Deathrun = false;
+        public bool Deathrun;
 
-        public ComponentSettings() => InitializeComponent();
+        public ClassicComponentSettings() => InitializeComponent();
 
         private void InitializeComponent()
         {
@@ -85,13 +85,13 @@ namespace TR2Gold
             AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
             AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
             AutosplitterVersionLabel.TabIndex = 2;
-            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetExecutingAssembly().GetName().Version;
+            AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
 
             // ComponentSettings
             Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
             Controls.Add(_modeSelect);
-            Name = "ComponentSettings";
+            Name = "ClassicComponentSettings";
             Size = new System.Drawing.Size(313, 110);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
@@ -99,22 +99,8 @@ namespace TR2Gold
             PerformLayout();
         }
 
-        internal void SetGameVersion(GameVersion? version)
+        public virtual void SetGameVersion(uint version)
         {
-            string versionText;
-            switch (version)
-            {
-                case GameVersion.Stella:
-                    versionText = "Stella";
-                    break;
-                case GameVersion.StellaCracked:
-                    versionText = "Stella No-CD";
-                    break;
-                default:
-                    versionText = "Unknown/Undetected";
-                    break;
-            }
-            GameVersionLabel.Text = "Game Version: " + versionText;
         }
 
         private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

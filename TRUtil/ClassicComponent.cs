@@ -2,11 +2,11 @@
 using System.Windows.Forms;               // Control, TableLayoutPanel
 using System.Xml;                         // XmlDocument, XmlElement XmlNode
 using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // LayoutMode, SettingsHelper
-using LiveSplit.UI.Components;            // IComponent, LogicComponent
+using LiveSplit.UI;                       // LayoutMode
+using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 
-namespace TR2Gold
+namespace TRUtil
 {
     /// <summary>
     ///     Implementation of <see cref="AutoSplitComponent"/>.
@@ -15,21 +15,23 @@ namespace TR2Gold
     ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
     ///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
     /// </remarks>
-    internal class Component : AutoSplitComponent
+    public abstract class ClassicComponent : AutoSplitComponent
     {
-        private readonly Autosplitter _splitter;
+        private readonly ClassicAutosplitter _splitter;
         private readonly LiveSplitState _state;
 
         /// <summary>
         ///     Initializes the component.
         /// </summary>
-        /// <param name="autoSplitter"><see cref="IAutoSplitter"/> implementation</param>
+        /// <param name="autosplitter"><see cref="IAutoSplitter"/> implementation</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-        public Component(Autosplitter autoSplitter, LiveSplitState state) : base(autoSplitter, state)
+        protected ClassicComponent(ClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
         {
-            _splitter = autoSplitter;
+            _splitter = autosplitter;
             _state = state;
-            _state.OnReset += (s, tp) => _splitter?.ResetValues();
+            _state.OnSplit += (s, e) => _splitter?.OnSplit(ClassicGameData.Level.Current);
+            _state.OnStart += (s, e) => _splitter?.OnStart();
+            _state.OnUndoSplit += (s, e) => _splitter?.OnUndoSplit();
         }
 
         /// <inheritdoc/>
@@ -86,18 +88,16 @@ namespace TR2Gold
         /// <inheritdoc/>
         public override void Dispose()
         {
-            _state.OnReset -= (s, tp) => _splitter?.ResetValues();
-            _splitter.Dispose();
+            _state.OnSplit -= (s, e) => _splitter?.OnSplit(ClassicGameData.Level.Current);
+            _state.OnStart -= (s, e) => _splitter?.OnStart();
+            _state.OnUndoSplit -= (s, e) => _splitter?.OnUndoSplit();
+            _splitter?.Dispose();
         }
 
-        /// <inheritdoc/>
-        /// <remarks>
-        ///     This is the text that is displayed in the white area of LiveSplit's Layout Editor.
-        /// </remarks>
-        public override string ComponentName => "Tomb Raider II Gold";
+        public override string ComponentName => "Classic Tomb Raider Component";
 
         /// <summary>
-        ///     Adds <see cref="GameMemory"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
+        ///     Adds <see cref="ClassicGameData"/> and <see cref="ClassicAutosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
         /// </summary>
         /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
         /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -105,11 +105,11 @@ namespace TR2Gold
         /// <param name="height">height passed by LiveSplit</param>
         /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
         /// <remarks>
-        ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameMemory"/> in its logic.
+        ///     This override allows <see cref="ClassicAutosplitter"/> to use <see cref="ClassicGameData"/> in its logic.
         /// </remarks>
         public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
-            if (_splitter.GameMemory.Update())
+            if (_splitter.Data.Update())
                 base.Update(invalidator, state, width, height, mode);
         }
     }

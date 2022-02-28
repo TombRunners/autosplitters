@@ -2,12 +2,12 @@
 using System.Reflection;        // Assembly
 using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
-using TR2Gold;                      // For [assembly:...]
+using TR2;                      // For [assembly:...]
 using UpdateManager;            // IUpdateable
 
 [assembly: ComponentFactory(typeof(ComponentFactory))]
 
-namespace TR2Gold
+namespace TR2
 {
     /// <summary>
     ///     Implementation of <see cref="IComponentFactory"/> for the component.
@@ -32,13 +32,13 @@ namespace TR2Gold
         /// <remarks>
         ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
         /// </remarks>
-        public string ComponentName => "TR2 Gold";
+        public string ComponentName => "Tomb Raider II and Golden Mask";
 
         /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
-        public string Description => "Autosplitter for TR2 Gold";
+        public string Description => "Autosplitter for Tomb Raider II and Golden Mask";
 
         /// <inheritdoc/>
         /// <param name="state">State passed by LiveSplit</param>
@@ -75,7 +75,7 @@ namespace TR2Gold
         /// <remarks>
         ///     It must be a raw link.
         /// </remarks>
-        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaiderIIGold/";
+        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaiderII/";
 
         /// <summary>
         ///     XML file which is checked to see if the component needs updated.

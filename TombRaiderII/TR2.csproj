@@ -53,12 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autosplitter.cs" />
-    <Compile Include="Component Factory.cs" />
+    <Compile Include="ComponentFactory.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GameMemory.cs" />
+    <Compile Include="GameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,8 +66,17 @@
       <DependentUpon>ComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
+      <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
+      <Name>TRUtil</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y)</PostBuildEvent>
+    <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y &amp; xcopy $(SolutionDir)TRUtil\bin\Release\TRUtil.dll $(ProjectDir)\Components\  /y)</PostBuildEvent>
   </PropertyGroup>
 </Project>
