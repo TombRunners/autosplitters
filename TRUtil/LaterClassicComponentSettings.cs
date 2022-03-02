@@ -4,18 +4,20 @@ using System.Windows.Forms;
 
 namespace TRUtil
 {
-    public class ClassicComponentSettings : UserControl
+    public class LaterClassicComponentSettings : UserControl
     {
         protected GroupBox _modeSelect;
         public RadioButton ILModeButton;
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
+        public CheckBox GlitchlessCheckbox;
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun;
+        public bool Glitchless;
 
-        public ClassicComponentSettings() => InitializeComponent();
+        public LaterClassicComponentSettings() => InitializeComponent();
 
         private void InitializeComponent()
         {
@@ -23,6 +25,7 @@ namespace TRUtil
             ILModeButton = new RadioButton();
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
+            GlitchlessCheckbox = new CheckBox();
             GameVersionLabel = new Label();
             AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
@@ -73,7 +76,7 @@ namespace TRUtil
 
             // GameVersionLabel
             GameVersionLabel.AutoSize = true;
-            GameVersionLabel.Location = new System.Drawing.Point(10, 64);
+            GameVersionLabel.Location = new System.Drawing.Point(10, 92);
             GameVersionLabel.Name = "GameVersionLabel";
             GameVersionLabel.Size = new System.Drawing.Size(186, 13);
             GameVersionLabel.TabIndex = 1;
@@ -81,24 +84,37 @@ namespace TRUtil
 
             // AutosplitterVersionLabel
             AutosplitterVersionLabel.AutoSize = true;
-            AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 87);
+            AutosplitterVersionLabel.Location = new System.Drawing.Point(10, 118);
             AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-            AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 13);
+            AutosplitterVersionLabel.Size = new System.Drawing.Size(103, 110);
             AutosplitterVersionLabel.TabIndex = 2;
             AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
 
             // ComponentSettings
             Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
+            Controls.Add(GlitchlessCheckbox);
             Controls.Add(_modeSelect);
-            Name = "ClassicComponentSettings";
-            Size = new System.Drawing.Size(313, 110);
+            Name = "LaterClassicComponentSettings";
+            Size = new System.Drawing.Size(313, 145);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
+
+            // GlitchlessCheckbox
+            GlitchlessCheckbox.AutoSize = true;
+            GlitchlessCheckbox.Checked = false;
+            GlitchlessCheckbox.Location = new System.Drawing.Point(10, 64);
+            GlitchlessCheckbox.Name = "GlitchlessModeCheckbox";
+            GlitchlessCheckbox.Size = new System.Drawing.Size(72, 17);
+            GlitchlessCheckbox.TabIndex = 0;
+            GlitchlessCheckbox.Text = "Glitchless";
+            GlitchlessCheckbox.UseVisualStyleBackColor = true;
+            GlitchlessCheckbox.CheckedChanged += GlitchlessCheckboxCheckedChanged;
+
             ResumeLayout(false);
             PerformLayout();
         }
-
+        
         public virtual void SetGameVersion(uint version)
         {
         }
@@ -119,6 +135,12 @@ namespace TRUtil
         {
             FullGame = false;
             Deathrun = true;
+        }
+
+        private void GlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            Glitchless = checkbox.Checked;
         }
     }
 }

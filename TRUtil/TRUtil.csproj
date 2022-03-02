@@ -49,6 +49,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseComponent.cs" />
+    <Compile Include="BaseAutosplitter.cs" />
+    <Compile Include="LaterClassicComponentSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BaseGameData.cs" />
+    <Compile Include="LaterClassicComponent.cs" />
+    <Compile Include="LaterClassicGameData.cs" />
+    <Compile Include="LaterClassicAutosplitter.cs" />
     <Compile Include="ClassicAutosplitter.cs" />
     <Compile Include="ClassicComponent.cs" />
     <Compile Include="ClassicGameData.cs" />
@@ -59,6 +68,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="LaterClassicComponentSettings.resx">
+      <DependentUpon>LaterClassicComponentSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ClassicComponentSettings.resx">
       <DependentUpon>ClassicComponentSettings.cs</DependentUpon>
     </EmbeddedResource>
