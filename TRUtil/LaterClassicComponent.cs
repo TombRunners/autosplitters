@@ -15,16 +15,16 @@ namespace TRUtil
     ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
     ///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
     /// </remarks>
-    public abstract class LaterClassicComponent : BaseComponent
+    public abstract class LaterClassicComponent : AutoSplitComponent
     {
         private readonly LaterClassicAutosplitter _splitter;
         private readonly LiveSplitState _state;
 
-        protected LaterClassicComponent(BaseAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
+        protected LaterClassicComponent(LaterClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
         {
-            _splitter = (LaterClassicAutosplitter)autosplitter;
+            _splitter = autosplitter;
             _state = state;
-            _state.OnSplit += (s, e) => _splitter?.OnSplit(BaseGameData.Level.Current);
+            _state.OnSplit += (s, e) => _splitter?.OnSplit(LaterClassicAutosplitter.CurrentProgressEntry);
             _state.OnStart += (s, e) => _splitter?.OnStart();
             _state.OnUndoSplit += (s, e) => _splitter?.OnUndoSplit();
         }
@@ -70,7 +70,7 @@ namespace TRUtil
 
         public override void Dispose()
         {
-            _state.OnSplit -= (s, e) => _splitter?.OnSplit(BaseGameData.Level.Current);
+            _state.OnSplit -= (s, e) => _splitter?.OnSplit(LaterClassicAutosplitter.CurrentProgressEntry);
             _state.OnStart -= (s, e) => _splitter?.OnStart();
             _state.OnUndoSplit -= (s, e) => _splitter?.OnUndoSplit();
             _splitter?.Dispose();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using LiveSplit.Model;
 
 namespace TRUtil
@@ -7,6 +8,12 @@ namespace TRUtil
     {
         protected internal ClassicComponentSettings Settings = new ClassicComponentSettings();
         public ClassicGameData Data;
+                
+        /// <summary>Used to size CompletedLevels.</summary>
+        protected int LevelCount = 0;
+        
+        /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
+        protected readonly List<uint> CompletedLevels = new List<uint>();
 
         public override TimeSpan? GetGameTime(LiveSplitState state)
         {
@@ -77,6 +84,17 @@ namespace TRUtil
 
             return !Settings.FullGame && levelTimeJustStarted && !oldTitleScreen;
         }
+
+        
+        /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
+        public virtual void OnStart() => CompletedLevels.Clear();
+
+        /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
+        /// <param name="completedLevel">What to add to <see cref="CompletedLevels"/></param>
+        public virtual void OnSplit(uint completedLevel) => CompletedLevels.Add(completedLevel);
+
+        /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
+        public virtual void OnUndoSplit() => CompletedLevels.RemoveAt(CompletedLevels.Count - 1);
 
         public override void Dispose()
         {

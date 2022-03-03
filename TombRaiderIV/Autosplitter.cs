@@ -30,6 +30,7 @@ namespace TR4
         // Alexandria
         Alexandria              = 14,
         CoastalRuins            = 15,
+        // Temple of Isis
         PharosTempleOfIsis      = 16,
         CleopatrasPalaces       = 17,
         Catacombs               = 18,
@@ -57,11 +58,27 @@ namespace TR4
         TempleOfHorus           = 37,
         HorusBoss               = 38
     }
-    
+
+    /// <summary>The "areas" of the game.</summary>
+    internal enum LevelSection
+    {
+        All,
+        Cambodia,
+        ValleyOfTheKings,
+        Karnak,
+        EasternDesert,
+        Alexandria,
+        TempleOfIsis,
+        LostLibrary,
+        Cairo,
+        Giza,
+        TempleOfHorus
+    }
+
     /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : LaterClassicAutosplitter
     {
-        private static readonly HashSet<Level> NextSplitLevels = new HashSet<Level>()
+        private static readonly HashSet<Level> GlitchedNextSplitLevels = new HashSet<Level>()
         {
             Level.TheTombofSeth,
             Level.ValleyoftheKings,
@@ -74,13 +91,32 @@ namespace TR4
             Level.TempleOfHorus
         };
 
+        private static readonly Dictionary<LevelSection, uint> GlitchlessAreaLevelTracker = new Dictionary<LevelSection, uint>()
+        {
+            {LevelSection.Cambodia, 0},
+            {LevelSection.ValleyOfTheKings, 0},
+            {LevelSection.Karnak, 0},
+            {LevelSection.EasternDesert, 0},
+            {LevelSection.Alexandria, 0},
+            {LevelSection.TempleOfIsis, 0},
+            {LevelSection.LostLibrary, 0},
+            {LevelSection.Cairo, 0},
+            {LevelSection.Giza, 0},
+            {LevelSection.TempleOfHorus, 0}
+        };
+
+        private static void TrackGeneralProgress()
+            => CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
+
+        private static void TrackSectionProgress(LevelSection section, uint value)
+            => CurrentProgressEntry.Add((uint)section, value);
+
+        private static uint NextLevel = 2;
+
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
             Settings = new ComponentSettings();
-
-            LevelCount = 38;
-            CompletedLevels.Capacity = LevelCount;
 
             Data = new GameData();
             Data.OnGameFound += Settings.SetGameVersion;
@@ -92,22 +128,121 @@ namespace TR4
             if (Settings.Deathrun)
             {
                 bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
-                return laraJustDied;
+                if (laraJustDied)
+                {
+                    CurrentProgressEntry.Clear();
+                    CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
+                }
             }
 
             if (Settings.Glitchless)
                 return GlitchlessShouldSplit();
 
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
-            bool enteringNextSplitLevel = NextSplitLevels.Contains((Level)currentGfLevelComplete);
+            bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
 
-            return enteringNextSplitLevel || finishedGame;
+            bool shouldSplit = enteringNextSplitLevel || finishedGame;
+            if (shouldSplit)
+            {
+                CurrentProgressEntry.Clear();
+                TrackGeneralProgress();
+                return true;
+            }
+            return false;
         }
 
         private bool GlitchlessShouldSplit()
         {
-            throw new NotImplementedException();
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            // Normally split levels: always non-backtracked levels; sometimes "undesired" splits abitrarily skipped
+            if (
+                currentGfLevelComplete == NextLevel &&                            // Loading into supposed next level
+                currentGfLevelComplete != 2 &&                                    // Not loading into last level of Cambodia (undesired)
+                currentGfLevelComplete != 8 && currentGfLevelComplete != 9 &&     // Not loading into backtracked levels of Karnak
+                (currentGfLevelComplete <= 15 || currentGfLevelComplete >= 20) && // Not loading into backtracked levels of Alexandria or Lost Library
+                (currentGfLevelComplete <= 23 || currentGfLevelComplete >= 26) && // Not loading into backtracked levels of Cairo
+                (currentGfLevelComplete <= 28 || currentGfLevelComplete >= 32) && // Not loading into backtracked levels of Giza
+                currentGfLevelComplete != 38                                      // Not loading into boss battle (undesired)
+            )
+            {
+                CurrentProgressEntry.Clear();
+                TrackGeneralProgress();
+                return true;
+            }
+
+            // Cambodia
+            var currentCambodiaProgress = GlitchlessAreaLevelTracker[LevelSection.Cambodia];
+            if (currentCambodiaProgress == 0 && currentLevel == 1 && currentGfLevelComplete == 2) // Angkor Wat to Race for the Iris
+            {
+                // Update CurrentProgressEntry.
+                CurrentProgressEntry.Clear();
+                TrackGeneralProgress();
+                TrackSectionProgress(LevelSection.Cambodia, currentCambodiaProgress);
+
+                // Update split logic helpers.
+                GlitchlessAreaLevelTracker[LevelSection.Cambodia] = currentCambodiaProgress + 1;
+                NextLevel++;
+
+                return false; // "Undesired"
+            }
+
+            // Karnak
+            var currentKarnakProgress = GlitchlessAreaLevelTracker[LevelSection.Karnak];
+            if (
+                (currentKarnakProgress == 1 && currentLevel == 7 && currentGfLevelComplete == 8) || // Karnak to Hypostyle
+                (currentKarnakProgress == 2 && currentLevel == 8 && currentGfLevelComplete == 9) || // Hypostyle to Sacred Lake
+                (currentKarnakProgress == 3 && currentLevel == 9 && currentGfLevelComplete == 7) || // Sacred Lake to Karnak
+                (currentKarnakProgress == 4 && currentLevel == 7 && currentGfLevelComplete == 8) || // Karnak to Hypostyle
+                (currentKarnakProgress == 5 && currentLevel == 8 && currentGfLevelComplete == 9)    // Hypostyle to Sacred Lake
+            )
+            {
+                // Update CurrentProgressEntry.
+                CurrentProgressEntry.Clear();
+                TrackSectionProgress(LevelSection.Karnak, currentKarnakProgress);
+
+                // Update split logic helpers.
+                if (currentKarnakProgress == 5)
+                    NextLevel = 11;
+                GlitchlessAreaLevelTracker[LevelSection.Karnak] = currentKarnakProgress + 1;
+                
+                return currentKarnakProgress != 1; // 1st Karnak to Hypostyle "undesired"
+            }
+
+            // TODO:
+            // Alexandria
+            // Temple of Isis
+            // LostLibrary
+            // Cairo
+            // Giza
+
+            bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
+            if (finishedGame)
+            {
+                CurrentProgressEntry.Clear();
+                TrackGeneralProgress();
+                return true;
+            }
+            return false;
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+            NextLevel = 2;
+        }
+
+        public override void OnUndoSplit()
+        {
+            if (ProgressTracker.Count <= 0)
+                return;
+
+            var undoneProgress = ProgressTracker.Pop(); // Glitched runs can disregard this.
+            if (Settings.Glitchless)
+                foreach (var item in undoneProgress)
+                    GlitchlessAreaLevelTracker[(LevelSection)item.Section] = item.Value;
         }
     }
 }

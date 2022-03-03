@@ -15,15 +15,15 @@ namespace TRUtil
     ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
     ///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
     /// </remarks>
-    public abstract class ClassicComponent : BaseComponent
+    public abstract class ClassicComponent : AutoSplitComponent
     {
         private readonly ClassicAutosplitter _splitter;
         private readonly LiveSplitState _state;
 
         /// <inheritdoc/>
-        protected ClassicComponent(BaseAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
+        protected ClassicComponent(ClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
         {
-            _splitter = (ClassicAutosplitter)autosplitter;
+            _splitter = autosplitter;
             _state = state;
             _state.OnSplit += (s, e) => _splitter?.OnSplit(BaseGameData.Level.Current);
             _state.OnStart += (s, e) => _splitter?.OnStart();
