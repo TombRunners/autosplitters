@@ -83,6 +83,7 @@ namespace TR4
             Level.TheTombofSeth,
             Level.ValleyoftheKings,
             Level.TempleofKarnak,
+            Level.TombofSemerkhet,
             Level.DesertRailroad,
             Level.Alexandria,
             Level.CityOfTheDead,
@@ -135,6 +136,10 @@ namespace TR4
                 }
             }
 
+            uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+            if (oldGfLevelComplete != 0)
+                return false; // Prevent double-splits (for both glitched and glitchless).
+
             if (Settings.Glitchless)
                 return GlitchlessShouldSplit();
 
@@ -147,9 +152,8 @@ namespace TR4
             {
                 CurrentProgressEntry.Clear();
                 TrackGeneralProgress();
-                return true;
             }
-            return false;
+            return shouldSplit;
         }
 
         private bool GlitchlessShouldSplit()
