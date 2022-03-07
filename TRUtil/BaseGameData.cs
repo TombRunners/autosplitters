@@ -49,9 +49,6 @@ namespace TRUtil
         /// <remarks>Usually matches chronological number (TR3 is an exception due to area selection)</remarks>
         public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
-        /// <summary>Gives the IGT value for the current level.</summary>
-        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers?["LevelTime"];
-
         /// <summary>Lara's current HP.</summary>
         /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
         public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
@@ -109,8 +106,8 @@ namespace TRUtil
             return true;
         }
 
-        /// <summary>Converts level time ticks to a double representing time elapsed in decimal seconds.</summary>
-        public static double LevelTimeAsDouble(uint ticks) => (double)ticks / IGTTicksPerSecond;
+        /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
+        public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
 
         /// <summary>Sums completed levels' times.</summary>
         /// <returns>The sum of completed levels' times</returns>

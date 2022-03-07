@@ -29,6 +29,9 @@ namespace TRUtil
         /// </remarks>
         public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers?["LevelComplete"];
 
+        /// <summary>Gives the IGT value for the current level.</summary>
+        public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers?["LevelTime"];
+
         /// <summary>Indicates the passport function chosen by the user.</summary>
         /// <remarks>
         ///     0 if <c>Load Game</c> was picked.

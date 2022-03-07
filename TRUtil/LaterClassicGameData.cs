@@ -16,6 +16,9 @@ namespace TRUtil
         /// </remarks>
         public static MemoryWatcher<uint> GfLevelComplete => (MemoryWatcher<uint>)Watchers?["GfLevelComplete"];
 
+        /// <summary>Represents a "global" timer tracking ticks since New Game. It is saved/reloaded. </summary>
+        public static MemoryWatcher<ulong> GameTimer => (MemoryWatcher<ulong>)Watchers?["GameTimer"];
+
         /// <summary>Indicates if a loading screen is active.</summary>
         public static MemoryWatcher<bool> Loading => (MemoryWatcher<bool>)Watchers?["Loading"];
 
