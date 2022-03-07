@@ -13,12 +13,18 @@ namespace TRUtil
 
         protected internal static LaterClassicProgressEntry CurrentProgressEntry = new LaterClassicProgressEntry();
 
-        public override TimeSpan? GetGameTime(LiveSplitState state)
-            => null;
+        protected internal static ulong TicksAtStartOfRun;
+
+        public override TimeSpan? GetGameTime(LiveSplitState state) {
+            if (!LaterClassicGameData.GameTimer.Changed)
+                return null;
+            
+            return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(LaterClassicGameData.GameTimer.Current - TicksAtStartOfRun));
+        }
 
         public override bool ShouldReset(LiveSplitState state)
         {
-            bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && LaterClassicGameData.Loading.Current;
+            bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
             // Checking the old level number ensures that someone Alt+F4-ing or otherwise opening the game (perhaps after a crash)
             // will not cause ShouldReset to return true, losing their LiveSplit run progress.
             // This works because when loading non-test/demo games, the level value initializes as 0 before the main menu load is called.
@@ -36,7 +42,10 @@ namespace TRUtil
         }
 
         /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
-        public virtual void OnStart() => ProgressTracker.Clear();
+        public virtual void OnStart() {
+            ProgressTracker.Clear();
+            TicksAtStartOfRun = (BaseGameData.Level.Current == 1) ? 0 : LaterClassicGameData.GameTimer.Old;
+        }
 
         /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
         /// <param name="entry">Progress value(s) to add to <see cref="ProgressTracker"/></param>

@@ -31,7 +31,7 @@ namespace TR4
 			    case GameVersion.SteamOrGog:
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x000000)) { Name = "LevelTime"});
+                    Watchers.Add(new MemoryWatcher<ulong>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
                     break;
