@@ -24,7 +24,7 @@ namespace TRUtil
         {
             _splitter = autosplitter;
             _state = state;
-            _state.OnSplit += (s, e) => _splitter?.OnSplit(LaterClassicAutosplitter.CurrentProgressEntry);
+            _state.OnSplit += (s, e) => _splitter?.OnSplit();
             _state.OnStart += (s, e) => _splitter?.OnStart();
             _state.OnUndoSplit += (s, e) => _splitter?.OnUndoSplit();
         }
@@ -70,7 +70,7 @@ namespace TRUtil
 
         public override void Dispose()
         {
-            _state.OnSplit -= (s, e) => _splitter?.OnSplit(LaterClassicAutosplitter.CurrentProgressEntry);
+            _state.OnSplit -= (s, e) => _splitter?.OnSplit();
             _state.OnStart -= (s, e) => _splitter?.OnStart();
             _state.OnUndoSplit -= (s, e) => _splitter?.OnUndoSplit();
             _splitter?.Dispose();
