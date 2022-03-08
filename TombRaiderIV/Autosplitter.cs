@@ -62,17 +62,14 @@ namespace TR4
     /// <summary>The "areas" of the game.</summary>
     internal enum LevelSection
     {
-        All,
-        Cambodia,
-        ValleyOfTheKings,
-        Karnak,
-        EasternDesert,
-        Alexandria,
-        TempleOfIsis,
-        LostLibrary,
-        Cairo,
-        Giza,
-        TempleOfHorus
+        All                 = Level.MainMenu,
+        Cambodia            = Level.AngkorWat,
+        ValleyOfTheKings    = Level.TheTombofSeth,
+        Karnak              = Level.TempleofKarnak,
+        EasternDesert       = Level.DesertRailroad,
+        Alexandria          = Level.Alexandria,
+        Cairo               = Level.CityOfTheDead,
+        Giza                = Level.SphinxComplex
     }
 
     /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
@@ -92,27 +89,29 @@ namespace TR4
             Level.TempleOfHorus
         };
 
-        private static readonly Dictionary<LevelSection, uint> GlitchlessAreaLevelTracker = new Dictionary<LevelSection, uint>()
+        private static readonly Dictionary<LevelSection, uint> SectionProgressEntries = new Dictionary<LevelSection, uint>()
         {
-            {LevelSection.Cambodia, 0},
+            {LevelSection.All,              0},
+            {LevelSection.Cambodia,         0},
             {LevelSection.ValleyOfTheKings, 0},
-            {LevelSection.Karnak, 0},
-            {LevelSection.EasternDesert, 0},
-            {LevelSection.Alexandria, 0},
-            {LevelSection.TempleOfIsis, 0},
-            {LevelSection.LostLibrary, 0},
-            {LevelSection.Cairo, 0},
-            {LevelSection.Giza, 0},
-            {LevelSection.TempleOfHorus, 0}
+            {LevelSection.Karnak,           0},
+            {LevelSection.EasternDesert,    0},
+            {LevelSection.Alexandria,       0},
+            {LevelSection.Cairo,            0},
+            {LevelSection.Giza,             0}
         };
 
-        private static void TrackGeneralProgress()
-            => CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
+        private static void TrackGeneralProgress() => CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
 
-        private static void TrackSectionProgress(LevelSection section, uint value)
-            => CurrentProgressEntry.Add((uint)section, value);
+        private static void TrackSectionProgress(LevelSection section, uint value) => CurrentProgressEntry.Add((uint)section, value);
 
-        private static uint NextLevel = 2;
+        private static void TrackGeneralAndSectionProgress(LevelSection section, uint value)
+        {
+            TrackGeneralProgress();
+            TrackSectionProgress(section, value);
+        }
+
+        private static uint PossiblyTheNextLevel => SectionProgressEntries[LevelSection.All] + 1;
 
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
@@ -125,34 +124,39 @@ namespace TR4
 
         public override bool ShouldSplit(LiveSplitState state)
         {
-            // Deathrun
+            // Handle deathruns (for both rulesets).
             if (Settings.Deathrun)
             {
                 bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
                 if (laraJustDied)
                 {
-                    CurrentProgressEntry.Clear();
-                    CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
+                    TrackGeneralProgress();
+                    return true;
                 }
+                return false;
             }
 
+            // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
             uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
             if (oldGfLevelComplete != 0)
-                return false; // Prevent double-splits (for both glitched and glitchless).
+                return false; 
 
+            // Handle ILs (for both rulesets).
+            if (!Settings.FullGame)
+                return LaterClassicGameData.GfLevelComplete.Current != 0;
+
+            // Handle FG for glitchless.
             if (Settings.Glitchless)
                 return GlitchlessShouldSplit();
 
+            // Handle FG for glitched.
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
 
             bool shouldSplit = enteringNextSplitLevel || finishedGame;
             if (shouldSplit)
-            {
-                CurrentProgressEntry.Clear();
                 TrackGeneralProgress();
-            }
             return shouldSplit;
         }
 
@@ -163,125 +167,79 @@ namespace TR4
 
             // Normally split levels: always non-backtracked levels; sometimes "undesired" splits abitrarily skipped
             if (
-                currentGfLevelComplete == NextLevel &&                            // Loading into supposed next level
-                currentGfLevelComplete != 2 &&                                    // Not loading into last level of Cambodia (undesired)
-                currentGfLevelComplete != 8 && currentGfLevelComplete != 9 &&     // Not loading into backtracked levels of Karnak
-                (currentGfLevelComplete <= 15 || currentGfLevelComplete >= 20) && // Not loading into backtracked levels of Alexandria or Lost Library
-                (currentGfLevelComplete <= 23 || currentGfLevelComplete >= 26) && // Not loading into backtracked levels of Cairo
-                (currentGfLevelComplete <= 28 || currentGfLevelComplete >= 32) && // Not loading into backtracked levels of Giza
-                currentGfLevelComplete != 38                                      // Not loading into boss battle (undesired)
+                currentGfLevelComplete == PossiblyTheNextLevel &&               // Loading into supposed next level
+                currentGfLevelComplete != 02 &&                                 // Not loading into last level of Cambodia (undesired)
+                currentGfLevelComplete != 08 && currentGfLevelComplete != 09 && // Not loading into backtracked levels of Karnak
+                (currentGfLevelComplete < 15 || currentGfLevelComplete > 18) && // Not loading into backtracked levels of Alexandria or Lost Library
+                (currentGfLevelComplete < 23 || currentGfLevelComplete > 26) && // Not loading into backtracked levels of Cairo
+                (currentGfLevelComplete < 28 || currentGfLevelComplete > 32) && // Not loading into backtracked levels of Giza
+                currentGfLevelComplete != 38                                    // Not loading into boss battle (undesired)
             )
             {
-                CurrentProgressEntry.Clear();
                 TrackGeneralProgress();
                 return true;
             }
 
             // Cambodia
-            var currentCambodiaProgress = GlitchlessAreaLevelTracker[LevelSection.Cambodia];
-            if (currentCambodiaProgress == 0 && currentLevel == 1 && currentGfLevelComplete == 2) // Angkor Wat to Race for the Iris
+            var currentCambodiaProgress = SectionProgressEntries[LevelSection.Cambodia];
+            if (currentCambodiaProgress == 00 && currentLevel == 01 && currentGfLevelComplete == 02) // Angkor Wat to Race for the Iris
             {
                 // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackGeneralProgress();
-                TrackSectionProgress(LevelSection.Cambodia, currentCambodiaProgress);
+                TrackGeneralAndSectionProgress(LevelSection.Cambodia, currentCambodiaProgress);
 
                 // Update split logic helpers.
-                GlitchlessAreaLevelTracker[LevelSection.Cambodia] = currentCambodiaProgress + 1;
-                NextLevel++;
+                SectionProgressEntries[LevelSection.Cambodia] = currentCambodiaProgress + 1;
 
                 return false; // "Undesired"
             }
 
             // Karnak
-            var currentKarnakProgress = GlitchlessAreaLevelTracker[LevelSection.Karnak];
+            var currentKarnakProgress = SectionProgressEntries[LevelSection.Karnak];
             if (
-                (currentKarnakProgress == 0 && currentLevel == 7 && currentGfLevelComplete == 8) || // Karnak to Hypostyle
-                (currentKarnakProgress == 1 && currentLevel == 8 && currentGfLevelComplete == 9) || // Hypostyle to Sacred Lake
-                (currentKarnakProgress == 2 && currentLevel == 9 && currentGfLevelComplete == 7) || // Sacred Lake to Karnak
-                (currentKarnakProgress == 3 && currentLevel == 7 && currentGfLevelComplete == 8) || // Karnak to Hypostyle
-                (currentKarnakProgress == 4 && currentLevel == 8 && currentGfLevelComplete == 9)    // Hypostyle to Sacred Lake
+                (currentKarnakProgress == 00 && currentLevel == 07 && currentGfLevelComplete == 08) || // Karnak to Hypostyle
+                (currentKarnakProgress == 01 && currentLevel == 08 && currentGfLevelComplete == 09) || // Hypostyle to Sacred Lake
+                (currentKarnakProgress == 02 && currentLevel == 09 && currentGfLevelComplete == 07) || // Sacred Lake to Karnak
+                (currentKarnakProgress == 03 && currentLevel == 07 && currentGfLevelComplete == 08) || // Karnak to Hypostyle
+                (currentKarnakProgress == 04 && currentLevel == 08 && currentGfLevelComplete == 09)    // Hypostyle to Sacred Lake
             )
             {
                 // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.Karnak, currentKarnakProgress);
+                TrackGeneralAndSectionProgress(LevelSection.Karnak, currentKarnakProgress);
 
                 // Update split logic helpers.
-                if (currentKarnakProgress == 4)
-                    NextLevel = 11;
-                GlitchlessAreaLevelTracker[LevelSection.Karnak] = currentKarnakProgress + 1;
+                SectionProgressEntries[LevelSection.Karnak]++;
                 
-                return currentKarnakProgress != 1; // 1st Karnak to Hypostyle "undesired"
+                return currentKarnakProgress != 01; // 1st Karnak to Hypostyle "undesired"
             }
 
             // Alexandria
-            var currentAlexandriaProgress = GlitchlessAreaLevelTracker[LevelSection.Alexandria];
+            var currentAlexandriaProgress = SectionProgressEntries[LevelSection.Alexandria];
             if (
-                (currentAlexandriaProgress == 0 && currentLevel == 14 && currentGfLevelComplete == 15) || // Alexandria to Coastal
-                (currentAlexandriaProgress == 1 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 2 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
-                (currentAlexandriaProgress == 3 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 4 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
-                (currentAlexandriaProgress == 5 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 6 && currentLevel == 18 && currentGfLevelComplete == 19)    // Catacombs to Poseidon
+                (currentAlexandriaProgress == 00 && currentLevel == 14 && currentGfLevelComplete == 15) || // Alexandria to Coastal
+                (currentAlexandriaProgress == 01 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
+                (currentAlexandriaProgress == 02 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
+                (currentAlexandriaProgress == 03 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
+                (currentAlexandriaProgress == 04 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
+                (currentAlexandriaProgress == 05 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
+                (currentAlexandriaProgress == 06 && currentLevel == 18 && currentGfLevelComplete == 19) || // Catacombs to Poseidon
+                (currentAlexandriaProgress == 07 && currentLevel == 19 && currentGfLevelComplete == 20) || // Poseidon to Lost Library
+                (currentAlexandriaProgress == 08 && currentLevel == 16 && currentGfLevelComplete == 17) || // Isis to Cleopatra
+                (currentAlexandriaProgress == 09 && currentLevel == 17 && currentGfLevelComplete == 16) || // Cleopatra to Isis
+                (currentAlexandriaProgress == 10 && currentLevel == 16 && currentGfLevelComplete == 17)    // Isis to Cleopatra
             )
             {
                 // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.Alexandria, currentAlexandriaProgress);
+                TrackGeneralAndSectionProgress(LevelSection.Alexandria, currentAlexandriaProgress);
 
                 // Update split logic helpers.
-                if (currentAlexandriaProgress == 5)
-                    NextLevel = 19;
-                GlitchlessAreaLevelTracker[LevelSection.Alexandria] = currentAlexandriaProgress + 1;
+                SectionProgressEntries[LevelSection.Alexandria]++;
 
-                // All but 3rd Coastal to Catacombs and Catacombs to Posideon "undesired"
-                return currentAlexandriaProgress == 6 || currentAlexandriaProgress == 7;
-            }
-
-            // Temple of Isis
-            var currentTempleOfIsisProgress = GlitchlessAreaLevelTracker[LevelSection.TempleOfIsis];
-            if (
-                (currentTempleOfIsisProgress == 0 && currentLevel == 16 && currentGfLevelComplete == 17) || // Isis to Cleopatra
-                (currentTempleOfIsisProgress == 1 && currentLevel == 17 && currentGfLevelComplete == 16) || // Cleopatra to Isis
-                (currentTempleOfIsisProgress == 2 && currentLevel == 16 && currentGfLevelComplete == 17)    // Isis to Cleopatra
-            )
-            {
-                bool split = currentTempleOfIsisProgress == 2;
-
-                // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.TempleOfIsis, currentTempleOfIsisProgress);
-
-                // Update split logic helpers.
-                if (split)
-                    NextLevel = 22;
-                GlitchlessAreaLevelTracker[LevelSection.TempleOfIsis] = currentTempleOfIsisProgress + 1;
-
-                // All but 2nd Isis to Cleopatra "undesired"
-                return split;
-            }
-
-            // Lost Library
-            var currentLostLibraryProgress = GlitchlessAreaLevelTracker[LevelSection.LostLibrary];
-            if (
-                (currentLostLibraryProgress == 0 && currentLevel == 19 && currentGfLevelComplete == 20) || // Poseidon to Lost Library
-                (currentLostLibraryProgress == 1 && currentLevel == 20 && currentGfLevelComplete == 19)    // Lost Library to Poseidon
-            )
-            {
-                // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.LostLibrary, currentLostLibraryProgress);
-
-                // Update split logic helpers.
-                GlitchlessAreaLevelTracker[LevelSection.LostLibrary] = currentLostLibraryProgress + 1;
-                
-                return true;
+                // To/from Coastal and Isis-Cleopatra backtracking "undesired"
+                return currentAlexandriaProgress > 05 && currentAlexandriaProgress != 08 && currentAlexandriaProgress != 09;
             }
 
             // Cairo
-            var currentCairoProgress = GlitchlessAreaLevelTracker[LevelSection.Cairo];
+            var currentCairoProgress = SectionProgressEntries[LevelSection.Cairo];
             if (
                 (currentCairoProgress == 0 && currentLevel == 22 && currentGfLevelComplete == 24) || // City to Tulun
                 (currentCairoProgress == 1 && currentLevel == 24 && currentGfLevelComplete == 23) || // Tulun to Trenches
@@ -294,20 +252,17 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.Cairo, currentCairoProgress);
+                TrackGeneralAndSectionProgress(LevelSection.Cairo, currentCairoProgress);
                 
                 // Update split logic helpers.
-                if (currentCairoProgress == 7)
-                    NextLevel = 28;
-                GlitchlessAreaLevelTracker[LevelSection.Cairo] = currentCairoProgress + 1;
+                SectionProgressEntries[LevelSection.Cairo]++;
 
                 // Trenches "undesired" except first entering and last leaving Street Bazaar
                 return currentCairoProgress == 0 || currentCairoProgress == 2 || currentCairoProgress == 5 || currentCairoProgress == 7;
             }   
 
             // Giza
-            var currentGizaProgress = GlitchlessAreaLevelTracker[LevelSection.Giza];
+            var currentGizaProgress = SectionProgressEntries[LevelSection.Giza];
             if (
                 (currentGizaProgress == 0 && currentLevel == 27 && currentGfLevelComplete == 28) || // Citadel to Sphinx Complex
                 (currentGizaProgress == 1 && currentLevel == 28 && currentGfLevelComplete == 30) || // Sphinx Complex to Underneath the Sphinx
@@ -317,16 +272,13 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                CurrentProgressEntry.Clear();
-                TrackSectionProgress(LevelSection.Giza, currentGizaProgress);
+                TrackGeneralAndSectionProgress(LevelSection.Giza, currentGizaProgress);
 
                 // Update split logic helpers.
-                if (currentGizaProgress == 4)
-                    NextLevel = 323;
-                GlitchlessAreaLevelTracker[LevelSection.Giza] = currentGizaProgress + 1;
+                SectionProgressEntries[LevelSection.Giza]++;
 
                 // Inside Menkaure's Pyramid to Sphinx Complex "undesired"
-                return currentGizaProgress != 4;;
+                return currentGizaProgress != 4;
             }
 
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
@@ -342,7 +294,9 @@ namespace TR4
         public override void OnStart()
         {
             base.OnStart();
-            NextLevel = 2;
+            foreach (var key in SectionProgressEntries.Keys)
+                SectionProgressEntries[key] = 0;
+            SectionProgressEntries[LevelSection.All] = BaseGameData.Level.Current;
         }
 
         public override void OnUndoSplit()
@@ -353,7 +307,8 @@ namespace TR4
             var undoneProgress = ProgressTracker.Pop(); // Glitched runs can disregard this.
             if (Settings.Glitchless)
                 foreach (var item in undoneProgress)
-                    GlitchlessAreaLevelTracker[(LevelSection)item.Section] = item.Value;
+                if (item.Section != (uint)LevelSection.All)
+                        SectionProgressEntries[(LevelSection)item.Section] = item.Value;
         }
     }
 }
