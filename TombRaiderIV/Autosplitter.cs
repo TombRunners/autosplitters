@@ -1,5 +1,4 @@
 ﻿using LiveSplit.Model;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using TRUtil;
@@ -105,10 +104,28 @@ namespace TR4
 
         private static void TrackSectionProgress(LevelSection section, uint value) => CurrentProgressEntry.Add((uint)section, value);
 
-        private static void TrackGeneralAndSectionProgress(LevelSection section, uint value)
+        private static void TrackGeneralAndSectionProgress(uint sectionProgressToLog)
         {
             TrackGeneralProgress();
-            TrackSectionProgress(section, value);
+
+            uint currentLevel = BaseGameData.Level.Current;
+            LevelSection section;
+            if (currentLevel >= (uint)LevelSection.Giza)
+                section = LevelSection.Giza;
+            else if (currentLevel >= (uint)LevelSection.Cairo)
+                section = LevelSection.Cairo;
+            else if (currentLevel >= (uint)LevelSection.Alexandria)
+                section = LevelSection.Alexandria;
+            else if (currentLevel >= (uint)LevelSection.EasternDesert)
+                section = LevelSection.EasternDesert;
+            else if (currentLevel >= (uint)LevelSection.Karnak)
+                section = LevelSection.Karnak;
+            else if (currentLevel >= (uint)LevelSection.ValleyOfTheKings)
+                section = LevelSection.ValleyOfTheKings;
+            else
+                section = LevelSection.Cambodia;
+
+            TrackSectionProgress(section, sectionProgressToLog);
         }
 
         private static uint PossiblyTheNextLevel => SectionProgressEntries[LevelSection.All] + 1;
@@ -185,7 +202,7 @@ namespace TR4
             if (currentCambodiaProgress == 00 && currentLevel == 01 && currentGfLevelComplete == 02) // Angkor Wat to Race for the Iris
             {
                 // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(LevelSection.Cambodia, currentCambodiaProgress);
+                TrackGeneralAndSectionProgress(currentCambodiaProgress);
 
                 // Update split logic helpers.
                 SectionProgressEntries[LevelSection.Cambodia] = currentCambodiaProgress + 1;
@@ -204,12 +221,12 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(LevelSection.Karnak, currentKarnakProgress);
+                TrackGeneralAndSectionProgress(currentKarnakProgress);
 
                 // Update split logic helpers.
                 SectionProgressEntries[LevelSection.Karnak]++;
                 
-                return currentKarnakProgress != 01; // 1st Karnak to Hypostyle "undesired"
+                return currentKarnakProgress != 00; // 1st Karnak to Hypostyle "undesired"
             }
 
             // Alexandria
@@ -229,7 +246,7 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(LevelSection.Alexandria, currentAlexandriaProgress);
+                TrackGeneralAndSectionProgress(currentAlexandriaProgress);
 
                 // Update split logic helpers.
                 SectionProgressEntries[LevelSection.Alexandria]++;
@@ -252,7 +269,7 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(LevelSection.Cairo, currentCairoProgress);
+                TrackGeneralAndSectionProgress(currentCairoProgress);
                 
                 // Update split logic helpers.
                 SectionProgressEntries[LevelSection.Cairo]++;
@@ -272,7 +289,7 @@ namespace TR4
             )
             {
                 // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(LevelSection.Giza, currentGizaProgress);
+                TrackGeneralAndSectionProgress(currentGizaProgress);
 
                 // Update split logic helpers.
                 SectionProgressEntries[LevelSection.Giza]++;
