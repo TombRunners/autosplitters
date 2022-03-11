@@ -61,7 +61,6 @@ namespace TR4
     /// <summary>The "areas" of the game.</summary>
     internal enum LevelSection
     {
-        All                 = Level.MainMenu,
         Cambodia            = Level.AngkorWat,
         ValleyOfTheKings    = Level.TheTombofSeth,
         Karnak              = Level.TempleofKarnak,
@@ -88,48 +87,6 @@ namespace TR4
             Level.TempleOfHorus
         };
 
-        private static readonly Dictionary<LevelSection, uint> SectionProgressEntries = new Dictionary<LevelSection, uint>()
-        {
-            {LevelSection.All,              0},
-            {LevelSection.Cambodia,         0},
-            {LevelSection.ValleyOfTheKings, 0},
-            {LevelSection.Karnak,           0},
-            {LevelSection.EasternDesert,    0},
-            {LevelSection.Alexandria,       0},
-            {LevelSection.Cairo,            0},
-            {LevelSection.Giza,             0}
-        };
-
-        private static void TrackGeneralProgress() => CurrentProgressEntry.Add((uint)LevelSection.All, BaseGameData.Level.Current);
-
-        private static void TrackSectionProgress(LevelSection section, uint value) => CurrentProgressEntry.Add((uint)section, value);
-
-        private static void TrackGeneralAndSectionProgress(uint sectionProgressToLog)
-        {
-            TrackGeneralProgress();
-
-            uint currentLevel = BaseGameData.Level.Current;
-            LevelSection section;
-            if (currentLevel >= (uint)LevelSection.Giza)
-                section = LevelSection.Giza;
-            else if (currentLevel >= (uint)LevelSection.Cairo)
-                section = LevelSection.Cairo;
-            else if (currentLevel >= (uint)LevelSection.Alexandria)
-                section = LevelSection.Alexandria;
-            else if (currentLevel >= (uint)LevelSection.EasternDesert)
-                section = LevelSection.EasternDesert;
-            else if (currentLevel >= (uint)LevelSection.Karnak)
-                section = LevelSection.Karnak;
-            else if (currentLevel >= (uint)LevelSection.ValleyOfTheKings)
-                section = LevelSection.ValleyOfTheKings;
-            else
-                section = LevelSection.Cambodia;
-
-            TrackSectionProgress(section, sectionProgressToLog);
-        }
-
-        private static uint PossiblyTheNextLevel => SectionProgressEntries[LevelSection.All] + 1;
-
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
@@ -145,12 +102,7 @@ namespace TR4
             if (Settings.Deathrun)
             {
                 bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
-                if (laraJustDied)
-                {
-                    TrackGeneralProgress();
-                    return true;
-                }
-                return false;
+                return laraJustDied;
             }
 
             // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
@@ -171,13 +123,10 @@ namespace TR4
             bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
 
-            bool shouldSplit = enteringNextSplitLevel || finishedGame;
-            if (shouldSplit)
-                TrackGeneralProgress();
-            return shouldSplit;
+            return enteringNextSplitLevel || finishedGame;
         }
 
-        private bool GlitchlessShouldSplit()
+        private bool OldGlitchlessShouldSplit()
         {
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
@@ -193,7 +142,6 @@ namespace TR4
                 currentGfLevelComplete != 38                                    // Not loading into boss battle (undesired)
             )
             {
-                TrackGeneralProgress();
                 return true;
             }
 
@@ -201,12 +149,6 @@ namespace TR4
             var currentCambodiaProgress = SectionProgressEntries[LevelSection.Cambodia];
             if (currentCambodiaProgress == 00 && currentLevel == 01 && currentGfLevelComplete == 02) // Angkor Wat to Race for the Iris
             {
-                // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(currentCambodiaProgress);
-
-                // Update split logic helpers.
-                SectionProgressEntries[LevelSection.Cambodia] = currentCambodiaProgress + 1;
-
                 return false; // "Undesired"
             }
 
@@ -220,39 +162,7 @@ namespace TR4
                 (currentKarnakProgress == 04 && currentLevel == 08 && currentGfLevelComplete == 09)    // Hypostyle to Sacred Lake
             )
             {
-                // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(currentKarnakProgress);
-
-                // Update split logic helpers.
-                SectionProgressEntries[LevelSection.Karnak]++;
-                
                 return currentKarnakProgress != 00; // 1st Karnak to Hypostyle "undesired"
-            }
-
-            // Alexandria
-            var currentAlexandriaProgress = SectionProgressEntries[LevelSection.Alexandria];
-            if (
-                (currentAlexandriaProgress == 00 && currentLevel == 14 && currentGfLevelComplete == 15) || // Alexandria to Coastal
-                (currentAlexandriaProgress == 01 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 02 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
-                (currentAlexandriaProgress == 03 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 04 && currentLevel == 18 && currentGfLevelComplete == 15) || // Catacombs to Coastal
-                (currentAlexandriaProgress == 05 && currentLevel == 15 && currentGfLevelComplete == 18) || // Coastal to Catacombs
-                (currentAlexandriaProgress == 06 && currentLevel == 18 && currentGfLevelComplete == 19) || // Catacombs to Poseidon
-                (currentAlexandriaProgress == 07 && currentLevel == 19 && currentGfLevelComplete == 20) || // Poseidon to Lost Library
-                (currentAlexandriaProgress == 08 && currentLevel == 16 && currentGfLevelComplete == 17) || // Isis to Cleopatra
-                (currentAlexandriaProgress == 09 && currentLevel == 17 && currentGfLevelComplete == 16) || // Cleopatra to Isis
-                (currentAlexandriaProgress == 10 && currentLevel == 16 && currentGfLevelComplete == 17)    // Isis to Cleopatra
-            )
-            {
-                // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(currentAlexandriaProgress);
-
-                // Update split logic helpers.
-                SectionProgressEntries[LevelSection.Alexandria]++;
-
-                // To/from Coastal and Isis-Cleopatra backtracking "undesired"
-                return currentAlexandriaProgress > 05 && currentAlexandriaProgress != 08 && currentAlexandriaProgress != 09;
             }
 
             // Cairo
@@ -278,54 +188,122 @@ namespace TR4
                 return currentCairoProgress == 0 || currentCairoProgress == 2 || currentCairoProgress == 5 || currentCairoProgress == 7;
             }   
 
-            // Giza
-            var currentGizaProgress = SectionProgressEntries[LevelSection.Giza];
-            if (
-                (currentGizaProgress == 0 && currentLevel == 27 && currentGfLevelComplete == 28) || // Citadel to Sphinx Complex
-                (currentGizaProgress == 1 && currentLevel == 28 && currentGfLevelComplete == 30) || // Sphinx Complex to Underneath the Sphinx
-                (currentGizaProgress == 2 && currentLevel == 30 && currentGfLevelComplete == 31) || // Underneath the Sphinx to Menkaure's Pyramid
-                (currentGizaProgress == 3 && currentLevel == 31 && currentGfLevelComplete == 32) || // Menkaure's Pyramid to Inside Menkaure's Pyramid
-                (currentGizaProgress == 4 && currentLevel == 32 && currentGfLevelComplete == 28)    // Inside Menkaure's Pyramid to Sphinx Complex
-            )
-            {
-                // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(currentGizaProgress);
-
-                // Update split logic helpers.
-                SectionProgressEntries[LevelSection.Giza]++;
-
-                // Inside Menkaure's Pyramid to Sphinx Complex "undesired"
-                return currentGizaProgress != 4;
-            }
-
-            bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
-            if (finishedGame)
-            {
-                CurrentProgressEntry.Clear();
-                TrackGeneralProgress();
-                return true;
-            }
             return false;
         }
 
-        public override void OnStart()
+        private bool GlitchlessShouldSplit()
         {
-            base.OnStart();
-            foreach (var key in SectionProgressEntries.Keys)
-                SectionProgressEntries[key] = 0;
-            SectionProgressEntries[LevelSection.All] = BaseGameData.Level.Current;
+            uint currentLevel = BaseGameData.Level.Current;
+            if (currentLevel >= (uint)LevelSection.Giza)
+                return GlitchlessShouldSplitGiza();
+            else if (currentLevel >= (uint)LevelSection.Cairo)
+                return GlitchlessShouldSplitCairo();
+            else if (currentLevel >= (uint)LevelSection.Alexandria)
+                return GlitchlessShouldSplitAlexandria();
+            else if (currentLevel >= (uint)LevelSection.EasternDesert)
+                return LaterClassicGameData.GfLevelComplete.Current == (uint)Level.Alexandria;
+            else if (currentLevel >= (uint)LevelSection.Karnak)
+                return GlitchlessShouldSplitKarnak();
+            else if (currentLevel >= (uint)LevelSection.ValleyOfTheKings)
+                return GlitchlessShouldSplitValleyOfTheKings();
+            else
+                return GlitchlessShouldSplitCambodia();
         }
 
-        public override void OnUndoSplit()
+        private bool GlitchlessShouldSplitCambodia()
         {
-            if (ProgressTracker.Count <= 0)
-                return;
+            throw new System.NotImplementedException();
+        }
 
-            var undoneProgress = ProgressTracker.Pop(); // Glitched runs can disregard this.
-            if (Settings.Glitchless)
-                foreach (var item in undoneProgress)
-                if (item.Section != (uint)LevelSection.All)
-                        SectionProgressEntries[(LevelSection)item.Section] = item.Value;
+        private bool GlitchlessShouldSplitValleyOfTheKings()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private bool GlitchlessShouldSplitKarnak()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private bool GlitchlessShouldSplitAlexandria()
+        {
+            /* Likely route
+                Transition 00 | currentLevel == 14 && currentGfLevelComplete == 15 | Alexandria to Coastal
+                Transition 01 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
+                Transition 02 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal
+                Transition 03 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
+                Transition 04 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal
+                Transition 05 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
+                Transition 06 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon
+                Transition 07 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library
+                Transition 08 | currentLevel == 16 && currentGfLevelComplete == 17 | Isis to Cleopatra
+                Transition 09 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Isis
+                Transition 10 | currentLevel == 16 && currentGfLevelComplete == 17 | Isis to Cleopatra
+            */
+            /* Undesired splits
+                To/from Coastal Ruins (15)
+                Cleopatra's Palaces (17):
+                    Only split when Lara enters Cleopatra's Palaces with required progression item/parts.
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            bool loadingCleopatraFromPharos = currentLevel == (uint)Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Level.CleopatrasPalaces;
+            if (loadingCleopatraFromPharos)
+            {
+                bool laraHasCombinedClockworkBeetle = (GameData.MechanicalScarab.Current & 0b0000_0001) == 0b0000_0001;
+                bool laraHasBothClockworkBeetleParts = (GameData.MechanicalScarab.Current & 0b0000_0110) == 0b0000_0110;
+                return laraHasCombinedClockworkBeetle || laraHasBothClockworkBeetleParts;
+            }
+
+            bool loadingPoseidonFromCatacombs = currentLevel == (uint)Level.Catacombs && currentGfLevelComplete == (uint)Level.TempleOfPoseidon;
+            bool loadingLostLibraryFromPoseidon = currentLevel == (uint)Level.TempleOfPoseidon && currentGfLevelComplete == (uint)Level.TheLostLibrary;
+            return loadingPoseidonFromCatacombs || loadingLostLibraryFromPoseidon;
+        }
+
+        private bool GlitchlessShouldSplitCairo()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private bool GlitchlessShouldSplitGiza()
+        {
+            /* Likely route
+                Transition 00 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex
+                Transition 01 | currentLevel == 28 && currentGfLevelComplete == 30 | Sphinx Complex to Underneath the Sphinx
+                Transition 02 | currentLevel == 30 && currentGfLevelComplete == 31 | Underneath the Sphinx to Menkaure's Pyramid
+                Transition 03 | currentLevel == 31 && currentGfLevelComplete == 32 | Menkaure's Pyramid to Inside Menkaure's Pyramid
+                Transition 04 | currentLevel == 32 && currentGfLevelComplete == 28 | Inside Menkaure's Pyramid to Sphinx Complex
+                Transition 05 | currentLevel == 28 && currentGfLevelComplete == 33 | Sphinx Complex to Mastabas
+                Transition 06 | currentLevel == 33 && currentGfLevelComplete == 34 | Mastabas to The Great Pyramid
+                Transition 07 | currentLevel == 34 && currentGfLevelComplete == 35 | The Great Pyramid to Khufu's Queen's Pyramids
+                Transition 08 | currentLevel == 35 && currentGfLevelComplete == 36 | Khufu's Queen's Pyramids to Inside the Great Pyramid
+                Transition 09 | currentLevel == 36 && currentGfLevelComplete == 37 | Inside the Great Pyramid to Temple of Horus
+                Transition 10 | currentLevel == 37 && currentGfLevelComplete == 38 | Temple of Horus to Boss
+                Transition 11 | currentLevel == 38 && currentGfLevelComplete == 39 | Boss to Credits (value of 39 is hardcoded to trigger credits)
+            */
+            /* Undesired splits
+                Small backtrack through Sphinx Complex (28) to get to The Mastabas (33).
+                Loading into Inside the Great Pyramid (36):
+                    Only split when Lara enters with required progression item/parts.
+                Loading into boss (38)
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            if (currentLevel < (uint)Level.TheMastabas)
+            {
+                bool loadingSphinxFromMenkaures = currentLevel == (uint)Level.InsideMenkauresPyramid && currentGfLevelComplete == (uint)Level.SphinxComplex;
+                return !loadingSphinxFromMenkaures;
+            }
+            else if (currentGfLevelComplete == (uint)Level.InsideTheGreatPyramid)
+            {
+                bool laraHasEasternShaftKey = GameData.EasternShaftKey.Current == 1;
+                return laraHasEasternShaftKey;
+            }
+
+            bool loadingIntoBoss = currentGfLevelComplete == 38;
+            return !loadingIntoBoss;
         }
     }
 }
