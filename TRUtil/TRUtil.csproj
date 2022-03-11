@@ -63,9 +63,6 @@
     <Compile Include="ClassicComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="LaterClassicProgressEntry.cs" />
-    <Compile Include="LaterClassicProgressItem.cs" />
-    <Compile Include="LaterClassicProgressTracker.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

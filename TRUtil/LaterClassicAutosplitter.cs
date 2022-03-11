@@ -9,20 +9,6 @@ namespace TRUtil
         protected internal LaterClassicComponentSettings Settings = new LaterClassicComponentSettings();
         public LaterClassicGameData Data;
 
-        /// <summary>
-        ///     The default implementation of <see cref="OnSplit"/> pushes <see cref="CurrentProgressEntry"/> onto this stack,
-        ///     while the default implementation of <see cref="OnStart"/> clears this stack.
-        /// </summary>
-        /// <remarks>
-        ///     An implementation of <see cref="OnUndoSplit"/> can pop the stack, using the returned <see cref="LaterClassicProgressEntry"/> 
-        ///     to revert progress-related variables; this may prove helpful and/or necessary for backtracking/section split logic.
-        /// </remarks>
-        protected static readonly LaterClassicProgressTracker ProgressTracker = new LaterClassicProgressTracker();
-
-        /// <summary>Used by <see cref="OnSplit"/> to update <see cref="ProgressTracker"/> with the progress up to the point being split.</summary>
-        /// <remarks>The default implementation of <see cref="OnSplit"/> handles pushing and clearing <see cref="CurrentProgressEntry"/>.</remarks>
-        protected static readonly LaterClassicProgressEntry CurrentProgressEntry = new LaterClassicProgressEntry();
-
         /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
         /// <remarks>
         ///     <see cref="TicksAtStartOfRun"/> is used in <see cref="GetGameTime(LiveSplitState)"/> to subtract from <see cref="LaterClassicGameData.GameTimer"/>.
@@ -56,20 +42,13 @@ namespace TRUtil
         }
 
         /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
-        public virtual void OnStart() {
-            ProgressTracker.Clear();
-            TicksAtStartOfRun = (BaseGameData.Level.Current == 1) ? 0 : LaterClassicGameData.GameTimer.Old;
-        }
+        public virtual void OnStart() => TicksAtStartOfRun = (BaseGameData.Level.Current == 1) ? 0 : LaterClassicGameData.GameTimer.Old;
 
         /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
-        /// <param name="entry">Progress value(s) to add to <see cref="ProgressTracker"/></param>
-        public virtual void OnSplit() {
-            ProgressTracker.Push(CurrentProgressEntry);
-            CurrentProgressEntry.Clear();
-        }
+        public virtual void OnSplit() { }
 
         /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
-        public abstract void OnUndoSplit();
+        public virtual void OnUndoSplit() { }
 
         public override void Dispose()
         {
