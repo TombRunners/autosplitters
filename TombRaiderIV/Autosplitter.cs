@@ -12,11 +12,11 @@ namespace TR4
         MainMenu                = 0,
         // Cambodia
         AngkorWat               = 1,
-        RacefortheIris          = 2,
+        RaceForTheIris          = 2,
         // Valley of the Kings
-        TheTombofSeth           = 3,
+        TheTombOfSeth           = 3,
         BurialChambers          = 4,
-        ValleyoftheKings        = 5,
+        ValleyOfTheKings        = 5,
         KV5                     = 6,
         // Karnak
         TempleofKarnak          = 7,
@@ -29,12 +29,10 @@ namespace TR4
         // Alexandria
         Alexandria              = 14,
         CoastalRuins            = 15,
-        // Temple of Isis
         PharosTempleOfIsis      = 16,
         CleopatrasPalaces       = 17,
         Catacombs               = 18,
         TempleOfPoseidon        = 19,
-        // Lost Library
         TheLostLibrary          = 20,
         HallOfDemetrius         = 21,
         // Cairo
@@ -62,7 +60,7 @@ namespace TR4
     internal enum LevelSection
     {
         Cambodia            = Level.AngkorWat,
-        ValleyOfTheKings    = Level.TheTombofSeth,
+        ValleyOfTheKings    = Level.TheTombOfSeth,
         Karnak              = Level.TempleofKarnak,
         EasternDesert       = Level.DesertRailroad,
         Alexandria          = Level.Alexandria,
@@ -75,8 +73,8 @@ namespace TR4
     {
         private static readonly HashSet<Level> GlitchedNextSplitLevels = new HashSet<Level>()
         {
-            Level.TheTombofSeth,
-            Level.ValleyoftheKings,
+            Level.TheTombOfSeth,
+            Level.ValleyOfTheKings,
             Level.TempleofKarnak,
             Level.TombofSemerkhet,
             Level.DesertRailroad,
@@ -105,90 +103,31 @@ namespace TR4
                 return laraJustDied;
             }
 
-            // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
-            if (oldGfLevelComplete != 0)
-                return false; 
+
+            // If currentGfLevelComplete is 0, either no trigger/load is active or the player is loading to the main menu.
+            // In the former case, we should not be thinking of splitting; in the latter case, the timer should reset.
+            bool notLoadingOrLoadingMainMenu = currentGfLevelComplete == 0;
+
+            // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
+            bool ignoringSubsequentFramesOfThisLoad = oldGfLevelComplete != 0;
+            if (notLoadingOrLoadingMainMenu || ignoringSubsequentFramesOfThisLoad)
+                return false;
 
             // Handle ILs (for both rulesets).
             if (!Settings.FullGame)
-                return LaterClassicGameData.GfLevelComplete.Current != 0;
+                return currentGfLevelComplete != 0;
 
             // Handle FG for glitchless.
             if (Settings.Glitchless)
                 return GlitchlessShouldSplit();
 
             // Handle FG for glitched.
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
 
             return enteringNextSplitLevel || finishedGame;
-        }
-
-        private bool OldGlitchlessShouldSplit()
-        {
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
-
-            // Normally split levels: always non-backtracked levels; sometimes "undesired" splits abitrarily skipped
-            if (
-                currentGfLevelComplete == PossiblyTheNextLevel &&               // Loading into supposed next level
-                currentGfLevelComplete != 02 &&                                 // Not loading into last level of Cambodia (undesired)
-                currentGfLevelComplete != 08 && currentGfLevelComplete != 09 && // Not loading into backtracked levels of Karnak
-                (currentGfLevelComplete < 15 || currentGfLevelComplete > 18) && // Not loading into backtracked levels of Alexandria or Lost Library
-                (currentGfLevelComplete < 23 || currentGfLevelComplete > 26) && // Not loading into backtracked levels of Cairo
-                (currentGfLevelComplete < 28 || currentGfLevelComplete > 32) && // Not loading into backtracked levels of Giza
-                currentGfLevelComplete != 38                                    // Not loading into boss battle (undesired)
-            )
-            {
-                return true;
-            }
-
-            // Cambodia
-            var currentCambodiaProgress = SectionProgressEntries[LevelSection.Cambodia];
-            if (currentCambodiaProgress == 00 && currentLevel == 01 && currentGfLevelComplete == 02) // Angkor Wat to Race for the Iris
-            {
-                return false; // "Undesired"
-            }
-
-            // Karnak
-            var currentKarnakProgress = SectionProgressEntries[LevelSection.Karnak];
-            if (
-                (currentKarnakProgress == 00 && currentLevel == 07 && currentGfLevelComplete == 08) || // Karnak to Hypostyle
-                (currentKarnakProgress == 01 && currentLevel == 08 && currentGfLevelComplete == 09) || // Hypostyle to Sacred Lake
-                (currentKarnakProgress == 02 && currentLevel == 09 && currentGfLevelComplete == 07) || // Sacred Lake to Karnak
-                (currentKarnakProgress == 03 && currentLevel == 07 && currentGfLevelComplete == 08) || // Karnak to Hypostyle
-                (currentKarnakProgress == 04 && currentLevel == 08 && currentGfLevelComplete == 09)    // Hypostyle to Sacred Lake
-            )
-            {
-                return currentKarnakProgress != 00; // 1st Karnak to Hypostyle "undesired"
-            }
-
-            // Cairo
-            var currentCairoProgress = SectionProgressEntries[LevelSection.Cairo];
-            if (
-                (currentCairoProgress == 0 && currentLevel == 22 && currentGfLevelComplete == 24) || // City to Tulun
-                (currentCairoProgress == 1 && currentLevel == 24 && currentGfLevelComplete == 23) || // Tulun to Trenches
-                (currentCairoProgress == 2 && currentLevel == 23 && currentGfLevelComplete == 25) || // Trenches to Street Bazaar
-                (currentCairoProgress == 3 && currentLevel == 25 && currentGfLevelComplete == 23) || // Street Bazaar to Trenches 
-                (currentCairoProgress == 4 && currentLevel == 23 && currentGfLevelComplete == 25) || // Trenches to Street Bazaar
-                (currentCairoProgress == 5 && currentLevel == 25 && currentGfLevelComplete == 23) || // Street Bazaar to Trenches
-                (currentCairoProgress == 6 && currentLevel == 23 && currentGfLevelComplete == 26) || // Trenches to Citadel Gate
-                (currentCairoProgress == 7 && currentLevel == 26 && currentGfLevelComplete == 27)    // Citadel Gate to Citadel
-            )
-            {
-                // Update CurrentProgressEntry.
-                TrackGeneralAndSectionProgress(currentCairoProgress);
-                
-                // Update split logic helpers.
-                SectionProgressEntries[LevelSection.Cairo]++;
-
-                // Trenches "undesired" except first entering and last leaving Street Bazaar
-                return currentCairoProgress == 0 || currentCairoProgress == 2 || currentCairoProgress == 5 || currentCairoProgress == 7;
-            }   
-
-            return false;
         }
 
         private bool GlitchlessShouldSplit()
@@ -212,60 +151,166 @@ namespace TR4
 
         private bool GlitchlessShouldSplitCambodia()
         {
-            throw new System.NotImplementedException();
-        }
-
-        private bool GlitchlessShouldSplitValleyOfTheKings()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private bool GlitchlessShouldSplitKarnak()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        private bool GlitchlessShouldSplitAlexandria()
-        {
-            /* Likely route
-                Transition 00 | currentLevel == 14 && currentGfLevelComplete == 15 | Alexandria to Coastal
-                Transition 01 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
-                Transition 02 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal
-                Transition 03 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
-                Transition 04 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal
-                Transition 05 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
-                Transition 06 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon
-                Transition 07 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library
-                Transition 08 | currentLevel == 16 && currentGfLevelComplete == 17 | Isis to Cleopatra
-                Transition 09 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Isis
-                Transition 10 | currentLevel == 16 && currentGfLevelComplete == 17 | Isis to Cleopatra
+            /* Route
+                Transition 00 | currentLevel == 00 && currentGfLevelComplete == 01 | Main Menu to Angkor Wat (covered by ShouldStart)
+                Transition 01 | currentLevel == 01 && currentGfLevelComplete == 02 | Angkor Wat to Race for the Iris (x)
+                Transition 02 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to The Tomb of Seth
             */
-            /* Undesired splits
-                To/from Coastal Ruins (15)
-                Cleopatra's Palaces (17):
-                    Only split when Lara enters Cleopatra's Palaces with required progression item/parts.
+            /* Default undesired splits
+                Loading into Race for the Iris (2)
             */
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
 
-            bool loadingCleopatraFromPharos = currentLevel == (uint)Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Level.CleopatrasPalaces;
-            if (loadingCleopatraFromPharos)
+            bool loadingIntoNextLevel = currentGfLevelComplete == currentLevel + 1;
+            bool loadingRaceForTheIris = currentGfLevelComplete == (uint)Level.RaceForTheIris;
+            return loadingIntoNextLevel && !loadingRaceForTheIris;
+        }
+
+        private bool GlitchlessShouldSplitValleyOfTheKings()
+        {
+            /* Route
+                Transition 00 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to Tomb of Seth (covered elsewhere)
+                Transition 01 | currentLevel == 03 && currentGfLevelComplete == 04 | Tomb of Seth to Burial Chambers
+                Transition 02 | currentLevel == 04 && currentGfLevelComplete == 05 | Burial Chambers to Valley of the Kings
+                Transition 03 | currentLevel == 05 && currentGfLevelComplete == 06 | Valley of the Kings to KV5
+                Transition 04 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            return currentGfLevelComplete == currentLevel + 1;
+        }
+
+        private bool GlitchlessShouldSplitKarnak()
+        {
+            /* Likely route
+                Transition 00 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak (covered elsewhere)
+                Transition 01 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle (x)
+                Transition 02 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake
+                Transition 03 | currentLevel == 09 && currentGfLevelComplete == 07 | Sacred Lake to Karnak
+                Transition 04 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle
+                Transition 05 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake
+                Transition 05 | currentLevel == 09 && currentGfLevelComplete == 11 | Sacred Lake to Tomb of Semerkhet
+                Transition 06 | currentLevel == 11 && currentGfLevelComplete == 12 | Tomb of Semerkhet to Guardian of Semerkhet
+                Transition 07 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad
+            */
+            /* Default undesired splits
+                The Great Hypostyle Hall (08):
+                    Only split when Lara enters with required progression item/parts.
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            bool loadingFromKarnakToHypostyle = currentLevel == (uint)Level.TempleofKarnak && currentGfLevelComplete == (uint)Level.GreatHypostyleHall;
+            if (loadingFromKarnakToHypostyle)
+            {
+                bool laraHasHypostyleKey = (GameData.KeyItems.Current & 0b0000_0010) == 0b0000_0010;
+                return laraHasHypostyleKey;
+            }
+
+            bool loadingNextLevel = currentGfLevelComplete > currentLevel;
+            bool circlingBackToTheBeginning = currentLevel == (uint)Level.SacredLake && currentGfLevelComplete == (uint)Level.TempleofKarnak;
+            return loadingNextLevel || circlingBackToTheBeginning;
+        }
+
+        private bool GlitchlessShouldSplitAlexandria()
+        {
+            /* Possible route
+                Transition 00 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria (covered elsewhere)
+                Transition 01 | currentLevel == 14 && currentGfLevelComplete == 15 | Alexandria to Coastal (x)
+                Transition 02 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x)
+                Transition 03 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x)
+                Transition 04 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x)
+                Transition 05 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x)
+                Transition 06 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
+                Transition 07 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon
+                Transition 08 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library
+                Transition 09 | currentLevel == 20 && currentGfLevelComplete == 21 | Lost Library to Hall of Demetrius (x)
+                Transition 10 | currentLevel == 21 && currentGfLevelComplete == 15 | Hall of Demetrius to Coastal (x)
+                Transition 11 | currentLevel == 15 && currentGfLevelComplete == 16 | Coastal to Pharos
+                Transition 12 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra (x)
+                Transition 13 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Pharos (x)
+                Transition 14 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra
+                Transition 15 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra to City of the Dead
+            */
+            /* Default undesired splits
+                Coastal Ruins (15):
+                    Never split when entering; only split when leaving to load Catacombs for the last time or Pharos, Temple of Isis
+                Hall of Demetrius (21)
+                Cleopatra's Palaces (17):
+                    Only split when Lara enters with required progression item/parts.
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            
+            bool leavingCoastal = currentLevel == (uint)Level.CoastalRuins && currentGfLevelComplete != 0;
+            if (leavingCoastal)
+            {
+                // TODO Catacombs... differentiate transitions 02/04/06
+                bool loadingCatacombs = currentGfLevelComplete == (uint)Level.Catacombs;
+                bool loadingPharos = currentGfLevelComplete == (uint)Level.PharosTempleOfIsis;
+                return loadingCatacombs || loadingPharos;
+            }
+
+            bool loadingFromPharosToCleopatra = currentLevel == (uint)Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Level.CleopatrasPalaces;
+            if (loadingFromPharosToCleopatra)
             {
                 bool laraHasCombinedClockworkBeetle = (GameData.MechanicalScarab.Current & 0b0000_0001) == 0b0000_0001;
                 bool laraHasBothClockworkBeetleParts = (GameData.MechanicalScarab.Current & 0b0000_0110) == 0b0000_0110;
                 return laraHasCombinedClockworkBeetle || laraHasBothClockworkBeetleParts;
             }
 
-            bool loadingPoseidonFromCatacombs = currentLevel == (uint)Level.Catacombs && currentGfLevelComplete == (uint)Level.TempleOfPoseidon;
-            bool loadingLostLibraryFromPoseidon = currentLevel == (uint)Level.TempleOfPoseidon && currentGfLevelComplete == (uint)Level.TheLostLibrary;
-            return loadingPoseidonFromCatacombs || loadingLostLibraryFromPoseidon;
+            bool loadingFromCatacombsToPoseidon = currentLevel == (uint)Level.Catacombs && currentGfLevelComplete == (uint)Level.TempleOfPoseidon;
+            bool loadingFromPoseidonToLostLibrary = currentLevel == (uint)Level.TempleOfPoseidon && currentGfLevelComplete == (uint)Level.TheLostLibrary;
+            bool loadingCityOfTheDead = currentGfLevelComplete == (uint)Level.CityOfTheDead;
+            return loadingFromCatacombsToPoseidon || loadingFromPoseidonToLostLibrary || loadingCityOfTheDead;
         }
 
         private bool GlitchlessShouldSplitCairo()
         {
-            throw new System.NotImplementedException();
+            /* Likely route
+                Transition 00 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra's Palaces to City (covered elsewhere)
+                Transition 01 | currentLevel == 22 && currentGfLevelComplete == 24 | City to Tulun
+                Transition 02 | currentLevel == 24 && currentGfLevelComplete == 23 | Tulun to Trenches (x)
+                Transition 03 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar
+                Transition 04 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches (x)
+                Transition 05 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar (x)
+                Transition 06 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches
+                Transition 07 | currentLevel == 23 && currentGfLevelComplete == 26 | Trenches to Citadel Gate (x)
+                Transition 08 | currentLevel == 26 && currentGfLevelComplete == 27 | Citadel Gate to Citadel
+                Transition 09 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex
+            */
+            /* Default undesired splits
+                Trenches (23):
+                    Only split when first entering Street Bazaar (25), and when last leaving Street Bazaar (25) with required progression items
+            */
+            uint currentLevel = BaseGameData.Level.Current;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            bool loadingFromTrenchesToStreetBazaar = currentLevel == (uint)Level.Trenches && currentGfLevelComplete == (uint)Level.StreetBazaar;
+            if (loadingFromTrenchesToStreetBazaar)
+            {
+                bool laraHasDetonatorBody = (GameData.PuzzleItemsCombo.Current & 0b0100_0000_0000_0000) == 0b0100_0000_0000_0000;
+                return !laraHasDetonatorBody;
+            }
+            
+            bool loadingFromStreetBazaarToTrenches = currentLevel == (uint)Level.StreetBazaar && currentGfLevelComplete == (uint)Level.Trenches;
+            if (loadingFromStreetBazaarToTrenches)
+            {
+                bool laraHasCombinedDetonator = GameData.PuzzleItems.Current.MineDetonator == 1;
+                bool laraHasDetonatorParts = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b1100_0000_0000_0000;
+                return laraHasCombinedDetonator || laraHasDetonatorParts;
+            }
+
+            bool loadingFromCityToTulun = currentLevel == (uint)Level.CityOfTheDead && currentGfLevelComplete == (uint)Level.ChambersOfTulun;
+            bool loadingFromCitadelGateToCitadel = currentLevel == (uint)Level.CitadelGate && currentGfLevelComplete == (uint)Level.Citadel;
+            bool loadingFromCitadelToSphinxComplex = currentLevel == (uint)Level.SphinxComplex && currentGfLevelComplete == (uint)Level.Citadel;
+
+            return loadingFromCityToTulun || loadingFromCitadelGateToCitadel || loadingFromCitadelToSphinxComplex;
         }
 
+        // TODO Test this.
         private bool GlitchlessShouldSplitGiza()
         {
             /* Likely route
@@ -273,11 +318,11 @@ namespace TR4
                 Transition 01 | currentLevel == 28 && currentGfLevelComplete == 30 | Sphinx Complex to Underneath the Sphinx
                 Transition 02 | currentLevel == 30 && currentGfLevelComplete == 31 | Underneath the Sphinx to Menkaure's Pyramid
                 Transition 03 | currentLevel == 31 && currentGfLevelComplete == 32 | Menkaure's Pyramid to Inside Menkaure's Pyramid
-                Transition 04 | currentLevel == 32 && currentGfLevelComplete == 28 | Inside Menkaure's Pyramid to Sphinx Complex
+                Transition 04 | currentLevel == 32 && currentGfLevelComplete == 28 | Inside Menkaure's Pyramid to Sphinx Complex (x)
                 Transition 05 | currentLevel == 28 && currentGfLevelComplete == 33 | Sphinx Complex to Mastabas
                 Transition 06 | currentLevel == 33 && currentGfLevelComplete == 34 | Mastabas to The Great Pyramid
                 Transition 07 | currentLevel == 34 && currentGfLevelComplete == 35 | The Great Pyramid to Khufu's Queen's Pyramids
-                Transition 08 | currentLevel == 35 && currentGfLevelComplete == 36 | Khufu's Queen's Pyramids to Inside the Great Pyramid
+                Transition 08 | currentLevel == 35 && currentGfLevelComplete == 36 | Khufu's Queen's Pyramids to Inside the Great Pyramid (*)
                 Transition 09 | currentLevel == 36 && currentGfLevelComplete == 37 | Inside the Great Pyramid to Temple of Horus
                 Transition 10 | currentLevel == 37 && currentGfLevelComplete == 38 | Temple of Horus to Boss
                 Transition 11 | currentLevel == 38 && currentGfLevelComplete == 39 | Boss to Credits (value of 39 is hardcoded to trigger credits)
@@ -291,19 +336,23 @@ namespace TR4
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
 
-            if (currentLevel < (uint)Level.TheMastabas)
+            bool currentLevelIsBeforeMastabas = currentLevel < (uint)Level.TheMastabas;
+            if (currentLevelIsBeforeMastabas)
             {
-                bool loadingSphinxFromMenkaures = currentLevel == (uint)Level.InsideMenkauresPyramid && currentGfLevelComplete == (uint)Level.SphinxComplex;
-                return !loadingSphinxFromMenkaures;
+                bool loadingFromInsideMenkauresToSphinx = currentLevel == (uint)Level.InsideMenkauresPyramid && currentGfLevelComplete == (uint)Level.SphinxComplex;
+                return !loadingFromInsideMenkauresToSphinx;
             }
-            else if (currentGfLevelComplete == (uint)Level.InsideTheGreatPyramid)
+            
+            bool loadingInsideTheGreatPyramid = currentGfLevelComplete == (uint)Level.InsideTheGreatPyramid;
+            if (loadingInsideTheGreatPyramid)
             {
-                bool laraHasEasternShaftKey = GameData.EasternShaftKey.Current == 1;
+                bool laraHasEasternShaftKey = GameData.PuzzleItems.Current.EasternShaftKey == 1;
                 return laraHasEasternShaftKey;
             }
 
-            bool loadingIntoBoss = currentGfLevelComplete == 38;
-            return !loadingIntoBoss;
+            bool loadingNextLevel = currentGfLevelComplete > currentLevel;
+            bool loadingBoss = currentGfLevelComplete == (uint)Level.HorusBoss;
+            return loadingNextLevel && !loadingBoss;
         }
     }
 }
