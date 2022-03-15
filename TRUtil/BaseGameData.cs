@@ -108,9 +108,5 @@ namespace TRUtil
 
         /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
         public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
-
-        /// <summary>Sums completed levels' times.</summary>
-        /// <returns>The sum of completed levels' times</returns>
-        public abstract double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel);
     }
 }

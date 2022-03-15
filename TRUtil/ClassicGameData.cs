@@ -45,7 +45,9 @@ namespace TRUtil
 
         #endregion
 
-        public override double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
+        /// <summary>Sums completed levels' times.</summary>
+        /// <returns>The sum of completed levels' times</returns>
+        public virtual double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
         {
             uint finishedLevelsTicks = completedLevels
                 .TakeWhile(completedLevel => completedLevel != currentLevel)
