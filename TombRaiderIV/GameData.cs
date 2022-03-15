@@ -32,18 +32,42 @@ namespace TR4
         /// </summary>
         /// <remarks>
         ///     Only the first 3 bits of the <see cref="byte"/> are used. The game checks for the parts using bitwise &:
-        ///         <see cref="MechanicalScarab"/> & 1 => Mechanical Scarab With Key (00000001)
-        ///         <see cref="MechanicalScarab"/> & 2 => Winding Key (00000010)
-        ///         <see cref="MechanicalScarab"/> & 4 => Mechanical Scarab (00000100)
-        ///     When Lara has both Winding Key and Mechanical Scarab before combining them: (00000110)
+        ///         <see cref="MechanicalScarab"/> & 1 => Mechanical Scarab With Key (0000 0001)
+        ///         <see cref="MechanicalScarab"/> & 2 => Winding Key (0000 0010)
+        ///         <see cref="MechanicalScarab"/> & 4 => Mechanical Scarab (0000 0100)
+        ///     When Lara has both Winding Key and Mechanical Scarab before combining them: (0000 0110)
         /// </remarks>
         public static MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>)Watchers["MechanicalScarab"];
+
+        /// <inheritdoc cref="TR4.PuzzleItems"/>
+        /// <remarks>
+        ///     The corresponding items/indices are relevant for the autosplitter's logic:
+        ///         Index 7, Item 8 || Cairo || Mine Detonator (the combined item)
+        ///         Index 8, Item 9 || Giza  || Eastern Shaft Key
+        ///     When unique items are in Lara's inventory, the address's value is 1. 
+        ///     Non-unique puzzle items, such as the Golden Skull secrets in Cambodia, continually increment their assigned index.
+        /// </remarks>
+        public static MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>)Watchers["PuzzleItemsArray"];
+
+        /// <summary>
+        ///     An unsigned short used as a bitfield to track which combinable puzzle items Lara has in her inventory.
+        /// </summary>
+        /// <remarks>
+        ///     The corresponding bits are relevant for the autosplitter's logic:
+        ///         <see cref="PuzzleItemsCombo"/> & 0x40 => Mine Detonator Body (0100 0000 0000 0000)
+        ///         <see cref="PuzzleItemsCombo"/> & 0x80 => Mine Position Data  (1000 0000 0000 0000)
+        ///     When Lara has both Mine Detonator Body and Mine Position Data before combining them: (1100 0000 0000 0000)
+        /// </remarks>
+        public static MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>)Watchers["PuzzleItemsCombo"];
         
         /// <summary>
-        ///     This is the 8th (index 7) of 12 items in the puzzle items char array.
+        ///     An unsigned short used as a bitfield to track which keys Lara has in her inventory.
         /// </summary>
-        /// <remarks>The shaft keys are indices 5 - 8. Their value is 1 if they are in Lara's inventory.</remarks>
-        public static MemoryWatcher<byte> EasternShaftKey => (MemoryWatcher<byte>)Watchers["EasternShaftKey"];
+        /// <remarks>
+        ///     The corresponding bits are relevant for the autosplitter's logic:
+        ///         <see cref="KeyItems"/> & 2 => Hypostyle Key (0000 0000 0000 0010)
+        /// </remarks>
+        public static MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
 
         protected override void SetAddresses(uint version)
         {
@@ -57,16 +81,13 @@ namespace TR4
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
                     Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
-                    Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E109)) { Name = "EasternShaftKey" });
+                    Watchers.Add(new MemoryWatcher<PuzzleItems>(new DeepPointer(0x040E101)) { Name = "PuzzleItemsArray" });
+                    Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo"});
+                    Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems"});
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
-        }
-        
-        public override double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint currentLevel)
-        {
-            throw new NotImplementedException();
         }
     }
 }
