@@ -103,25 +103,21 @@ namespace TR4
                 return laraJustDied;
             }
 
-            bool glitchlessExceptionForCatacombs = Settings.FullGame && Settings.Glitchless && BaseGameData.Level.Current == (uint)Level.Catacombs;
-            if (glitchlessExceptionForCatacombs) // Forgive me, for I have sinned...
-                return GlitchlessShouldSplitAlexandria();
-
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
 
-            // If currentGfLevelComplete is 0, either no trigger/load is active or the player is loading to the main menu.
-            // In the former case, we should not be thinking of splitting; in the latter case, the timer should reset.
-            bool notLoadingOrLoadingMainMenu = currentGfLevelComplete == 0;
-
             // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
-            bool ignoringSubsequentFramesOfThisLoad = oldGfLevelComplete != 0;
-            if (notLoadingOrLoadingMainMenu || ignoringSubsequentFramesOfThisLoad)
+            bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
+            if (ignoringSubsequentFramesOfThisLoadState)
                 return false;
 
-            // Handle ILs (for both rulesets).
+            // Handle ILs for both rulesets.
             if (!Settings.FullGame)
-                return currentGfLevelComplete != 0;
+            {
+                // This assumes all level transitions are desirable splits.
+                bool loadingAnotherLevel = currentGfLevelComplete != 0;
+                return loadingAnotherLevel;
+            }
 
             // Handle FG for glitchless.
             if (Settings.Glitchless)
@@ -130,7 +126,6 @@ namespace TR4
             // Handle FG for glitched.
             bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits.
-
             return enteringNextSplitLevel || finishedGame;
         }
 
@@ -320,7 +315,7 @@ namespace TR4
         private bool GlitchlessShouldSplitGiza()
         {
             /* Likely route
-                Transition 00 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex
+                Transition 00 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex (covered elsewhere)
                 Transition 01 | currentLevel == 28 && currentGfLevelComplete == 30 | Sphinx Complex to Underneath the Sphinx
                 Transition 02 | currentLevel == 30 && currentGfLevelComplete == 31 | Underneath the Sphinx to Menkaure's Pyramid
                 Transition 03 | currentLevel == 31 && currentGfLevelComplete == 32 | Menkaure's Pyramid to Inside Menkaure's Pyramid
@@ -341,6 +336,10 @@ namespace TR4
             */
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+
+            bool justFinishedLoadingALevel = currentGfLevelComplete == 0;
+            if (justFinishedLoadingALevel)
+                return false;
 
             bool currentLevelIsBeforeMastabas = currentLevel < (uint)Level.TheMastabas;
             if (currentLevelIsBeforeMastabas)
