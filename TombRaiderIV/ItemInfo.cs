@@ -1,6 +1,6 @@
 ﻿namespace TR4
 {
-    internal unsafe struct ItemInfo
+    internal struct ItemInfo
     {
         internal struct PHD_3DPOS
         {
@@ -72,8 +72,8 @@
             public int room_number { get; }
             public int RoomChange { get; }
             public PHD_VECTOR item_pos { get; }
-            public void* pCurrentLights { get; }
-            public void* pPrevLights { get; }
+            public uint pCurrentLights { get; }
+            public uint pPrevLights { get; }
         };
         
         // C# Doesn't allow fixed buffer sizes for strictly non-composed primitive types.
@@ -134,7 +134,7 @@
         public short after_death { get; }
         public ushort fired_weapon { get; }
         public item_flags_Array item_flags { get; }
-        public void* data { get; }
+        public uint pData { get; }
         public PHD_3DPOS pos { get; }
         public ITEM_LIGHT il { get; }
         public uint bitfield { get; }
@@ -146,7 +146,7 @@
             short current_anim_state, short goal_anim_state, short required_anim_state, short anim_number, short frame_number,
             short room_number, short next_item, short next_active, short speed, short fallspeed, short hit_points,
             ushort box_number, short timer, ushort flags, short shade, short trigger_flags, short carried_item, short after_death,
-            ushort fired_weapon, item_flags_Array item_flags, void* data, PHD_3DPOS pos, ITEM_LIGHT il,
+            ushort fired_weapon, item_flags_Array item_flags, uint pData, PHD_3DPOS pos, ITEM_LIGHT il,
             uint bitfield, uint meshswap_meshbits, short draw_room, short TOSSPAD)
         {
             this.floor = floor;
@@ -173,7 +173,7 @@
             this.after_death = after_death;
             this.fired_weapon = fired_weapon;
             this.item_flags = item_flags;
-            this.data = data;
+            this.pData = pData;
             this.pos = pos;
             this.il = il;
             this.bitfield = bitfield;
