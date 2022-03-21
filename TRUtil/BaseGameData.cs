@@ -46,7 +46,12 @@ namespace TRUtil
         #region MemoryWatcherList Items
 
         /// <summary>Gives the value of the active level; for TR1, also matches active cutscene, FMV, or demo.</summary>
-        /// <remarks>Usually matches chronological number (TR3 is an exception due to area selection)</remarks>
+        /// <remarks>
+        ///     Usually matches chronological number (TR3 can have exceptions due to level order choice).
+        ///     Lara's Home (even if not present in the game) usually counts as 0.
+        ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present
+        ///         and the first level's value is 0 and the main menu is level 4.
+        /// </remarks>
         public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
         /// <summary>Lara's current HP.</summary>
