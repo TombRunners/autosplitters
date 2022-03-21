@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using LiveSplit.Model;
 using TRUtil;
 
@@ -9,7 +7,7 @@ namespace TR1
 {
     /// <summary>The game's level, FMV, and cutscene values.</summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum Level
+    public enum Tr1Level
     {
         // Levels
         LarasHome        = 00,
@@ -36,18 +34,31 @@ namespace TR1
         TitleAndFirstFMV = 20
     }
     
+    /// <summary>The game's level values.</summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    public enum TrubLevel
+    {
+        ReturnToEgypt       = 00,
+        TempleOfTheCat      = 01,
+        AtlanteanStronghold = 02,
+        TheHive             = 03,
+        Title               = 04
+    }
+
     /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
         private bool _newGamePageSelected;
-        private uint LastRealLevel => (uint)GetLastRealLevel(ClassicGameData.Level.Current);
+
+        private bool IsUnfinishedBusiness => ClassicGameData.Version == (uint)GameVersion.AtiUnfinishedBusiness;
+        private uint LastRealLevel => IsUnfinishedBusiness ? ClassicGameData.Level.Current : (uint)GetLastRealLevel(ClassicGameData.Level.Current);
 
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
             Settings = new ComponentSettings();
 
-            LevelCount = 15;
+            LevelCount = 15; // This is the highest between TR1 at 15 and TR:UB at 4.
             CompletedLevels.Capacity = LevelCount;
             GameData.CompletedLevelTicks.Capacity = LevelCount;
 
@@ -68,57 +79,63 @@ namespace TR1
             if (igtNotTicking || igtGotReset)
                 return null;
 
-            // Check the demo isn't running.
-            uint currentDemoTimer = GameData.DemoTimer.Current;
-            const uint demoStartThreshold = 480;
-            if (currentDemoTimer > demoStartThreshold)
-                return null;
+            if (!IsUnfinishedBusiness)
+            {
+                // Check the demo isn't running.
+                uint currentDemoTimer = GameData.DemoTimer.Current;
+                const uint demoStartThreshold = 480;
+                if (currentDemoTimer > demoStartThreshold)
+                    return null;
 
-            uint currentLevel = ClassicGameData.Level.Current;
-            Level? lastRealLevel = GetLastRealLevel(currentLevel);
-            if (lastRealLevel is null)
-                return null;
+                // Check that the player is in a real level.
+                uint currentLevel = ClassicGameData.Level.Current;
+                Tr1Level? lastRealLevel = GetLastRealLevel(currentLevel);
+                if (lastRealLevel is null)
+                    return null;
+            }
 
             // Sum the current and completed levels' IGT.
             double currentLevelTime = ClassicGameData.LevelTimeAsDouble(currentLevelTicks);
-            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, (uint)lastRealLevel);
+            double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, LastRealLevel);
             return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
         }
 
         /// <summary>
-        ///     Gets the last non-cutscene <see cref="Level"/> the runner was on.
+        ///     Gets the last non-cutscene <see cref="Tr1Level"/> the runner was on.
         /// </summary>
-        /// <param name="level"><see cref="Level"/></param>
-        /// <returns>The last non-cutscene <see cref="Level"/></returns>
-        private static Level? GetLastRealLevel(uint level)
+        /// <param name="level"><see cref="Tr1Level"/></param>
+        /// <returns>The last non-cutscene <see cref="Tr1Level"/></returns>
+        private static Tr1Level? GetLastRealLevel(uint level)
         {
-            var lastLevel = (Level)level;
-            if (lastLevel <= Level.TheGreatPyramid)
+            var lastLevel = (Tr1Level)level;
+            if (lastLevel <= Tr1Level.TheGreatPyramid)
                 return lastLevel;
             
             // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (lastLevel)
             {
-                case Level.QualopecCutscene:
-                    return Level.Qualopec;
-                case Level.TihocanCutscene:
-                    return Level.Tihocan;
-                case Level.MinesToAtlantis:
-                    return Level.NatlasMines;
-                case Level.AfterAtlantisFMV:
-                    return Level.Atlantis;
+                case Tr1Level.QualopecCutscene:
+                    return Tr1Level.Qualopec;
+                case Tr1Level.TihocanCutscene:
+                    return Tr1Level.Tihocan;
+                case Tr1Level.MinesToAtlantis:
+                    return Tr1Level.NatlasMines;
+                case Tr1Level.AfterAtlantisFMV:
+                    return Tr1Level.Atlantis;
                 default:
                     return null;
             }
         }
 
-        public override bool ShouldSplit(LiveSplitState state) => !CompletedLevels.Contains(LastRealLevel) && base.ShouldSplit(state);            
-        
+        public override bool ShouldSplit(LiveSplitState state) => !CompletedLevels.Contains(LastRealLevel) && base.ShouldSplit(state);
+
         public override bool ShouldStart(LiveSplitState state)
         {
-            uint currentLevel = ClassicGameData.Level.Current;
-            uint oldLevel = ClassicGameData.Level.Old;
-
+            // These initialize to 0 and the game's timer will not tick until the title screen is reached.
+            bool gameJustLaunched = ClassicGameData.LevelTime.Current == 0 && ClassicGameData.Level.Old == 0;
+            if (gameJustLaunched)
+                return false;
+            
             // Check to see if the player has navigated to the New Game page of the passport.
             // This prevent some misfires from LiveSplit hooking late.
             // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
@@ -128,30 +145,58 @@ namespace TR1
                 _newGamePageSelected = true;
 
             // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+            uint currentLevel = ClassicGameData.Level.Current;
+            uint oldLevel = ClassicGameData.Level.Old;
             if (_newGamePageSelected)
             {
-                bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
-                bool cameFromLarasHome = oldLevel == (uint)Level.LarasHome; // Never true for TR2G.
-                bool justStartedFirstLevel = currentLevel == 1; // This value is good for GreatWall and TheColdWar.
-                bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
-                if (newGameStarted)
-                    return true;
+                if (IsUnfinishedBusiness)
+                {
+                    bool cameFromTitleScreen = oldLevel == (uint)TrubLevel.Title;
+                    bool justStartedFirstLevel = currentLevel == (uint)TrubLevel.ReturnToEgypt;
+                    bool newGameStarted = cameFromTitleScreen && justStartedFirstLevel;
+                    if (newGameStarted)
+                        return true;
+                }
+                else
+                {
+                    bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
+                    bool cameFromLarasHome = oldLevel == (uint)Tr1Level.LarasHome;
+                    bool justStartedFirstLevel = currentLevel == (uint)Tr1Level.Caves;
+                    bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
+                    if (newGameStarted)
+                        return true;
+                }
             }
             else if (Settings.FullGame)
             {
                 return false;
             }
 
-            Level? oldRealLevel = GetLastRealLevel(oldLevel);
-            Level? currentRealLevel = GetLastRealLevel(currentLevel);
-            if (oldRealLevel is null || currentRealLevel is null)
-                return false;
-
             // The remaining logic only applies to non-FG runs starting on a level besides the first.
+            bool wentToNextLevel;
+            if (IsUnfinishedBusiness)
+            {
+                wentToNextLevel = currentLevel == oldLevel + 1;
+            }
+            else
+            {
+                // Don't start while on a non-level.
+                Tr1Level? oldRealLevel = GetLastRealLevel(oldLevel);
+                Tr1Level? currentRealLevel = GetLastRealLevel(currentLevel);
+                if (oldRealLevel is null || currentRealLevel is null)
+                    return false;
+
+                wentToNextLevel = currentRealLevel == oldRealLevel + 1;
+            }
+
             uint oldTime = ClassicGameData.LevelTime.Old;
             uint currentTime = ClassicGameData.LevelTime.Current;
-            bool wentToNextLevel = oldRealLevel == currentRealLevel - 1;
-            return wentToNextLevel && oldTime > currentTime;
+            // The level values switch before the timer resets to 0. If LiveSplit polls at this time,
+            // a check for currentTime <= MAGIC_LOW_NUMBER would fail. This more lenient solution
+            // could result in a false start if the player would load into the next level
+            // with a save which has a higher level IGT than their current position.
+            bool timerCouldBeResetting = oldTime >= currentTime;
+            return wentToNextLevel && timerCouldBeResetting;
         }
 
         public override void OnStart()

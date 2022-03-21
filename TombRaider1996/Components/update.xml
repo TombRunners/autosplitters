@@ -59,4 +59,12 @@
       <change>Backend code simplification.</change>
     </changelog>
   </update>
+  <update version="3.0.0.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added ATI version of Unfinished Business.</change>
+    </changelog>
+  </update>
 </updates>
