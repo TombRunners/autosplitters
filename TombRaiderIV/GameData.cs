@@ -14,7 +14,9 @@ namespace TR4
     /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
     internal sealed class GameData : LaterClassicGameData
     { 
-
+        private static readonly IntPtr _firstItemInfoPointer = (IntPtr)0x7FE28C;
+        private static readonly uint _sizeOfItemInfo = 0x15F6;
+        
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
@@ -88,6 +90,14 @@ namespace TR4
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
+        }
+
+        internal static ItemInfo GetItemInfoAtIndex(uint itemNumber)
+        {
+            uint offset = _sizeOfItemInfo * itemNumber;
+            IntPtr _firstItemInfoAddress = Game.ReadPointer(_firstItemInfoPointer);
+            IntPtr finalAddress = new IntPtr(_firstItemInfoAddress.ToInt64() + offset);
+            return Game.ReadValue<ItemInfo>(finalAddress);
         }
     }
 }

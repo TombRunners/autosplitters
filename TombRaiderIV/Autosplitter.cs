@@ -103,6 +103,10 @@ namespace TR4
                 return laraJustDied;
             }
 
+            bool glitchlessExceptionForCatacombs = Settings.FullGame && Settings.Glitchless && BaseGameData.Level.Current == (uint)Level.Catacombs;
+            if (glitchlessExceptionForCatacombs) // Forgive me, for I have sinned...
+                return GlitchlessShouldSplitAlexandria();
+
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
 
@@ -244,14 +248,16 @@ namespace TR4
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             
-            bool leavingCoastal = currentLevel == (uint)Level.CoastalRuins && currentGfLevelComplete != 0;
-            if (leavingCoastal)
-            {
-                // TODO Catacombs... differentiate transitions 02/04/06
-                bool loadingCatacombs = currentGfLevelComplete == (uint)Level.Catacombs;
-                bool loadingPharos = currentGfLevelComplete == (uint)Level.PharosTempleOfIsis;
-                return loadingCatacombs || loadingPharos;
+            bool finishedLoadingCatacombs = currentLevel == (uint)Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+            if (finishedLoadingCatacombs) {
+                // The level must finish loading before the ITEM_INFO array can be checked.
+                ItemInfo platform = GameData.GetItemInfoAtIndex(79);
+                return platform.flags == 0x20;
             }
+
+            bool loadingFromCoastalToPharos = currentLevel == (uint)Level.CoastalRuins && currentGfLevelComplete == (uint)Level.PharosTempleOfIsis;
+            if (loadingFromCoastalToPharos)
+                return true;
 
             bool loadingFromPharosToCleopatra = currentLevel == (uint)Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Level.CleopatrasPalaces;
             if (loadingFromPharosToCleopatra)
