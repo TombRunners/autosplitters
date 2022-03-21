@@ -4,9 +4,9 @@
     {
         internal struct PHD_3DPOS
         {
-            public long x_pos { get; }
-            public long y_pos { get; }
-            public long z_pos { get; }
+            public int x_pos { get; }
+            public int y_pos { get; }
+            public int z_pos { get; }
             public short x_rot { get; }
             public short y_rot { get; }
             public short z_rot { get; }
@@ -14,9 +14,9 @@
         
         internal struct PHD_VECTOR
         {
-            public long x { get; }
-            public long y { get; }
-            public long z { get; }
+            public int x { get; }
+            public int y { get; }
+            public int z { get; }
         };				
         
         internal struct PCLIGHT
@@ -27,7 +27,7 @@
             public float r { get; }
             public float g { get; }
             public float b { get; }
-            public long shadow { get; }
+            public int shadow { get; }
             public float Inner { get; }
             public float Outer { get; }
             public float InnerAngle { get; }
@@ -36,44 +36,44 @@
             public float nx { get; }
             public float ny { get; }
             public float nz { get; }
-            public long ix { get; }
-            public long iy { get; }
-            public long iz { get; }
-            public long inx { get; }
-            public long iny { get; }
-            public long inz { get; }
+            public int ix { get; }
+            public int iy { get; }
+            public int iz { get; }
+            public int inx { get; }
+            public int iny { get; }
+            public int inz { get; }
             public float tr { get; }
             public float tg { get; }
             public float tb { get; }
             public float rs { get; }
             public float gs { get; }
             public float bs { get; }
-            public long fcnt { get; }
+            public int fcnt { get; }
             public byte Type { get; }
             public byte Active { get; }
             public PHD_VECTOR rlp { get; }
-            public long Range { get; }
+            public int Range { get; }
         };
 
         internal struct ITEM_LIGHT
         {
-            long r { get; }
-            long g { get;  } 
-            long b { get; }
-            long ambient { get; }
-            long rs { get; }
-            long gs { get; }
-            long bs { get; }
-            long fcnt { get; }
-            PCLIGHT_Array CurrentLights { get; }
-            PCLIGHT_Array PrevLights { get; }
-            long nCurrentLights { get; }
-            long nPrevLights { get; }
-            long room_number { get; }
-            long RoomChange { get; }
-            PHD_VECTOR item_pos { get; }
-            void* pCurrentLights { get; }
-            void* pPrevLights { get; }
+            public int r { get; }
+            public int g { get;  } 
+            public int b { get; }
+            public int ambient { get; }
+            public int rs { get; }
+            public int gs { get; }
+            public int bs { get; }
+            public int fcnt { get; }
+            public PCLIGHT_Array CurrentLights { get; }
+            public PCLIGHT_Array PrevLights { get; }
+            public int nCurrentLights { get; }
+            public int nPrevLights { get; }
+            public int room_number { get; }
+            public int RoomChange { get; }
+            public PHD_VECTOR item_pos { get; }
+            public void* pCurrentLights { get; }
+            public void* pPrevLights { get; }
         };
         
         // C# Doesn't allow fixed buffer sizes for strictly non-composed primitive types.
@@ -110,9 +110,9 @@
             public short item_flag03 { get; }
         }
 
-        public long floor { get; }
-        public ulong touch_bits { get; }
-        public ulong mesh_bits { get; }
+        public int floor { get; }
+        public uint touch_bits { get; }
+        public uint mesh_bits { get; }
         public short object_number { get; }
         public short current_anim_state { get; }
         public short goal_anim_state { get; }
@@ -127,7 +127,7 @@
         public short hit_points { get; }
         public ushort box_number { get; }
         public short timer { get; }
-        public short flags { get; }
+        public ushort flags { get; }
         public short shade { get; }
         public short trigger_flags { get; }
         public short carried_item { get; }
@@ -137,12 +137,17 @@
         public void* data { get; }
         public PHD_3DPOS pos { get; }
         public ITEM_LIGHT il { get; }
-        public ulong bitfield { get; }
-        public ulong meshswap_meshbits { get; }
+        public uint bitfield { get; }
+        public uint meshswap_meshbits { get; }
         public short draw_room { get; }
         public short TOSSPAD {  get; }
 
-        public ItemInfo(long floor, ulong touch_bits, ulong mesh_bits, short object_number, short current_anim_state, short goal_anim_state, short required_anim_state, short anim_number, short frame_number, short room_number, short next_item, short next_active, short speed, short fallspeed, short hit_points, ushort box_number, short timer, short flags, short shade, short trigger_flags, short carried_item, short after_death, ushort fired_weapon, item_flags_Array item_flags, void* data, PHD_3DPOS pos, ITEM_LIGHT il, ulong bitfield, ulong meshswap_meshbits, short draw_room, short TOSSPAD)
+        public ItemInfo(int floor, uint touch_bits, uint mesh_bits, short object_number,
+            short current_anim_state, short goal_anim_state, short required_anim_state, short anim_number, short frame_number,
+            short room_number, short next_item, short next_active, short speed, short fallspeed, short hit_points,
+            ushort box_number, short timer, ushort flags, short shade, short trigger_flags, short carried_item, short after_death,
+            ushort fired_weapon, item_flags_Array item_flags, void* data, PHD_3DPOS pos, ITEM_LIGHT il,
+            uint bitfield, uint meshswap_meshbits, short draw_room, short TOSSPAD)
         {
             this.floor = floor;
             this.touch_bits = touch_bits;
