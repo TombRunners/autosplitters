@@ -96,7 +96,7 @@ namespace TR4
 
         public override bool ShouldSplit(LiveSplitState state)
         {
-            // Handle deathruns (for both rulesets).
+            // Handle deathruns for both rulesets.
             if (Settings.Deathrun)
             {
                 bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
@@ -311,7 +311,6 @@ namespace TR4
             return loadingFromCityToTulun || loadingFromCitadelGateToCitadel || loadingFromCitadelToSphinxComplex;
         }
 
-        // TODO Test this.
         private bool GlitchlessShouldSplitGiza()
         {
             /* Likely route

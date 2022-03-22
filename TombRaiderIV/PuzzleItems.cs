@@ -127,9 +127,69 @@ namespace TR4
         /// </summary>
         public byte BlackBeetle     => Item12;
 
-        // TODO Finish docs...
-        public byte MineDetonator => Item08;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.CityOfTheDead"/>, <see cref="Level.Trenches"/>, <see cref="Level.ChambersOfTulun"/>, 
+        ///     <see cref="Level.StreetBazaar"/>, and <see cref="Level.CitadelGate"/>.
+        /// </summary>
+        public byte NitrousOxideFeeder => Item01;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.CityOfTheDead"/>, <see cref="Level.Trenches"/>, <see cref="Level.ChambersOfTulun"/>, 
+        ///     <see cref="Level.StreetBazaar"/>, and <see cref="Level.CitadelGate"/>.
+        /// </summary>
+        public byte CarJack            => Item02;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.CityOfTheDead"/>, <see cref="Level.Trenches"/>, <see cref="Level.ChambersOfTulun"/>, 
+        ///     <see cref="Level.StreetBazaar"/>, and <see cref="Level.CitadelGate"/>.
+        /// </summary>
+        public byte RoomKey            => Item04;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.CityOfTheDead"/>, <see cref="Level.Trenches"/>, <see cref="Level.ChambersOfTulun"/>, 
+        ///     <see cref="Level.StreetBazaar"/>, and <see cref="Level.CitadelGate"/>.
+        /// </summary>
+        public byte WeaponCodeKey      => Item05;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.CityOfTheDead"/>, <see cref="Level.Trenches"/>, <see cref="Level.ChambersOfTulun"/>, 
+        ///     <see cref="Level.StreetBazaar"/>, and <see cref="Level.CitadelGate"/>.
+        /// </summary>
+        public byte MineDetonator      => Item08;
 
-        public byte EasternShaftKey => Item09;
+        /// <summary>Unique item active during <see cref="Level.SphinxComplex"/>.</summary>
+        public byte Shovel => Item01;
+        /// <summary>Unique item active during <see cref="Level.UnderneathTheSphinx"/>.</summary>
+        public byte StoneOfMaat   => Item01;
+        /// <summary>Unique item active during <see cref="Level.UnderneathTheSphinx"/>.</summary>
+        public byte StoneOfKhepri => Item02;
+        /// <summary>Unique item active during <see cref="Level.UnderneathTheSphinx"/>.</summary>
+        public byte StoneOfAtum   => Item03;
+        /// <summary>Unique item active during <see cref="Level.UnderneathTheSphinx"/>.</summary>
+        public byte StoneOfRe     => Item04;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.SphinxComplex"/>, <see cref="Level.UnderneathTheSphinx"/>, <see cref="Level.MenkauresPyramid"/>,
+        ///     <see cref="Level.InsideMenkauresPyramid"/>, <see cref="Level.TheMastabas"/>, <see cref="Level.TheGreatPyramid"/>,
+        ///     <see cref="Level.KhufusQueensPyramid"/>, <see cref="Level.InsideTheGreatPyramid"/>, and <see cref="Level.TempleOfHorus"/>.
+        /// </summary>
+        public byte HolyScripture    => Item05;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.SphinxComplex"/>, <see cref="Level.UnderneathTheSphinx"/>,
+        ///     <see cref="Level.MenkauresPyramid"/>, <see cref="Level.InsideMenkauresPyramid"/>, <see cref="Level.TheMastabas"/>,
+        ///     <see cref="Level.TheGreatPyramid"/>, <see cref="Level.KhufusQueensPyramid"/> and <see cref="Level.InsideTheGreatPyramid"/>.
+        /// </summary>
+        public byte WesternShaftKey  => Item06;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.SphinxComplex"/>, <see cref="Level.UnderneathTheSphinx"/>,
+        ///     <see cref="Level.MenkauresPyramid"/>, <see cref="Level.InsideMenkauresPyramid"/>, <see cref="Level.TheMastabas"/>,
+        ///     <see cref="Level.TheGreatPyramid"/>, <see cref="Level.KhufusQueensPyramid"/> and <see cref="Level.InsideTheGreatPyramid"/>.
+        /// </summary>
+        public byte NorthernShaftKey => Item07;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.TheMastabas"/>, <see cref="Level.TheGreatPyramid"/>, 
+        ///     <see cref="Level.KhufusQueensPyramid"/> and <see cref="Level.InsideTheGreatPyramid"/>.
+        /// </summary>
+        public byte SouthernShaftKey => Item08;
+        /// <summary>
+        ///     Unique item active during <see cref="Level.TheMastabas"/>, <see cref="Level.TheGreatPyramid"/>, 
+        ///     <see cref="Level.KhufusQueensPyramid"/> and <see cref="Level.InsideTheGreatPyramid"/>.
+        /// </summary>
+        public byte EasternShaftKey  => Item09;
     }
 }
