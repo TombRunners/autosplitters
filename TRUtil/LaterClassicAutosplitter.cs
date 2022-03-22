@@ -34,11 +34,15 @@ namespace TRUtil
 
         public override bool ShouldStart(LiveSplitState state)
         {
-            bool loadingScreenJustEnded = !LaterClassicGameData.Loading.Current && LaterClassicGameData.Loading.Old;
-            // GfLevelComplete will only be 1 if New Game is clicked; loading a save does not set GfLevelComplete to that level's value.
-            // Thus, the GfLevelComplete check will prevent Starts from someone loading into the first level.
-            bool loadedIntoFirstLevelFromTheMainMenu = LaterClassicGameData.GfLevelComplete.Old == 1;
-            return loadingScreenJustEnded && loadedIntoFirstLevelFromTheMainMenu;
+            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+
+            bool justFinishedLoading = currentGfLevelComplete == 0 && oldGfLevelComplete != 0;
+            if (!justFinishedLoading)
+                return false;
+
+            // GfLevelComplete will only be 1 if New Game is clicked; loading a save does not set GfLevelComplete to the loaded level's value.
+            return Settings.FullGame ? oldGfLevelComplete == 1 : oldGfLevelComplete != 0;
         }
 
         /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
