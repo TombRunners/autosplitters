@@ -9,7 +9,8 @@ namespace TR1
     /// <summary>The supported game versions.</summary>
     internal enum GameVersion
     {
-        ATI,
+        Ati,
+        AtiUnfinishedBusiness,
         DOSBox
     }
 
@@ -21,11 +22,13 @@ namespace TR1
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
-            VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint)GameVersion.ATI);
+            VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint)GameVersion.Ati);
             VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint)GameVersion.DOSBox);
+            VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint)GameVersion.AtiUnfinishedBusiness);
 
-            ProcessSearchNames.Add("tombati");
             ProcessSearchNames.Add("dosbox");
+            ProcessSearchNames.Add("tombati");
+            ProcessSearchNames.Add("tombub");            
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace TR1
             Watchers.Clear();
             switch ((GameVersion)version)
             {
-                case GameVersion.ATI:
+                case GameVersion.Ati:
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" });
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" });
@@ -52,6 +55,14 @@ namespace TR1
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x5BB0A)) { Name = "LevelTime" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x5A080)) { Name = "PickedPassportFunction" });
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
+                    break;
+                case GameVersion.AtiUnfinishedBusiness:
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x59CFC)) { Name = "TitleScreen" });
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x599EC)) { Name = "LevelComplete" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x599E8)) { Name = "Level" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59A00)) { Name = "LevelTime" });
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59A58)) { Name = "PickedPassportFunction" });
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x59A04)) { Name = "Health" });
                     break;
                 case GameVersion.DOSBox:
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
@@ -61,7 +72,7 @@ namespace TR1
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC)) { Name = "LevelTime" });
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04)) { Name = "PickedPassportFunction" });
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
-                    break;
+                    break;                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }

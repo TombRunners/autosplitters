@@ -10,10 +10,13 @@ namespace TR1
             switch ((GameVersion)version)
             {
                 case GameVersion.DOSBox:
-                    versionText = "DOSBox";
+                    versionText = "DOSBox [TR 1996]";
                     break;
-                case GameVersion.ATI:
-                    versionText = "TombATI";
+                case GameVersion.Ati:
+                    versionText = "TombATI [TR 1996]";
+                    break;
+                case GameVersion.AtiUnfinishedBusiness:
+                    versionText = "TombATI [TR:UB]";
                     break;
                 default:
                     versionText = "Unknown/Undetected";
