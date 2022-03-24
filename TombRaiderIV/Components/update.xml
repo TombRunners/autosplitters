@@ -1,0 +1,11 @@
+<updates>
+  <update version="1.0.0.0">
+    <files>
+      <file path="Components/TR4.dll" status="added"/>
+      <file path="../../TRUtil/Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
+    </changelog>
+  </update>
+</updates>
