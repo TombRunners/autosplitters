@@ -1,9 +1,9 @@
-﻿using System;
+﻿using ExtensionMethods;
+using LiveSplit.ComponentUtil;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using LiveSplit.ComponentUtil;
-using ExtensionMethods;
 
 
 namespace TRUtil

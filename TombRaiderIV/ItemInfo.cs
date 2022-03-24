@@ -1,6 +1,6 @@
 ﻿namespace TR4
 {
-    #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable IDE1006 // Naming Styles
     public struct ItemInfo
     {
         public struct PHD_3DPOS
@@ -298,5 +298,5 @@
             this.TOSSPAD = TOSSPAD;
         }
     }
-    #pragma warning restore IDE1006 // Naming Styles
+#pragma warning restore IDE1006 // Naming Styles
 }

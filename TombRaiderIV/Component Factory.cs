@@ -1,7 +1,7 @@
-﻿using System;                   // Version
-using System.Reflection;        // Assembly
-using LiveSplit.Model;          // LiveSplitState
+﻿using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
+using System;                   // Version
+using System.Reflection;        // Assembly
 using TR4;                      // For [assembly:...]
 using UpdateManager;            // IUpdateable
 

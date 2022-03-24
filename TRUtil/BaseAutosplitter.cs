@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using LiveSplit.Model;
+﻿using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
+using System;
 
 namespace TRUtil
 {

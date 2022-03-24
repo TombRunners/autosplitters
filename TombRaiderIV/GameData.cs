@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using LiveSplit.ComponentUtil;
+﻿using LiveSplit.ComponentUtil;
+using System;
 using TRUtil;
 
 namespace TR4
-{       
+{
     /// <summary>The supported game versions.</summary>
     internal enum GameVersion
     {

@@ -1,10 +1,10 @@
-﻿using System;                             // IDisposable
-using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlElement XmlNode
-using LiveSplit.Model;                    // LiveSplitState
+﻿using LiveSplit.Model;                    // LiveSplitState
 using LiveSplit.UI;                       // LayoutMode
 using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
+using System;                             // IDisposable
+using System.Windows.Forms;               // Control, TableLayoutPanel
+using System.Xml;                         // XmlDocument, XmlElement XmlNode
 
 namespace TRUtil
 {

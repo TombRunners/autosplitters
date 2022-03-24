@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TR4
+﻿namespace TR4
 {
     /// <summary>
     ///     The game uses an array of 8-bit char values. Indices are re-used, with items re-assigned by the game's script.

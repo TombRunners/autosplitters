@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using LiveSplit.Model;
+﻿using LiveSplit.Model;
+using System;
 
 namespace TRUtil
 {

@@ -1,6 +1,6 @@
+using LiveSplit.Model;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using LiveSplit.Model;
 using TRUtil;
 
 namespace TR1
