@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRUtil", "TRUtil\TRUtil.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR4", "TombRaiderIV\TR4.csproj", "{7555D155-EFCB-48C2-8540-B719753FFEE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR5", "TR5\TR5.csproj", "{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
