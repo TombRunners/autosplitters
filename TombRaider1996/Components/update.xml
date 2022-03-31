@@ -53,7 +53,7 @@
   <update version="2.3.1.0">
     <files>
       <file path="Components/TR1996.dll" status="changed"/>
-	  <file path="Components/TRUtil.dll" status="added"/>
+      <file path="Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Backend code simplification.</change>
@@ -66,6 +66,15 @@
     </files>
     <changelog>
       <change>Added ATI version of Unfinished Business.</change>
+    </changelog>
+  </update>
+  <update version="3.0.1.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Backend code expansion to support later PSX games.</change>
     </changelog>
   </update>
 </updates>

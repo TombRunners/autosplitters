@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR3", "TombRaiderIII\TR3.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRUtil", "TRUtil\TRUtil.csproj", "{29196311-2D7C-428B-A058-6BBFC8452909}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR4", "TombRaiderIV\TR4.csproj", "{7555D155-EFCB-48C2-8540-B719753FFEE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{29196311-2D7C-428B-A058-6BBFC8452909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29196311-2D7C-428B-A058-6BBFC8452909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29196311-2D7C-428B-A058-6BBFC8452909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7555D155-EFCB-48C2-8540-B719753FFEE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

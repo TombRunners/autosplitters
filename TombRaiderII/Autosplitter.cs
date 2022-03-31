@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using LiveSplit.Model;
+﻿using LiveSplit.Model;
+using System.Diagnostics.CodeAnalysis;
 using TRUtil;
 
 namespace TR2

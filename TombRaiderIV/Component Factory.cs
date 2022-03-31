@@ -2,12 +2,12 @@
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
 using System;                   // Version
 using System.Reflection;        // Assembly
-using TR1;                      // For [assembly:...]
+using TR4;                      // For [assembly:...]
 using UpdateManager;            // IUpdateable
 
 [assembly: ComponentFactory(typeof(ComponentFactory))]
 
-namespace TR1
+namespace TR4
 {
     /// <summary>
     ///     Implementation of <see cref="IComponentFactory"/> for the component.
@@ -18,7 +18,7 @@ namespace TR1
     ///     IComponentFactory: https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/LiveSplit.Core/UI/Components/IComponentFactory.cs
     ///     IUpdateable: https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/UpdateManager/IUpdateable.cs
     /// </remarks>
-    internal class ComponentFactory : IComponentFactory
+    internal sealed class ComponentFactory : IComponentFactory
     {
         #region IComponentFactory Implementations
 
@@ -32,13 +32,13 @@ namespace TR1
         /// <remarks>
         ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
         /// </remarks>
-        public string ComponentName => "Tomb Raider (1996) and Unfinished Business";
+        public string ComponentName => "Tomb Raider IV";
 
         /// <inheritdoc/>
         /// <remarks>
         ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
         /// </remarks>
-        public string Description => "Autosplitter for Tomb Raider (1996) and Unfinished Business";
+        public string Description => "Autosplitter for Tomb Raider IV";
 
         /// <inheritdoc/>
         /// <param name="state">State passed by LiveSplit</param>
@@ -75,15 +75,15 @@ namespace TR1
         /// <remarks>
         ///     It must be a raw link.
         /// </remarks>
-        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaider1996/";
-        
+        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/";
+
         /// <summary>
         ///     XML file which is checked to see if the component needs updated.
         /// </summary>
         /// <remarks>
         ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
         /// </remarks>
-        public string XMLURL => UpdateURL + "Components/update.xml";
+        public string XMLURL => UpdateURL + "TombRaiderIV/Components/update.xml";
 
         #endregion
     }

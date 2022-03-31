@@ -1,6 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using LiveSplit.ComponentUtil;
+﻿using LiveSplit.ComponentUtil;
+using System;
 using TRUtil;
 
 namespace TR2

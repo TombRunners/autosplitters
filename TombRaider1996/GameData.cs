@@ -1,7 +1,7 @@
+using LiveSplit.ComponentUtil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LiveSplit.ComponentUtil;
 using TRUtil;
 
 namespace TR1
