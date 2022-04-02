@@ -75,7 +75,7 @@ namespace TR1
         /// <remarks>
         ///     It must be a raw link.
         /// </remarks>
-        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TombRaider1996/";
+        public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/";
         
         /// <summary>
         ///     XML file which is checked to see if the component needs updated.
@@ -83,7 +83,7 @@ namespace TR1
         /// <remarks>
         ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
         /// </remarks>
-        public string XMLURL => UpdateURL + "Components/update.xml";
+        public string XMLURL => UpdateURL + "TombRaider1996/Components/update.xml";
 
         #endregion
     }
