@@ -62,7 +62,18 @@
       <file path="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Backend code expansion to support later PSX games.</change>
+      <change>Backend code expansion to support later PSX-era games.</change>
+    </changelog>
+  </update>
+  <update version="1.4.0.0">
+    <files>
+      <file path="Components/TR2.dll" status="removed"/>
+      <file path="Components/TRUtil.dll" status="removed"/>
+      <file path="TombRaiderII/Components/TR2.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Simplified TRUtil DLL distribution.</change>
     </changelog>
   </update>
 </updates>
