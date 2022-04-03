@@ -42,8 +42,6 @@ namespace TR5
     /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : LaterClassicAutosplitter
     {
-
-
         /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
         public Autosplitter()
         {
@@ -79,7 +77,7 @@ namespace TR5
 
             // Handle ILs and FG for both rulesets.
             bool loadingAnotherLevel = currentGfLevelComplete != 0;
-            if (!Settings.Glitchless)  // Property name should be SplitCutscene.
+            if (!Settings.Option)  // Property name should be SplitCutscene.
                 loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint)Level.CutsceneSecurityBreach;
             return loadingAnotherLevel;
         }

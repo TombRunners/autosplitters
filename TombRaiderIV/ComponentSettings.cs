@@ -4,6 +4,15 @@ namespace TR4
 {
     public sealed class ComponentSettings : LaterClassicComponentSettings
     {
+        public ComponentSettings() : base()
+        {
+            SuspendLayout();
+            OptionCheckbox.Name = "GlitchlessCheckbox";
+            OptionCheckbox.Text = "Glitchless";
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
         public override void SetGameVersion(uint version)
         {
             string versionText;

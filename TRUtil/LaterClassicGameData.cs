@@ -1,6 +1,5 @@
 ﻿using LiveSplit.ComponentUtil;
 
-
 namespace TRUtil
 {
     public abstract class LaterClassicGameData : BaseGameData

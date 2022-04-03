@@ -7,9 +7,9 @@ namespace TR5
         public ComponentSettings() : base()
         {
             SuspendLayout();
-            GlitchlessCheckbox.Checked = true;
-            GlitchlessCheckbox.Name = "SplitCutsceneCheckbox";
-            GlitchlessCheckbox.Text = "Split Security Breach Cutscene";
+            OptionCheckbox.Checked = true;
+            OptionCheckbox.Name = "SplitCutsceneCheckbox";
+            OptionCheckbox.Text = "Split Security Breach Cutscene";
             ResumeLayout(false);
             PerformLayout();
         }

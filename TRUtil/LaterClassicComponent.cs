@@ -39,9 +39,9 @@ namespace TRUtil
         public override XmlNode GetSettings(XmlDocument document)
         {
             XmlElement settingsNode = document.CreateElement("Settings");
-            settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
-            settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
-            settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Glitchless), _splitter.Settings.Glitchless));
+            _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
+            _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
+            _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
             return settingsNode;
         }
 
@@ -49,7 +49,7 @@ namespace TRUtil
         {
             _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
             _splitter.Settings.Deathrun = settings["Deathrun"]?.InnerText == "True";
-            _splitter.Settings.Glitchless = settings["Glitchless"]?.InnerText == "True";
+            _splitter.Settings.Option = settings["Option"]?.InnerText == "True";
 
             if (_splitter.Settings.FullGame)
             {
@@ -64,8 +64,8 @@ namespace TRUtil
                 _splitter.Settings.ILModeButton.Checked = true;
             }
 
-            if (_splitter.Settings.Glitchless)
-                _splitter.Settings.GlitchlessCheckbox.Checked = true;
+            if (_splitter.Settings.Option)
+                _splitter.Settings.OptionCheckbox.Checked = true;
         }
 
         public override void Dispose()
