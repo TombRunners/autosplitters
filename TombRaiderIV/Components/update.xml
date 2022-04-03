@@ -8,4 +8,13 @@
       <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
     </changelog>
   </update>
+  <update version="1.0.1.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Improved Settings code for later classics.</change>
+    </changelog>
+  </update>
 </updates>

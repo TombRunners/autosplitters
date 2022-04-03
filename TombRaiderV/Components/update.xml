@@ -1,0 +1,11 @@
+<updates>
+  <update version="1.0.0.0">
+    <files>
+      <file path="TombRaiderV/Components/TR5.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Automatic start, split, reset, and IGT for FG, IL, and deathruns.</change>
+    </changelog>
+  </update>
+</updates>
