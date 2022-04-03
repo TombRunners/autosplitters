@@ -120,7 +120,7 @@ namespace TR4
             }
 
             // Handle FG for glitchless.
-            if (Settings.Glitchless)
+            if (Settings.Option)
                 return GlitchlessShouldSplit();
 
             // Handle FG for glitched.
@@ -244,7 +244,8 @@ namespace TR4
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
             
             bool finishedLoadingCatacombs = currentLevel == (uint)Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
-            if (finishedLoadingCatacombs) {
+            if (finishedLoadingCatacombs)
+            {
                 // The level must finish loading before the ITEM_INFO array can be checked.
                 ItemInfo platform = GameData.GetItemInfoAtIndex(79);
                 return platform.flags == 0x20;

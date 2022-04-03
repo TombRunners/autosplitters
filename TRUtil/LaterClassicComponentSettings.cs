@@ -10,12 +10,12 @@ namespace TRUtil
         public RadioButton ILModeButton;
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
-        public CheckBox GlitchlessCheckbox;
+        public CheckBox OptionCheckbox;
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun;
-        public bool Glitchless;
+        public bool Option;
 
         public LaterClassicComponentSettings() => InitializeComponent();
 
@@ -25,7 +25,7 @@ namespace TRUtil
             ILModeButton = new RadioButton();
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
-            GlitchlessCheckbox = new CheckBox();
+            OptionCheckbox = new CheckBox();
             GameVersionLabel = new Label();
             AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
@@ -93,23 +93,23 @@ namespace TRUtil
             // ComponentSettings
             Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
-            Controls.Add(GlitchlessCheckbox);
+            Controls.Add(OptionCheckbox);
             Controls.Add(_modeSelect);
             Name = "LaterClassicComponentSettings";
             Size = new System.Drawing.Size(313, 145);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
 
-            // GlitchlessCheckbox
-            GlitchlessCheckbox.AutoSize = true;
-            GlitchlessCheckbox.Checked = false;
-            GlitchlessCheckbox.Location = new System.Drawing.Point(10, 64);
-            GlitchlessCheckbox.Name = "GlitchlessModeCheckbox";
-            GlitchlessCheckbox.Size = new System.Drawing.Size(72, 17);
-            GlitchlessCheckbox.TabIndex = 0;
-            GlitchlessCheckbox.Text = "Glitchless";
-            GlitchlessCheckbox.UseVisualStyleBackColor = true;
-            GlitchlessCheckbox.CheckedChanged += GlitchlessCheckboxCheckedChanged;
+            // OptionCheckbox
+            OptionCheckbox.AutoSize = true;
+            OptionCheckbox.Checked = false;
+            OptionCheckbox.Location = new System.Drawing.Point(10, 64);
+            OptionCheckbox.Size = new System.Drawing.Size(72, 17);
+            OptionCheckbox.Name = "OptionCheckbox";
+            OptionCheckbox.Text = "Option";
+            OptionCheckbox.TabIndex = 0;
+            OptionCheckbox.UseVisualStyleBackColor = true;
+            OptionCheckbox.CheckedChanged += OptionCheckboxCheckedChanged;
 
             ResumeLayout(false);
             PerformLayout();
@@ -137,10 +137,10 @@ namespace TRUtil
             Deathrun = true;
         }
 
-        private void GlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
+        private void OptionCheckboxCheckedChanged(object sender, EventArgs e)
         {
             var checkbox = (CheckBox)sender;
-            Glitchless = checkbox.Checked;
+            Option = checkbox.Checked;
         }
     }
 }

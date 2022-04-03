@@ -1,14 +1,15 @@
 using TRUtil;
 
-namespace TR4
+namespace TR5
 {
     public sealed class ComponentSettings : LaterClassicComponentSettings
     {
         public ComponentSettings() : base()
         {
             SuspendLayout();
-            OptionCheckbox.Name = "GlitchlessCheckbox";
-            OptionCheckbox.Text = "Glitchless";
+            OptionCheckbox.Checked = true;
+            OptionCheckbox.Name = "SplitCutsceneCheckbox";
+            OptionCheckbox.Text = "Split Security Breach Cutscene";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -19,7 +20,7 @@ namespace TR4
             switch ((GameVersion)version)
             {
                 case GameVersion.SteamOrGog:
-                    versionText = "Steam/GOG [TR4]";
+                    versionText = "Steam/GOG [TR5]";
                     break;
                 default:
                     versionText = "Unknown/Undetected";
