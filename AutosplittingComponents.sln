@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRUtil", "TRUtil\TRUtil.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR4", "TombRaiderIV\TR4.csproj", "{7555D155-EFCB-48C2-8540-B719753FFEE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR5", "TR5\TR5.csproj", "{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TR5", "TombRaiderV\TR5.csproj", "{A88EFBF8-F9A7-4AB7-9B4D-6672600E2ADC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
