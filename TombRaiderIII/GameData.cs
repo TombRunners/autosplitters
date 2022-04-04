@@ -66,7 +66,7 @@ namespace TR3
                 case GameVersion.JpTlaCracked16x9AspectRatio:
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x29AA04)) { Name = "TitleScreen"});
                     Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x22CE38)) { Name = "LevelComplete"});
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xC05FE)) { Name = "Level"});
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x22CE34)) { Name = "Level"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x2CB3EF)) { Name = "LevelTime"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x21F318)) { Name = "PickedPassportFunction"});
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x21F2C0)) { Name = "Health"});
