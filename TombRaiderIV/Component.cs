@@ -11,6 +11,6 @@ namespace TR4
         {
         }
 
-        public override string ComponentName => "Tomb Raider IV";
+        public override string ComponentName => "Tomb Raider IV and The Times Exclusive";
     }
 }

@@ -21,10 +21,14 @@ namespace TR4
                 case GameVersion.SteamOrGog:
                     versionText = "Steam/GOG [TR4]";
                     break;
+                case GameVersion.TheTimesExclusive:
+                    versionText = "The Times Exclusive [TTE]";
+                    break;
                 default:
                     versionText = "Unknown/Undetected";
                     break;
             }
+
             GameVersionLabel.Text = "Game Version: " + versionText;
         }
     }
