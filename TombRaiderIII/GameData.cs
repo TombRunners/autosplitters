@@ -29,7 +29,7 @@ namespace TR3
             VersionHashes.Add("66404f58bb5dbf30707abfd245692cd2", (uint)GameVersion.JpCracked);
             VersionHashes.Add("1c9bdf6b998b34752cb0c7d315129af6", (uint)GameVersion.JpCracked16x9AspectRatio);
             VersionHashes.Add("c3030264e597a496cc920d9c97324046", (uint)GameVersion.JpTlaCracked);
-            VersionHashes.Add("", (uint)GameVersion.JpTlaCracked16x9AspectRatio);
+            VersionHashes.Add("64a166ef57aa4f786e6a7f41eae14806", (uint)GameVersion.JpTlaCracked16x9AspectRatio);
 
             ProcessSearchNames.Add("tomb3");
             ProcessSearchNames.Add("tr3gold");
