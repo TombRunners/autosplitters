@@ -69,7 +69,7 @@ namespace TR3
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x22CE34)) { Name = "Level"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x2CB3EF)) { Name = "LevelTime"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x21F318)) { Name = "PickedPassportFunction"});
-                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x21F2C0)) { Name = "Health"});
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x21F2DC)) { Name = "Health"});
                     FirstLevelTimeAddress = _tlaFirstLevelTimeAddress;
                     break;
                 default:
