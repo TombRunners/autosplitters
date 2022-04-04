@@ -5,7 +5,7 @@ namespace TR3
 {
     /// <summary>The game's level and demo values.</summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    internal enum Level : uint
+    internal enum Tr3Level : uint
     {
         LarasHome = 00,
         // India
@@ -36,6 +36,22 @@ namespace TR3
         AllHallows = 20
     }
 
+       /// <summary>The game's level and demo values.</summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
+    internal enum TlaLevel : uint
+    {
+        LarasHome = 00,
+        // Scotland
+        HighlandFling = 01,
+        WillardsLair = 02,
+        // Channel Tunnel
+        ShakespeareCliff = 03,
+        SleepingWithTheFishes = 04,
+        // Paris
+        ItsAMadhouse= 05,
+        Reunion = 06
+    }
+
     /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
     internal sealed class Autosplitter : ClassicAutosplitter
     {
@@ -44,7 +60,7 @@ namespace TR3
         {
             Settings = new ComponentSettings();
 
-            LevelCount = 20;
+            LevelCount = 20; // This is the highest between TR3 at 20 and TLA at 6.
             CompletedLevels.Capacity = LevelCount;
 
             Data = new GameData();

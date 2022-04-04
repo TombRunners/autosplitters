@@ -7,15 +7,20 @@ namespace TR3
     /// <summary>The supported game versions.</summary>
     internal enum GameVersion
     {
-        Int,                     // From Steam
-        Int16x9AspectRatio,      // Int with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
-        JpCracked,               // No-CD cracked TR3 from JP Gold bundle release
-        JpCracked16x9AspectRatio // JpCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+        Int,                         // From Steam
+        Int16x9AspectRatio,          // Int with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+        JpCracked,                   // No-CD cracked TR3 from JP Gold bundle release
+        JpCracked16x9AspectRatio,    // JpCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+        JpTlaCracked,                // No-CD cracked TLA from JP Gold bundle release
+        JpTlaCracked16x9AspectRatio, // JpTlaCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
     }
 
     /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
     internal sealed class GameData : ClassicGameData
     {
+        private const uint _tr3FirstLevelTimeAddress = 0x6D2326;
+        private const uint _tlaFirstLevelTimeAddress = 0x6CAF46;
+
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
@@ -23,12 +28,13 @@ namespace TR3
             VersionHashes.Add("46a780f8f5314d5284f1d1b3ab468ab2", (uint)GameVersion.Int16x9AspectRatio);
             VersionHashes.Add("66404f58bb5dbf30707abfd245692cd2", (uint)GameVersion.JpCracked);
             VersionHashes.Add("1c9bdf6b998b34752cb0c7d315129af6", (uint)GameVersion.JpCracked16x9AspectRatio);
+            VersionHashes.Add("c3030264e597a496cc920d9c97324046", (uint)GameVersion.JpTlaCracked);
+            VersionHashes.Add("", (uint)GameVersion.JpTlaCracked16x9AspectRatio);
 
             ProcessSearchNames.Add("tomb3");
+            ProcessSearchNames.Add("tr3gold");
             
-            // Valid for all supported game versions.
-            FirstLevelTimeAddress = 0x6D2326;
-            LevelSaveStructSize = 0x33;
+            LevelSaveStructSize = 0x33; // All TR3 and TLA versions.
         }
         
         protected override void SetAddresses(uint version)
@@ -44,6 +50,7 @@ namespace TR3
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x2D27CF)) { Name = "LevelTime"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x226458)) { Name = "PickedPassportFunction"});
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x22640C)) { Name = "Health"});
+                    FirstLevelTimeAddress = _tr3FirstLevelTimeAddress;
                     break;
 				case GameVersion.JpCracked:
                 case GameVersion.JpCracked16x9AspectRatio:
@@ -53,6 +60,17 @@ namespace TR3
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x2D27CF)) { Name = "LevelTime"});
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x226458)) { Name = "PickedPassportFunction"});
                     Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x22640C)) { Name = "Health"});
+                    FirstLevelTimeAddress = _tr3FirstLevelTimeAddress;
+                    break;
+                case GameVersion.JpTlaCracked:
+                case GameVersion.JpTlaCracked16x9AspectRatio:
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x29AA04)) { Name = "TitleScreen"});
+                    Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x22CE38)) { Name = "LevelComplete"});
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xC05FE)) { Name = "Level"});
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x2CB3EF)) { Name = "LevelTime"});
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x21F318)) { Name = "PickedPassportFunction"});
+                    Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x21F2C0)) { Name = "Health"});
+                    FirstLevelTimeAddress = _tlaFirstLevelTimeAddress;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
