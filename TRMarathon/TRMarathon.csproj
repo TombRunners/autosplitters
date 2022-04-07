@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component Factory.cs" />
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
