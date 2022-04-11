@@ -17,4 +17,13 @@
       <change>Improved Settings code for later classics.</change>
     </changelog>
   </update>
+  <update version="2.0.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added support for The Times Exclusive standalone level.</change>
+    </changelog>
+  </update>
 </updates>
