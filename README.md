@@ -5,4 +5,4 @@ If you're looking for the autosplitter files for a game and it isn't here, check
 
 The following autosplitters and load removers are not hosted from this repository:
 * Tomb Raider: Legend - https://github.com/FluxMonkii/Autosplitters
-* Tomb Raider: The Lost Artifact and Tomb Raider: The Angel of Darkness - https://github.com/rtrger/Components
+* Tomb Raider: The Angel of Darkness - https://github.com/rtrger/Components

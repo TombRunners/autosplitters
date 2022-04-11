@@ -53,4 +53,13 @@
       <change>Simplified TRUtil DLL distribution.</change>
     </changelog>
   </update>
+  <update version="2.0.0.0">
+    <files>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Now supports The Lost Artifact (JP Gold Bundle).</change>
+    </changelog>
+  </update>
 </updates>

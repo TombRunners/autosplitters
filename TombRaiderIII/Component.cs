@@ -11,6 +11,6 @@ namespace TR3
         {
         }
 
-        public override string ComponentName => "Tomb Raider III";
+        public override string ComponentName => "Tomb Raider III and The Lost Artifact";
     }
 }
