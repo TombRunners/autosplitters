@@ -1,11 +1,11 @@
 <updates>
-  <update version="1.0.0.0">
+  <update version="2.0.0.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
+      <change>Added support for The Times Exclusive standalone level.</change>
     </changelog>
   </update>
   <update version="1.0.1.0">
@@ -17,13 +17,13 @@
       <change>Improved Settings code for later classics.</change>
     </changelog>
   </update>
-  <update version="2.0.0.0">
+  <update version="1.0.0.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIV/Components/TR4.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
-      <change>Added support for The Times Exclusive standalone level.</change>
+      <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
     </changelog>
   </update>
 </updates>
