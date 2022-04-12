@@ -1,18 +1,64 @@
 <updates>
-  <update version="2.0.0.0">
+  <update version="3.1.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="removed"/>
+      <file path="Components/TRUtil.dll" status="removed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
-      <change>Initial component rewrite version.</change>
+      <change>Simplified TRUtil DLL distribution.</change>
     </changelog>
   </update>
-  <update version="2.1.0.0">
+  <update version="3.0.1.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Backend code expansion to support later PSX-era games.</change>
+    </changelog>
+  </update>
+  <update version="3.0.0.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added ATI version of Unfinished Business.</change>
+    </changelog>
+  </update>
+  <update version="2.3.1.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TRUtil.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Backend code simplification.</change>
+    </changelog>
+  </update>
+  <update version="2.3.0.0">
     <files>
       <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Added deathrun mode.</change>
+      <change>Temporary fix for the component crashing LiveSplit on quit.</change>
+    </changelog>
+  </update>
+  <update version="2.2.0.0">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fix updater not starting if there's a new version.</change>
+    </changelog>
+  </update>
+  <update version="2.1.1.1">
+    <files>
+      <file path="Components/TR1996.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fix LiveSplit not splitting after Qualopec in IL mode.</change>
     </changelog>
   </update>
   <update version="2.1.1.0">
@@ -26,66 +72,20 @@
       <change>Fix event viewer message spam.</change>
     </changelog>
   </update>
-  <update version="2.1.1.1">
+  <update version="2.1.0.0">
     <files>
       <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Fix LiveSplit not splitting after Qualopec in IL mode.</change>
+      <change>Added deathrun mode.</change>
     </changelog>
   </update>
-  <update version="2.2.0.0">
+  <update version="2.0.0.0">
     <files>
       <file path="Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
-      <change>Fix updater not starting if there's a new version.</change>
-    </changelog>
-  </update>
-  <update version="2.3.0.0">
-    <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Temporary fix for the component crashing LiveSplit on quit.</change>
-    </changelog>
-  </update>
-  <update version="2.3.1.0">
-    <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="added"/>
-    </files>
-    <changelog>
-      <change>Backend code simplification.</change>
-    </changelog>
-  </update>
-  <update version="3.0.0.0">
-    <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Added ATI version of Unfinished Business.</change>
-    </changelog>
-  </update>
-  <update version="3.0.1.0">
-    <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Backend code expansion to support later PSX-era games.</change>
-    </changelog>
-  </update>
-  <update version="3.1.0.0">
-    <files>
-      <file path="Components/TR1996.dll" status="removed"/>
-      <file path="Components/TRUtil.dll" status="removed"/>
-      <file path="TombRaider1996/Components/TR1996.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
-    </files>
-    <changelog>
-      <change>Simplified TRUtil DLL distribution.</change>
+      <change>Initial component rewrite version.</change>
     </changelog>
   </update>
 </updates>
