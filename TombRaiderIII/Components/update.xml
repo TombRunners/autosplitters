@@ -10,10 +10,8 @@
   </update>
   <update version="1.3.0.0">
     <files>
-      <file path="Components/TR3.dll" status="removed"/>
-      <file path="Components/TRUtil.dll" status="removed"/>
-      <file path="TombRaiderIII/Components/TR3.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Simplified TRUtil DLL distribution.</change>
@@ -21,8 +19,8 @@
   </update>
   <update version="1.2.2.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Backend code expansion to support later PSX-era games.</change>
@@ -30,8 +28,8 @@
   </update>
   <update version="1.2.1.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Backend code expansion to support later PSX-era games.</change>
@@ -39,8 +37,8 @@
   </update>
   <update version="1.2.0.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="added"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Added support for accepted versions with aspect ratio patches. Backend code simplification</change>
@@ -48,7 +46,7 @@
   </update>
   <update version="1.1.0.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
     </files>
     <changelog>
       <change>Resolved split and IGT bugs.</change>
@@ -56,7 +54,7 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
     </files>
     <changelog>
       <change>Initial component rewrite version. Adds deathrun and better section run support.</change>
