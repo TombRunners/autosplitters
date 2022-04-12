@@ -1,10 +1,8 @@
 <updates>
   <update version="3.1.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="removed"/>
-      <file path="Components/TRUtil.dll" status="removed"/>
-      <file path="TombRaider1996/Components/TR1996.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Simplified TRUtil DLL distribution.</change>
@@ -12,8 +10,8 @@
   </update>
   <update version="3.0.1.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Backend code expansion to support later PSX-era games.</change>
@@ -21,8 +19,8 @@
   </update>
   <update version="3.0.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added ATI version of Unfinished Business.</change>
@@ -30,8 +28,8 @@
   </update>
   <update version="2.3.1.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
-      <file path="Components/TRUtil.dll" status="added"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Backend code simplification.</change>
@@ -39,7 +37,7 @@
   </update>
   <update version="2.3.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Temporary fix for the component crashing LiveSplit on quit.</change>
@@ -47,7 +45,7 @@
   </update>
   <update version="2.2.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix updater not starting if there's a new version.</change>
@@ -55,7 +53,7 @@
   </update>
   <update version="2.1.1.1">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fix LiveSplit not splitting after Qualopec in IL mode.</change>
@@ -63,7 +61,7 @@
   </update>
   <update version="2.1.1.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Add game version indicator to settings.</change>
@@ -74,7 +72,7 @@
   </update>
   <update version="2.1.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added deathrun mode.</change>
@@ -82,7 +80,7 @@
   </update>
   <update version="2.0.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="TombRaider1996/Components/TR1996.dll" status="changed"/>
     </files>
     <changelog>
       <change>Initial component rewrite version.</change>
