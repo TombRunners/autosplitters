@@ -1,22 +1,25 @@
-﻿namespace TR4
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace TR4
 {
     /// <summary>
     ///     The game uses an array of 8-bit char values. Indices are re-used, with items re-assigned by the game's script.
     /// </summary>
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     internal struct PuzzleItems
     {
-        private byte Item01 { get; set; }
-        private byte Item02 { get; set; }
-        private byte Item03 { get; set; }
-        private byte Item04 { get; set; }
-        private byte Item05 { get; set; }
-        private byte Item06 { get; set; }
-        private byte Item07 { get; set; }
-        private byte Item08 { get; set; }
-        private byte Item09 { get; set; }
-        private byte Item10 { get; set; }
-        private byte Item11 { get; set; }
-        private byte Item12 { get; set; }
+        private byte Item01 { get; }
+        private byte Item02 { get; }
+        private byte Item03 { get; }
+        private byte Item04 { get; }
+        private byte Item05 { get; }
+        private byte Item06 { get; }
+        private byte Item07 { get; }
+        private byte Item08 { get; }
+        private byte Item09 { get; }
+        private byte Item10 { get; }
+        private byte Item11 { get; }
+        private byte Item12 { get; }
 
         public PuzzleItems(
             byte item01, byte item02, byte item03, byte item04, 
