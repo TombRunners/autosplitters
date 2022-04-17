@@ -1,6 +1,6 @@
-﻿using LiveSplit.Model;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using LiveSplit.Model;
 using TRUtil;
 
 namespace TR4
@@ -136,7 +136,7 @@ namespace TR4
             }
 
             // Handle FG for glitchless (TR4 only).
-            if (Settings.Option && !playingTheTimesExclusive)
+            if (Settings.Option)
                 return GlitchlessShouldSplit();
 
             // Handle FG for glitched.
@@ -242,16 +242,19 @@ namespace TR4
                 Transition 07 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon
                 Transition 08 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library
                 Transition 09 | currentLevel == 20 && currentGfLevelComplete == 21 | Lost Library to Hall of Demetrius (x)
-                Transition 10 | currentLevel == 21 && currentGfLevelComplete == 15 | Hall of Demetrius to Coastal (x)
-                Transition 11 | currentLevel == 15 && currentGfLevelComplete == 16 | Coastal to Pharos
-                Transition 12 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra (x)
-                Transition 13 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Pharos (x)
-                Transition 14 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra
-                Transition 15 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra to City of the Dead
+                Transition 10 | currentLevel == 21 && currentGfLevelComplete == 20 | Hall of Demetrius to Lost Library (x)
+                Transition 11 | currentLevel == 20 && currentGfLevelComplete == 19 | Lost Library to Poseidon
+                Transition 12 | currentLevel == 19 && currentGfLevelComplete == 15 | Poseidon to Coastal (x)
+                Transition 13 | currentLevel == 15 && currentGfLevelComplete == 16 | Coastal to Pharos (x)
+                Transition 14 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra (x)
+                Transition 15 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Pharos (x)
+                Transition 16 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra
+                Transition 17 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra to City of the Dead
             */
             /* Default undesired splits
                 Coastal Ruins (15):
-                    Never split when entering; only split when leaving to load Catacombs for the last time or Pharos, Temple of Isis
+                    When entering: only split from Poseidon (20) with Pharos Knot and Pharos Pillar
+                    When leaving: only split into Catacombs if the platform has been stabilized by pillar below
                 Hall of Demetrius (21)
                 Cleopatra's Palaces (17):
                     Only split when Lara enters with required progression item/parts.
@@ -266,10 +269,15 @@ namespace TR4
                 ItemInfo platform = GameData.GetItemInfoAtIndex(79);
                 return platform.flags == 0x20;
             }
-
-            bool loadingFromCoastalToPharos = currentLevel == (uint)Tr4Level.CoastalRuins && currentGfLevelComplete == (uint)Tr4Level.PharosTempleOfIsis;
-            if (loadingFromCoastalToPharos)
-                return true;
+            
+            bool loadingFromDemetriusToCoastal = currentLevel == (uint)Tr4Level.HallOfDemetrius && currentGfLevelComplete == (uint)Tr4Level.CoastalRuins;
+            bool loadingFromLostLibraryToPoseidon = currentLevel == (uint)Tr4Level.TheLostLibrary && currentGfLevelComplete == (uint)Tr4Level.TempleOfPoseidon;
+            if (loadingFromDemetriusToCoastal || loadingFromLostLibraryToPoseidon)
+            {
+                bool laraHasPharosPillar = GameData.PuzzleItems.Current.PharosPillar == 1;
+                bool laraHasPharosKnot = GameData.PuzzleItems.Current.PharosKnot == 1;
+                return laraHasPharosPillar && laraHasPharosKnot;
+            }
 
             bool loadingFromPharosToCleopatra = currentLevel == (uint)Tr4Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Tr4Level.CleopatrasPalaces;
             if (loadingFromPharosToCleopatra)
