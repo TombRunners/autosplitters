@@ -120,11 +120,11 @@ namespace TR4
             bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
             if (ignoringSubsequentFramesOfThisLoadState)
             {
-                uint currentLevel = BaseGameData.Level.Current;
-                // Below bool is never true for The Times Exclusive since its level values never match these TR4 levels.
+                Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+                // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
                 bool specialExceptionForGlitchlessPostLoadSplits = Settings.FullGame &&
-                                                                   (currentLevel == (uint) Tr4Level.Catacombs ||
-                                                                    currentLevel == (uint) Tr4Level.Trenches);
+                                                                   (currentLevel == Tr4Level.Catacombs ||
+                                                                    currentLevel == Tr4Level.Trenches);
                 return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
             }
 
@@ -181,11 +181,11 @@ namespace TR4
             /* Default undesired splits
                 Loading into Race for the Iris (2)
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
 
             bool loadingIntoNextLevel = currentGfLevelComplete == currentLevel + 1;
-            bool loadingRaceForTheIris = currentGfLevelComplete == (uint)Tr4Level.RaceForTheIris;
+            bool loadingRaceForTheIris = currentGfLevelComplete == Tr4Level.RaceForTheIris;
             return loadingIntoNextLevel && !loadingRaceForTheIris;
         }
 
@@ -198,8 +198,8 @@ namespace TR4
                 Transition 03 | currentLevel == 05 && currentGfLevelComplete == 06 | Valley of the Kings to KV5
                 Transition 04 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
 
             return currentGfLevelComplete == currentLevel + 1;
         }
@@ -221,10 +221,10 @@ namespace TR4
                 The Great Hypostyle Hall (08):
                     Only split when Lara enters with required progression item/parts.
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
 
-            bool loadingFromKarnakToHypostyle = currentLevel == (uint)Tr4Level.TempleofKarnak && currentGfLevelComplete == (uint)Tr4Level.GreatHypostyleHall;
+            bool loadingFromKarnakToHypostyle = currentLevel == Tr4Level.TempleofKarnak && currentGfLevelComplete == Tr4Level.GreatHypostyleHall;
             if (loadingFromKarnakToHypostyle)
             {
                 bool laraHasHypostyleKey = (GameData.KeyItems.Current & 0b0000_0010) == 0b0000_0010;
@@ -232,7 +232,7 @@ namespace TR4
             }
 
             bool loadingNextLevel = currentGfLevelComplete > currentLevel;
-            bool circlingBackToTheBeginning = currentLevel == (uint)Tr4Level.SacredLake && currentGfLevelComplete == (uint)Tr4Level.TempleofKarnak;
+            bool circlingBackToTheBeginning = currentLevel == Tr4Level.SacredLake && currentGfLevelComplete == Tr4Level.TempleofKarnak;
             return loadingNextLevel || circlingBackToTheBeginning;
         }
 
@@ -266,10 +266,10 @@ namespace TR4
                 Cleopatra's Palaces (17):
                     Only split when Lara enters with required progression item/parts.
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
             
-            bool finishedLoadingCatacombs = currentLevel == (uint)Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+            bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
             if (finishedLoadingCatacombs)
             {
                 // The level must finish loading before the ITEM_INFO array can be checked.
@@ -277,8 +277,8 @@ namespace TR4
                 return platform.flags == 0x20;
             }
             
-            bool loadingFromDemetriusToCoastal = currentLevel == (uint)Tr4Level.HallOfDemetrius && currentGfLevelComplete == (uint)Tr4Level.CoastalRuins;
-            bool loadingFromLostLibraryToPoseidon = currentLevel == (uint)Tr4Level.TheLostLibrary && currentGfLevelComplete == (uint)Tr4Level.TempleOfPoseidon;
+            bool loadingFromDemetriusToCoastal = currentLevel == Tr4Level.HallOfDemetrius && currentGfLevelComplete == Tr4Level.CoastalRuins;
+            bool loadingFromLostLibraryToPoseidon = currentLevel == Tr4Level.TheLostLibrary && currentGfLevelComplete == Tr4Level.TempleOfPoseidon;
             if (loadingFromDemetriusToCoastal || loadingFromLostLibraryToPoseidon)
             {
                 bool laraHasPharosPillar = GameData.PuzzleItems.Current.PharosPillar == 1;
@@ -286,7 +286,7 @@ namespace TR4
                 return laraHasPharosPillar && laraHasPharosKnot;
             }
 
-            bool loadingFromPharosToCleopatra = currentLevel == (uint)Tr4Level.PharosTempleOfIsis && currentGfLevelComplete == (uint)Tr4Level.CleopatrasPalaces;
+            bool loadingFromPharosToCleopatra = currentLevel == Tr4Level.PharosTempleOfIsis && currentGfLevelComplete == Tr4Level.CleopatrasPalaces;
             if (loadingFromPharosToCleopatra)
             {
                 bool laraHasCombinedClockworkBeetle = (GameData.MechanicalScarab.Current & 0b0000_0001) == 0b0000_0001;
@@ -294,9 +294,9 @@ namespace TR4
                 return laraHasCombinedClockworkBeetle || laraHasBothClockworkBeetleParts;
             }
 
-            bool loadingFromCatacombsToPoseidon = currentLevel == (uint)Tr4Level.Catacombs && currentGfLevelComplete == (uint)Tr4Level.TempleOfPoseidon;
-            bool loadingFromPoseidonToLostLibrary = currentLevel == (uint)Tr4Level.TempleOfPoseidon && currentGfLevelComplete == (uint)Tr4Level.TheLostLibrary;
-            bool loadingCityOfTheDead = currentGfLevelComplete == (uint)Tr4Level.CityOfTheDead;
+            bool loadingFromCatacombsToPoseidon = currentLevel == Tr4Level.Catacombs && currentGfLevelComplete == Tr4Level.TempleOfPoseidon;
+            bool loadingFromPoseidonToLostLibrary = currentLevel == Tr4Level.TempleOfPoseidon && currentGfLevelComplete == Tr4Level.TheLostLibrary;
+            bool loadingCityOfTheDead = currentGfLevelComplete == Tr4Level.CityOfTheDead;
             return loadingFromCatacombsToPoseidon || loadingFromPoseidonToLostLibrary || loadingCityOfTheDead;
         }
 
@@ -319,15 +319,15 @@ namespace TR4
                     When leaving: only split when entering Street Bazaar (25) without any Mine Detonator combo/parts
                     When entering: only split when last leaving Street Bazaar (25) with Mine Detonator combo/parts
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
 
-            bool inTrenches = currentLevel == (uint)Tr4Level.Trenches;
+            bool inTrenches = currentLevel == Tr4Level.Trenches;
             if (inTrenches)
             {
                 bool laraHasCombinedDetonator = GameData.PuzzleItems.Current.MineDetonator == 1;
                 
-                bool loadingToStreetBazaar = currentGfLevelComplete == (uint)Tr4Level.StreetBazaar;
+                bool loadingToStreetBazaar = currentGfLevelComplete == Tr4Level.StreetBazaar;
                 if (loadingToStreetBazaar)
                 {
                     bool laraHasNeitherDetonatorPart = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b0000_0000_0000_0000;
@@ -343,9 +343,9 @@ namespace TR4
                 return (laraHasCombinedDetonator || laraHasDetonatorParts) && laraStartedNextToMinefield;
             }
 
-            bool loadingFromCityToTulun = currentLevel == (uint)Tr4Level.CityOfTheDead && currentGfLevelComplete == (uint)Tr4Level.ChambersOfTulun;
-            bool loadingFromCitadelGateToCitadel = currentLevel == (uint)Tr4Level.CitadelGate && currentGfLevelComplete == (uint)Tr4Level.Citadel;
-            bool loadingFromCitadelToSphinxComplex = currentLevel == (uint)Tr4Level.Citadel && currentGfLevelComplete == (uint)Tr4Level.SphinxComplex;
+            bool loadingFromCityToTulun = currentLevel == Tr4Level.CityOfTheDead && currentGfLevelComplete == Tr4Level.ChambersOfTulun;
+            bool loadingFromCitadelGateToCitadel = currentLevel == Tr4Level.CitadelGate && currentGfLevelComplete == Tr4Level.Citadel;
+            bool loadingFromCitadelToSphinxComplex = currentLevel == Tr4Level.Citadel && currentGfLevelComplete == Tr4Level.SphinxComplex;
 
             return loadingFromCityToTulun || loadingFromCitadelGateToCitadel || loadingFromCitadelToSphinxComplex;
         }
@@ -372,21 +372,21 @@ namespace TR4
                     Only split when Lara enters with required progression item/parts.
                 Loading into boss (38)
             */
-            uint currentLevel = BaseGameData.Level.Current;
-            uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+            Tr4Level currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            Tr4Level currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
 
             bool justFinishedLoadingALevel = currentGfLevelComplete == 0;
             if (justFinishedLoadingALevel)
                 return false;
 
-            bool currentLevelIsBeforeMastabas = currentLevel < (uint)Tr4Level.TheMastabas;
+            bool currentLevelIsBeforeMastabas = currentLevel < Tr4Level.TheMastabas;
             if (currentLevelIsBeforeMastabas)
             {
-                bool loadingFromInsideMenkauresToSphinx = currentLevel == (uint)Tr4Level.InsideMenkauresPyramid && currentGfLevelComplete == (uint)Tr4Level.SphinxComplex;
+                bool loadingFromInsideMenkauresToSphinx = currentLevel == Tr4Level.InsideMenkauresPyramid && currentGfLevelComplete == Tr4Level.SphinxComplex;
                 return !loadingFromInsideMenkauresToSphinx;
             }
             
-            bool loadingInsideTheGreatPyramid = currentGfLevelComplete == (uint)Tr4Level.InsideTheGreatPyramid;
+            bool loadingInsideTheGreatPyramid = currentGfLevelComplete == Tr4Level.InsideTheGreatPyramid;
             if (loadingInsideTheGreatPyramid)
             {
                 bool laraHasEasternShaftKey = GameData.PuzzleItems.Current.EasternShaftKey == 1;
@@ -394,7 +394,7 @@ namespace TR4
             }
 
             bool loadingNextLevel = currentGfLevelComplete > currentLevel;
-            bool loadingBoss = currentGfLevelComplete == (uint)Tr4Level.HorusBoss;
+            bool loadingBoss = currentGfLevelComplete == Tr4Level.HorusBoss;
             return loadingNextLevel && !loadingBoss;
         }
     }
