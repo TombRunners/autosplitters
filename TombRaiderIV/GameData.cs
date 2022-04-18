@@ -1,5 +1,5 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
+﻿using System;
+using LiveSplit.ComponentUtil;
 using TRUtil;
 
 namespace TR4
@@ -14,9 +14,9 @@ namespace TR4
     /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
     internal sealed class GameData : LaterClassicGameData
     { 
-        private static readonly IntPtr _firstItemInfoPointer = (IntPtr)0x7FE28C;
-        private static readonly uint _sizeOfItemInfo = 0x15F6;
-        
+        private const uint SizeOfItemInfo = 0x15F6;
+        private static readonly IntPtr FirstItemInfoPointer = (IntPtr)0x7FE28C;
+
         /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
         internal GameData()
         {
@@ -102,8 +102,8 @@ namespace TR4
 
         internal static ItemInfo GetItemInfoAtIndex(uint itemNumber)
         {
-            uint offset = _sizeOfItemInfo * itemNumber;
-            IntPtr _firstItemInfoAddress = Game.ReadPointer(_firstItemInfoPointer);
+            uint offset = SizeOfItemInfo * itemNumber;
+            IntPtr _firstItemInfoAddress = Game.ReadPointer(FirstItemInfoPointer);
             IntPtr finalAddress = new IntPtr(_firstItemInfoAddress.ToInt64() + offset);
             return Game.ReadValue<ItemInfo>(finalAddress);
         }
