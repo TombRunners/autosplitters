@@ -1,4 +1,13 @@
 <updates>
+  <update version="2.0.1.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed TR4 Glitchless Split differences versus old ASL.</change>
+    </changelog>
+  </update>
   <update version="2.0.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
