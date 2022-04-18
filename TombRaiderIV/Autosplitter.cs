@@ -345,7 +345,7 @@ namespace TR4
 
             bool loadingFromCityToTulun = currentLevel == (uint)Tr4Level.CityOfTheDead && currentGfLevelComplete == (uint)Tr4Level.ChambersOfTulun;
             bool loadingFromCitadelGateToCitadel = currentLevel == (uint)Tr4Level.CitadelGate && currentGfLevelComplete == (uint)Tr4Level.Citadel;
-            bool loadingFromCitadelToSphinxComplex = currentLevel == (uint)Tr4Level.SphinxComplex && currentGfLevelComplete == (uint)Tr4Level.Citadel;
+            bool loadingFromCitadelToSphinxComplex = currentLevel == (uint)Tr4Level.Citadel && currentGfLevelComplete == (uint)Tr4Level.SphinxComplex;
 
             return loadingFromCityToTulun || loadingFromCitadelGateToCitadel || loadingFromCitadelToSphinxComplex;
         }
