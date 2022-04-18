@@ -261,7 +261,7 @@ namespace TR4
             /* Default undesired splits
                 Coastal Ruins (15):
                     When entering: only split from Poseidon (20) with Pharos Knot and Pharos Pillar
-                    When leaving: only split into Catacombs if the platform has been stabilized by pillar below
+                    When leaving: only split into Catacombs (18) if the platform has been stabilized by pillar below
                 Hall of Demetrius (21)
                 Cleopatra's Palaces (17):
                     Only split when Lara enters with required progression item/parts.
@@ -316,24 +316,31 @@ namespace TR4
             */
             /* Default undesired splits
                 Trenches (23):
-                    Only split when first entering Street Bazaar (25), and when last leaving Street Bazaar (25) with required progression items
+                    When leaving: only split when entering Street Bazaar (25) without any Mine Detonator combo/parts
+                    When entering: only split when last leaving Street Bazaar (25) with Mine Detonator combo/parts
             */
             uint currentLevel = BaseGameData.Level.Current;
             uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
 
-            bool loadingFromTrenchesToStreetBazaar = currentLevel == (uint)Tr4Level.Trenches && currentGfLevelComplete == (uint)Tr4Level.StreetBazaar;
-            if (loadingFromTrenchesToStreetBazaar)
-            {
-                bool laraHasDetonatorBody = (GameData.PuzzleItemsCombo.Current & 0b0100_0000_0000_0000) == 0b0100_0000_0000_0000;
-                return !laraHasDetonatorBody;
-            }
-            
-            bool loadingFromStreetBazaarToTrenches = currentLevel == (uint)Tr4Level.StreetBazaar && currentGfLevelComplete == (uint)Tr4Level.Trenches;
-            if (loadingFromStreetBazaarToTrenches)
+            bool inTrenches = currentLevel == (uint)Tr4Level.Trenches;
+            if (inTrenches)
             {
                 bool laraHasCombinedDetonator = GameData.PuzzleItems.Current.MineDetonator == 1;
+                
+                bool loadingToStreetBazaar = currentGfLevelComplete == (uint)Tr4Level.StreetBazaar;
+                if (loadingToStreetBazaar)
+                {
+                    bool laraHasNeitherDetonatorPart = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b0000_0000_0000_0000;
+                    return !laraHasCombinedDetonator && laraHasNeitherDetonatorPart;
+                }
+                
+                bool justFinishedLoadingIntoLevel = LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+                if (!justFinishedLoadingIntoLevel) 
+                    return false;
+                
                 bool laraHasDetonatorParts = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b1100_0000_0000_0000;
-                return laraHasCombinedDetonator || laraHasDetonatorParts;
+                bool laraStartedNextToMinefield = GameData.GetItemInfoAtIndex(51).room_number == 26;
+                return (laraHasCombinedDetonator || laraHasDetonatorParts) && laraStartedNextToMinefield;
             }
 
             bool loadingFromCityToTulun = currentLevel == (uint)Tr4Level.CityOfTheDead && currentGfLevelComplete == (uint)Tr4Level.ChambersOfTulun;
