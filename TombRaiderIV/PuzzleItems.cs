@@ -6,7 +6,7 @@ namespace TR4
     ///     The game uses an array of 8-bit char values. Indices are re-used, with items re-assigned by the game's script.
     /// </summary>
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    internal struct PuzzleItems
+    internal readonly struct PuzzleItems
     {
         private byte Item01 { get; }
         private byte Item02 { get; }
