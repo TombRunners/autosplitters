@@ -119,7 +119,14 @@ namespace TR4
             // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
             bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
             if (ignoringSubsequentFramesOfThisLoadState)
-                return false;
+            {
+                uint currentLevel = BaseGameData.Level.Current;
+                // Below bool is never true for The Times Exclusive since its level values never match these TR4 levels.
+                bool specialExceptionForGlitchlessPostLoadSplits = Settings.FullGame &&
+                                                                   (currentLevel == (uint) Tr4Level.Catacombs ||
+                                                                    currentLevel == (uint) Tr4Level.Trenches);
+                return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
+            }
 
             // In the case of The Times Exclusive, there is only one playable level with a value of 2;
             // the main menu is 0, and the opening cutscene has a level value of 1.
@@ -127,7 +134,7 @@ namespace TR4
             if (playingTheTimesExclusive && BaseGameData.Level.Current != (uint)TteLevel.TheTimesExclusive)
                 return false;
 
-            // Handle ILs for both rulesets.            
+            // Handle all of TTE as well as TR4 ILs for both rulesets.            
             if (!Settings.FullGame || playingTheTimesExclusive)
             {
                 // This assumes all level transitions are desirable splits.
@@ -139,7 +146,7 @@ namespace TR4
             if (Settings.Option)
                 return GlitchlessShouldSplit();
 
-            // Handle FG for glitched.
+            // Handle FG for glitched (TR4 only).
             bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Tr4Level)currentGfLevelComplete);
             bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits for both TR4 and TTE.
             return enteringNextSplitLevel || finishedGame;
