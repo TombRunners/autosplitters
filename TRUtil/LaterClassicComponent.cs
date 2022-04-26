@@ -42,6 +42,7 @@ namespace TRUtil
             _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
             _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
             _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
+            _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoResetCheckbox), _splitter.Settings.DisableAutoResetCheckbox));
             return settingsNode;
         }
 
@@ -50,6 +51,7 @@ namespace TRUtil
             _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
             _splitter.Settings.Deathrun = settings["Deathrun"]?.InnerText == "True";
             _splitter.Settings.Option = settings["Option"]?.InnerText == "True";
+            _splitter.Settings.DisableAutoReset = settings["DisableAutoReset"]?.InnerText == "True";
 
             if (_splitter.Settings.FullGame)
             {
@@ -66,6 +68,9 @@ namespace TRUtil
 
             if (_splitter.Settings.Option)
                 _splitter.Settings.OptionCheckbox.Checked = true;
+
+            if (_splitter.Settings.DisableAutoReset)
+                _splitter.Settings.DisableAutoResetCheckbox.Checked = true;
         }
 
         public override void Dispose()
