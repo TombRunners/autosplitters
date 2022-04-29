@@ -11,11 +11,13 @@ namespace TRUtil
         public RadioButton FullGameModeButton;
         public RadioButton DeathrunModeButton;
         public CheckBox OptionCheckbox;
+        public CheckBox DisableAutoResetCheckbox;
         public Label GameVersionLabel;
         public Label AutosplitterVersionLabel;
         public bool FullGame = true;
         public bool Deathrun;
         public bool Option;
+        public bool DisableAutoReset;
 
         public LaterClassicComponentSettings() => InitializeComponent();
 
@@ -26,6 +28,7 @@ namespace TRUtil
             FullGameModeButton = new RadioButton();
             DeathrunModeButton = new RadioButton();
             OptionCheckbox = new CheckBox();
+            DisableAutoResetCheckbox = new CheckBox();
             GameVersionLabel = new Label();
             AutosplitterVersionLabel = new Label();
             _modeSelect.SuspendLayout();
@@ -94,16 +97,28 @@ namespace TRUtil
             Controls.Add(AutosplitterVersionLabel);
             Controls.Add(GameVersionLabel);
             Controls.Add(OptionCheckbox);
+            Controls.Add(DisableAutoResetCheckbox);
             Controls.Add(_modeSelect);
             Name = "LaterClassicComponentSettings";
             Size = new System.Drawing.Size(313, 145);
             _modeSelect.ResumeLayout(false);
             _modeSelect.PerformLayout();
-
+            
+            // DisableAutoResetCheckbox
+            DisableAutoResetCheckbox.AutoSize = true;
+            DisableAutoResetCheckbox.Checked = false;
+            DisableAutoResetCheckbox.Location = new System.Drawing.Point(10, 64);
+            DisableAutoResetCheckbox.Size = new System.Drawing.Size(72, 17);
+            DisableAutoResetCheckbox.Name = "DisableAutoResetCheckbox";
+            DisableAutoResetCheckbox.Text = "Disable Auto-Reset";
+            DisableAutoResetCheckbox.TabIndex = 0;
+            DisableAutoResetCheckbox.UseVisualStyleBackColor = true;
+            DisableAutoResetCheckbox.CheckedChanged += DisableAutoResetCheckboxCheckedChanged;
+            
             // OptionCheckbox
             OptionCheckbox.AutoSize = true;
             OptionCheckbox.Checked = false;
-            OptionCheckbox.Location = new System.Drawing.Point(10, 64);
+            OptionCheckbox.Location = new System.Drawing.Point(130, 64);
             OptionCheckbox.Size = new System.Drawing.Size(72, 17);
             OptionCheckbox.Name = "OptionCheckbox";
             OptionCheckbox.Text = "Option";
@@ -141,6 +156,12 @@ namespace TRUtil
         {
             var checkbox = (CheckBox)sender;
             Option = checkbox.Checked;
+        }
+        
+        private void DisableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            DisableAutoReset = checkbox.Checked;
         }
     }
 }

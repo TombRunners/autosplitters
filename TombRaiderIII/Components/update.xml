@@ -1,4 +1,13 @@
 <updates>
+  <update version="2.0.1.0">
+    <files>
+      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>TRUtil changes for later classics.</change>
+    </changelog>
+  </update>
   <update version="2.0.0.0">
     <files>
       <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>

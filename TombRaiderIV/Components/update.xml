@@ -1,4 +1,13 @@
 <updates>
+  <update version="2.1.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added Settings option to disable automatic reset.</change>
+    </changelog>
+  </update>
   <update version="2.0.1.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>

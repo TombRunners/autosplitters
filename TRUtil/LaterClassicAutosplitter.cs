@@ -24,6 +24,8 @@ namespace TRUtil
 
         public override bool ShouldReset(LiveSplitState state)
         {
+            if (Settings.DisableAutoReset)
+                return false;
             bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
             // Checking the old level number ensures that someone re-opening the game (perhaps after a crash or Alt+F4) does not Reset.
             // This works because when loading non-test/demo versions of the games, the level variable initializes as 0 before the main menu load is called.
