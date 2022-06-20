@@ -10,8 +10,8 @@
   </update>
   <update version="2.0.1.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fixed TR4 Glitchless Split differences versus old ASL.</change>
@@ -19,8 +19,8 @@
   </update>
   <update version="2.0.0.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added support for The Times Exclusive standalone level.</change>
@@ -28,8 +28,8 @@
   </update>
   <update version="1.0.1.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Improved Settings code for later classics.</change>
@@ -37,8 +37,8 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
