@@ -1,8 +1,8 @@
 <updates>
   <update version="2.1.0.0">
     <files>
-      <file path="TombRaiderIV/Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIV/Components/TR4.dll" localpath="Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localpath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added Settings option to disable automatic reset.</change>
