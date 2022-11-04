@@ -1,8 +1,8 @@
 <updates>
   <update version="2.0.1.0">
     <files>
-      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>TRUtil changes for later classics.</change>
@@ -10,8 +10,8 @@
   </update>
   <update version="2.0.0.0">
     <files>
-      <file path="TombRaiderIII/Components/TR3.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="changed"/>
+      <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Now supports The Lost Artifact (JP Gold Bundle).</change>
@@ -21,8 +21,8 @@
     <files>
       <file path="Components/TR3.dll" status="removed"/>
       <file path="Components/TRUtil.dll" status="removed"/>
-      <file path="TombRaiderIII/Components/TR3.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" status="added"/>
+      <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Simplified TRUtil DLL distribution.</change>
