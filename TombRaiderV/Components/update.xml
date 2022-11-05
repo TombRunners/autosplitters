@@ -1,4 +1,13 @@
 <updates>
+  <update version="1.1.1.0">
+    <files>
+      <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed Settings option to disable automatic reset.</change>
+    </changelog>
+  </update>
   <update version="1.1.0.0">
     <files>
       <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="changed"/>
