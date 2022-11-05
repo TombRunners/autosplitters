@@ -2,7 +2,7 @@
   <update version="1.1.1.0">
     <files>
       <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Fixed Settings option to disable automatic reset.</change>
@@ -11,7 +11,7 @@
   <update version="1.1.0.0">
     <files>
       <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added Settings option to disable automatic reset.</change>
@@ -20,7 +20,7 @@
   <update version="1.0.0.0">
     <files>
       <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil" status="added"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="added"/>
     </files>
     <changelog>
       <change>Automatic start, split, reset, and IGT for FG, IL, and deathruns.</change>
