@@ -1,28 +1,24 @@
 using TRUtil;
 
-namespace TR1
+namespace TR1;
+
+public sealed class ComponentSettings : ClassicComponentSettings
 {
-    public sealed class ComponentSettings : ClassicComponentSettings
+    public override void SetGameVersion(uint version)
     {
-        public override void SetGameVersion(uint version)
+        const string dosboxText = "DOSBox [TR 1996]";
+        const string atiTr1Text = "TombATI [TR 1996]";
+        const string atiTrUbText = "TombATI [TR:UB]";
+        const string unknownText = "Unknown/Undetected";
+        
+        string versionText = (GameVersion) version switch
         {
-            string versionText;
-            switch ((GameVersion)version)
-            {
-                case GameVersion.DOSBox:
-                    versionText = "DOSBox [TR 1996]";
-                    break;
-                case GameVersion.Ati:
-                    versionText = "TombATI [TR 1996]";
-                    break;
-                case GameVersion.AtiUnfinishedBusiness:
-                    versionText = "TombATI [TR:UB]";
-                    break;
-                default:
-                    versionText = "Unknown/Undetected";
-                    break;
-            }
-            GameVersionLabel.Text = "Game Version: " + versionText;
-        }
+            GameVersion.DOSBox => dosboxText,
+            GameVersion.Ati => atiTr1Text,
+            GameVersion.AtiUnfinishedBusiness => atiTrUbText,
+            _ => unknownText
+        };
+
+        GameVersionLabel.Text = "Game Version: " + versionText;
     }
 }
