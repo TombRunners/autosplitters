@@ -140,14 +140,23 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             return loadingAnotherLevel;
         }
 
-        // Handle FG for glitchless (TR4 only).
-        if (Settings.Option)
-            return GlitchlessShouldSplit();
+        // Handle FG for each ruleset (TR4 only).
+        bool glitchless = Settings.Option;
+        return glitchless ? GlitchlessShouldSplit() : GlitchedShouldSplit();
+    }
 
-        // Handle FG for glitched (TR4 only).
-        bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Tr4Level)currentGfLevelComplete);
+    private static bool GlitchedShouldSplit()
+    {
+        uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+        bool leavingUnusedLevelValue = oldGfLevelComplete is 10 or 29;
+        if (leavingUnusedLevelValue)
+            return false;
+
+        uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+        bool enteringUnusedLevelValue = currentGfLevelComplete is 10 or 29;
+        bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Tr4Level) currentGfLevelComplete);
         bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits for both TR4 and TTE.
-        return enteringNextSplitLevel || finishedGame;
+        return enteringUnusedLevelValue || enteringNextSplitLevel || finishedGame;
     }
 
     private static bool GlitchlessShouldSplit()
