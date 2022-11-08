@@ -1,4 +1,12 @@
 <updates>
+  <update version="2.2.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed a Split issue for Glitched runs when warping.</change>
+    </changelog>
+  </update>
   <update version="2.1.1.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
