@@ -1,4 +1,12 @@
 <updates>
+  <update version="2.3.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed a Split issue for Glitchless runs when entering Street Bazaar.</change>
+    </changelog>
+  </update>
   <update version="2.2.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
