@@ -122,7 +122,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             var currentLevel = (Tr4Level)BaseGameData.Level.Current;
             // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
             bool specialExceptionForGlitchlessPostLoadSplits =
-                Settings.FullGame && currentLevel is Tr4Level.Catacombs or Tr4Level.Trenches;
+                Settings.FullGame && currentLevel is Tr4Level.Catacombs;
             return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
         }
 
