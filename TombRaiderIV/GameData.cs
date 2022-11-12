@@ -79,6 +79,7 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F7864)) { Name = "Secrets" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
                 Watchers.Add(new MemoryWatcher<PuzzleItems>(new DeepPointer(0x040E101)) { Name = "PuzzleItemsArray" });
                 Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo"});
@@ -91,6 +92,7 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F78A4)) { Name = "Secrets" });
                 break;
 
             case Tr4Version.None:

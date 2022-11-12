@@ -21,5 +21,8 @@ public abstract class LaterClassicGameData : BaseGameData
     /// <summary>Indicates if a loading screen is active.</summary>
     public MemoryWatcher<bool> Loading => (MemoryWatcher<bool>)Watchers?["Loading"];
 
+    /// <summary>Increments by 1 whenever a secret is triggered.</summary>
+    public static MemoryWatcher<byte> Secrets => (MemoryWatcher<byte>) Watchers?["Secrets"];
+
     #endregion
 }
