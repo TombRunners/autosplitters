@@ -1,4 +1,13 @@
 <updates>
+  <update version="3.1.3.0">
+    <files>
+      <file path="TombRaider1996/Components/TR1996.dll" localPath="Components/TR1996.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>TRUtil updated to fix GetGameTime bug in TR4 and TR5.</change>
+    </changelog>
+  </update>
   <update version="3.1.2.0">
     <files>
       <file path="TombRaider1996/Components/TR1996.dll" localPath="Components/TR1996.dll" status="changed"/>
