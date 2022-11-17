@@ -45,7 +45,7 @@ internal sealed class GameData : LaterClassicGameData
             case GameVersion.SteamOrGog:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<ulong>(new DeepPointer(0xA5C27C)) { Name = "GameTimer"});
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C27C)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5BF60)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5BF08, 0x22)) { Name = "Health"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082C1)) { Name = "GfInitializeGame" });

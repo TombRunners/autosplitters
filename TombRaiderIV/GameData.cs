@@ -80,7 +80,7 @@ internal sealed class GameData : LaterClassicGameData
             case GameVersion.SteamOrGog:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<ulong>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
@@ -91,7 +91,7 @@ internal sealed class GameData : LaterClassicGameData
             case GameVersion.TheTimesExclusive:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<ulong>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
                 break;
