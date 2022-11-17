@@ -1,4 +1,12 @@
 <updates>
+  <update version="2.4.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed GetGameTime bug affected performance.</change>
+    </changelog>
+  </update>
   <update version="2.3.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
