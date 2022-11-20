@@ -21,6 +21,8 @@ internal sealed class GameData : LaterClassicGameData
         VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint)GameVersion.JapaneseNoCd);
 
         ProcessSearchNames.Add("PCTomb5");
+        // ReSharper disable once StringLiteralTypo
+        ProcessSearchNames.Add("PCTomb5-nocd");
     }
 
     #region MemoryWatcherList Items
