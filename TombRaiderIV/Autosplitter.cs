@@ -275,15 +275,21 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         */
         var currentLevel = (Tr4Level)BaseGameData.Level.Current;
         var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
-            
-        bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
-        if (finishedLoadingCatacombs)
+        var oldGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Old;
+        
+        // Handle special exception case(s) that ignore that the game is in the same load state.
+        bool sameLoadState = currentGfLevelComplete == oldGfLevelComplete;
+        if (sameLoadState)
         {
-            // The level must finish loading before the ITEM_INFO array can be checked.
+            bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+            if (!finishedLoadingCatacombs) 
+                return false;
+            
+            // The level must finish loading before its ITEM_INFO array can be checked.
             var platform = GameData.GetItemInfoAtIndex(79);
             return platform.flags == 0x20;
         }
-            
+
         bool loadingFromDemetriusToCoastal = currentLevel == Tr4Level.HallOfDemetrius && currentGfLevelComplete == Tr4Level.CoastalRuins;
         bool loadingFromLostLibraryToPoseidon = currentLevel == Tr4Level.TheLostLibrary && currentGfLevelComplete == Tr4Level.TempleOfPoseidon;
         if (loadingFromDemetriusToCoastal || loadingFromLostLibraryToPoseidon)
