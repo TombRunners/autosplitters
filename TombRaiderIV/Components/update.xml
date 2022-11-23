@@ -1,4 +1,12 @@
-<updates>
+<updates>\
+  <update version="2.4.1.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed Glitchless split bug that sometimes occurred when loading in or out of the level Catacombs.</change>
+    </changelog>
+  </update>
   <update version="2.4.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
