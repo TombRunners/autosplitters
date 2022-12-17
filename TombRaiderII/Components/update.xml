@@ -1,5 +1,5 @@
 <updates>
-  <update version="1.4.3.0">
+  <update version="1.4.4.0">
     <files>
       <file path="TombRaiderII/Components/TR2.dll" localPath="Components/TR2.dll" status="changed"/>
       <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
