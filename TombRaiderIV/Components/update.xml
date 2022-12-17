@@ -1,4 +1,13 @@
-<updates>\
+<updates>
+  <update version="2.4.2.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed issues with Component Settings serialization.</change>
+    </changelog>
+  </update>
   <update version="2.4.1.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
