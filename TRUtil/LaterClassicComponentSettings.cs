@@ -18,15 +18,15 @@ public class LaterClassicComponentSettings : UserControl
     public bool FullGame = true;
     public bool Deathrun;
     public bool Option;
-    public bool DisableAutoReset;
+    public bool DisableAutoReset = true;
 
     public LaterClassicComponentSettings() => InitializeComponent();
 
     private void InitializeComponent()
     {
         ModeSelect = new GroupBox();
-        ILModeButton = new RadioButton();
         FullGameModeButton = new RadioButton();
+        ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
         OptionCheckbox = new CheckBox();
         DisableAutoResetCheckbox = new CheckBox();
@@ -36,8 +36,8 @@ public class LaterClassicComponentSettings : UserControl
         SuspendLayout();
 
         // _modeSelect
-        ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(FullGameModeButton);
+        ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(DeathrunModeButton);
         ModeSelect.Location = new Point(4, 4);
         ModeSelect.Name = "ModeSelect";
@@ -45,17 +45,7 @@ public class LaterClassicComponentSettings : UserControl
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
-
-        // ILModeButton
-        ILModeButton.AutoSize = true;
-        ILModeButton.Location = new Point(84, 20);
-        ILModeButton.Name = "ILModeButton";
-        ILModeButton.Size = new Size(139, 17);
-        ILModeButton.TabIndex = 1;
-        ILModeButton.Text = "IL or Section Run (RTA)";
-        ILModeButton.UseVisualStyleBackColor = true;
-        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
-
+        
         // FullGameModeButton
         FullGameModeButton.AutoSize = true;
         FullGameModeButton.Checked = true;
@@ -67,6 +57,16 @@ public class LaterClassicComponentSettings : UserControl
         FullGameModeButton.Text = "Full Game";
         FullGameModeButton.UseVisualStyleBackColor = true;
         FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
+
+        // ILModeButton
+        ILModeButton.AutoSize = true;
+        ILModeButton.Location = new Point(84, 20);
+        ILModeButton.Name = "ILModeButton";
+        ILModeButton.Size = new Size(139, 17);
+        ILModeButton.TabIndex = 1;
+        ILModeButton.Text = "IL or Section Run (RTA)";
+        ILModeButton.UseVisualStyleBackColor = true;
+        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
 
         // DeathrunModeButton
         DeathrunModeButton.AutoSize = true;
@@ -101,13 +101,13 @@ public class LaterClassicComponentSettings : UserControl
         Controls.Add(DisableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "LaterClassicComponentSettings";
-        Size = new Size(313, 145);
+        Size = new Size(350, 145);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
             
         // DisableAutoResetCheckbox
         DisableAutoResetCheckbox.AutoSize = true;
-        DisableAutoResetCheckbox.Checked = false;
+        DisableAutoResetCheckbox.Checked = true;
         DisableAutoResetCheckbox.Location = new Point(10, 64);
         DisableAutoResetCheckbox.Size = new Size(72, 17);
         DisableAutoResetCheckbox.Name = "DisableAutoResetCheckbox";

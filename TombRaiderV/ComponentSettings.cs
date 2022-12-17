@@ -7,7 +7,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     public ComponentSettings()
     {
         SuspendLayout();
-        OptionCheckbox.Checked = true;
+        OptionCheckbox.Checked = Option = true;
         OptionCheckbox.Name = "SplitCutsceneCheckbox";
         OptionCheckbox.Text = "Split Security Breach Cutscene";
         ResumeLayout(false);

@@ -68,15 +68,17 @@ public abstract class ClassicComponent : AutoSplitComponent
     /// <example><inheritdoc cref="GetSettings"/></example>
     public override void SetSettings(XmlNode settings)
     {
-        _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
-        _splitter.Settings.Deathrun = settings["Deathrun"]?.InnerText == "True";
+        // Read serialized values, or keep defaults if they are not yet serialized.
+        _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
+        _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
 
+        // Assign values to Settings.
         if (_splitter.Settings.FullGame)
-            _splitter.Settings.FullGameModeButton.Checked = true;
+            _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
         else if (_splitter.Settings.Deathrun)
-            _splitter.Settings.DeathrunModeButton.Checked = true;
+            _splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
         else
-            _splitter.Settings.ILModeButton.Checked = true;
+            _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
     }
     
     public override void Dispose()

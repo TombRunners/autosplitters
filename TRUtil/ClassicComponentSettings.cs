@@ -30,8 +30,8 @@ public class ClassicComponentSettings : UserControl
         SuspendLayout();
 
         // _modeSelect
-        ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(FullGameModeButton);
+        ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(DeathrunModeButton);
         ModeSelect.Location = new Point(4, 4);
         ModeSelect.Name = "ModeSelect";
@@ -39,17 +39,7 @@ public class ClassicComponentSettings : UserControl
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
-
-        // ILModeButton
-        ILModeButton.AutoSize = true;
-        ILModeButton.Location = new Point(84, 20);
-        ILModeButton.Name = "ILModeButton";
-        ILModeButton.Size = new Size(139, 17);
-        ILModeButton.TabIndex = 1;
-        ILModeButton.Text = "IL or Section Run (RTA)";
-        ILModeButton.UseVisualStyleBackColor = true;
-        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
-
+        
         // FullGameModeButton
         FullGameModeButton.AutoSize = true;
         FullGameModeButton.Checked = true;
@@ -61,6 +51,16 @@ public class ClassicComponentSettings : UserControl
         FullGameModeButton.Text = "Full Game";
         FullGameModeButton.UseVisualStyleBackColor = true;
         FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
+
+        // ILModeButton
+        ILModeButton.AutoSize = true;
+        ILModeButton.Location = new Point(84, 20);
+        ILModeButton.Name = "ILModeButton";
+        ILModeButton.Size = new Size(139, 17);
+        ILModeButton.TabIndex = 1;
+        ILModeButton.Text = "IL or Section Run (RTA)";
+        ILModeButton.UseVisualStyleBackColor = true;
+        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
 
         // DeathrunModeButton
         DeathrunModeButton.AutoSize = true;
@@ -93,7 +93,7 @@ public class ClassicComponentSettings : UserControl
         Controls.Add(GameVersionLabel);
         Controls.Add(ModeSelect);
         Name = "ClassicComponentSettings";
-        Size = new Size(313, 110);
+        Size = new Size(350, 110);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
         ResumeLayout(false);
