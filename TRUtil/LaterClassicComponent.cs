@@ -46,29 +46,28 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoResetCheckbox), _splitter.Settings.DisableAutoResetCheckbox));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoReset), _splitter.Settings.DisableAutoReset));
         return settingsNode;
     }
 
     public override void SetSettings(XmlNode settings)
     {
-        _splitter.Settings.FullGame = settings["FullGame"]?.InnerText == "True";
-        _splitter.Settings.Deathrun = settings["Deathrun"]?.InnerText == "True";
-        _splitter.Settings.Option = settings["Option"]?.InnerText == "True";
-        _splitter.Settings.DisableAutoReset = settings["DisableAutoReset"]?.InnerText == "True";
+        // Read serialized values, or keep defaults if they are not yet serialized.
+        _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
+        _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
+        _splitter.Settings.Option = SettingsHelper.ParseBool(settings["Option"], _splitter.Settings.Option);
+        _splitter.Settings.DisableAutoReset = SettingsHelper.ParseBool(settings["DisableAutoReset"], _splitter.Settings.DisableAutoReset);
 
+        // Assign values to Settings.
         if (_splitter.Settings.FullGame)
-            _splitter.Settings.FullGameModeButton.Checked = true;
+            _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
         else if (_splitter.Settings.Deathrun)
-            _splitter.Settings.DeathrunModeButton.Checked = true;
+            _splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
         else
-            _splitter.Settings.ILModeButton.Checked = true;
+            _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
 
-        if (_splitter.Settings.Option)
-            _splitter.Settings.OptionCheckbox.Checked = true;
-
-        if (_splitter.Settings.DisableAutoReset)
-            _splitter.Settings.DisableAutoResetCheckbox.Checked = true;
+        _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                     // CheckBox
+        _splitter.Settings.DisableAutoResetCheckbox.Checked = _splitter.Settings.DisableAutoReset; // CheckBox
     }
 
     public override void Dispose()
