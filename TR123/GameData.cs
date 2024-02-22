@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using ExtensionMethods;
 using LiveSplit.ComponentUtil;
+using TR123;
 
 namespace Tr123;
 
