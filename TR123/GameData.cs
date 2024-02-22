@@ -33,6 +33,10 @@ public class GameData
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     public const int IGTTicksPerSecond = 30;
 
+    /// <summary>Quick accessor for ActiveGame.Current.</summary>
+    public static Game CurrentActiveGame => (Game)ActiveGame.Current;
+
+    /// <summary>Games included within the remastered EXE.</summary>
     public static readonly List<Game> Games = [Game.Tr1, Game.Tr2, Game.Tr3];
 
     /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
@@ -268,7 +272,7 @@ public class GameData
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    public virtual double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    public double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeGame = (Game)ActiveGame.Current;
         int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeGame].FirstLevelTimeAddress;

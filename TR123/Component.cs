@@ -22,7 +22,7 @@ public class Component : AutoSplitComponent
     private readonly LiveSplitState _state;
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
-    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.Level[(Game)GameData.ActiveGame.Current].Current);
+    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.Level[GameData.CurrentActiveGame].Current);
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
 
     /// <inheritdoc/>

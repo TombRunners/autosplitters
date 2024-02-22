@@ -125,6 +125,14 @@ internal enum Tr3Level : uint
 
 public class Autosplitter : IAutoSplitter, IDisposable
 {
+    /// <summary>Used to size CompletedLevels.</summary>
+    protected static Dictionary<Game, int> LevelCount = new()
+    {
+        { Game.Tr1, 19 },
+        { Game.Tr2, 23 },
+        { Game.Tr3, 26 },
+    };
+
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
     protected readonly Dictionary<Game, List<uint>> CompletedLevels = new(3)
     {
@@ -135,15 +143,9 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     public GameData Data = new();
 
-    /// <summary>Used to size CompletedLevels.</summary>
-    protected static Dictionary<Game, int> LevelCount = new()
-    {
-        { Game.Tr1, 19 },
-        { Game.Tr2, 23 },
-        { Game.Tr3, 26 },
-    };
-
     protected internal ComponentSettings Settings = new();
+
+    private static Game CurrentActiveGame => GameData.CurrentActiveGame;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
@@ -166,7 +168,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns>IGT as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
     public TimeSpan? GetGameTime(LiveSplitState state)
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
 
         // Check that IGT is ticking.
         var levelIgt = GameData.LevelIgt[activeGame];
@@ -198,7 +200,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
     public bool ShouldSplit(LiveSplitState state)
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
 
         // Determine if the player is in a level we have not already split.
         var level = GameData.Level[activeGame];
@@ -238,7 +240,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should start, <see langword="false" /> otherwise</returns>
     public bool ShouldStart(LiveSplitState state)
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
         var level = GameData.Level[activeGame];
         var levelIgt = GameData.LevelIgt[activeGame];
 
@@ -279,7 +281,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart()
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
         CompletedLevels[activeGame].Clear();
     }
 
@@ -287,14 +289,14 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <param name="completedLevel">What to add to <see cref="CompletedLevels" /></param>
     public void OnSplit(uint completedLevel)
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
         CompletedLevels[activeGame].Add(completedLevel);
     }
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public void OnUndoSplit()
     {
-        var activeGame = (Game)GameData.ActiveGame.Current;
+        var activeGame = CurrentActiveGame;
         CompletedLevels[activeGame].RemoveAt(CompletedLevels[activeGame].Count - 1);
     }
 
