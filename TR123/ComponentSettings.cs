@@ -1,7 +1,7 @@
-using System.Reflection;
-using System.Windows.Forms;
 using System;
 using System.Drawing;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace TR123;
 
@@ -42,7 +42,7 @@ public sealed class ComponentSettings : UserControl
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
-        
+
         // FullGameModeButton
         FullGameModeButton.AutoSize = true;
         FullGameModeButton.Checked = true;
@@ -143,7 +143,7 @@ public sealed class ComponentSettings : UserControl
         FullGame = false;
         Deathrun = true;
     }
-        
+
     private void DisableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
         var checkbox = (CheckBox)sender;

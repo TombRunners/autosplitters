@@ -149,20 +149,14 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public GameData Data = new();
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
-    {
-        Data.OnGameFound += Settings.SetGameVersion;
-    }
+    public Autosplitter() => Data.OnGameFound += Settings.SetGameVersion;
 
     /// <summary>
     ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
     /// </summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> when IGT should be paused during the conditions, <see langword="false" /> otherwise</returns>
-    public bool IsGameTimePaused(LiveSplitState state)
-    {
-        return true;
-    }
+    public bool IsGameTimePaused(LiveSplitState state) => true;
 
     /// <summary>Determines the IGT.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>

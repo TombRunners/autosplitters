@@ -156,7 +156,7 @@ public class GameData
     public static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
 
     #endregion
-    
+
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     public static Process GameProcess;
 
@@ -249,7 +249,7 @@ public class GameData
     {
         // Find game Process, if any, and set Version member accordingly.
         var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName);
-        var gameProcess = processes.First(p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+        var gameProcess = processes.First(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
         if (gameProcess is null)
         {
             // Leave game unset and ensure Version is at its default value.
@@ -265,10 +265,7 @@ public class GameData
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
-    public static double LevelTimeAsDouble(ulong ticks)
-    {
-        return (double)ticks / IGTTicksPerSecond;
-    }
+    public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
@@ -284,7 +281,7 @@ public class GameData
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)
             .Select(levelOffset => (IntPtr)(firstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
         return LevelTimeAsDouble(finishedLevelsTicks);
     }

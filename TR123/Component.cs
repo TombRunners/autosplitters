@@ -1,30 +1,26 @@
+using System;
+using System.Windows.Forms;
+using System.Xml;
 using LiveSplit.Model;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using LiveSplit.UI.Components.AutoSplit;
-using System.Xml;
-using System;
-using System.Windows.Forms;
 
 namespace TR123;
 
 /// <summary>
-///     Implementation of <see cref="AutoSplitComponent"/>.
+///     Implementation of <see cref="AutoSplitComponent" />.
 /// </summary>
 /// <remarks>
-///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
-///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
+///     <see cref="AutoSplitComponent" /> is derived from <see cref="LogicComponent" />,
+///     which derives from <see cref="IComponent" /> and <see cref="IDisposable" />.
 /// </remarks>
 public class Component : AutoSplitComponent
 {
     private readonly Autosplitter _splitter;
     private readonly LiveSplitState _state;
 
-    private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
-    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.Level[GameData.CurrentActiveGame].Current);
-    private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
-
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public Component(Autosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
         _splitter = autosplitter;
@@ -34,38 +30,50 @@ public class Component : AutoSplitComponent
         _state.OnUndoSplit += StateOnUndoSplit;
     }
 
-    /// <inheritdoc/>
-    /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+    public override string ComponentName => "Tomb Raider I-III Remastered";
+
+    private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
+
+    private void StateOnSplit(object _0, EventArgs _1) =>
+        _splitter?.OnSplit(GameData.Level[GameData.CurrentActiveGame].Current);
+
+    private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
+
+    /// <inheritdoc />
+    /// <param name="mode"><see cref="LayoutMode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     Returned object must contain at least an empty <see cref="TableLayoutPanel"/>, otherwise the Layout Settings menu doesn't show up!
+    ///     The returned object must contain at least an empty <see cref="TableLayoutPanel" />,
+    ///     otherwise the Layout Settings menu doesn't show up!
     /// </remarks>
     public override Control GetSettingsControl(LayoutMode mode) => _splitter.Settings;
 
-    /// <inheritdoc/>
-    /// <param name="document"><see cref="XmlDocument"/> passed by LiveSplit</param>
+    /// <inheritdoc />
+    /// <param name="document"><see cref="XmlDocument" /> passed by LiveSplit</param>
     /// <remarks>
     ///     Even if you don't have any settings, you can't return with null.
-    ///     If you do, LiveSplit spams the Event Viewer with <c>Object reference not set to an instance of an object.</c> error messages.
+    ///     If you do, LiveSplit spams the Event Viewer with error messages:
+    ///     <c>Object reference not set to an instance of an object.</c>
+    ///     <see href="https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70" />
+    ///     <see href="https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25" />
     /// </remarks>
-    /// <example>
-    ///     https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70
-    ///     https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25
-    /// </example>
     public override XmlNode GetSettings(XmlDocument document)
     {
         var settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
+            _splitter.Settings.FullGame));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
+            _splitter.Settings.Deathrun));
         return settingsNode;
     }
 
-    /// <inheritdoc/>
-    /// <param name="settings"><see cref="XmlNode"/> passed by LiveSplit</param>
+    /// <inheritdoc />
+    /// <param name="settings"><see cref="XmlNode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     This might happen more than once (e.g. when the settings dialog is cancelled, to restore previous settings).
+    ///     This might happen more than once (e.g., when the settings dialog is cancelled, to restore previous settings).
     ///     The XML file is the <c>[game - category].lss</c> file in your LiveSplit folder.
+    ///     <see href="https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70" />
+    ///     <see href="https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25" />
     /// </remarks>
-    /// <example><inheritdoc cref="GetSettings"/></example>
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
@@ -78,9 +86,9 @@ public class Component : AutoSplitComponent
         else if (_splitter.Settings.Deathrun)
             _splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
         else
-            _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
+            _splitter.Settings.ILModeButton.Checked = true; // Grouped RadioButton
     }
-    
+
     public override void Dispose()
     {
         _state.OnSplit -= StateOnSplit;
@@ -89,20 +97,19 @@ public class Component : AutoSplitComponent
         _splitter?.Dispose();
     }
 
-    public override string ComponentName => "Tomb Raider I-III Remastered";
-
     /// <summary>
-    ///     Adds <see cref="GameData"/> and <see cref="Autosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
+    ///     Adds <see cref="GameData" /> and <see cref="Autosplitter" /> management to <see cref="AutoSplitComponent.Update" />.
     /// </summary>
-    /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
-    /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-    /// <param name="width">width passed by LiveSplit</param>
-    /// <param name="height">height passed by LiveSplit</param>
-    /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+    /// <param name="invalidator"><see cref="IInvalidator" /> passed by LiveSplit</param>
+    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
+    /// <param name="width">Width passed by LiveSplit</param>
+    /// <param name="height">Height passed by LiveSplit</param>
+    /// <param name="mode"><see cref="LayoutMode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     This override allows <see cref="Autosplitter"/> to use <see cref="GameData"/> in its logic.
+    ///     This override allows <see cref="Autosplitter" /> to use <see cref="GameData" /> in its logic.
     /// </remarks>
-    public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
+    public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height,
+        LayoutMode mode)
     {
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
