@@ -208,6 +208,12 @@
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Enums\Game.cs" />
+    <Compile Include="Enums\GameVersion.cs" />
+    <Compile Include="Enums\Tr1Level.cs" />
+    <Compile Include="Enums\Tr2Level.cs" />
+    <Compile Include="Enums\Tr3Level.cs" />
+    <Compile Include="GameAddresses.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -219,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Enums\.editorconfig" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

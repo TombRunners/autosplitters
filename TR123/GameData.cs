@@ -7,27 +7,6 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public enum GameVersion
-{
-    InitialPublicRelease = 1,
-}
-
-public enum Game
-{
-    Tr1 = 0,
-    Tr2 = 1,
-    Tr3 = 2,
-}
-
-public struct GameAddresses
-{
-    public int FirstLevelTimeAddress { get; set; }
-    public int Health { get; set; }
-    public int Level { get; set; }
-    public int LevelComplete { get; set; }
-    public int LevelIgt { get; set; }
-}
-
 public class GameData
 {
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
@@ -68,7 +47,7 @@ public class GameData
                     Game.Tr1,
                     new GameAddresses
                     {
-                        FirstLevelTimeAddress = 0x371E610,
+                        FirstLevelTime = 0x371E610,
                         Health = 0xEFA18,
                         Level = 0x371EBE8,
                         LevelComplete = 0xEF340,
@@ -79,7 +58,7 @@ public class GameData
                     Game.Tr2,
                     new GameAddresses
                     {
-                        FirstLevelTimeAddress = 0x3753850,
+                        FirstLevelTime = 0x3753850,
                         Health = 0x122780,
                         Level = 0x1247C8,
                         LevelComplete = 0x124CE4,
@@ -90,7 +69,7 @@ public class GameData
                     Game.Tr3,
                     new GameAddresses
                     {
-                        FirstLevelTimeAddress = 0x37B7164,
+                        FirstLevelTime = 0x37B7164,
                         Health = 0x17EC28,
                         Level = 0x180ECC,
                         LevelComplete = 0x1813AC,
@@ -272,7 +251,7 @@ public class GameData
     public double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeGame = (Game)ActiveGame.Current;
-        int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeGame].FirstLevelTimeAddress;
+        int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeGame].FirstLevelTime;
 
         const int tr3SaveStructSize = 0x40;
         const int tr1AndTr2SaveStructSize = 0x30;
