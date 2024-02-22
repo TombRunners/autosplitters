@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using LiveSplit.ComponentUtil;
@@ -36,28 +37,28 @@ public class GameData
     public static Game CurrentActiveGame => (Game)ActiveGame.Current;
 
     /// <summary>Games included within the remastered EXE.</summary>
-    public static readonly List<Game> Games = [Game.Tr1, Game.Tr2, Game.Tr3];
+    public static readonly ImmutableList<Game> Games = [Game.Tr1, Game.Tr2, Game.Tr3];
 
     /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
-    public static readonly List<string> ProcessSearchNames = ["tomb123"];
+    public static readonly ImmutableList<string> ProcessSearchNames = ["tomb123"];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
-    public static readonly Dictionary<string, uint> VersionHashes = new()
+    public static readonly ImmutableDictionary<string, uint> VersionHashes = new Dictionary<string, uint>
     {
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.InitialPublicRelease },
-    };
+    }.ToImmutableDictionary();
 
     /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
-    public static readonly Dictionary<Game, string> GameModules = new()
+    public static readonly ImmutableDictionary<Game, string> GameModules = new Dictionary<Game, string>(3)
     {
         { Game.Tr1, "tomb1.dll" },
         { Game.Tr2, "tomb2.dll" },
         { Game.Tr3, "tomb3.dll" },
-    };
+    }.ToImmutableDictionary();
 
     /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
-    public static readonly Dictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses = new()
+    public static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses = new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
     {
         {
             GameVersion.InitialPublicRelease,
@@ -98,11 +99,64 @@ public class GameData
                 },
             }
         },
-    };
+    }.ToImmutableDictionary();
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     public static readonly MemoryWatcherList Watchers = [];
 
+    #region MemoryWatcherList Items
+
+    /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
+    /// <remarks>The uint should be converted to <see cref="GameVersion" />.</remarks>
+    public static MemoryWatcher<uint> ActiveGame => (MemoryWatcher<uint>)Watchers?["ActiveGame"];
+
+    /// <summary>Gives the value of the active level.</summary>
+    /// <remarks>
+    ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
+    ///     Business.
+    /// </remarks>
+    public static ImmutableDictionary<Game, MemoryWatcher<byte>> Level => new Dictionary<Game, MemoryWatcher<byte>>(3)
+    {
+        { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
+        { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
+        { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
+    }.ToImmutableDictionary();
+
+    /// <summary>Indicates if the current level is finished.</summary>
+    /// <remarks>
+    ///     1 while an end-level stats screen is active.
+    ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
+    ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
+    ///     Otherwise, the value is 0.
+    /// </remarks>
+    public static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelComplete => new Dictionary<Game, MemoryWatcher<bool>>(3)
+    {
+        { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
+        { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
+        { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
+    }.ToImmutableDictionary();
+
+    /// <summary>Gives the running IGT of the current level.</summary>
+    public static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgt => new Dictionary<Game, MemoryWatcher<uint>>(3)
+    {
+        { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
+        { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
+        { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
+    }.ToImmutableDictionary();
+
+    /// <summary>Lara's current HP.</summary>
+    /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
+    public static ImmutableDictionary<Game, MemoryWatcher<short>> Health => new Dictionary<Game, MemoryWatcher<short>>(3)
+    {
+        { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
+        { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
+        { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
+    }.ToImmutableDictionary();
+
+    public static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
+
+    #endregion
+    
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     public static Process GameProcess;
 
@@ -116,62 +170,9 @@ public class GameData
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
 
-    #region MemoryWatcherList Items
-
-    /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
-    /// <remarks>The uint should be converted to <see cref="GameVersion" />.</remarks>
-    public static MemoryWatcher<uint> ActiveGame => (MemoryWatcher<uint>)Watchers?["ActiveGame"];
-
-    /// <summary>Gives the value of the active level.</summary>
-    /// <remarks>
-    ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
-    ///     Business.
-    /// </remarks>
-    public static Dictionary<Game, MemoryWatcher<byte>> Level => new(3)
-    {
-        { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
-        { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
-        { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
-    };
-
-    /// <summary>Indicates if the current level is finished.</summary>
-    /// <remarks>
-    ///     1 while an end-level stats screen is active.
-    ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
-    ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
-    ///     Otherwise, the value is 0.
-    /// </remarks>
-    public static Dictionary<Game, MemoryWatcher<bool>> LevelComplete => new(3)
-    {
-        { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
-        { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
-        { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
-    };
-
-    /// <summary>Gives the running IGT of the current level.</summary>
-    public static Dictionary<Game, MemoryWatcher<uint>> LevelIgt => new(3)
-    {
-        { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
-        { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
-        { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
-    };
-
-    /// <summary>Lara's current HP.</summary>
-    /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-    public static Dictionary<Game, MemoryWatcher<short>> Health => new(3)
-    {
-        { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
-        { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
-        { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
-    };
-
-    public static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
-
-    #endregion
-
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
     /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
-    protected void SetAddresses(uint version)
+    private static void SetAddresses(uint version)
     {
         Watchers.Clear();
 
@@ -192,7 +193,7 @@ public class GameData
 
     /// <summary>Adds MemoryWatchers which are common across all games.</summary>
     /// <param name="version">Game version</param>
-    protected void AddWatchersForAllGames(GameVersion version)
+    private static void AddWatchersForAllGames(GameVersion version)
     {
         foreach (var game in Games)
         {
@@ -276,7 +277,9 @@ public class GameData
         var activeGame = (Game)ActiveGame.Current;
         int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeGame].FirstLevelTimeAddress;
 
-        int levelSaveStructSize = activeGame == Game.Tr3 ? 0x40 : 0x30;
+        const int tr3SaveStructSize = 0x40;
+        const int tr1AndTr2SaveStructSize = 0x30;
+        int levelSaveStructSize = activeGame == Game.Tr3 ? tr3SaveStructSize : tr1AndTr2SaveStructSize;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)

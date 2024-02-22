@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
@@ -125,26 +126,27 @@ internal enum Tr3Level : uint
 public class Autosplitter : IAutoSplitter, IDisposable
 {
     /// <summary>Used to size CompletedLevels.</summary>
-    protected static Dictionary<Game, int> LevelCount = new()
+    private static readonly ImmutableDictionary<Game, int> LevelCount = new Dictionary<Game, int>(3)
     {
         { Game.Tr1, 19 },
         { Game.Tr2, 23 },
         { Game.Tr3, 26 },
-    };
+    }.ToImmutableDictionary();
 
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    protected readonly Dictionary<Game, List<uint>> CompletedLevels = new(3)
+    private static readonly ImmutableDictionary<Game, List<uint>> CompletedLevels = new Dictionary<Game, List<uint>>(3)
     {
         { Game.Tr1, new List<uint>(LevelCount[Game.Tr1]) },
         { Game.Tr2, new List<uint>(LevelCount[Game.Tr2]) },
         { Game.Tr3, new List<uint>(LevelCount[Game.Tr3]) },
-    };
+    }.ToImmutableDictionary();
+
+    /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
+    private static Game CurrentActiveGame => GameData.CurrentActiveGame;
+
+    internal ComponentSettings Settings = new();
 
     public GameData Data = new();
-
-    protected internal ComponentSettings Settings = new();
-
-    private static Game CurrentActiveGame => GameData.CurrentActiveGame;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
