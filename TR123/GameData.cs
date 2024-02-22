@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using LiveSplit.ComponentUtil;
-using TR123;
 
-namespace Tr123;
+namespace TR123;
 
 public enum GameVersion
 {

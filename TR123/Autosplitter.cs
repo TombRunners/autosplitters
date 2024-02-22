@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
-using Tr123;
 
 namespace TR123;
 

@@ -1,11 +1,10 @@
 using LiveSplit.Model;
 using LiveSplit.UI;
+using LiveSplit.UI.Components;
 using LiveSplit.UI.Components.AutoSplit;
 using System.Xml;
 using System;
 using System.Windows.Forms;
-using LiveSplit.UI.Components;
-using Tr123;
 
 namespace TR123;
 
