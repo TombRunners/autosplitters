@@ -77,6 +77,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Hashes\gog_v1.0_hashes.csv" />
+	<None Include="Hashes\gog_v1.01_hashes.csv" />
+    <None Include="Hashes\steam_v1.0_hashes.csv" />
     <None Include="app.config" />
     <None Include="Enums\.editorconfig" />
   </ItemGroup>
@@ -228,6 +231,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y)</PostBuildEvent>
