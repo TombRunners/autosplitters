@@ -25,7 +25,7 @@ public class GameData
     /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
     public static readonly ImmutableDictionary<string, uint> VersionHashes = new Dictionary<string, uint>
     {
-        { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.InitialPublicRelease },
+        { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
     }.ToImmutableDictionary();
 
     /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
@@ -40,7 +40,7 @@ public class GameData
     public static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses = new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
     {
         {
-            GameVersion.InitialPublicRelease,
+            GameVersion.PublicV101,
             new Dictionary<Game, GameAddresses>
             {
                 {
@@ -157,13 +157,15 @@ public class GameData
 
         switch ((GameVersion)version)
         {
-            case GameVersion.InitialPublicRelease:
+            case GameVersion.PublicV10:
+                throw new NotImplementedException("GOG v1.0 Addresses not supported yet!");
+            case GameVersion.PublicV101:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddWatchersForAllGames(GameVersion.InitialPublicRelease);
+                AddWatchersForAllGames(GameVersion.PublicV101);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);

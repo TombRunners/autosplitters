@@ -2,5 +2,6 @@
 
 public enum GameVersion
 {
-    InitialPublicRelease = 1,
+    PublicV10  = 1, // GOG v1.0
+    PublicV101 = 2, // GOG v1.01, Steam Initial Public Release
 }

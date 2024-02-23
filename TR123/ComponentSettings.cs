@@ -120,7 +120,8 @@ public sealed class ComponentSettings : UserControl
     {
         string versionText = (GameVersion)version switch
         {
-            GameVersion.InitialPublicRelease => "Initial Public Release",
+            GameVersion.PublicV10 => "GOG v1.0",
+            GameVersion.PublicV101 => "Steam Initial Public Release / GOG v1.01",
             _ => "Unknown/Undetected",
         };
         GameVersionLabel.Text = "Game Version: " + versionText;
