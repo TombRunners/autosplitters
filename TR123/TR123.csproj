@@ -80,7 +80,7 @@
     <None Include="Enums\.editorconfig" />
     <None Include="Hashes\gog_v1.0_hashes.csv" />
     <None Include="Hashes\gog_v1.01_hashes.csv" />
-    <None Include="Hashes\steam_v1.0_hashes.csv" />
+    <None Include="Hashes\steam_13430979_hashes.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
