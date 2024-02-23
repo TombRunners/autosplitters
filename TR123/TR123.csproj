@@ -77,11 +77,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Hashes\gog_v1.0_hashes.csv" />
-	<None Include="Hashes\gog_v1.01_hashes.csv" />
-    <None Include="Hashes\steam_v1.0_hashes.csv" />
-    <None Include="app.config" />
     <None Include="Enums\.editorconfig" />
+    <None Include="Hashes\gog_v1.0_hashes.csv" />
+    <None Include="Hashes\gog_v1.01_hashes.csv" />
+    <None Include="Hashes\steam_v1.0_hashes.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
@@ -184,6 +183,9 @@
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.Extensions">
       <Version>4.3.1</Version>
