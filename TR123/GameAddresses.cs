@@ -1,10 +1,10 @@
 ﻿namespace TR123;
 
-public struct GameAddresses
+public readonly record struct GameAddresses
 {
-    public int FirstLevelTime { get; set; }
-    public int Health { get; set; }
-    public int Level { get; set; }
-    public int LevelComplete { get; set; }
-    public int LevelIgt { get; set; }
+    public int FirstLevelTime { get; init; }
+    public int Health { get; init; }
+    public int Level { get; init; }
+    public int LevelComplete { get; init; }
+    public int LevelIgt { get; init; }
 }
