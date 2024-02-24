@@ -126,7 +126,18 @@ public class Autosplitter : IAutoSplitter, IDisposable
         uint currentLevelTime = levelIgt.Current;
 
         // Perform new game logic first, since it is the only place where FG should start.
-        uint currentLevel = activeGame == Game.Tr1 && GameData.Tr1LevelCutscene.Current == 1U ? 1 : (uint)level.Current;
+        uint currentLevel;
+        if (activeGame == Game.Tr1)
+        {
+            uint levelCutsceneValue = GameData.Tr1LevelCutscene.Current;
+            bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
+            currentLevel = levelCutsceneIsFirstLevel ? levelCutsceneValue : level.Current;
+        }
+        else
+        {
+            currentLevel = level.Current;
+        }
+
         bool levelTimeJustStarted = oldLevelTime > 0 && currentLevelTime == 0;
         bool newGameStarted = levelTimeJustStarted && IsFirstLevel(activeGame, currentLevel);
         if (newGameStarted)
