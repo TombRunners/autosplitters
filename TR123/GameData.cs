@@ -25,6 +25,7 @@ public class GameData
     /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
     public static readonly ImmutableDictionary<string, uint> VersionHashes = new Dictionary<string, uint>
     {
+        { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.PublicV10 },
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
     }.ToImmutableDictionary();
 
@@ -39,6 +40,45 @@ public class GameData
     /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
     public static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses = new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
     {
+        {
+            GameVersion.PublicV10,
+            new Dictionary<Game, GameAddresses>
+            {
+                {
+                    Game.Tr1,
+                    new GameAddresses
+                    {
+                        FirstLevelTime = 0x36CB610,
+                        Health = 0xEAA30,
+                        Level = 0x36CBBE8,
+                        LevelComplete = 0xEA340,
+                        LevelIgt = 0x36CBBD0,
+                    }
+                },
+                {
+                    Game.Tr2,
+                    new GameAddresses
+                    {
+                        FirstLevelTime = 0x36FF870,
+                        Health = 0x11C780,
+                        Level = 0x11E7C8,
+                        LevelComplete = 0x11ECE4,
+                        LevelIgt = 0x36FFE2C,
+                    }
+                },
+                {
+                    Game.Tr3,
+                    new GameAddresses
+                    {
+                        FirstLevelTime = 0x3764184,
+                        Health = 0x179C28,
+                        Level = 0x17BECC,
+                        LevelComplete = 0x17C3AC,
+                        LevelIgt = 0x3764968,
+                    }
+                },
+            }
+        },
         {
             GameVersion.PublicV101,
             new Dictionary<Game, GameAddresses>
@@ -158,7 +198,14 @@ public class GameData
         switch ((GameVersion)version)
         {
             case GameVersion.PublicV10:
-                throw new NotImplementedException("GOG v1.0 Addresses not supported yet!");
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddWatchersForAllGames(GameVersion.PublicV10);
+                break;
+
             case GameVersion.PublicV101:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
@@ -167,6 +214,7 @@ public class GameData
                 // Common items for all game's DLLs
                 AddWatchersForAllGames(GameVersion.PublicV101);
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
