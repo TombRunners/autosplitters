@@ -58,8 +58,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         // TR3's IGT ticks during globe level selection; the saved end-level IGT is unaffected, thus the overall FG IGT is also unaffected.
         // If a runner is watching LiveSplit's IGT, this may confuse them, despite it being a non-issue for the level/FG IGT.
         // To prevent the ticks from showing in LS, we use the fact that LevelComplete isn't reset to 0 until the next level is loaded.
-        var level = GameData.Level[activeGame];
-        uint currentLevel = activeGame == Game.Tr1 && GameData.Tr1LevelCutscene.Current == 1U ? 1 : (uint)level.Current;
+        uint currentLevel = GameData.GetTrueCurrentLevel(activeGame);
         var levelComplete = GameData.LevelComplete[activeGame];
         bool oldLevelComplete = levelComplete.Old;
         bool currentLevelComplete = levelComplete.Current;
@@ -81,8 +80,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         var activeGame = CurrentActiveGame;
 
         // Determine if the player is in a level we have not already split.
-        var level = GameData.Level[activeGame];
-        uint currentLevel = activeGame == Game.Tr1 && GameData.Tr1LevelCutscene.Current == 1U ? 1 : (uint)level.Current;
+        uint currentLevel = GameData.GetTrueCurrentLevel(activeGame);
         bool onCorrectLevelToSplit = !CompletedLevels[activeGame].Contains(currentLevel);
         if (!onCorrectLevelToSplit)
             return false;
@@ -119,25 +117,13 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public bool ShouldStart(LiveSplitState state)
     {
         var activeGame = CurrentActiveGame;
-        var level = GameData.Level[activeGame];
         var levelIgt = GameData.LevelIgt[activeGame];
 
         uint oldLevelTime = levelIgt.Old;
         uint currentLevelTime = levelIgt.Current;
 
         // Perform new game logic first, since it is the only place where FG should start.
-        uint currentLevel;
-        if (activeGame == Game.Tr1)
-        {
-            uint levelCutsceneValue = GameData.Tr1LevelCutscene.Current;
-            bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
-            currentLevel = levelCutsceneIsFirstLevel ? levelCutsceneValue : level.Current;
-        }
-        else
-        {
-            currentLevel = level.Current;
-        }
-
+        uint currentLevel = GameData.GetTrueCurrentLevel(activeGame);
         bool levelTimeJustStarted = oldLevelTime > 0 && currentLevelTime == 0;
         bool newGameStarted = levelTimeJustStarted && IsFirstLevel(activeGame, currentLevel);
         if (newGameStarted)

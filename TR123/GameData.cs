@@ -245,6 +245,21 @@ public class GameData
         return true;
     }
 
+    /// <summary>Based on <paramref name="activeGame" />, determines the true current level.</summary>
+    /// <param name="activeGame">Active game</param>
+    /// <returns>Correct current level of the game</returns>
+    public static uint GetTrueCurrentLevel(Game activeGame)
+    {
+        var level = Level[activeGame];
+
+        if (activeGame != Game.Tr1)
+            return level.Current;
+
+        uint levelCutsceneValue = Tr1LevelCutscene.Current;
+        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
+        return levelCutsceneIsFirstLevel ? levelCutsceneValue : level.Current;
+    }
+
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
 
@@ -253,6 +268,12 @@ public class GameData
     public double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeGame = (Game)ActiveGame.Current;
+        string activeGameModuleName = GameModules[activeGame];
+        var activeGameModule = GameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeGameModuleName);
+        if (activeGameModule is null)
+            return 0;
+        var moduleBaseAddress = activeGameModule.BaseAddress;
+
         int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeGame].FirstLevelTime;
 
         const int tr3SaveStructSize = 0x40;
@@ -261,7 +282,7 @@ public class GameData
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)
-            .Select(levelOffset => (IntPtr)(firstLevelTimeAddress + levelOffset))
+            .Select(levelOffset => (IntPtr)((long)moduleBaseAddress + firstLevelTimeAddress + levelOffset))
             .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
         return LevelTimeAsDouble(finishedLevelsTicks);
