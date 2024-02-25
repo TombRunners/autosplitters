@@ -77,12 +77,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CheatEngine\tomb123_GOGv10.CT" />
+    <None Include="CheatEngine\tomb123_GOGv101.CT" />
     <None Include="Enums\.editorconfig" />
     <None Include="Hashes\gog_v1.0_hashes.csv" />
     <None Include="Hashes\gog_v1.01_hashes.csv" />
     <None Include="Hashes\steam_13430979_hashes.csv" />
-    <None Include="tomb123_GOGv10.CT" />
-    <None Include="tomb123_GOGv101.CT" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
