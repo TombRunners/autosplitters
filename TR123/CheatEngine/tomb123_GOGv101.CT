@@ -214,6 +214,13 @@
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
+          <ID>153</ID>
+          <Description>"NG+ (0 = NG, 1 = NG+)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>tomb3.dll + 0x37B7974</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>18</ID>
           <Description>"Health"</Description>
           <ShowAsSigned>0</ShowAsSigned>
@@ -425,6 +432,13 @@
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
+          <ID>152</ID>
+          <Description>"NG+ (0 = NG, 1 = NG+)"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Byte</VariableType>
+          <Address>tomb2.dll + 0x3753E26</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>17</ID>
           <Description>"Health"</Description>
           <ShowAsSigned>1</ShowAsSigned>
@@ -465,7 +479,7 @@
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
         <CheatEntry>
-          <ID>16</ID>
+          <ID>155</ID>
           <Description>"Health"</Description>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
@@ -517,12 +531,19 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
+              <ID>154</ID>
+              <Description>"Crystals Used"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>Tr1LevelStats - 0x4</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>42</ID>
               <Description>"IGT"</Description>
               <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb1.dll + 0x371EBD0</Address>
+              <Address>Tr1LevelStats</Address>
               <CheatEntries>
                 <CheatEntry>
                   <ID>24</ID>
@@ -877,6 +898,13 @@
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>2 Bytes</VariableType>
               <Address>Tr1LevelStats + 0x18</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>151</ID>
+              <Description>"NG+ (0 = NG, 1 = NG+)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>Tr1LevelStats + 0x1A</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>113</ID>
