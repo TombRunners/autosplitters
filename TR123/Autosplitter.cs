@@ -156,8 +156,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart()
     {
-        var activeGame = CurrentActiveGame;
-        CompletedLevels[activeGame].Clear();
+        foreach (var levelLists in CompletedLevels.Values)
+            levelLists.Clear();
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
