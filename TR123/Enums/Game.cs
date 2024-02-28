@@ -9,7 +9,7 @@ public enum Game
 {
     Tr1 = 0,
     Tr1NgPlus = 1,
-    Tr1Ub = 2,
+    Tr1UnfinishedBusiness = 2,
     Tr2 = 3,
     Tr2NgPlus = 4,
     Tr2GoldenMask = 5,

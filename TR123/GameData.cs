@@ -12,37 +12,86 @@ public class GameData
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     public const int IGTTicksPerSecond = 30;
 
-    public static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
-
+    public const int Tr1AndTr2SaveStructSize = 0x30;
+    public const int Tr3SaveStructSize = 0x40;
 
     /// <summary>Reads the current active game, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
     {
         get
         {
+            uint currentLevel = CurrentLevel();
             var baseGame = CurrentActiveBaseGame;
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            switch (baseGame)
+            {
+                case Game.Tr1:
+                    if ((Tr1Level)currentLevel >= Tr1Level.ReturnToEgypt)
+                        return Game.Tr1UnfinishedBusiness;
+                    break;
+
+                case Game.Tr2:
+                    if ((Tr2Level)currentLevel >= Tr2Level.TheColdWar)
+                        return Game.Tr2GoldenMask;
+                    break;
+
+                case Game.Tr3:
+                    if ((Tr3Level)currentLevel >= Tr3Level.HighlandFling)
+                        return Game.Tr3TheLostArtifact;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame.");
+            }
+
             bool bonusFlag = BonusFlag.Current;
             if (!bonusFlag)
-                return (Game)((uint)baseGame * 2);
+                return baseGame;
 
-            byte currentLevel = Level.Current;
             // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
             return baseGame switch
             {
-                Game.Tr1 => (Tr1Level)currentLevel >= Tr1Level.ReturnToEgypt ? Game.Tr1NgPlus : Game.Tr1,
-                Game.Tr2 => (Tr2Level)currentLevel >= Tr2Level.TheColdWar ? Game.Tr2NgPlus : Game.Tr2,
-                Game.Tr3 => (Tr3Level)currentLevel >= Tr3Level.HighlandFling ? Game.Tr3NgPlus : Game.Tr3,
-                _ => throw new ArgumentOutOfRangeException(nameof(ActiveGame.Current), "Unknown Game value read from ActiveGame.Current."),
+                Game.Tr1 => (Tr1Level)currentLevel < Tr1Level.ReturnToEgypt ? Game.Tr1NgPlus : Game.Tr1,
+                Game.Tr2 => (Tr2Level)currentLevel < Tr2Level.TheColdWar ? Game.Tr2NgPlus : Game.Tr2,
+                Game.Tr3 => (Tr3Level)currentLevel < Tr3Level.HighlandFling ? Game.Tr3NgPlus : Game.Tr3,
+                _ => throw new ArgumentOutOfRangeException(nameof(ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame."),
             };
         }
     }
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    private static Game CurrentActiveBaseGame => (Game)ActiveGame.Current;
+    private static Game CurrentActiveBaseGame => (Game)(ActiveGame.Current * 3);
+
+    public static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
+
+    private static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
+
+    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
+    /// <returns>Correct current level of the game</returns>
+    public static uint CurrentLevel()
+    {
+        if (CurrentActiveBaseGame is not Game.Tr1)
+            return Level.Current;
+
+        uint levelCutsceneValue = Tr1LevelCutscene.Current;
+        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
+        return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
+    }
+
+    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
+    /// <returns>Correct current level of the game</returns>
+    public static uint OldLevel()
+    {
+        if (CurrentActiveBaseGame is not Game.Tr1)
+            return Level.Old;
+
+        uint levelCutsceneValue = Tr1LevelCutscene.Old;
+        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
+        return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Old;
+    }
 
     /// <summary>Base games included within the remastered EXE.</summary>
     private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
@@ -340,25 +389,12 @@ public class GameData
         return true;
     }
 
-    /// <summary>Based on <paramref name="activeGame" />, determines the true current level.</summary>
-    /// <param name="activeGame">Active game</param>
-    /// <returns>Correct current level of the game</returns>
-    public static uint GetTrueCurrentLevel(Game activeGame)
-    {
-        if (activeGame is not Game.Tr1 and not Game.Tr1NgPlus)
-            return Level.Current;
-
-        uint levelCutsceneValue = Tr1LevelCutscene.Current;
-        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
-        return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
-    }
-
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    public double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    public ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeBaseGame = CurrentActiveBaseGame;
         string activeModuleName = GameModules[activeBaseGame];
@@ -366,9 +402,7 @@ public class GameData
         if (activeModule is null)
             return 0;
 
-        const int tr3SaveStructSize = 0x40;
-        const int tr1AndTr2SaveStructSize = 0x30;
-        int levelSaveStructSize = activeBaseGame is Game.Tr3 ? tr3SaveStructSize : tr1AndTr2SaveStructSize;
+        int levelSaveStructSize = activeBaseGame is Game.Tr3 ? Tr3SaveStructSize : Tr1AndTr2SaveStructSize;
 
         int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
@@ -378,6 +412,6 @@ public class GameData
             .Select(levelOffset => (IntPtr)((long)moduleBaseAddress + firstLevelTimeAddress + levelOffset))
             .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
-        return LevelTimeAsDouble(finishedLevelsTicks);
+        return finishedLevelsTicks;
     }
 }

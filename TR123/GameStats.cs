@@ -15,6 +15,7 @@ public readonly struct GameStats(int levelCount)
     /// <summary><see langword="true" /> if all levels have been added into the backing list; <see langword="false" /> otherwise.</summary>
     public bool GameComplete => LevelStatistics.Count == LevelCount;
 
+    /// <summary>Accessor for the backing list.</summary>
     public IEnumerable<LevelStats> LevelStats => LevelStatistics;
 
     /// <summary>Adds <paramref name="stats" /> to the backing list.</summary>
