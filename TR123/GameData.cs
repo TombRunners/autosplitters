@@ -12,10 +12,7 @@ public class GameData
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     public const int IGTTicksPerSecond = 30;
 
-    public const int Tr1AndTr2SaveStructSize = 0x30;
-    public const int Tr3SaveStructSize = 0x40;
-
-    /// <summary>Reads the current active game, accounting for NG+ variations for base games.</summary>
+    /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
     {
         get
@@ -95,6 +92,14 @@ public class GameData
 
     /// <summary>Base games included within the remastered EXE.</summary>
     private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
+
+    /// <summary>Contains the sizes of the save game structs for each base <see cref="Game" />.</summary>
+    private static readonly ImmutableDictionary<Game, uint> GameSaveStructSizes = new Dictionary<Game, uint>(3)
+    {
+        { Game.Tr1, 0x30 },
+        { Game.Tr2, 0x30 },
+        { Game.Tr3, 0x40 },
+    }.ToImmutableDictionary();
 
     /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
     private static readonly ImmutableList<string> ProcessSearchNames = ["tomb123"];
@@ -402,7 +407,7 @@ public class GameData
         if (activeModule is null)
             return 0;
 
-        int levelSaveStructSize = activeBaseGame is Game.Tr3 ? Tr3SaveStructSize : Tr1AndTr2SaveStructSize;
+        uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
         int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
