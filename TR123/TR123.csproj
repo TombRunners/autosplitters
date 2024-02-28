@@ -77,6 +77,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="CheatEngine\.editorconfig" />
     <None Include="CheatEngine\tomb123_GOGv10.CT" />
     <None Include="CheatEngine\tomb123_GOGv101.CT" />
     <None Include="Enums\.editorconfig" />
