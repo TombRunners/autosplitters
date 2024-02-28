@@ -86,7 +86,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         // Deathrun
-        var health = GameData.Health[activeGame];
+        var health = GameData.Health;
         if (Settings.Deathrun)
         {
             bool laraJustDied = health.Old > 0 && health.Current <= 0;
@@ -94,7 +94,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         }
 
         // FG & IL/Section
-        var levelComplete = GameData.LevelComplete[activeGame];
+        var levelComplete = GameData.LevelComplete;
         bool levelJustCompleted = !levelComplete.Old && levelComplete.Current;
         return levelJustCompleted;
     }
@@ -117,7 +117,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public bool ShouldStart(LiveSplitState state)
     {
         var activeGame = CurrentActiveGame;
-        var levelIgt = GameData.LevelIgt[activeGame];
+        var levelIgt = GameData.LevelIgt;
 
         uint oldLevelTime = levelIgt.Old;
         uint currentLevelTime = levelIgt.Current;
