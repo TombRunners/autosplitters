@@ -19,4 +19,7 @@ public readonly record struct GameAddresses
 
     /// <summary>The running IGT of the current level.</summary>
     public int LevelIgt { get; init; }
+
+    /// <summary>Indicates if the game is in the title screen (main menu).</summary>
+    public int TitleLoaded { get; init; }
 }

@@ -63,6 +63,7 @@ public class GameData
     public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> TitleLoaded => TitleLoadedWatchers[CurrentActiveBaseGame];
 
     private static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
 
@@ -121,93 +122,100 @@ public class GameData
     }.ToImmutableDictionary();
 
     /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
-    private static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses = new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
-    {
+    private static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
+        new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
         {
-            GameVersion.PublicV10,
-            new Dictionary<Game, GameAddresses>
             {
+                GameVersion.PublicV10,
+                new Dictionary<Game, GameAddresses>
                 {
-                    Game.Tr1,
-                    new GameAddresses
                     {
-                        BonusFlag = 0x36CBBEA,
-                        FirstLevelTime = 0x36CB610,
-                        Health = 0xEAA30,
-                        Level = 0x36CBBE8,
-                        LevelComplete = 0xEA340,
-                        LevelIgt = 0x36CBBD0,
-                    }
-                },
-                {
-                    Game.Tr2,
-                    new GameAddresses
+                        Game.Tr1,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x36CBBEA,
+                            FirstLevelTime = 0x36CB610,
+                            Health = 0xEAA30,
+                            Level = 0x36CBBE8,
+                            LevelComplete = 0xEA340,
+                            LevelIgt = 0x36CBBD0,
+                            TitleLoaded = 0xEA338,
+                        }
+                    },
                     {
-                        BonusFlag = 0x36FFE46,
-                        FirstLevelTime = 0x36FF870,
-                        Health = 0x11C780,
-                        Level = 0x11E7C8,
-                        LevelComplete = 0x11ECE4,
-                        LevelIgt = 0x36FFE2C,
-                    }
-                },
-                {
-                    Game.Tr3,
-                    new GameAddresses
+                        Game.Tr2,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x36FFE46,
+                            FirstLevelTime = 0x36FF870,
+                            Health = 0x11C780,
+                            Level = 0x11E7C8,
+                            LevelComplete = 0x11ECE4,
+                            LevelIgt = 0x36FFE2C,
+                            TitleLoaded = 0x11E884,
+                        }
+                    },
                     {
-                        BonusFlag = 0x3764994,
-                        FirstLevelTime = 0x3764184,
-                        Health = 0x179C28,
-                        Level = 0x17BECC,
-                        LevelComplete = 0x17C3AC,
-                        LevelIgt = 0x3764968,
-                    }
-                },
-            }
-        },
-        {
-            GameVersion.PublicV101,
-            new Dictionary<Game, GameAddresses>
+                        Game.Tr3,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x3764994,
+                            FirstLevelTime = 0x3764184,
+                            Health = 0x179C28,
+                            Level = 0x17BECC,
+                            LevelComplete = 0x17C3AC,
+                            LevelIgt = 0x3764968,
+                            TitleLoaded = 0x17BF98,
+                        }
+                    },
+                }
+            },
             {
+                GameVersion.PublicV101,
+                new Dictionary<Game, GameAddresses>
                 {
-                    Game.Tr1,
-                    new GameAddresses
                     {
-                        BonusFlag = 0x371EBEA,
-                        FirstLevelTime = 0x371E610,
-                        Health = 0xEFA18,
-                        Level = 0x371EBE8,
-                        LevelComplete = 0xEF340,
-                        LevelIgt = 0x371EBD0,
-                    }
-                },
-                {
-                    Game.Tr2,
-                    new GameAddresses
+                        Game.Tr1,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x371EBEA,
+                            FirstLevelTime = 0x371E610,
+                            Health = 0xEFA18,
+                            Level = 0x371EBE8,
+                            LevelComplete = 0xEF340,
+                            LevelIgt = 0x371EBD0,
+                            TitleLoaded = 0xEF338,
+                        }
+                    },
                     {
-                        BonusFlag = 0x3753E26,
-                        FirstLevelTime = 0x3753850,
-                        Health = 0x122780,
-                        Level = 0x1247C8,
-                        LevelComplete = 0x124CE4,
-                        LevelIgt = 0x3753E0C,
-                    }
-                },
-                {
-                    Game.Tr3,
-                    new GameAddresses
+                        Game.Tr2,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x3753E26,
+                            FirstLevelTime = 0x3753850,
+                            Health = 0x122780,
+                            Level = 0x1247C8,
+                            LevelComplete = 0x124CE4,
+                            LevelIgt = 0x3753E0C,
+                            TitleLoaded = 0x124884,
+                        }
+                    },
                     {
-                        BonusFlag = 0x37B7974,
-                        FirstLevelTime = 0x37B7164,
-                        Health = 0x17EC28,
-                        Level = 0x180ECC,
-                        LevelComplete = 0x1813AC,
-                        LevelIgt = 0x37B7948,
-                    }
-                },
-            }
-        },
-    }.ToImmutableDictionary();
+                        Game.Tr3,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x37B7974,
+                            FirstLevelTime = 0x37B7164,
+                            Health = 0x17EC28,
+                            Level = 0x180ECC,
+                            LevelComplete = 0x1813AC,
+                            LevelIgt = 0x37B7948,
+                            TitleLoaded = 0x180F98,
+                        }
+                    },
+                }
+            },
+        }.ToImmutableDictionary();
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     private static readonly MemoryWatcherList Watchers = [];
@@ -220,33 +228,36 @@ public class GameData
 
     /// <summary>The game's bonus flag which marks NG(+).</summary>
     /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers => new Dictionary<Game, MemoryWatcher<bool>>(3)
-    {
-        { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
-        { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
-        { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
-    }.ToImmutableDictionary();
+    private static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
+        }.ToImmutableDictionary();
 
     /// <summary>Lara's current HP.</summary>
     /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers => new Dictionary<Game, MemoryWatcher<short>>(3)
-    {
-        { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
-        { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
-        { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
-    }.ToImmutableDictionary();
+    private static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
+        new Dictionary<Game, MemoryWatcher<short>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
+            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
+            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
+        }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the active level.</summary>
     /// <remarks>
     ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
     ///     Business.
     /// </remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers => new Dictionary<Game, MemoryWatcher<byte>>(3)
-    {
-        { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
-        { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
-        { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
-    }.ToImmutableDictionary();
+    private static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
+        new Dictionary<Game, MemoryWatcher<byte>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
+            { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
+            { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
+        }.ToImmutableDictionary();
 
     /// <summary>Indicates if the current level is finished.</summary>
     /// <remarks>
@@ -255,20 +266,30 @@ public class GameData
     ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
     ///     Otherwise, the value is 0.
     /// </remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers => new Dictionary<Game, MemoryWatcher<bool>>(3)
-    {
-        { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
-        { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
-        { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
-    }.ToImmutableDictionary();
+    private static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
+        }.ToImmutableDictionary();
 
     /// <summary>Gives the running IGT of the current level.</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers => new Dictionary<Game, MemoryWatcher<uint>>(3)
-    {
-        { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
-        { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
-        { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
-    }.ToImmutableDictionary();
+    private static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
+        new Dictionary<Game, MemoryWatcher<uint>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
+            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
+            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
+        }.ToImmutableDictionary();
+
+    private static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2TitleLoaded"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
+        }.ToImmutableDictionary();
 
     public static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
 
@@ -341,6 +362,9 @@ public class GameData
 
             int levelIgtOffset = addresses.LevelIgt;
             Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, levelIgtOffset)) { Name = $"{game}LevelIgt" });
+
+            int titleLoadedOffset = addresses.TitleLoaded;
+            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });
         }
     }
 

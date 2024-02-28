@@ -251,6 +251,13 @@
             </Hotkey>
           </Hotkeys>
         </CheatEntry>
+        <CheatEntry>
+          <ID>156</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x17BF98</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -467,6 +474,12 @@
               <ID>0</ID>
             </Hotkey>
           </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>155</ID>
+          <Description>"TitleLoaded"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll+11E884</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -1042,6 +1055,13 @@
               </CheatEntries>
             </CheatEntry>
           </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>154</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xEA338</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>

@@ -252,6 +252,13 @@
             </Hotkey>
           </Hotkeys>
         </CheatEntry>
+        <CheatEntry>
+          <ID>166</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x180F98</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -260,6 +267,14 @@
       <Options moHideChildren="1" moDeactivateChildrenAsWell="1"/>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
+        <CheatEntry>
+          <ID>162</ID>
+          <Description>"Base Game Secrets (not in level order)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>Array of byte</VariableType>
+          <ByteLength>16</ByteLength>
+          <Address>tomb2.dll + 0x3753E0C + 0x28</Address>
+        </CheatEntry>
         <CheatEntry>
           <ID>45</ID>
           <Description>"IGT"</Description>
@@ -453,6 +468,13 @@
           <Address>tomb2.dll + 0x1247C8</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>161</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0x124884</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>12</ID>
           <Description>"LevelComplete"</Description>
           <ShowAsSigned>0</ShowAsSigned>
@@ -469,6 +491,22 @@
               <ID>0</ID>
             </Hotkey>
           </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>164</ID>
+          <Description>"Level Secrets?"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Binary</VariableType>
+          <BitStart>0</BitStart>
+          <BitLength>3</BitLength>
+          <ShowAsBinary>0</ShowAsBinary>
+          <Address>tomb2.dll+3753E20</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>165</ID>
+          <Description>"No description"</Description>
+          <VariableType>Byte</VariableType>
+          <Address>tomb2.dll+3753E44</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -498,6 +536,13 @@
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0xD4A54</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>159</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xEF338</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>15</ID>
@@ -1079,6 +1124,27 @@
               <Address>tomb1.dll+371EC24</Address>
             </CheatEntry>
           </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>156</ID>
+          <Description>"Passport Mode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xF9950</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>158</ID>
+          <Description>"Inventory Mode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xDAC18</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>157</ID>
+          <Description>"Reset Flag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xEF288</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
