@@ -68,6 +68,8 @@
     <Compile Include="Enums\Tr3Level.cs" />
     <Compile Include="GameAddresses.cs" />
     <Compile Include="GameData.cs" />
+    <Compile Include="GameStats.cs" />
+    <Compile Include="LevelStats.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
