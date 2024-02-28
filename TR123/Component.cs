@@ -59,6 +59,8 @@ public class Component : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         var settingsNode = document.CreateElement("Settings");
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoReset),
+            _splitter.Settings.DisableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
             _splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
@@ -77,10 +79,13 @@ public class Component : AutoSplitComponent
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
+        _splitter.Settings.DisableAutoReset = SettingsHelper.ParseBool(settings["DisableAutoReset"], _splitter.Settings.DisableAutoReset);
         _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
 
         // Assign values to Settings.
+        _splitter.Settings.DisableAutoResetCheckbox.Checked = _splitter.Settings.DisableAutoReset; // CheckBox
+
         if (_splitter.Settings.FullGame)
             _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
         else if (_splitter.Settings.Deathrun)
