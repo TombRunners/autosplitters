@@ -86,6 +86,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns>IGT as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
     public TimeSpan? GetGameTime(LiveSplitState state)
     {
+        // Check that we are not in the title screen.
+        var title = GameData.TitleLoaded;
+        if (title.Current)
+            return null;
+
         // Check that IGT is ticking.
         var levelIgt = GameData.LevelIgt;
         uint currentLevelTicks = levelIgt.Current;
