@@ -153,16 +153,10 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         // Checking LevelComplete is inaccurate; depending on exactly when LiveSplit polls, the Old and Current values may differ.
-        // Instead, perform a simple check to see if the runner was likely to have come from a credits / last level.
-        uint level = GameData.CurrentLevel();
-        if (CurrentActiveGame > Game.Tr1UnfinishedBusiness)
-            return !IsLastLevel(level);
-
-        // TR1 logic.
-        bool statsLevelNumberWasOnCreditsValue = level == 1;
-        var levelCutscene = GameData.Tr1LevelCutscene;
-        bool wasPossiblyOnLastLevel = IsLastLevel(levelCutscene.Old);
-        return !wasPossiblyOnLastLevel || !statsLevelNumberWasOnCreditsValue;
+        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
+        var inventoryChosen = GameData.InventoryChosen;
+        bool passportWasChosen = inventoryChosen.Old is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        return passportWasChosen;
     }
 
     /// <summary>Determines if the timer should start.</summary>

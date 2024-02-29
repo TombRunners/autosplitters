@@ -61,6 +61,7 @@ public class GameData
 
     public static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> TitleLoaded => TitleLoadedWatchers[CurrentActiveBaseGame];
@@ -136,6 +137,7 @@ public class GameData
                             BonusFlag = 0x36CBBEA,
                             FirstLevelTime = 0x36CB610,
                             Health = 0xEAA30,
+                            InventoryChosen = 0xD4F48,
                             Level = 0x36CBBE8,
                             LevelComplete = 0xEA340,
                             LevelIgt = 0x36CBBD0,
@@ -149,6 +151,7 @@ public class GameData
                             BonusFlag = 0x36FFE46,
                             FirstLevelTime = 0x36FF870,
                             Health = 0x11C780,
+                            InventoryChosen = 0x100024,
                             Level = 0x11E7C8,
                             LevelComplete = 0x11ECE4,
                             LevelIgt = 0x36FFE2C,
@@ -162,6 +165,7 @@ public class GameData
                             BonusFlag = 0x3764994,
                             FirstLevelTime = 0x3764184,
                             Health = 0x179C28,
+                            InventoryChosen = 0x156224,
                             Level = 0x17BECC,
                             LevelComplete = 0x17C3AC,
                             LevelIgt = 0x3764968,
@@ -181,6 +185,7 @@ public class GameData
                             BonusFlag = 0x371EBEA,
                             FirstLevelTime = 0x371E610,
                             Health = 0xEFA18,
+                            InventoryChosen = 0xD9F48,
                             Level = 0x371EBE8,
                             LevelComplete = 0xEF340,
                             LevelIgt = 0x371EBD0,
@@ -194,6 +199,7 @@ public class GameData
                             BonusFlag = 0x3753E26,
                             FirstLevelTime = 0x3753850,
                             Health = 0x122780,
+                            InventoryChosen = 0x106024,
                             Level = 0x1247C8,
                             LevelComplete = 0x124CE4,
                             LevelIgt = 0x3753E0C,
@@ -207,6 +213,7 @@ public class GameData
                             BonusFlag = 0x37B7974,
                             FirstLevelTime = 0x37B7164,
                             Health = 0x17EC28,
+                            InventoryChosen = 0x15B224,
                             Level = 0x180ECC,
                             LevelComplete = 0x1813AC,
                             LevelIgt = 0x37B7948,
@@ -244,6 +251,14 @@ public class GameData
             { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
             { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
             { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
+        }.ToImmutableDictionary();
+
+    private static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
+        new Dictionary<Game, MemoryWatcher<short>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
+            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
+            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the active level.</summary>
@@ -353,6 +368,9 @@ public class GameData
 
             int healthOffset = addresses.Health;
             Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, healthOffset)) { Name = $"{game}Health" });
+
+            int inventoryChosenOffset = addresses.InventoryChosen;
+            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
 
             int levelOffset = addresses.Level;
             Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });

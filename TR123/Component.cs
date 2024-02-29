@@ -112,8 +112,7 @@ public class Component : AutoSplitComponent
     /// <remarks>
     ///     This override allows <see cref="Autosplitter" /> to use <see cref="GameData" /> in its logic.
     /// </remarks>
-    public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height,
-        LayoutMode mode)
+    public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);

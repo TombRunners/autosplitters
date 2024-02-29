@@ -11,6 +11,9 @@ public readonly record struct GameAddresses
     /// <summary>Lara's Health.</summary>
     public int Health { get; init; }
 
+    /// <summary>Value of inventory selection; -1 when not in the inventory.</summary>
+    public int InventoryChosen { get; init; }
+
     /// <summary>The current level of the game.</summary>
     public int Level { get; init; }
 
