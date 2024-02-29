@@ -156,7 +156,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         // Instead, perform a simple check to see if the runner was likely to have come from a credits / last level.
         uint level = GameData.CurrentLevel();
         if (CurrentActiveGame > Game.Tr1UnfinishedBusiness)
-            return IsLastLevel(level);
+            return !IsLastLevel(level);
 
         // TR1 logic.
         bool statsLevelNumberWasOnCreditsValue = level == 1;
