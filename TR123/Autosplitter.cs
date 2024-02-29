@@ -128,9 +128,9 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         // Deathrun
-        var health = GameData.Health;
         if (Settings.Deathrun)
         {
+            var health = GameData.Health;
             bool laraJustDied = health.Old > 0 && health.Current <= 0;
             return laraJustDied;
         }
