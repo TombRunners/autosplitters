@@ -198,6 +198,9 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), CurrentActiveGame, "Unknown Game"),
         };
 
+    /// <summary>Determines if <paramref name="level" /> is the last of the game or expansion.</summary>
+    /// <param name="level">Level to check</param>
+    /// <returns><see langword="true" /> if <paramref name="level" /> is the last; <see langword="false" /> otherwise.</returns>
     public bool IsLastLevel(uint level) =>
         CurrentActiveGame switch
         {
