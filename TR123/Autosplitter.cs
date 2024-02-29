@@ -24,7 +24,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     }.ToImmutableDictionary();
 
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    private static readonly ImmutableDictionary<Game, GameStats> AllGameStats = new Dictionary<Game, GameStats>(6)
+    private static readonly ImmutableDictionary<Game, GameStats> AllGameStats = new Dictionary<Game, GameStats>(9)
     {
         { Game.Tr1,                   new GameStats(LevelCount[Game.Tr1]) },
         { Game.Tr1NgPlus,             new GameStats(LevelCount[Game.Tr1NgPlus]) },
