@@ -152,33 +152,17 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (!justEnteredTitleScreen)
             return false;
 
-        // Checking LevelComplete is inaccurate; depending on exactly when LiveSplit performs its polling, the Old and Current values may have display different values.
+        // Checking LevelComplete is inaccurate; depending on exactly when LiveSplit polls, the Old and Current values may differ.
+        // Instead, perform a simple check to see if the runner was likely to have come from a credits / last level.
         uint level = GameData.CurrentLevel();
-        switch (CurrentActiveGame)
-        {
-            case Game.Tr1 or Game.Tr1NgPlus or Game.Tr1UnfinishedBusiness:
-            {
-                var levelCutscene = GameData.Tr1LevelCutscene;
-                bool wasPossiblyOnLastLevel =
-                    levelCutscene.Old is (uint)Tr1Level.TheGreatPyramid or (uint)Tr1Level.TempleOfTheCat;
-                bool oldLevelWasOnCreditsValue = level == 1;
-                return !wasPossiblyOnLastLevel || !oldLevelWasOnCreditsValue;
-            }
-            case Game.Tr2 or Game.Tr2NgPlus or Game.Tr2GoldenMask:
-            {
-                bool wasPossiblyOnLastLevel =
-                    level is (uint)Tr2Level.HomeSweetHome or (uint)Tr2Level.Kingdom or (uint)Tr2Level.NightmareInVegas;
-                return !wasPossiblyOnLastLevel;
-            }
-            case Game.Tr3 or Game.Tr3NgPlus or Game.Tr3TheLostArtifact:
-            {
-                bool wasPossiblyOnLastLevel =
-                    level is (uint)Tr3Level.MeteoriteCavern or (uint)Tr3Level.AllHallows or (uint)Tr3Level.Reunion;
-                return !wasPossiblyOnLastLevel;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), "Unknown Game value read from CurrentActiveGame.");
-        }
+        if (CurrentActiveGame > Game.Tr1UnfinishedBusiness)
+            return IsLastLevel(level);
+
+        // TR1 logic.
+        bool statsLevelNumberWasOnCreditsValue = level == 1;
+        var levelCutscene = GameData.Tr1LevelCutscene;
+        bool wasPossiblyOnLastLevel = IsLastLevel(levelCutscene.Old);
+        return !wasPossiblyOnLastLevel || !statsLevelNumberWasOnCreditsValue;
     }
 
     /// <summary>Determines if the timer should start.</summary>
@@ -202,9 +186,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines if <paramref name="level" /> is the first of the game or expansion.</summary>
     /// <param name="level">Level to check</param>
     /// <returns><see langword="true" /> if <paramref name="level" /> is the first; <see langword="false" /> otherwise.</returns>
-    public bool IsFirstLevel(uint level)
-    {
-        return CurrentActiveGame switch
+    public bool IsFirstLevel(uint level) =>
+        CurrentActiveGame switch
         {
             Game.Tr1 or Game.Tr1NgPlus => (Tr1Level)level is Tr1Level.Caves,
             Game.Tr1UnfinishedBusiness => (Tr1Level)level is Tr1Level.AtlanteanStronghold,
@@ -214,7 +197,18 @@ public class Autosplitter : IAutoSplitter, IDisposable
             Game.Tr3TheLostArtifact    => (Tr3Level)level is Tr3Level.HighlandFling,
             _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), CurrentActiveGame, "Unknown Game"),
         };
-    }
+
+    public bool IsLastLevel(uint level) =>
+        CurrentActiveGame switch
+        {
+            Game.Tr1 or Game.Tr1NgPlus => (Tr1Level)level is Tr1Level.TheGreatPyramid,
+            Game.Tr1UnfinishedBusiness => (Tr1Level)level is Tr1Level.TempleOfTheCat,
+            Game.Tr2 or Game.Tr2NgPlus => (Tr2Level)level is Tr2Level.HomeSweetHome,
+            Game.Tr2GoldenMask => (Tr2Level)level is Tr2Level.Kingdom or Tr2Level.NightmareInVegas,
+            Game.Tr3 or Game.Tr3NgPlus => (Tr3Level)level is Tr3Level.MeteoriteCavern or Tr3Level.AllHallows,
+            Game.Tr3TheLostArtifact => (Tr3Level)level is Tr3Level.Reunion,
+            _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), CurrentActiveGame, "Unknown Game"),
+        };
 
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart()
