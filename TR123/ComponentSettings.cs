@@ -11,12 +11,12 @@ public sealed class ComponentSettings : UserControl
     public RadioButton ILModeButton;
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
-    public CheckBox DisableAutoResetCheckbox;
+    public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     public bool FullGame = true;
     public bool Deathrun;
-    public bool DisableAutoReset = true;
+    public bool EnableAutoReset;
 
     public ComponentSettings() => InitializeComponent();
 
@@ -26,7 +26,7 @@ public sealed class ComponentSettings : UserControl
         FullGameModeButton = new RadioButton();
         ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
-        DisableAutoResetCheckbox = new CheckBox();
+        EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
         ModeSelect.SuspendLayout();
@@ -75,16 +75,16 @@ public sealed class ComponentSettings : UserControl
         DeathrunModeButton.UseVisualStyleBackColor = true;
         DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
 
-        // DisableAutoResetCheckbox
-        DisableAutoResetCheckbox.AutoSize = true;
-        DisableAutoResetCheckbox.Checked = true;
-        DisableAutoResetCheckbox.Location = new Point(10, 64);
-        DisableAutoResetCheckbox.Size = new Size(72, 17);
-        DisableAutoResetCheckbox.Name = "DisableAutoResetCheckbox";
-        DisableAutoResetCheckbox.Text = "Disable Auto-Reset";
-        DisableAutoResetCheckbox.TabIndex = 0;
-        DisableAutoResetCheckbox.UseVisualStyleBackColor = true;
-        DisableAutoResetCheckbox.CheckedChanged += DisableAutoResetCheckboxCheckedChanged;
+        // EnableAutoResetCheckbox
+        EnableAutoResetCheckbox.AutoSize = true;
+        EnableAutoResetCheckbox.Checked = true;
+        EnableAutoResetCheckbox.Location = new Point(10, 64);
+        EnableAutoResetCheckbox.Size = new Size(72, 17);
+        EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
+        EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
+        EnableAutoResetCheckbox.TabIndex = 0;
+        EnableAutoResetCheckbox.UseVisualStyleBackColor = true;
+        EnableAutoResetCheckbox.CheckedChanged += EnableAutoResetCheckboxCheckedChanged;
 
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;
@@ -105,7 +105,7 @@ public sealed class ComponentSettings : UserControl
         // ComponentSettings
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
-        Controls.Add(DisableAutoResetCheckbox);
+        Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "ComponentSettings";
         Size = new Size(350, 145);
@@ -145,9 +145,9 @@ public sealed class ComponentSettings : UserControl
         Deathrun = true;
     }
 
-    private void DisableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
+    private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
         var checkbox = (CheckBox)sender;
-        DisableAutoReset = checkbox.Checked;
+        EnableAutoReset = checkbox.Checked;
     }
 }

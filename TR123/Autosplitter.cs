@@ -141,7 +141,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should reset, <see langword="false" /> otherwise</returns>
     public bool ShouldReset(LiveSplitState state)
     {
-        if (Settings.DisableAutoReset)
+        if (!Settings.EnableAutoReset)
             return false;
 
         var titleLoaded = GameData.TitleLoaded;

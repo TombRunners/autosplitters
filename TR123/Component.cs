@@ -34,8 +34,7 @@ public class Component : AutoSplitComponent
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
 
-    private void StateOnSplit(object _0, EventArgs _1) =>
-        _splitter?.OnSplit(GameData.CurrentLevel());
+    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentLevel());
 
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
 
@@ -59,8 +58,8 @@ public class Component : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         var settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoReset),
-            _splitter.Settings.DisableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
+            _splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
             _splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
@@ -79,12 +78,12 @@ public class Component : AutoSplitComponent
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
-        _splitter.Settings.DisableAutoReset = SettingsHelper.ParseBool(settings["DisableAutoReset"], _splitter.Settings.DisableAutoReset);
+        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
         _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
 
         // Assign values to Settings.
-        _splitter.Settings.DisableAutoResetCheckbox.Checked = _splitter.Settings.DisableAutoReset; // CheckBox
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
 
         if (_splitter.Settings.FullGame)
             _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
