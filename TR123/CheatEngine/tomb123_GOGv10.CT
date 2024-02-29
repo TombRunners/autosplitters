@@ -252,6 +252,13 @@
           </Hotkeys>
         </CheatEntry>
         <CheatEntry>
+          <ID>159</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb3.dll + 0x156224</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>156</ID>
           <Description>"TitleLoaded"</Description>
           <ShowAsSigned>1</ShowAsSigned>
@@ -474,6 +481,13 @@
               <ID>0</ID>
             </Hotkey>
           </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>158</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb2.dll + 0x100024</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>155</ID>
@@ -1055,6 +1069,13 @@
               </CheatEntries>
             </CheatEntry>
           </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>157</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb1.dll + 0xD4F48</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>154</ID>

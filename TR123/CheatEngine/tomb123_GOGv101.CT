@@ -259,6 +259,13 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb3.dll + 0x180F98</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>169</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb3.dll + 0x15B224</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -267,14 +274,6 @@
       <Options moHideChildren="1" moDeactivateChildrenAsWell="1"/>
       <GroupHeader>1</GroupHeader>
       <CheatEntries>
-        <CheatEntry>
-          <ID>162</ID>
-          <Description>"Base Game Secrets (not in level order)"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>Array of byte</VariableType>
-          <ByteLength>16</ByteLength>
-          <Address>tomb2.dll + 0x3753E0C + 0x28</Address>
-        </CheatEntry>
         <CheatEntry>
           <ID>45</ID>
           <Description>"IGT"</Description>
@@ -503,10 +502,32 @@
           <Address>tomb2.dll+3753E20</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>162</ID>
+          <Description>"Base Game Secrets (not in level order)"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>Array of byte</VariableType>
+          <ByteLength>16</ByteLength>
+          <Address>tomb2.dll + 0x3753E0C + 0x28</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>165</ID>
-          <Description>"No description"</Description>
+          <Description>"Total Secrets?"</Description>
           <VariableType>Byte</VariableType>
           <Address>tomb2.dll+3753E44</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>168</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb2.dll + 0x106024</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>167</ID>
+          <Description>"CreditsFlag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0x12EF40</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -1145,6 +1166,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0xEF288</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>170</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb1.dll + 0xD9F48</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
