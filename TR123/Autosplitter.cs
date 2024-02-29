@@ -87,31 +87,28 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns>IGT as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
     public TimeSpan? GetGameTime(LiveSplitState state)
     {
-        // Check that we are not in the title screen.
+        // Check that the title screen is not active.
         var title = GameData.TitleLoaded;
         if (title.Current)
             return null;
 
         // Check that IGT is ticking.
         var levelIgt = GameData.LevelIgt;
-        uint currentLevelTicks = levelIgt.Current;
-        uint oldLevelTicks = levelIgt.Old;
-        if (currentLevelTicks - oldLevelTicks == 0)
+        if (!levelIgt.Changed)
             return null;
 
         // TR3's IGT ticks during globe level selection; the saved end-level IGT is unaffected, thus the overall FG IGT is also unaffected.
         // If a runner is watching LiveSplit's IGT, this may confuse them, despite it being a non-issue for the level/FG IGT.
         // To prevent the ticks from showing in LS, we use the fact that LevelComplete isn't reset to 0 until the next level is loaded.
-        var activeGame = CurrentActiveGame;
-        uint currentLevel = GameData.CurrentLevel();
         var levelComplete = GameData.LevelComplete;
-        bool oldLevelComplete = levelComplete.Old;
-        bool currentLevelComplete = levelComplete.Current;
-        bool stillOnCompletedLevel = oldLevelComplete && currentLevelComplete;
-        if (AllGameStats[activeGame].LevelStats.Any(stats => stats.LevelNumber == currentLevel) && stillOnCompletedLevel)
+        bool levelCompleteStillActive = levelComplete.Old && levelComplete.Current;
+        uint currentLevel = GameData.CurrentLevel();
+        bool currentLevelWasAlreadyCompleted = AllGameStats[CurrentActiveGame].LevelStats.Any(stats => stats.LevelNumber == currentLevel);
+        if (currentLevelWasAlreadyCompleted && levelCompleteStillActive)
             return null;
 
         // Sum the current and completed levels' IGT.
+        uint currentLevelTicks = levelIgt.Current;
         double currentLevelTime = GameData.LevelTimeAsDouble(currentLevelTicks);
         double finishedLevelsTime = SumCompletedLevelTimes(currentLevel);
         return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
