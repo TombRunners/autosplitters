@@ -192,21 +192,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), CurrentActiveGame, "Unknown Game"),
         };
 
-    /// <summary>Determines if <paramref name="level" /> is the last of the game or expansion.</summary>
-    /// <param name="level">Level to check</param>
-    /// <returns><see langword="true" /> if <paramref name="level" /> is the last; <see langword="false" /> otherwise.</returns>
-    public bool IsLastLevel(uint level) =>
-        CurrentActiveGame switch
-        {
-            Game.Tr1 or Game.Tr1NgPlus => (Tr1Level)level is Tr1Level.TheGreatPyramid,
-            Game.Tr1UnfinishedBusiness => (Tr1Level)level is Tr1Level.TempleOfTheCat,
-            Game.Tr2 or Game.Tr2NgPlus => (Tr2Level)level is Tr2Level.HomeSweetHome,
-            Game.Tr2GoldenMask => (Tr2Level)level is Tr2Level.Kingdom or Tr2Level.NightmareInVegas,
-            Game.Tr3 or Game.Tr3NgPlus => (Tr3Level)level is Tr3Level.MeteoriteCavern or Tr3Level.AllHallows,
-            Game.Tr3TheLostArtifact => (Tr3Level)level is Tr3Level.Reunion,
-            _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveGame), CurrentActiveGame, "Unknown Game"),
-        };
-
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart()
     {
