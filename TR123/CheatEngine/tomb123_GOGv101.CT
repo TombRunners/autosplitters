@@ -599,7 +599,7 @@
             <CheatEntry>
               <ID>154</ID>
               <Description>"Crystals Used"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
+              <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>Tr1LevelStats - 0x4</Address>
             </CheatEntry>
@@ -947,14 +947,14 @@
             <CheatEntry>
               <ID>140</ID>
               <Description>"Level Collected Pickups"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
+              <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>Tr1LevelStats + 0x16</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>134</ID>
               <Description>"Level Consumed Meds (1 = Half)"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
+              <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>Tr1LevelStats + 0x17</Address>
             </CheatEntry>
@@ -973,176 +973,669 @@
               <Address>Tr1LevelStats + 0x1A</Address>
             </CheatEntry>
             <CheatEntry>
-              <ID>113</ID>
-              <Description>"Total Secrets"</Description>
-              <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
+              <ID>171</ID>
+              <Description>"Savegame Pickups (2), Puzzle Items (4), Keys (4), Lead Bars"</Description>
               <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Array of byte</VariableType>
+              <ByteLength>11</ByteLength>
+              <Address>Tr1LevelStats + 0x1B</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>172</ID>
+              <Description>"N/A"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Array of byte</VariableType>
+              <ByteLength>2</ByteLength>
+              <Address>Tr1LevelStats + 0x26</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>175</ID>
+              <Description>"Trophy Data"</Description>
               <GroupHeader>1</GroupHeader>
-              <Address>Tr1SecretsArray</Address>
               <CheatEntries>
                 <CheatEntry>
                   <ID>106</ID>
                   <Description>"Level Secrets Collected"</Description>
+                  <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Array of byte</VariableType>
                   <ByteLength>19</ByteLength>
-                  <Address>Tr1SecretsArray + 0x01 * 0</Address>
+                  <Address>Tr1SecretsArray</Address>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>149</ID>
+                      <Description>"Level 01 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 0</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>116</ID>
+                      <Description>"Level 02 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 1</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>115</ID>
+                      <Description>"Level 03 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 2</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>114</ID>
+                      <Description>"Level 04 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 3</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>122</ID>
+                      <Description>"Level 05 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 4</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>123</ID>
+                      <Description>"Level 06 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 5</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>124</ID>
+                      <Description>"Level 07 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 6</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>125</ID>
+                      <Description>"Level 08 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 7</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>126</ID>
+                      <Description>"Level 09 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 8</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>127</ID>
+                      <Description>"Level 10 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 9</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>128</ID>
+                      <Description>"Level 11 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * A</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>129</ID>
+                      <Description>"Level 12 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * B</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>130</ID>
+                      <Description>"Level 13 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * C</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>131</ID>
+                      <Description>"Level 14 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * D</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>132</ID>
+                      <Description>"Level 15 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * E</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>133</ID>
+                      <Description>"Level 16 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * F</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>136</ID>
+                      <Description>"Level 17 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 10</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>137</ID>
+                      <Description>"Level 18 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 11</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>138</ID>
+                      <Description>"Level 19 Collected"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1SecretsArray + 0x01 * 12</Address>
+                    </CheatEntry>
+                  </CheatEntries>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>149</ID>
-                  <Description>"Level 01 Collected"</Description>
+                  <ID>182</ID>
+                  <Description>"N/A"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 0</Address>
+                  <Address>Tr1TrophyData + 0x13</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>116</ID>
-                  <Description>"Level 02 Collected"</Description>
+                  <ID>220</ID>
+                  <Description>"Level Skip Used"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 1</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>115</ID>
-                  <Description>"Level 03 Collected"</Description>
+                  <ID>183</ID>
+                  <Description>"Weapons Cheat Used"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 2</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>1</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>114</ID>
-                  <Description>"Level 04 Collected"</Description>
+                  <ID>184</ID>
+                  <Description>"Thor Lightning Damaged Lara"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 3</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>2</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>122</ID>
-                  <Description>"Level 05 Collected"</Description>
+                  <ID>185</ID>
+                  <Description>"T. Rex Damaged"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 4</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>3</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>123</ID>
-                  <Description>"Level 06 Collected"</Description>
+                  <ID>186</ID>
+                  <Description>"Used No Medipack"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 5</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>4</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>124</ID>
-                  <Description>"Level 07 Collected"</Description>
+                  <ID>187</ID>
+                  <Description>"Raptor Damaged Lara"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 6</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>5</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>125</ID>
-                  <Description>"Level 08 Collected"</Description>
+                  <ID>188</ID>
+                  <Description>"Lara Damaged Doppelganger"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 7</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>6</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>126</ID>
-                  <Description>"Level 09 Collected"</Description>
+                  <ID>189</ID>
+                  <Description>"Centaur Killed"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 8</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>7</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>127</ID>
-                  <Description>"Level 10 Collected"</Description>
+                  <ID>135</ID>
+                  <Description>"Non-Pistol Weapon Used"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 9</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x14</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>128</ID>
-                  <Description>"Level 11 Collected"</Description>
+                  <ID>174</ID>
+                  <Description>"Time Device Peru"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * A</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>1</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>129</ID>
-                  <Description>"Level 12 Collected"</Description>
+                  <ID>176</ID>
+                  <Description>"Time Device Greece"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * B</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>2</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>130</ID>
-                  <Description>"Level 13 Collected"</Description>
+                  <ID>177</ID>
+                  <Description>"Climb on Throne Qualopec"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * C</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>3</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>131</ID>
-                  <Description>"Level 14 Collected"</Description>
+                  <ID>178</ID>
+                  <Description>"Climb on Throne Tihocan"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * D</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>4</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>132</ID>
-                  <Description>"Level 15 Collected"</Description>
+                  <ID>179</ID>
+                  <Description>"Climb on Throne Natla"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * E</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>5</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>133</ID>
-                  <Description>"Level 16 Collected"</Description>
+                  <ID>180</ID>
+                  <Description>"Found Mummy Caves"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * F</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>6</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>136</ID>
-                  <Description>"Level 17 Collected"</Description>
+                  <ID>181</ID>
+                  <Description>"Found Mummy Qualopec"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 10</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>7</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>137</ID>
-                  <Description>"Level 18 Collected"</Description>
+                  <ID>190</ID>
+                  <Description>"Rolling Ball Damaged Lara"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 11</Address>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>138</ID>
-                  <Description>"Level 19 Collected"</Description>
+                  <ID>191</ID>
+                  <Description>"Stepped On Slide Trap"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>1</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>203</ID>
+                  <Description>"Picked Up Cog"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>2</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>204</ID>
+                  <Description>"Centaur Damaged Lara"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>3</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>205</ID>
+                  <Description>"Used Slide in the Hive"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>4</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>206</ID>
+                  <Description>"Medipack Secret"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>5</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>207</ID>
+                  <Description>"Killed All Crocodiles"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>6</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>208</ID>
+                  <Description>"Picked Up Thor Key"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>7</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x16</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>209</ID>
+                  <Description>"Got Uzis"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>0</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x17</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>210</ID>
+                  <Description>"Got Uzi Clips"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>1</BitStart>
+                  <BitLength>1</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x17</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>221</ID>
+                  <Description>"Reserved?"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>2</BitStart>
+                  <BitLength>4</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x17</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>222</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Binary</VariableType>
+                  <BitStart>6</BitStart>
+                  <BitLength>2</BitLength>
+                  <ShowAsBinary>0</ShowAsBinary>
+                  <Address>Tr1TrophyData + 0x17</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>192</ID>
+                  <Description>"Damocles Sword Damaged Lara (0 = Inactive, 2 = No, 3 = Yes)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Array of byte</VariableType>
+                  <ByteLength>18</ByteLength>
+                  <Address>Tr1TrophyData + 0x18</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>193</ID>
+                  <Description>"Meds on Map"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
-                  <Address>Tr1SecretsArray + 0x01 * 12</Address>
+                  <Address>Tr1TrophyData + 0x2b</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>194</ID>
+                  <Description>"Level Collected Med Pickups"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x2c</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>223</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x2d</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>195</ID>
+                  <Description>"Pierre Damage from Magnums (7500 = Achievement)"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x2e</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>196</ID>
+                  <Description>"Natla Damage from Magnums"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x30</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>197</ID>
+                  <Description>"Baldy Damage from Shotgun"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x32</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>198</ID>
+                  <Description>"Ape Kills"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x34</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>199</ID>
+                  <Description>"Lion Kills"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x36</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>211</ID>
+                  <Description>"Lioness Kills"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x38</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>200</ID>
+                  <Description>"Looked at Bear Walking"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Array of byte</VariableType>
+                  <ByteLength>3</ByteLength>
+                  <Address>Tr1TrophyData + 0x3A</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>201</ID>
+                  <Description>"Number of Underwater Pickups"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x3D</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>202</ID>
+                  <Description>"Number of Pickups"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x3E</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>212</ID>
+                  <Description>"Number of Pickups UB"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x40</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>213</ID>
+                  <Description>"Number of Kills"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x42</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>214</ID>
+                  <Description>"Number of Falling Floors Activated"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Array of byte</VariableType>
+                  <ByteLength>9</ByteLength>
+                  <Address>Tr1TrophyData + 0x44</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>215</ID>
+                  <Description>"Number of Bad Moves Made"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x4E</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>216</ID>
+                  <Description>"Finished SOTC"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x50</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>217</ID>
+                  <Description>"Finished UB"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x51</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>218</ID>
+                  <Description>"Atlantean Stronghold Kills"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x52</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>224</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x53</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>219</ID>
+                  <Description>"Centaurs Killed"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x54</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>225</ID>
+                  <Description>"Unfinished Business Number Balls Rolled (Max = Achievement)"</Description>
+                  <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
+                  <ShowAsHex>1</ShowAsHex>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Array of byte</VariableType>
+                  <ByteLength>4</ByteLength>
+                  <Address>Tr1TrophyData + 0x56</Address>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>226</ID>
+                      <Description>"Return to Egypt (10 = Max)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x56</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>230</ID>
+                      <Description>"Temple of the Cat (9 = Max)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x57</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>231</ID>
+                      <Description>"Atlantean Stronghold (4 = Max)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x58</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>232</ID>
+                      <Description>"The Hive (24 = Max, 0 before switch = Achievement)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x59</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>228</ID>
+                  <Description>"Time Looked at Item"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x5A</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>227</ID>
+                  <Description>"Scream Time"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x5C</Address>
                 </CheatEntry>
               </CheatEntries>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>135</ID>
-              <Description>"Bit Array Tracking Med Usage? (Achievement?)"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>Tr1LevelStats + 0x3C</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>150</ID>
-              <Description>"Weapon Usage Tracker? (Achievement?)"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>Byte</VariableType>
-              <Address>Tr1LevelStats + 0x3D</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>104</ID>
-              <Description>"Level Collected Med Pickups (Achievement?)"</Description>
-              <ShowAsSigned>0</ShowAsSigned>
-              <VariableType>2 Bytes</VariableType>
-              <Address>tomb1.dll+371EC24</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -1183,10 +1676,6 @@
       <Address>tomb1.dll + 0x371EBD0</Address>
     </SymbolEntry>
     <SymbolEntry>
-      <Name>Tr1SecretsArray</Name>
-      <Address>Tr1LevelStats + 0x28</Address>
-    </SymbolEntry>
-    <SymbolEntry>
       <Name>Tr1IgtArray</Name>
       <Address>tomb1.dll + 0x371E610</Address>
     </SymbolEntry>
@@ -1197,6 +1686,14 @@
     <SymbolEntry>
       <Name>Tr3IgtArray</Name>
       <Address>tomb3.dll + 0x37B7164</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>Tr1TrophyData</Name>
+      <Address>Tr1LevelStats + 0x28</Address>
+    </SymbolEntry>
+    <SymbolEntry>
+      <Name>Tr1SecretsArray</Name>
+      <Address>Tr1TrophyData + 0</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
 </CheatTable>
