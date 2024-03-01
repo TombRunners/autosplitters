@@ -3,37 +3,37 @@ using System.Linq;
 
 namespace TR123;
 
-/// <summary>Stats related to a game with <paramref name="levelCount" /> levels.</summary>
+/// <summary>Stats for a game with <paramref name="levelCount" /> levels.</summary>
 /// <param name="levelCount">Number of levels in the game</param>
 public readonly struct GameStats(int levelCount)
 {
-    private List<LevelStats> LevelStatistics { get; } = new(levelCount);
+    private readonly Stack<LevelStats> _levelStatistics = new(levelCount);
 
     /// <summary>The number of levels in the game.</summary>
     public readonly int LevelCount = levelCount;
 
-    /// <summary><see langword="true" /> if all levels have been added into the backing list; <see langword="false" /> otherwise.</summary>
-    public bool GameComplete => LevelStatistics.Count == LevelCount;
+    /// <summary><see langword="true" /> if all levels have been added into the backing stack; <see langword="false" /> otherwise.</summary>
+    public bool GameComplete => _levelStatistics.Count == LevelCount;
 
-    /// <summary>Accessor for the backing list.</summary>
-    public IEnumerable<LevelStats> LevelStats => LevelStatistics;
+    /// <summary>Accessor for the backing stack.</summary>
+    public IEnumerable<LevelStats> LevelStats => _levelStatistics;
 
-    /// <summary>Adds <paramref name="stats" /> to the backing list.</summary>
+    /// <summary>Pushes <paramref name="stats" /> to the backing stack.</summary>
     /// <param name="stats">Stats to add</param>
     public void AddLevelStats(LevelStats stats)
     {
         if (GameComplete)
             return;
 
-        if (LevelStatistics.Select(static stats => stats.LevelNumber).Contains(stats.LevelNumber))
+        if (_levelStatistics.Select(static stats => stats.LevelNumber).Contains(stats.LevelNumber))
             return;
 
-        LevelStatistics.Add(stats);
+        _levelStatistics.Push(stats);
     }
 
-    /// <summary>Removes the most recently added <see cref="LevelStats" /> from the backing list.</summary>
-    public void RemoveLevelStats() => LevelStatistics.RemoveAt(LevelStatistics.Count - 1);
+    /// <summary>Pops the most recently added <see cref="LevelStats" /> from the backing stack.</summary>
+    public void RemoveLevelStats() => _ = _levelStatistics.Pop();
 
-    /// <summary>Clears the backing list of all <see cref="LevelStats" />.</summary>
-    public void Clear() => LevelStatistics.Clear();
+    /// <summary>Clears the backing stack of all <see cref="LevelStats" />.</summary>
+    public void Clear() => _levelStatistics.Clear();
 }
