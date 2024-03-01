@@ -10,7 +10,7 @@ namespace TR123;
 public class GameData
 {
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
-    public const int IGTTicksPerSecond = 30;
+    public const int IgtTicksPerSecond = 30;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
@@ -437,7 +437,7 @@ public class GameData
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
-    public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
+    public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IgtTicksPerSecond;
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
