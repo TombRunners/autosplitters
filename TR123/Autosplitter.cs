@@ -53,7 +53,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             );
 
         // Sum the current game's completed levels up to the current level from game memory if the game is not already complete.
-        var gameLevelStats = AllGameStats.Single(static list => list.Key == CurrentActiveGame).Value;
+        var gameLevelStats = AllGameStats[CurrentActiveGame];
         if (gameLevelStats.GameComplete)
             finishedLevelsTicks = gameLevelStats
                 .LevelStats
