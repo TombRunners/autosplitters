@@ -559,6 +559,13 @@
           <Address>tomb1.dll + 0xD4A54</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>234</ID>
+          <Description>"CinematicLevel"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb1.dll + 0x364B714</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>159</ID>
           <Description>"TitleLoaded"</Description>
           <ShowAsSigned>1</ShowAsSigned>
@@ -584,13 +591,6 @@
           </Hotkeys>
         </CheatEntry>
         <CheatEntry>
-          <ID>97</ID>
-          <Description>"IsMenu?"</Description>
-          <ShowAsSigned>0</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>tomb1.dll + 0x361F611</Address>
-        </CheatEntry>
-        <CheatEntry>
           <ID>101</ID>
           <Description>"Stats"</Description>
           <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
@@ -598,6 +598,27 @@
           <CheatEntries>
             <CheatEntry>
               <ID>154</ID>
+              <Description>"Saved Game"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>Tr1LevelStats - 0x610</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>237</ID>
+              <Description>"Save Game is in NG+"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>Tr1LevelStats - 0x60c</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>238</ID>
+              <Description>"Save Game Number"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>Tr1LevelStats - 0x608</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>236</ID>
               <Description>"Crystals Used"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
@@ -990,7 +1011,8 @@
             </CheatEntry>
             <CheatEntry>
               <ID>175</ID>
-              <Description>"Trophy Data"</Description>
+              <Description>"Achievements / Trophies"</Description>
+              <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
               <GroupHeader>1</GroupHeader>
               <CheatEntries>
                 <CheatEntry>
@@ -1255,54 +1277,74 @@
                   <Address>Tr1TrophyData + 0x15</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>177</ID>
-                  <Description>"Climb on Throne Qualopec"</Description>
+                  <ID>251</ID>
+                  <Description>"QTN"</Description>
+                  <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Binary</VariableType>
-                  <BitStart>3</BitStart>
-                  <BitLength>1</BitLength>
-                  <ShowAsBinary>0</ShowAsBinary>
+                  <GroupHeader>1</GroupHeader>
                   <Address>Tr1TrophyData + 0x15</Address>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>177</ID>
+                      <Description>"Climb on Throne Qualopec"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>3</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>Tr1TrophyData + 0x15</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>178</ID>
+                      <Description>"Climb on Throne Tihocan"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>4</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>Tr1TrophyData + 0x15</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>179</ID>
+                      <Description>"Climb on Throne Natla"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>5</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>Tr1TrophyData + 0x15</Address>
+                    </CheatEntry>
+                  </CheatEntries>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>178</ID>
-                  <Description>"Climb on Throne Tihocan"</Description>
+                  <ID>252</ID>
+                  <Description>"May They Rest in Ukha Pacha"</Description>
+                  <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Binary</VariableType>
-                  <BitStart>4</BitStart>
-                  <BitLength>1</BitLength>
-                  <ShowAsBinary>0</ShowAsBinary>
+                  <GroupHeader>1</GroupHeader>
                   <Address>Tr1TrophyData + 0x15</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>179</ID>
-                  <Description>"Climb on Throne Natla"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Binary</VariableType>
-                  <BitStart>5</BitStart>
-                  <BitLength>1</BitLength>
-                  <ShowAsBinary>0</ShowAsBinary>
-                  <Address>Tr1TrophyData + 0x15</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>180</ID>
-                  <Description>"Found Mummy Caves"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Binary</VariableType>
-                  <BitStart>6</BitStart>
-                  <BitLength>1</BitLength>
-                  <ShowAsBinary>0</ShowAsBinary>
-                  <Address>Tr1TrophyData + 0x15</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>181</ID>
-                  <Description>"Found Mummy Qualopec"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Binary</VariableType>
-                  <BitStart>7</BitStart>
-                  <BitLength>1</BitLength>
-                  <ShowAsBinary>0</ShowAsBinary>
-                  <Address>Tr1TrophyData + 0x15</Address>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>180</ID>
+                      <Description>"Found Mummy Caves"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>6</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>Tr1TrophyData + 0x15</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>181</ID>
+                      <Description>"Found Mummy Qualopec"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Binary</VariableType>
+                      <BitStart>7</BitStart>
+                      <BitLength>1</BitLength>
+                      <ShowAsBinary>0</ShowAsBinary>
+                      <Address>Tr1TrophyData + 0x15</Address>
+                    </CheatEntry>
+                  </CheatEntries>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>190</ID>
@@ -1346,7 +1388,7 @@
                 </CheatEntry>
                 <CheatEntry>
                   <ID>205</ID>
-                  <Description>"Used Slide in the Hive"</Description>
+                  <Description>"Used Hive Slide"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Binary</VariableType>
                   <BitStart>4</BitStart>
@@ -1475,25 +1517,35 @@
                   <Address>Tr1TrophyData + 0x32</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>198</ID>
-                  <Description>"Ape Kills"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>2 Bytes</VariableType>
+                  <ID>233</ID>
+                  <Description>"Ave Lara! (Total of 10 Required)"</Description>
+                  <Options moManualExpandCollapse="1"/>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <GroupHeader>1</GroupHeader>
                   <Address>Tr1TrophyData + 0x34</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>199</ID>
-                  <Description>"Lion Kills"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>2 Bytes</VariableType>
-                  <Address>Tr1TrophyData + 0x36</Address>
-                </CheatEntry>
-                <CheatEntry>
-                  <ID>211</ID>
-                  <Description>"Lioness Kills"</Description>
-                  <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>2 Bytes</VariableType>
-                  <Address>Tr1TrophyData + 0x38</Address>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>198</ID>
+                      <Description>"Emperor Box -&gt; Arena Ape Kills (Max = 4)"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>2 Bytes</VariableType>
+                      <Address>Tr1TrophyData + 0x34</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>199</ID>
+                      <Description>"Emperor Box -&gt; Arena Lion Kills (Max = 3"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>2 Bytes</VariableType>
+                      <Address>Tr1TrophyData + 0x36</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>211</ID>
+                      <Description>"Emperor Box -&gt; Arena Lioness Kills (Max = 3"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>2 Bytes</VariableType>
+                      <Address>Tr1TrophyData + 0x38</Address>
+                    </CheatEntry>
+                  </CheatEntries>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>200</ID>
@@ -1505,35 +1557,35 @@
                 </CheatEntry>
                 <CheatEntry>
                   <ID>201</ID>
-                  <Description>"Number of Underwater Pickups"</Description>
+                  <Description>"Underwater Pickups"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
                   <Address>Tr1TrophyData + 0x3D</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>202</ID>
-                  <Description>"Number of Pickups"</Description>
+                  <Description>"Pickups"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x3E</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>212</ID>
-                  <Description>"Number of Pickups UB"</Description>
+                  <Description>"Pickups UB"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x40</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>213</ID>
-                  <Description>"Number of Kills"</Description>
+                  <Description>"Kills"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x42</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>214</ID>
-                  <Description>"Number of Falling Floors Activated"</Description>
+                  <Description>"Collapsible Floors Activated"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Array of byte</VariableType>
                   <ByteLength>9</ByteLength>
@@ -1541,21 +1593,21 @@
                 </CheatEntry>
                 <CheatEntry>
                   <ID>215</ID>
-                  <Description>"Number of Bad Moves Made"</Description>
+                  <Description>"Bad Moves Made"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x4E</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>216</ID>
-                  <Description>"Finished SOTC"</Description>
+                  <Description>"Finished Shadow of the Cat"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
                   <Address>Tr1TrophyData + 0x50</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>217</ID>
-                  <Description>"Finished UB"</Description>
+                  <Description>"Finished Unfinished Business"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
                   <Address>Tr1TrophyData + 0x51</Address>
@@ -1583,7 +1635,7 @@
                 </CheatEntry>
                 <CheatEntry>
                   <ID>225</ID>
-                  <Description>"Unfinished Business Number Balls Rolled (Max = Achievement)"</Description>
+                  <Description>"UB Balls Rolled (Max = Roll Action!)"</Description>
                   <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1"/>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
@@ -1614,7 +1666,7 @@
                     </CheatEntry>
                     <CheatEntry>
                       <ID>232</ID>
-                      <Description>"The Hive (24 = Max, 0 before switch = Achievement)"</Description>
+                      <Description>"The Hive (24 = Max, 0 before switch = On Tiptoes)"</Description>
                       <ShowAsSigned>0</ShowAsSigned>
                       <VariableType>Byte</VariableType>
                       <Address>Tr1TrophyData + 0x59</Address>
@@ -1635,6 +1687,91 @@
                   <VariableType>Byte</VariableType>
                   <Address>Tr1TrophyData + 0x5C</Address>
                 </CheatEntry>
+                <CheatEntry>
+                  <ID>239</ID>
+                  <Description>"Universal"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Array of byte</VariableType>
+                  <ByteLength>18</ByteLength>
+                  <Address>Tr1TrophyData + 0x5e</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>240</ID>
+                  <Description>"Cat Entrance Blocks Moved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x6E</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>241</ID>
+                  <Description>"Gym Exercises"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x70</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>243</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x72</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>242</ID>
+                  <Description>"Cat Secret Blocks Moved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x74</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>244</ID>
+                  <Description>"Number of Saves"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x78</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>245</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x7C</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>246</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x80</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>247</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x84</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>248</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x88</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>249</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x8C</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>250</ID>
+                  <Description>"Reserved"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>Tr1TrophyData + 0x90</Address>
+                </CheatEntry>
               </CheatEntries>
             </CheatEntry>
           </CheatEntries>
@@ -1645,6 +1782,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0xF9950</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>170</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb1.dll + 0xD9F48</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>158</ID>
@@ -1661,11 +1805,18 @@
           <Address>tomb1.dll + 0xEF288</Address>
         </CheatEntry>
         <CheatEntry>
-          <ID>170</ID>
-          <Description>"InventoryChosen"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
+          <ID>97</ID>
+          <Description>"IsMenu?"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
-          <Address>tomb1.dll + 0xD9F48</Address>
+          <Address>tomb1.dll + 0x361F611</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>235</ID>
+          <Description>"App Info"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <GroupHeader>1</GroupHeader>
+          <Address>tomb1.dll + 0x364B930</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -1696,4 +1847,155 @@
       <Address>Tr1TrophyData + 0</Address>
     </SymbolEntry>
   </UserdefinedSymbols>
+  <Structures StructVersion="2">
+    <Structure Name="Tr1LevelStats" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000000" Description="Crystals Used" DisplayMethod="signed integer"/>
+        <Element Offset="4" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000004" Description="Timer" DisplayMethod="unsigned integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="Ammo Used" DisplayMethod="unsigned integer"/>
+        <Element Offset="12" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000000C" Description="Ammo Hit" DisplayMethod="unsigned integer"/>
+        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" Description="Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="Distance Travelled" DisplayMethod="unsigned integer"/>
+        <Element Offset="24" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000018" Description="Secrets Bit Array" DisplayMethod="unsigned integer"/>
+        <Element Offset="26" Vartype="Byte" Bytesize="1" OffsetHex="0000001A" Description="Pickups" DisplayMethod="signed integer"/>
+        <Element Offset="27" Vartype="Byte" Bytesize="1" OffsetHex="0000001B" Description="Health Used (1 = Small, 2 = Large)" DisplayMethod="signed integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Tr1StartInfo" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000000" Description="Pistol Ammo" DisplayMethod="unsigned integer"/>
+        <Element Offset="2" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000002" Description="Magnum Ammo" DisplayMethod="unsigned integer"/>
+        <Element Offset="4" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000004" Description="Uzi Ammo" DisplayMethod="unsigned integer"/>
+        <Element Offset="6" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000006" Description="Shotgun Ammo" DisplayMethod="unsigned integer"/>
+        <Element Offset="8" Vartype="Byte" Bytesize="1" OffsetHex="00000008" Description="Small Medis" DisplayMethod="unsigned integer"/>
+        <Element Offset="9" Vartype="Byte" Bytesize="1" OffsetHex="00000009" Description="Large Medis" DisplayMethod="unsigned integer"/>
+        <Element Offset="10" Vartype="Byte" Bytesize="1" OffsetHex="0000000A" Description="Scions" DisplayMethod="unsigned integer"/>
+        <Element Offset="11" Vartype="Byte" Bytesize="1" OffsetHex="0000000B" Description="Gun Status" DisplayMethod="signed integer"/>
+        <Element Offset="12" Vartype="Byte" Bytesize="1" OffsetHex="0000000C" Description="Gun Type" DisplayMethod="signed integer"/>
+        <Element Offset="13" Vartype="Byte" Bytesize="1" RLECount="3" OffsetHex="0000000D" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="16" Vartype="Pointer" Bytesize="8" OffsetHex="00000010" ChildStruct="Tr1LevelStats" Description="Stats" DisplayMethod="unsigned integer"/>
+        <Element Offset="44" Vartype="2 Bytes" Bytesize="2" OffsetHex="0000002C" Description="Bits: Available, Pistols, Uzis, Magnum, Shotgun, Costume" DisplayMethod="unsigned integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Tr1SaveGame" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000000" Description="Saved" DisplayMethod="signed integer"/>
+        <Element Offset="4" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000004" Description="New Game Plus Save" DisplayMethod="signed integer"/>
+        <Element Offset="8" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000008" Description="Save Game Number (Counter)" DisplayMethod="signed integer"/>
+        <Element Nested="1" Offset="12" Vartype="Pointer" Bytesize="8" OffsetHex="0000000C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="60" Vartype="Pointer" Bytesize="8" OffsetHex="0000003C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="108" Vartype="Pointer" Bytesize="8" OffsetHex="0000006C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="156" Vartype="Pointer" Bytesize="8" OffsetHex="0000009C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="204" Vartype="Pointer" Bytesize="8" OffsetHex="000000CC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="252" Vartype="Pointer" Bytesize="8" OffsetHex="000000FC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="300" Vartype="Pointer" Bytesize="8" OffsetHex="0000012C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="348" Vartype="Pointer" Bytesize="8" OffsetHex="0000015C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="396" Vartype="Pointer" Bytesize="8" OffsetHex="0000018C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="444" Vartype="Pointer" Bytesize="8" OffsetHex="000001BC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="492" Vartype="Pointer" Bytesize="8" OffsetHex="000001EC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="540" Vartype="Pointer" Bytesize="8" OffsetHex="0000021C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="588" Vartype="Pointer" Bytesize="8" OffsetHex="0000024C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="636" Vartype="Pointer" Bytesize="8" OffsetHex="0000027C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="684" Vartype="Pointer" Bytesize="8" OffsetHex="000002AC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="732" Vartype="Pointer" Bytesize="8" OffsetHex="000002DC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="780" Vartype="Pointer" Bytesize="8" OffsetHex="0000030C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="828" Vartype="Pointer" Bytesize="8" OffsetHex="0000033C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="876" Vartype="Pointer" Bytesize="8" OffsetHex="0000036C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="924" Vartype="Pointer" Bytesize="8" OffsetHex="0000039C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="972" Vartype="Pointer" Bytesize="8" OffsetHex="000003CC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1020" Vartype="Pointer" Bytesize="8" OffsetHex="000003FC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1068" Vartype="Pointer" Bytesize="8" OffsetHex="0000042C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1116" Vartype="Pointer" Bytesize="8" OffsetHex="0000045C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1164" Vartype="Pointer" Bytesize="8" OffsetHex="0000048C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1212" Vartype="Pointer" Bytesize="8" OffsetHex="000004BC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1260" Vartype="Pointer" Bytesize="8" OffsetHex="000004EC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1308" Vartype="Pointer" Bytesize="8" OffsetHex="0000051C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1356" Vartype="Pointer" Bytesize="8" OffsetHex="0000054C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1404" Vartype="Pointer" Bytesize="8" OffsetHex="0000057C" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1452" Vartype="Pointer" Bytesize="8" OffsetHex="000005AC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1500" Vartype="Pointer" Bytesize="8" OffsetHex="000005DC" ChildStruct="Tr1StartInfo" Description="StartInfo" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1548" Vartype="Pointer" Bytesize="8" OffsetHex="0000060C" ChildStruct="Tr1LevelStats" Description="Current Level Stats" DisplayMethod="unsigned integer"/>
+        <Element Offset="1576" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000628" Description="Save Level Number" DisplayMethod="signed integer"/>
+        <Element Offset="1578" Vartype="Byte" Bytesize="1" OffsetHex="0000062A" Description="Bonus Flag" DisplayMethod="unsigned integer"/>
+        <Element Offset="1579" Vartype="Byte" Bytesize="1" OffsetHex="0000062B" Description="Num Pickup 1" DisplayMethod="unsigned integer"/>
+        <Element Offset="1580" Vartype="Byte" Bytesize="1" OffsetHex="0000062C" Description="Num Pickup 2" DisplayMethod="unsigned integer"/>
+        <Element Offset="1581" Vartype="Byte" Bytesize="1" OffsetHex="0000062D" Description="Num Puzzle 1" DisplayMethod="unsigned integer"/>
+        <Element Offset="1582" Vartype="Byte" Bytesize="1" OffsetHex="0000062E" Description="Num Puzzle 2" DisplayMethod="unsigned integer"/>
+        <Element Offset="1583" Vartype="Byte" Bytesize="1" OffsetHex="0000062F" Description="Num Puzzle 3" DisplayMethod="unsigned integer"/>
+        <Element Offset="1584" Vartype="Byte" Bytesize="1" OffsetHex="00000630" Description="Num Puzzle 4" DisplayMethod="unsigned integer"/>
+        <Element Offset="1585" Vartype="Byte" Bytesize="1" OffsetHex="00000631" Description="Num Key 1" DisplayMethod="unsigned integer"/>
+        <Element Offset="1586" Vartype="Byte" Bytesize="1" OffsetHex="00000632" Description="Num Key 2" DisplayMethod="unsigned integer"/>
+        <Element Offset="1587" Vartype="Byte" Bytesize="1" OffsetHex="00000633" Description="Num Key 3" DisplayMethod="unsigned integer"/>
+        <Element Offset="1588" Vartype="Byte" Bytesize="1" OffsetHex="00000634" Description="Num Key 4" DisplayMethod="unsigned integer"/>
+        <Element Offset="1589" Vartype="Byte" Bytesize="1" OffsetHex="00000635" Description="Num Lead Bars" DisplayMethod="unsigned integer"/>
+        <Element Offset="1590" Vartype="Byte" Bytesize="1" RLECount="2" OffsetHex="00000636" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="1592" Vartype="Array of byte" Bytesize="28" OffsetHex="00000638" Description="Trophy / Achievements" DisplayMethod="unsigned integer"/>
+        <Element Offset="1620" Vartype="Array of byte" Bytesize="120" OffsetHex="00000654" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Nested="1" Offset="1740" Vartype="Pointer" Bytesize="8" OffsetHex="000006CC" ChildStruct="Tr1LaraParams" Description="Lara Params" DisplayMethod="unsigned integer"/>
+        <Element Offset="1752" Vartype="Byte" Bytesize="1" RLECount="4" OffsetHex="000006D8" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="1756" Vartype="Byte" Bytesize="1" OffsetHex="000006DC" Description="Checksum" DisplayMethod="signed integer"/>
+        <Element Offset="1757" Vartype="Array of byte" Bytesize="14336" OffsetHex="000006DD" Description="Buffer" DisplayMethod="unsigned integer"/>
+        <Element Offset="16093" Vartype="Byte" Bytesize="1" RLECount="3" OffsetHex="00003EDD" Description="N/A" DisplayMethod="unsigned integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Tr1LaraParams" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000000" Description="Outfit" DisplayMethod="signed integer"/>
+        <Element Offset="4" Vartype="Byte" Bytesize="1" OffsetHex="00000004" Description="Left Hand" DisplayMethod="signed integer"/>
+        <Element Offset="5" Vartype="Byte" Bytesize="1" OffsetHex="00000005" Description="Right Hand" DisplayMethod="signed integer"/>
+        <Element Offset="6" Vartype="Byte" Bytesize="1" OffsetHex="00000006" Description="Left Holster" DisplayMethod="signed integer"/>
+        <Element Offset="7" Vartype="Byte" Bytesize="1" OffsetHex="00000007" Description="Right Holster" DisplayMethod="signed integer"/>
+        <Element Offset="8" Vartype="Byte" Bytesize="1" OffsetHex="00000008" Description="Back" DisplayMethod="signed integer"/>
+        <Element Offset="9" Vartype="Byte" Bytesize="1" OffsetHex="00000009" Description="Face" DisplayMethod="signed integer"/>
+        <Element Offset="10" Vartype="Byte" Bytesize="1" OffsetHex="0000000A" Description="Left Holster Back" DisplayMethod="signed integer"/>
+        <Element Offset="11" Vartype="Byte" Bytesize="1" OffsetHex="0000000B" Description="Right Holster Back" DisplayMethod="signed integer"/>
+        <Element Offset="12" Vartype="Byte" Bytesize="1" OffsetHex="0000000C" Description="Pad Byte" DisplayMethod="signed integer"/>
+      </Elements>
+    </Structure>
+    <Structure Name="Tr1Achievements" AutoFill="0" AutoCreate="1" DefaultHex="0" AutoDestroy="0" DoNotSaveLocal="0" RLECompression="1" AutoCreateStructsize="4096">
+      <Elements>
+        <Element Offset="0" Vartype="Array of byte" Bytesize="19" OffsetHex="00000000" Description="Level Secrets Array" DisplayMethod="unsigned integer"/>
+        <Element Offset="19" Vartype="Byte" Bytesize="1" OffsetHex="00000013" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="20" Vartype="Byte" Bytesize="1" OffsetHex="00000014" Description="Bits: Level Skip, Weapon Cheat, Thor Damage, T. Rex Damaged, No Medipack, Raptor Damage, Dopperganger Damaged, Centaur Killed" DisplayMethod="unsigned integer"/>
+        <Element Offset="21" Vartype="Byte" Bytesize="1" OffsetHex="00000015" Description="Bits: Fired Non Pistols, Time Device Peru, Time Device Greece, Throne Q, Throne T, Throne N, Mummy Caves, Mummy Qualopec" DisplayMethod="unsigned integer"/>
+        <Element Offset="22" Vartype="Byte" Bytesize="1" OffsetHex="00000016" Description="Bits: Rolling Ball Damage, Stepped On Slide Trap, Picked Up Cog, Centaur Damage, Used Hive Slide, Medipack Secret, Killed Crocs, Got Thor Key" DisplayMethod="unsigned integer"/>
+        <Element Offset="23" Vartype="Byte" Bytesize="1" OffsetHex="00000017" Description="Bits: Got Uzis, Got Uzi Clips, Reserved * 4, N/A * 2" DisplayMethod="unsigned integer"/>
+        <Element Offset="24" Vartype="Array of byte" Bytesize="19" OffsetHex="00000018" Description="Damocles Sword Damage (0 = Inactive, 2 = Yes, 3 = No)" DisplayMethod="unsigned integer"/>
+        <Element Offset="43" Vartype="Byte" Bytesize="1" OffsetHex="0000002B" Description="Level Meds" DisplayMethod="unsigned integer"/>
+        <Element Offset="44" Vartype="Byte" Bytesize="1" OffsetHex="0000002C" Description="Level Meds Collected" DisplayMethod="unsigned integer"/>
+        <Element Offset="45" Vartype="Byte" Bytesize="1" OffsetHex="0000002D" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="46" Vartype="2 Bytes" Bytesize="2" OffsetHex="0000002E" Description="Pierre Damage By Magnums" DisplayMethod="unsigned integer"/>
+        <Element Offset="48" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000030" Description="Natla Damage By Magnums" DisplayMethod="unsigned integer"/>
+        <Element Offset="50" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000032" Description="Baldy Damage By Shotgun" DisplayMethod="unsigned integer"/>
+        <Element Offset="52" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000034" Description="Emperor Box Ape Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="54" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000036" Description="Emperor Box Lion Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="56" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000038" Description="Emperor Box Lioness Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="58" Vartype="Array of byte" Bytesize="3" OffsetHex="0000003A" Description="Bear Seen Walking" DisplayMethod="unsigned integer"/>
+        <Element Offset="61" Vartype="Byte" Bytesize="1" OffsetHex="0000003D" Description="Pickups Underwater" DisplayMethod="unsigned integer"/>
+        <Element Offset="62" Vartype="2 Bytes" Bytesize="2" OffsetHex="0000003E" Description="Pickups" DisplayMethod="unsigned integer"/>
+        <Element Offset="64" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000040" Description="Pickups UB" DisplayMethod="unsigned integer"/>
+        <Element Offset="66" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000042" Description="Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="68" Vartype="Array of byte" Bytesize="9" OffsetHex="00000044" Description="Collaped Floor Tiles" DisplayMethod="unsigned integer"/>
+        <Element Offset="77" Vartype="Byte" Bytesize="1" OffsetHex="0000004D" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="78" Vartype="Byte" Bytesize="1" OffsetHex="0000004E" Description="Bad Moves Made" DisplayMethod="unsigned integer"/>
+        <Element Offset="79" Vartype="Byte" Bytesize="1" OffsetHex="0000004F" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="80" Vartype="Byte" Bytesize="1" OffsetHex="00000050" Description="Finished Shadow of the Cat" DisplayMethod="unsigned integer"/>
+        <Element Offset="81" Vartype="Byte" Bytesize="1" OffsetHex="00000051" Description="Finished Unfinished Business" DisplayMethod="unsigned integer"/>
+        <Element Offset="82" Vartype="Byte" Bytesize="1" OffsetHex="00000052" Description="Atlantean Stronghold Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="83" Vartype="Byte" Bytesize="1" OffsetHex="00000053" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="84" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000054" Description="Centaur Kills" DisplayMethod="unsigned integer"/>
+        <Element Offset="86" Vartype="Array of byte" Bytesize="4" OffsetHex="00000056" Description="UB Balls Rolled" DisplayMethod="unsigned integer"/>
+        <Element Offset="90" Vartype="Byte" Bytesize="1" OffsetHex="0000005A" Description="Time Looked At Item" DisplayMethod="unsigned integer"/>
+        <Element Offset="91" Vartype="Byte" Bytesize="1" OffsetHex="0000005B" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="92" Vartype="2 Bytes" Bytesize="2" OffsetHex="0000005C" Description="Scream Time" DisplayMethod="unsigned integer"/>
+        <Element Offset="94" Vartype="Array of byte" Bytesize="17" OffsetHex="0000005E" Description="Universal" DisplayMethod="unsigned integer"/>
+        <Element Offset="110" Vartype="2 Bytes" Bytesize="2" OffsetHex="0000006E" Description="Cat Entrance Block Moved" DisplayMethod="unsigned integer"/>
+        <Element Offset="112" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000070" Description="Gym Exercises" DisplayMethod="unsigned integer"/>
+        <Element Offset="114" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000072" Description="N/A" DisplayMethod="unsigned integer"/>
+        <Element Offset="116" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000074" Description="Cat Secret Block Moves" DisplayMethod="unsigned integer"/>
+        <Element Offset="120" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000078" Description="Num Saves" DisplayMethod="unsigned integer"/>
+        <Element Offset="124" Vartype="4 Bytes" Bytesize="4" RLECount="6" OffsetHex="0000007C" Description="Reserved" DisplayMethod="unsigned integer"/>
+      </Elements>
+    </Structure>
+  </Structures>
 </CheatTable>
