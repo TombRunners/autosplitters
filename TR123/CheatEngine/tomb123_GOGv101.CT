@@ -573,6 +573,13 @@
           <Address>tomb1.dll + 0xEF338</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>253</ID>
+          <Description>"Loading"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0x2619CE0</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>15</ID>
           <Description>"LevelComplete"</Description>
           <ShowAsSigned>0</ShowAsSigned>
@@ -1681,26 +1688,68 @@
                   <Address>Tr1TrophyData + 0x5A</Address>
                 </CheatEntry>
                 <CheatEntry>
+                  <ID>258</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x5B</Address>
+                </CheatEntry>
+                <CheatEntry>
                   <ID>227</ID>
                   <Description>"Scream Time"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
-                  <VariableType>Byte</VariableType>
+                  <VariableType>2 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x5C</Address>
                 </CheatEntry>
                 <CheatEntry>
+                  <ID>263</ID>
+                  <Description>"Sokoban - Items Collected (4 = Max = Required!)"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x5E</Address>
+                </CheatEntry>
+                <CheatEntry>
                   <ID>239</ID>
-                  <Description>"Universal"</Description>
+                  <Description>"UB Stuff? (Byte 3 = Look Timer)"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Array of byte</VariableType>
-                  <ByteLength>18</ByteLength>
+                  <ByteLength>14</ByteLength>
                   <Address>Tr1TrophyData + 0x5e</Address>
                 </CheatEntry>
                 <CheatEntry>
-                  <ID>240</ID>
+                  <ID>261</ID>
+                  <Description>"Pitfall"</Description>
+                  <GroupHeader>1</GroupHeader>
+                  <CheatEntries>
+                    <CheatEntry>
+                      <ID>240</ID>
+                      <Description>"UB PitfallEligibility"</Description>
+                      <ShowAsSigned>1</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x6C</Address>
+                    </CheatEntry>
+                    <CheatEntry>
+                      <ID>260</ID>
+                      <Description>"UB Pitfall Kills"</Description>
+                      <ShowAsSigned>0</ShowAsSigned>
+                      <VariableType>Byte</VariableType>
+                      <Address>Tr1TrophyData + 0x6D</Address>
+                    </CheatEntry>
+                  </CheatEntries>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>259</ID>
                   <Description>"Cat Entrance Blocks Moved"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>Byte</VariableType>
                   <Address>Tr1TrophyData + 0x6E</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>262</ID>
+                  <Description>"N/A"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Byte</VariableType>
+                  <Address>Tr1TrophyData + 0x6F</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>241</ID>
@@ -1718,7 +1767,7 @@
                 </CheatEntry>
                 <CheatEntry>
                   <ID>242</ID>
-                  <Description>"Cat Secret Blocks Moved"</Description>
+                  <Description>"Sokoban - Blocks Moved (&lt; 25 required)"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>Tr1TrophyData + 0x74</Address>
@@ -1817,6 +1866,34 @@
           <ShowAsSigned>0</ShowAsSigned>
           <GroupHeader>1</GroupHeader>
           <Address>tomb1.dll + 0x364B930</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>254</ID>
+          <Description>"PickupsDisplayData"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll +0x2570320</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>255</ID>
+          <Description>"HealthBarTimer"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll +0xEF370</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>256</ID>
+          <Description>"OverlayFlag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll +0xD4A78</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>257</ID>
+          <Description>"LoadFade"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll +0x289BC4</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
