@@ -80,8 +80,8 @@ public class GameData
         return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
     }
 
-    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
-    /// <returns>Correct current level of the game</returns>
+    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
+    /// <returns>Correct old level of the game</returns>
     public static uint OldLevel()
     {
         if (CurrentActiveBaseGame is not Game.Tr1)

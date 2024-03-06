@@ -73,7 +73,17 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public GameData Data = new();
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter() => Data.OnGameFound += Settings.SetGameVersion;
+    public Autosplitter()
+    {
+        Data.OnGameFound += Settings.SetGameVersion;
+        Data.OnGameFound += UpdateWatchers;
+    }
+
+    /// <summary>
+    ///     This method should be called by GameData's OnGameFound to ensure that LiveSplit MemoryWatchers do not have
+    ///     zeroed values on initialization, which ruins some of our logic.
+    /// </summary>
+    private void UpdateWatchers(uint _) => Data.Update();
 
     /// <summary>
     ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
@@ -164,17 +174,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should start, <see langword="false" /> otherwise</returns>
     public bool ShouldStart(LiveSplitState state)
     {
-        uint oldLevelTime = GameData.LevelIgt.Old;
-        uint currentLevelTime = GameData.LevelIgt.Current;
-
-        // Perform new game logic first, since it is the only place where FG should start.
-        uint currentLevel = GameData.CurrentLevel();
-        bool levelTimeJustStarted = oldLevelTime > 0 && currentLevelTime == 0;
-        bool newGameStarted = levelTimeJustStarted && IsFirstLevel(currentLevel);
-        if (newGameStarted)
-            return true;
-
-        return !Settings.FullGame && levelTimeJustStarted;
+        var igt = GameData.LevelIgt;
+        bool levelTimeJustStarted = igt.Old == 0 && igt.Current > 0;
+        return Settings.FullGame
+            ? levelTimeJustStarted && IsFirstLevel(GameData.CurrentLevel())
+            : levelTimeJustStarted;
     }
 
     /// <summary>Determines if <paramref name="level" /> is the first of the game or expansion.</summary>
@@ -224,6 +228,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public void Dispose()
     {
         Data.OnGameFound -= Settings.SetGameVersion;
+        Data.OnGameFound -= UpdateWatchers;
         Data = null;
         Settings?.Dispose();
     }
