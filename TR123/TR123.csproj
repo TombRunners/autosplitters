@@ -62,6 +62,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Enums\Game.cs" />
+    <Compile Include="Enums\GameTimeMethod.cs" />
     <Compile Include="Enums\GameVersion.cs" />
     <Compile Include="Enums\Tr1Level.cs" />
     <Compile Include="Enums\Tr2Level.cs" />
@@ -83,6 +84,7 @@
     <None Include="CheatEngine\tomb123_GOGv10.CT" />
     <None Include="CheatEngine\tomb123_GOGv101.CT" />
     <None Include="Enums\.editorconfig" />
+    <None Include="Hashes\egs_debug.csv" />
     <None Include="Hashes\gog_v1.0_hashes.csv" />
     <None Include="Hashes\gog_v1.01_hashes.csv" />
     <None Include="Hashes\steam_13430979_hashes.csv" />

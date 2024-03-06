@@ -265,6 +265,13 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb3.dll + 0x17BF98</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>162</ID>
+          <Description>"LoadFade"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x2D7650</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -494,6 +501,13 @@
           <Description>"TitleLoaded"</Description>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb2.dll+11E884</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>161</ID>
+          <Description>"Load Fade"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0x2796F4</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -1084,10 +1098,21 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0xEA338</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>160</ID>
+          <Description>"LoadFade"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0x244BC4</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols>
+    <SymbolEntry>
+      <Name>Tr1TrophyData</Name>
+      <Address>Tr1LevelStats + 0x28</Address>
+    </SymbolEntry>
     <SymbolEntry>
       <Name>Tr1LevelStats</Name>
       <Address>tomb1.dll + 0x36CBBD0</Address>
