@@ -90,12 +90,38 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// </summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> when IGT should be paused during the conditions, <see langword="false" /> otherwise</returns>
-    public bool IsGameTimePaused(LiveSplitState state) => true;
+    public bool IsGameTimePaused(LiveSplitState state)
+    {
+        if (Settings.GameTimeMethod == GameTimeMethod.Igt)
+            return true;
+
+        // RTA w/o Loads should tick at the title screen once a run has started.
+        var title = GameData.TitleLoaded;
+        if (title.Current)
+            return false;
+
+        // RTA w/o Loads should tick whenever a loading screen is not active.
+        var loadFade = GameData.LoadFade;
+        if (loadFade.Current <= 0)
+            return false;
+
+        // A loading screen is active; check if loadFade is decreasing.
+        bool fadeDecreasing = loadFade.Old > loadFade.Current; // Decreasing => loading screen is fading out, level is starting.
+        return !fadeDecreasing;
+    }
 
     /// <summary>Determines the IGT.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns>IGT as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
-    public TimeSpan? GetGameTime(LiveSplitState state)
+    public TimeSpan? GetGameTime(LiveSplitState state) =>
+        Settings.GameTimeMethod switch
+        {
+            GameTimeMethod.Igt => IgtGameTime(),
+            GameTimeMethod.RtaNoLoads => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
+        };
+
+    private TimeSpan? IgtGameTime()
     {
         // Check that the title screen is not active.
         var title = GameData.TitleLoaded;
@@ -104,7 +130,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         // Check that IGT is ticking.
         var levelIgt = GameData.LevelIgt;
-        if (!levelIgt.Changed)
+        bool increasing = levelIgt.Current > levelIgt.Old;
+        if (!increasing)
             return null;
 
         // TR3's IGT ticks during globe level selection; the saved end-level IGT is unaffected, thus the overall FG IGT is also unaffected.

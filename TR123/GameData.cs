@@ -64,6 +64,7 @@ public class GameData
     public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LoadFade => LoadFadeWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> TitleLoaded => TitleLoadedWatchers[CurrentActiveBaseGame];
 
     private static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
@@ -141,6 +142,7 @@ public class GameData
                             Level = 0x36CBBE8,
                             LevelComplete = 0xEA340,
                             LevelIgt = 0x36CBBD0,
+                            LoadFade = 0x2D7650,
                             TitleLoaded = 0xEA338,
                         }
                     },
@@ -155,6 +157,7 @@ public class GameData
                             Level = 0x11E7C8,
                             LevelComplete = 0x11ECE4,
                             LevelIgt = 0x36FFE2C,
+                            LoadFade = 0x2796F4,
                             TitleLoaded = 0x11E884,
                         }
                     },
@@ -169,6 +172,7 @@ public class GameData
                             Level = 0x17BECC,
                             LevelComplete = 0x17C3AC,
                             LevelIgt = 0x3764968,
+                            LoadFade = 0x244BC4,
                             TitleLoaded = 0x17BF98,
                         }
                     },
@@ -189,6 +193,7 @@ public class GameData
                             Level = 0x371EBE8,
                             LevelComplete = 0xEF340,
                             LevelIgt = 0x371EBD0,
+                            LoadFade = 0x2619CE0,
                             TitleLoaded = 0xEF338,
                         }
                     },
@@ -203,6 +208,7 @@ public class GameData
                             Level = 0x1247C8,
                             LevelComplete = 0x124CE4,
                             LevelIgt = 0x3753E0C,
+                            LoadFade = 0x2BF6D4,
                             TitleLoaded = 0x124884,
                         }
                     },
@@ -217,6 +223,7 @@ public class GameData
                             Level = 0x180ECC,
                             LevelComplete = 0x1813AC,
                             LevelIgt = 0x37B7948,
+                            LoadFade = 0x31C630,
                             TitleLoaded = 0x180F98,
                         }
                     },
@@ -253,6 +260,7 @@ public class GameData
             { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
         }.ToImmutableDictionary();
 
+    /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
     private static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
         new Dictionary<Game, MemoryWatcher<short>>(3)
         {
@@ -298,6 +306,16 @@ public class GameData
             { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
         }.ToImmutableDictionary();
 
+    /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
+    private static ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
+        new Dictionary<Game, MemoryWatcher<uint>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
+            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LoadFade"] },
+            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
+        }.ToImmutableDictionary();
+
+    /// <summary>Tells if the game is currently in the title screen.</summary>
     private static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
         new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
@@ -380,6 +398,9 @@ public class GameData
 
             int levelIgtOffset = addresses.LevelIgt;
             Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, levelIgtOffset)) { Name = $"{game}LevelIgt" });
+
+            int loadFadeOffset = addresses.LoadFade;
+            Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, loadFadeOffset)) { Name = $"{game}LoadFade" });
 
             int titleLoadedOffset = addresses.TitleLoaded;
             Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });

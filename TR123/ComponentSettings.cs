@@ -11,14 +11,20 @@ public sealed class ComponentSettings : UserControl
     public RadioButton ILModeButton;
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
+    public Label GameTimeMethodLabel;
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     public bool FullGame = true;
     public bool Deathrun;
+    public GameTimeMethod GameTimeMethod;
     public bool EnableAutoReset;
 
-    public ComponentSettings() => InitializeComponent();
+    public ComponentSettings()
+    {
+        InitializeComponent();
+        SetGameTimeMethod(Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
+    }
 
     private void InitializeComponent()
     {
@@ -26,6 +32,7 @@ public sealed class ComponentSettings : UserControl
         FullGameModeButton = new RadioButton();
         ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
+        GameTimeMethodLabel = new Label();
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
@@ -36,9 +43,9 @@ public sealed class ComponentSettings : UserControl
         ModeSelect.Controls.Add(FullGameModeButton);
         ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(DeathrunModeButton);
-        ModeSelect.Location = new Point(4, 4);
+        ModeSelect.Location = new Point(10, 10);
         ModeSelect.Name = "ModeSelect";
-        ModeSelect.Size = new Size(297, 53);
+        ModeSelect.Size = new Size(275, 55);
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
@@ -59,26 +66,35 @@ public sealed class ComponentSettings : UserControl
         ILModeButton.AutoSize = true;
         ILModeButton.Location = new Point(84, 20);
         ILModeButton.Name = "ILModeButton";
-        ILModeButton.Size = new Size(139, 17);
+        ILModeButton.Size = new Size(100, 17);
         ILModeButton.TabIndex = 1;
-        ILModeButton.Text = "IL or Section Run (RTA)";
+        ILModeButton.Text = "IL or Section Run";
         ILModeButton.UseVisualStyleBackColor = true;
         ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
 
         // DeathrunModeButton
         DeathrunModeButton.AutoSize = true;
-        DeathrunModeButton.Location = new Point(225, 20);
+        DeathrunModeButton.Location = new Point(198, 20);
         DeathrunModeButton.Name = "DeathrunModeButton";
-        DeathrunModeButton.Size = new Size(69, 17);
+        DeathrunModeButton.Size = new Size(70, 17);
         DeathrunModeButton.TabIndex = 2;
         DeathrunModeButton.Text = "Deathrun";
         DeathrunModeButton.UseVisualStyleBackColor = true;
         DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
 
+        // GameTimeMethodLabel
+        GameTimeMethodLabel.AutoSize = true;
+        GameTimeMethodLabel.Location = new Point(328, 25);
+        GameTimeMethodLabel.Name = "GameVersionLabel";
+        GameTimeMethodLabel.Size = new Size(200, 30);
+        GameTimeMethodLabel.TabIndex = 0;
+        GameTimeMethodLabel.Text = "Game Time Method:\nNot Initialized!";
+        GameTimeMethodLabel.TextAlign = ContentAlignment.MiddleCenter;
+
         // EnableAutoResetCheckbox
         EnableAutoResetCheckbox.AutoSize = true;
-        EnableAutoResetCheckbox.Checked = true;
-        EnableAutoResetCheckbox.Location = new Point(10, 64);
+        EnableAutoResetCheckbox.Checked = false;
+        EnableAutoResetCheckbox.Location = new Point(12, 80);
         EnableAutoResetCheckbox.Size = new Size(72, 17);
         EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
         EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
@@ -88,27 +104,28 @@ public sealed class ComponentSettings : UserControl
 
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;
-        GameVersionLabel.Location = new Point(10, 92);
+        GameVersionLabel.Location = new Point(10, 150);
         GameVersionLabel.Name = "GameVersionLabel";
-        GameVersionLabel.Size = new Size(186, 13);
+        GameVersionLabel.Size = new Size(200, 15);
         GameVersionLabel.TabIndex = 1;
         GameVersionLabel.Text = "Game Version: Unknown/Undetected";
 
         // AutosplitterVersionLabel
         AutosplitterVersionLabel.AutoSize = true;
-        AutosplitterVersionLabel.Location = new Point(10, 118);
+        AutosplitterVersionLabel.Location = new Point(10, 170);
         AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-        AutosplitterVersionLabel.Size = new Size(103, 110);
+        AutosplitterVersionLabel.Size = new Size(200, 15);
         AutosplitterVersionLabel.TabIndex = 2;
-        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
+        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
 
         // ComponentSettings
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
+        Controls.Add(GameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "ComponentSettings";
-        Size = new Size(350, 145);
+        Size = new Size(476, 200);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
@@ -124,25 +141,41 @@ public sealed class ComponentSettings : UserControl
             GameVersion.PublicV101 => "GOG v1.01 / Steam 13430979",
             _ => "Unknown/Undetected",
         };
-        GameVersionLabel.Text = "Game Version: " + versionText;
+        GameVersionLabel.Text = $"Game Version: {versionText}";
+    }
+
+    public void SetGameTimeMethod(GameTimeMethod method)
+    {
+        string methodText = method switch
+        {
+            GameTimeMethod.Igt => "IGT",
+            GameTimeMethod.RtaNoLoads => "RTA w/o Loads",
+            _ => "Unknown",
+        };
+        GameTimeMethodLabel.Text = $"Game Time Method:\n{methodText}";
+
+        GameTimeMethod = method;
     }
 
     private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = true;
         Deathrun = false;
+        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
     }
 
     private void ILModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = false;
         Deathrun = false;
+        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
     }
 
     private void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = false;
         Deathrun = true;
+        SetGameTimeMethod(GameTimeMethod.Igt);
     }
 
     private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
