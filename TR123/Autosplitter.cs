@@ -201,6 +201,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should start, <see langword="false" /> otherwise</returns>
     public bool ShouldStart(LiveSplitState state)
     {
+        // Do not start when on a title screen.
+        var title = GameData.TitleLoaded;
+        if (title.Current)
+            return false;
+
+        // Start when IGT ticks up from 0.
         var igt = GameData.LevelIgt;
         bool levelTimeJustStarted = igt.Old == 0 && igt.Current > 0;
         return Settings.FullGame
