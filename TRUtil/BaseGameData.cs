@@ -31,7 +31,7 @@ public abstract class BaseGameData
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
     public delegate void GameFoundDelegate(uint version);
-        
+
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
 
@@ -41,7 +41,7 @@ public abstract class BaseGameData
         VersionHashes.Clear();
         ProcessSearchNames.Clear();
     }
-        
+
     #region MemoryWatcherList Items
 
     /// <summary>Gives the value of the active level; for TR1, also matches active cutscene, FMV, or demo.</summary>
@@ -73,7 +73,7 @@ public abstract class BaseGameData
             {
                 if (!SetGameProcessAndVersion())
                     return false;
-                    
+
                 SetAddresses(Version);
                 OnGameFound.Invoke(Version);
                 return true;
@@ -102,7 +102,7 @@ public abstract class BaseGameData
             Version = 0;
             return false;
         }
-            
+
         // Set Game and do some event management.
         Game = gameProcess;
         Game.EnableRaisingEvents = true;

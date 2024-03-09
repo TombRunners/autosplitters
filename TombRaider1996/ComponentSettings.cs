@@ -10,7 +10,7 @@ public sealed class ComponentSettings : ClassicComponentSettings
         const string atiTr1Text = "TombATI [TR 1996]";
         const string atiTrUbText = "TombATI [TR:UB]";
         const string unknownText = "Unknown/Undetected";
-        
+
         string versionText = (GameVersion) version switch
         {
             GameVersion.DOSBox => dosboxText,

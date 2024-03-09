@@ -45,7 +45,7 @@ public class LaterClassicComponentSettings : UserControl
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
-        
+
         // FullGameModeButton
         FullGameModeButton.AutoSize = true;
         FullGameModeButton.Checked = true;
@@ -104,7 +104,7 @@ public class LaterClassicComponentSettings : UserControl
         Size = new Size(350, 145);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
-            
+
         // DisableAutoResetCheckbox
         DisableAutoResetCheckbox.AutoSize = true;
         DisableAutoResetCheckbox.Checked = true;
@@ -115,7 +115,7 @@ public class LaterClassicComponentSettings : UserControl
         DisableAutoResetCheckbox.TabIndex = 0;
         DisableAutoResetCheckbox.UseVisualStyleBackColor = true;
         DisableAutoResetCheckbox.CheckedChanged += DisableAutoResetCheckboxCheckedChanged;
-            
+
         // OptionCheckbox
         OptionCheckbox.AutoSize = true;
         OptionCheckbox.Checked = false;
@@ -130,7 +130,7 @@ public class LaterClassicComponentSettings : UserControl
         ResumeLayout(false);
         PerformLayout();
     }
-        
+
     public virtual void SetGameVersion(uint version)
     {
     }
@@ -158,7 +158,7 @@ public class LaterClassicComponentSettings : UserControl
         var checkbox = (CheckBox)sender;
         Option = checkbox.Checked;
     }
-        
+
     private void DisableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
         var checkbox = (CheckBox)sender;

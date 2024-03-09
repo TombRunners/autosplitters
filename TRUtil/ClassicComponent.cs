@@ -80,7 +80,7 @@ public abstract class ClassicComponent : AutoSplitComponent
         else
             _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
     }
-    
+
     public override void Dispose()
     {
         _state.OnSplit -= StateOnSplit;

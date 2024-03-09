@@ -11,6 +11,6 @@ internal sealed class Component : ClassicComponent
     public Component(ClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
     }
-        
+
     public override string ComponentName => "Tomb Raider II and Golden Mask";
 }

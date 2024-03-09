@@ -13,9 +13,9 @@ public abstract class ClassicGameData : BaseGameData
 
     /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
     protected static uint LevelSaveStructSize;
-        
+
     #region MemoryWatcherList Items
-        
+
     /// <summary>Indicates if the game is on the title screen (main menu).</summary>
     /// <remarks>Goes back to 0 during demos, if applicable to the game.</remarks>
     public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers?["TitleScreen"];

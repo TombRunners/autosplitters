@@ -32,7 +32,7 @@ public sealed class ComponentSettings : ClassicComponentSettings
                 versionText = "Unknown/Undetected";
                 break;
         }
-        
+
         GameVersionLabel.Text = "Game Version: " + versionText;
     }
 }

@@ -3,7 +3,7 @@
 namespace TRUtil;
 
 public abstract class LaterClassicGameData : BaseGameData
-{    
+{
     #region MemoryWatcherList Items
 
     /// <summary>Indicates the next level to be loaded.</summary>

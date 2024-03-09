@@ -26,7 +26,7 @@ public enum Tr1Level
     NatlasMines      = 13,
     Atlantis         = 14,
     TheGreatPyramid  = 15,
-    
+
     // Cutscenes and title screen
     QualopecCutscene = 16,
     TihocanCutscene  = 17,
@@ -34,7 +34,7 @@ public enum Tr1Level
     AfterAtlantisFMV = 19,
     TitleAndFirstFMV = 20,
 }
-    
+
 /// <summary>The game's level values.</summary>
 public enum TrUbLevel
 {
@@ -110,7 +110,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
         var lastLevel = (Tr1Level)level;
         if (lastLevel <= Tr1Level.TheGreatPyramid)
             return lastLevel;
-            
+
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         return lastLevel switch
         {
@@ -130,7 +130,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
         bool gameJustLaunched = ClassicGameData.LevelTime.Current == 0 && BaseGameData.Level.Old == 0;
         if (gameJustLaunched)
             return false;
-            
+
         // Check to see if the player has navigated to the New Game page of the passport.
         // This prevent some misfires from LiveSplit hooking late.
         // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.

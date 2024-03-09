@@ -30,7 +30,7 @@ public enum Tr2Level
     FloatingIslands = 16,
     DragonsLair = 17,
     HomeSweetHome = 18,
-    
+
     // Demos
     DemoVenice = 19,
     DemoWreckOfTheMariaDoria = 20,
@@ -45,7 +45,7 @@ public enum Tr2GoldLevel
     FoolsGold = 02,
     FurnaceOfTheGods = 03,
     Kingdom = 04,
-    
+
     // Bonus
     NightmareInVegas = 05,
 }
@@ -59,7 +59,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
     public Autosplitter()
     {
         Settings = new ComponentSettings();
-            
+
         LevelCount = 18; // This is the highest between TR2 at 18 and TR2G at 5.
         CompletedLevels.Capacity = LevelCount;
 
@@ -72,7 +72,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
         uint currentLevel = BaseGameData.Level.Current;
         uint oldLevel = BaseGameData.Level.Old;
 
-        // Ignore demos. 
+        // Ignore demos.
         if (currentLevel >= (uint)Tr2Level.DemoVenice) // Never true for TR2G; level values are never so high.
             return false;
 
@@ -98,7 +98,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
         {
             return false;
         }
-            
+
         // The remaining logic only applies to non-FG runs starting on a level besides the first.
         uint oldTime = ClassicGameData.LevelTime.Old;
         uint currentTime = ClassicGameData.LevelTime.Current;

@@ -14,23 +14,23 @@ internal enum Tr4Level
     // Cambodia
     AngkorWat               = 1,
     RaceForTheIris          = 2,
-    
+
     // Valley of the Kings
     TheTombOfSeth           = 3,
     BurialChambers          = 4,
     ValleyOfTheKings        = 5,
     Kv5                     = 6,
-    
+
     // Karnak
     TempleOfKarnak          = 7,
     GreatHypostyleHall      = 8,
     SacredLake              = 9,
     TombOfSemerkhet         = 11, // 10 is unused.
     GuardianOfSemerkhet     = 12,
-    
+
     // Eastern Desert
     DesertRailroad          = 13,
-    
+
     // Alexandria
     Alexandria              = 14,
     CoastalRuins            = 15,
@@ -40,7 +40,7 @@ internal enum Tr4Level
     TempleOfPoseidon        = 19,
     TheLostLibrary          = 20,
     HallOfDemetrius         = 21,
-    
+
     // Cairo
     CityOfTheDead           = 22,
     Trenches                = 23,
@@ -48,7 +48,7 @@ internal enum Tr4Level
     StreetBazaar            = 25,
     CitadelGate             = 26,
     Citadel                 = 27,
-    
+
     // Giza
     SphinxComplex           = 28,
     UnderneathTheSphinx     = 30, // 29 is unused.
@@ -58,7 +58,7 @@ internal enum Tr4Level
     TheGreatPyramid         = 34,
     KhufusQueensPyramid     = 35,
     InsideTheGreatPyramid   = 36,
-    
+
     // Temple of Horus
     TempleOfHorus           = 37,
     HorusBoss               = 38,
@@ -69,7 +69,7 @@ internal enum TteLevel
 {
     MainMenu          = 0,
     Office            = 1, // Cutscene
-    
+
     // Playable Level
     TheTimesExclusive = 2, // At the end of the level, gfLevelComplete is set to 39 to trigger credits.
 }
@@ -141,7 +141,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         if (playingTheTimesExclusive && BaseGameData.Level.Current != (uint)TteLevel.TheTimesExclusive)
             return false;
 
-        // Handle all of TTE as well as TR4 ILs for both rulesets.            
+        // Handle all of TTE as well as TR4 ILs for both rulesets.
         if (!Settings.FullGame || playingTheTimesExclusive)
         {
             // This assumes all level transitions are desirable splits.
@@ -285,15 +285,15 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         var currentLevel = (Tr4Level)BaseGameData.Level.Current;
         var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
         var oldGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Old;
-        
+
         // Handle special exception case(s) that ignore that the game is in the same load state.
         bool sameLoadState = currentGfLevelComplete == oldGfLevelComplete;
         if (sameLoadState)
         {
             bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
-            if (!finishedLoadingCatacombs) 
+            if (!finishedLoadingCatacombs)
                 return false;
-            
+
             // The level must finish loading before its ITEM_INFO array can be checked.
             var platform = GameData.GetItemInfoAtIndex(79);
             return platform.flags == 0x20;
@@ -348,18 +348,18 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         if (inTrenches)
         {
             bool laraHasCombinedDetonator = GameData.PuzzleItems.Current.MineDetonator == 1;
-                
+
             bool loadingToStreetBazaar = currentGfLevelComplete == Tr4Level.StreetBazaar;
             if (loadingToStreetBazaar)
             {
                 bool laraHasNeitherDetonatorPart = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b0000_0000_0000_0000;
                 return !laraHasCombinedDetonator && laraHasNeitherDetonatorPart;
             }
-                
+
             bool justFinishedLoadingIntoLevel = LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
-            if (!justFinishedLoadingIntoLevel) 
+            if (!justFinishedLoadingIntoLevel)
                 return false;
-                
+
             bool laraHasDetonatorParts = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b1100_0000_0000_0000;
             bool laraStartedNextToMinefield = GameData.GetItemInfoAtIndex(51).room_number == 26;
             return (laraHasCombinedDetonator || laraHasDetonatorParts) && laraStartedNextToMinefield;
@@ -407,7 +407,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             bool loadingFromInsideMenkauresToSphinx = currentLevel == Tr4Level.InsideMenkauresPyramid && currentGfLevelComplete == Tr4Level.SphinxComplex;
             return !loadingFromInsideMenkauresToSphinx;
         }
-            
+
         bool loadingInsideTheGreatPyramid = currentGfLevelComplete == Tr4Level.InsideTheGreatPyramid;
         if (loadingInsideTheGreatPyramid)
         {

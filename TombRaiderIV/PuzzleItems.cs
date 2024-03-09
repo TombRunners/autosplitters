@@ -29,19 +29,19 @@ internal readonly struct PuzzleItems(
 
     /// <summary>Unique item active during <see cref="Tr4Level.TheTombOfSeth"/>.</summary>
     public byte EyeOfHorus       => Item01;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.TheTombOfSeth"/>.</summary>
     public byte TheTimelessSands => Item02;
 
     /// <summary>Unique item active during <see cref="Tr4Level.BurialChambers"/>.</summary>
-    public byte TheHandOfOrion   => Item01;           
-    
+    public byte TheHandOfOrion   => Item01;
+
     /// <summary>Unique item active during <see cref="Tr4Level.BurialChambers"/>.</summary>
-    public byte TheHandOfSirius  => Item02;   
-    
+    public byte TheHandOfSirius  => Item02;
+
     /// <summary>Unique item active during <see cref="Tr4Level.BurialChambers"/>.</summary>
-    public byte ScarabTalisman   => Item03;  
-    
+    public byte ScarabTalisman   => Item03;
+
     /// <summary>Unique item active during <see cref="Tr4Level.BurialChambers"/>.</summary>
     public byte TheGoldenSerpent => Item04;
 
@@ -50,48 +50,48 @@ internal readonly struct PuzzleItems(
 
     /// <summary>Unique item active during <see cref="Tr4Level.GreatHypostyleHall"/>, and <see cref="Tr4Level.SacredLake"/>.</summary>
     public byte SunTalisman => Item01;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.TempleOfKarnak"/>, <see cref="Tr4Level.GreatHypostyleHall"/>, and <see cref="Tr4Level.SacredLake"/>.</summary>
     public byte CanopicJar1 => Item02;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.TempleOfKarnak"/>, <see cref="Tr4Level.GreatHypostyleHall"/>, and <see cref="Tr4Level.SacredLake"/>.</summary>
     public byte CanopicJar2 => Item03;
 
     /// <summary>Unique item active during <see cref="Tr4Level.TombOfSemerkhet"/>.</summary>
     public byte BaCartouche => Item04;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.TombOfSemerkhet"/>.</summary>
     public byte RaCartouche => Item05;
 
     /// <summary>Unique item active during <see cref="Tr4Level.GuardianOfSemerkhet"/>.</summary>
     public byte GoldenVraeus => Item06;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.GuardianOfSemerkhet"/>.</summary>
     public byte GuardianKey  => Item07;
 
     /// <summary>
-    ///     Non-unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>, 
+    ///     Non-unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>,
     ///     <see cref="Tr4Level.Catacombs"/>, and <see cref="Tr4Level.TempleOfPoseidon"/>.
     /// </summary>
     public byte Trident         => Item01;
-    
+
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>, 
+    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>,
     ///     <see cref="Tr4Level.Catacombs"/>, <see cref="Tr4Level.TempleOfPoseidon"/>, and <see cref="Tr4Level.TheLostLibrary"/>.
     /// </summary>
     public byte MusicScroll     => Item02;
-    
+
     /// <summary>Non-unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, and <see cref="Tr4Level.PharosTempleOfIsis"/>.</summary>
     public byte GoldenStar      => Item03;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>, 
+    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>,
     ///     <see cref="Tr4Level.Catacombs"/>, <see cref="Tr4Level.TempleOfPoseidon"/>, and <see cref="Tr4Level.TheLostLibrary"/>.
     /// </summary>
     public byte HookAndPole     => Item04;
-        
+
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>, 
+    ///     Unique item active during <see cref="Tr4Level.Alexandria"/>, <see cref="Tr4Level.CoastalRuins"/>, <see cref="Tr4Level.PharosTempleOfIsis"/>,
     ///     <see cref="Tr4Level.CleopatrasPalaces"/>, <see cref="Tr4Level.Catacombs"/>, <see cref="Tr4Level.TempleOfPoseidon"/>,
     ///     <see cref="Tr4Level.TheLostLibrary"/>, and <see cref="Tr4Level.HallOfDemetrius"/>.
     /// </summary>
@@ -124,31 +124,31 @@ internal readonly struct PuzzleItems(
     public byte BlackBeetle     => Item12;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>, 
+    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>,
     ///     <see cref="Tr4Level.StreetBazaar"/>, and <see cref="Tr4Level.CitadelGate"/>.
     /// </summary>
     public byte NitrousOxideFeeder => Item01;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>, 
+    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>,
     ///     <see cref="Tr4Level.StreetBazaar"/>, and <see cref="Tr4Level.CitadelGate"/>.
     /// </summary>
     public byte CarJack            => Item02;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>, 
+    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>,
     ///     <see cref="Tr4Level.StreetBazaar"/>, and <see cref="Tr4Level.CitadelGate"/>.
     /// </summary>
     public byte RoomKey            => Item04;
-    
+
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>, 
+    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>,
     ///     <see cref="Tr4Level.StreetBazaar"/>, and <see cref="Tr4Level.CitadelGate"/>.
     /// </summary>
     public byte WeaponCodeKey      => Item05;
-    
+
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>, 
+    ///     Unique item active during <see cref="Tr4Level.CityOfTheDead"/>, <see cref="Tr4Level.Trenches"/>, <see cref="Tr4Level.ChambersOfTulun"/>,
     ///     <see cref="Tr4Level.StreetBazaar"/>, and <see cref="Tr4Level.CitadelGate"/>.
     /// </summary>
     public byte MineDetonator      => Item08;
@@ -158,7 +158,7 @@ internal readonly struct PuzzleItems(
 
     /// <summary>Unique item active during <see cref="Tr4Level.UnderneathTheSphinx"/>.</summary>
     public byte StoneOfMaat   => Item01;
-    
+
     /// <summary>Unique item active during <see cref="Tr4Level.UnderneathTheSphinx"/>.</summary>
     public byte StoneOfKhepri => Item02;
 
@@ -190,13 +190,13 @@ internal readonly struct PuzzleItems(
     public byte NorthernShaftKey => Item07;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.TheMastabas"/>, <see cref="Tr4Level.TheGreatPyramid"/>, 
+    ///     Unique item active during <see cref="Tr4Level.TheMastabas"/>, <see cref="Tr4Level.TheGreatPyramid"/>,
     ///     <see cref="Tr4Level.KhufusQueensPyramid"/> and <see cref="Tr4Level.InsideTheGreatPyramid"/>.
     /// </summary>
     public byte SouthernShaftKey => Item08;
 
     /// <summary>
-    ///     Unique item active during <see cref="Tr4Level.TheMastabas"/>, <see cref="Tr4Level.TheGreatPyramid"/>, 
+    ///     Unique item active during <see cref="Tr4Level.TheMastabas"/>, <see cref="Tr4Level.TheGreatPyramid"/>,
     ///     <see cref="Tr4Level.KhufusQueensPyramid"/> and <see cref="Tr4Level.InsideTheGreatPyramid"/>.
     /// </summary>
     public byte EasternShaftKey  => Item09;

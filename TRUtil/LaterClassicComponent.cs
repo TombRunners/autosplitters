@@ -19,7 +19,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
 {
     private readonly LaterClassicAutosplitter _splitter;
     private readonly LiveSplitState _state;
-    
+
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
     private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit();
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();

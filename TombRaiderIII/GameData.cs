@@ -35,10 +35,10 @@ internal sealed class GameData : ClassicGameData
 
         ProcessSearchNames.Add("tomb3");
         ProcessSearchNames.Add("tr3gold");
-            
+
         LevelSaveStructSize = 0x33; // All TR3 and TLA versions.
     }
-        
+
     protected override void SetAddresses(uint version)
     {
         switch ((GameVersion)version)

@@ -8,10 +8,10 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
 {
     protected internal ClassicComponentSettings Settings = new();
     public ClassicGameData Data;
-                
+
     /// <summary>Used to size CompletedLevels.</summary>
     protected int LevelCount = 0;
-        
+
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
     protected readonly List<uint> CompletedLevels = [];
 
@@ -53,7 +53,7 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
             bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current == 0;
             return laraJustDied;
         }
-            
+
         // FG & IL/Section
         bool levelJustCompleted = !ClassicGameData.LevelComplete.Old && ClassicGameData.LevelComplete.Current;
         return levelJustCompleted;
@@ -83,7 +83,7 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
         return !Settings.FullGame && levelTimeJustStarted && !oldTitleScreen;
     }
 
-        
+
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
     public virtual void OnStart() => CompletedLevels.Clear();
 

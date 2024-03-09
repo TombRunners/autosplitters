@@ -4,7 +4,7 @@ using LiveSplit.Model;
 namespace TRUtil;
 
 public abstract class LaterClassicAutosplitter : BaseAutosplitter
-{      
+{
     protected internal LaterClassicComponentSettings Settings = new();
     public LaterClassicGameData Data;
 
@@ -18,7 +18,7 @@ public abstract class LaterClassicAutosplitter : BaseAutosplitter
     public override TimeSpan? GetGameTime(LiveSplitState state) {
         if (!LaterClassicGameData.GameTimer.Changed)
             return null;
-            
+
         return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(LaterClassicGameData.GameTimer.Current - _ticksAtStartOfRun));
     }
 

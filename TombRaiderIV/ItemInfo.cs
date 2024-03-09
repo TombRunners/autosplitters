@@ -29,8 +29,8 @@ public struct ItemInfo(
         public int x { get; set; } = x;
         public int y { get; set; } = y;
         public int z { get; set; } = z;
-    }  
-        
+    }
+
     public struct PCLIGHT(
         float x, float y, float z, float r, float g, float b, int shadow,
         float Inner, float Outer, float InnerAngle, float OuterAngle, float Cutoff,
@@ -70,7 +70,7 @@ public struct ItemInfo(
         public PHD_VECTOR rlp { get; set; } = rlp;
         public int Range { get; set; } = Range;
     }
-        
+
     public struct ITEM_LIGHT(
         int r, int g, int b, int ambient, int rs, int gs, int bs, int fcnt,
         PCLIGHT_Array CurrentLights, PCLIGHT_Array PrevLights, int nCurrentLights, int nPrevLights,
@@ -93,7 +93,7 @@ public struct ItemInfo(
         public PHD_VECTOR item_pos { get; set; } = item_pos;
         public uint pCurrentLights { get; set; } = pCurrentLights;
         public uint pPrevLights { get; set; } = pPrevLights;
-    }        
+    }
 
     public struct PCLIGHT_Array(
         PCLIGHT light00, PCLIGHT light01, PCLIGHT light02, PCLIGHT light03, PCLIGHT light04,

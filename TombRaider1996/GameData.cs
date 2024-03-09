@@ -30,7 +30,7 @@ internal sealed class GameData : ClassicGameData
 
         ProcessSearchNames.Add("dosbox");
         ProcessSearchNames.Add("tombati");
-        ProcessSearchNames.Add("tombub");            
+        ProcessSearchNames.Add("tombub");
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ internal sealed class GameData : ClassicGameData
     ///     If any menu item is active, the value just increases and Demo Mode is not activated.
     /// </remarks>
     public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
-        
+
     protected override void SetAddresses(uint version)
     {
         Watchers.Clear();
@@ -74,7 +74,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x2513AC)) { Name = "LevelTime" });
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04)) { Name = "PickedPassportFunction" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
-                break;                
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
