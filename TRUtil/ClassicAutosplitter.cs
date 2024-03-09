@@ -59,13 +59,18 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
         return levelJustCompleted;
     }
 
-    /* It is hypothetically reasonable to use CompletedLevels to reset
-     * if the player loads into a level ahead of their current level.
-     * However, considering a case where a runner accidentally loads an incorrect
-     * save after dying, it's clear that this should be avoided.
-     */
-    public override bool ShouldReset(LiveSplitState state) =>
-        ClassicGameData.PickedPassportFunction.Current == 2;
+    public override bool ShouldReset(LiveSplitState state)
+    {
+        if (!Settings.EnableAutoReset)
+            return false;
+
+        /* It is hypothetically reasonable to use CompletedLevels to reset
+         * if the player loads into a level ahead of their current level.
+         * However, considering a case where a runner accidentally loads an incorrect
+         * save after dying, it's clear that this should be avoided.
+         */
+        return ClassicGameData.PickedPassportFunction.Current == 2;
+    }
 
     public override bool ShouldStart(LiveSplitState state)
     {

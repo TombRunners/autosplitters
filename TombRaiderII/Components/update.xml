@@ -1,4 +1,13 @@
 <updates>
+  <update version="1.5.0.0">
+    <files>
+      <file path="TombRaiderII/Components/TR2.dll" localPath="Components/TR2.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added Auto-Reset checkbox which is unchecked by default.</change>
+    </changelog>
+  </update>
   <update version="1.4.4.0">
     <files>
       <file path="TombRaiderII/Components/TR2.dll" localPath="Components/TR2.dll" status="changed"/>

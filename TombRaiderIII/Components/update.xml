@@ -1,4 +1,13 @@
 <updates>
+  <update version="2.1.0.0">
+    <files>
+      <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added Auto-Reset checkbox which is unchecked by default.</change>
+    </changelog>
+  </update>
   <update version="2.0.4.0">
     <files>
       <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>

@@ -54,8 +54,12 @@ public abstract class ClassicComponent : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         var settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
+            _splitter.Settings.EnableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
+            _splitter.Settings.FullGame));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
+            _splitter.Settings.Deathrun));
         return settingsNode;
     }
 
@@ -69,10 +73,13 @@ public abstract class ClassicComponent : AutoSplitComponent
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
+        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
         _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
 
         // Assign values to Settings.
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
+
         if (_splitter.Settings.FullGame)
             _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
         else if (_splitter.Settings.Deathrun)
