@@ -183,9 +183,9 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     private static bool GlitchlessShouldSplitCambodia()
     {
         /* Route
-            Transition 00 | currentLevel == 00 && currentGfLevelComplete == 01 | Main Menu to Angkor Wat (covered by ShouldStart)
-            Transition 01 | currentLevel == 01 && currentGfLevelComplete == 02 | Angkor Wat to Race for the Iris (x)
-            Transition 02 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to The Tomb of Seth
+            Transition 00 | currentLevel == 00 && currentGfLevelComplete == 01 | Main Menu to Angkor Wat (covered by ShouldStart).
+            Transition 01 | currentLevel == 01 && currentGfLevelComplete == 02 | Angkor Wat to Race for the Iris (x).
+            Transition 02 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to The Tomb of Seth.
         */
         /* Default undesired splits
             Loading into Race for the Iris (2)
@@ -201,11 +201,11 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     private static bool GlitchlessShouldSplitValleyOfTheKings()
     {
         /* Route
-            Transition 00 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to Tomb of Seth (covered elsewhere)
-            Transition 01 | currentLevel == 03 && currentGfLevelComplete == 04 | Tomb of Seth to Burial Chambers
-            Transition 02 | currentLevel == 04 && currentGfLevelComplete == 05 | Burial Chambers to Valley of the Kings
-            Transition 03 | currentLevel == 05 && currentGfLevelComplete == 06 | Valley of the Kings to KV5
-            Transition 04 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak
+            Transition 00 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to Tomb of Seth (covered elsewhere).
+            Transition 01 | currentLevel == 03 && currentGfLevelComplete == 04 | Tomb of Seth to Burial Chambers.
+            Transition 02 | currentLevel == 04 && currentGfLevelComplete == 05 | Burial Chambers to Valley of the Kings.
+            Transition 03 | currentLevel == 05 && currentGfLevelComplete == 06 | Valley of the Kings to KV5.
+            Transition 04 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak.
         */
         var currentLevel = (Tr4Level)BaseGameData.Level.Current;
         var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
@@ -216,15 +216,15 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     private static bool GlitchlessShouldSplitKarnak()
     {
         /* Likely route
-            Transition 00 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak (covered elsewhere)
-            Transition 01 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle (x)
-            Transition 02 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake
-            Transition 03 | currentLevel == 09 && currentGfLevelComplete == 07 | Sacred Lake to Karnak
-            Transition 04 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle
-            Transition 05 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake
-            Transition 05 | currentLevel == 09 && currentGfLevelComplete == 11 | Sacred Lake to Tomb of Semerkhet
-            Transition 06 | currentLevel == 11 && currentGfLevelComplete == 12 | Tomb of Semerkhet to Guardian of Semerkhet
-            Transition 07 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad
+            Transition 00 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak (covered elsewhere).
+            Transition 01 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle (x).
+            Transition 02 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake.
+            Transition 03 | currentLevel == 09 && currentGfLevelComplete == 07 | Sacred Lake to Karnak.
+            Transition 04 | currentLevel == 07 && currentGfLevelComplete == 08 | Karnak to Hypostyle.
+            Transition 05 | currentLevel == 08 && currentGfLevelComplete == 09 | Hypostyle to Sacred Lake.
+            Transition 05 | currentLevel == 09 && currentGfLevelComplete == 11 | Sacred Lake to Tomb of Semerkhet.
+            Transition 06 | currentLevel == 11 && currentGfLevelComplete == 12 | Tomb of Semerkhet to Guardian of Semerkhet.
+            Transition 07 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad.
         */
         /* Default undesired splits
             The Great Hypostyle Hall (08):
@@ -247,37 +247,37 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
 
     private static bool GlitchlessShouldSplitEasternDesert()
         /* Route
-        Transition 00 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad (covered elsewhere)
-        Transition 01 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria
+        Transition 00 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad (covered elsewhere).
+        Transition 01 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria.
         */
         => LaterClassicGameData.GfLevelComplete.Current == (uint) Tr4Level.Alexandria;
 
     private static bool GlitchlessShouldSplitAlexandria()
     {
         /* Likely route
-            Transition 00 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria (covered elsewhere)
-            Transition 01 | currentLevel == 14 && currentGfLevelComplete == 15 | Alexandria to Coastal (x)
-            Transition 02 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x)
-            Transition 03 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x)
-            Transition 04 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x)
-            Transition 05 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x)
-            Transition 06 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs
-            Transition 07 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon
-            Transition 08 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library
-            Transition 09 | currentLevel == 20 && currentGfLevelComplete == 21 | Lost Library to Hall of Demetrius (x)
-            Transition 10 | currentLevel == 21 && currentGfLevelComplete == 20 | Hall of Demetrius to Lost Library (x)
-            Transition 11 | currentLevel == 20 && currentGfLevelComplete == 19 | Lost Library to Poseidon
-            Transition 12 | currentLevel == 19 && currentGfLevelComplete == 15 | Poseidon to Coastal (x)
-            Transition 13 | currentLevel == 15 && currentGfLevelComplete == 16 | Coastal to Pharos (x)
-            Transition 14 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra (x)
-            Transition 15 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Pharos (x)
-            Transition 16 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra
-            Transition 17 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra to City of the Dead
+            Transition 00 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria (covered elsewhere).
+            Transition 01 | currentLevel == 14 && currentGfLevelComplete == 15 | Alexandria to Coastal (x).
+            Transition 02 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x).
+            Transition 03 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x).
+            Transition 04 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs (x).
+            Transition 05 | currentLevel == 18 && currentGfLevelComplete == 15 | Catacombs to Coastal (x).
+            Transition 06 | currentLevel == 15 && currentGfLevelComplete == 18 | Coastal to Catacombs.
+            Transition 07 | currentLevel == 18 && currentGfLevelComplete == 19 | Catacombs to Poseidon.
+            Transition 08 | currentLevel == 19 && currentGfLevelComplete == 20 | Poseidon to Lost Library.
+            Transition 09 | currentLevel == 20 && currentGfLevelComplete == 21 | Lost Library to Hall of Demetrius (x).
+            Transition 10 | currentLevel == 21 && currentGfLevelComplete == 20 | Hall of Demetrius to Lost Library (x).
+            Transition 11 | currentLevel == 20 && currentGfLevelComplete == 19 | Lost Library to Poseidon.
+            Transition 12 | currentLevel == 19 && currentGfLevelComplete == 15 | Poseidon to Coastal (x).
+            Transition 13 | currentLevel == 15 && currentGfLevelComplete == 16 | Coastal to Pharos (x).
+            Transition 14 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra (x).
+            Transition 15 | currentLevel == 17 && currentGfLevelComplete == 16 | Cleopatra to Pharos (x).
+            Transition 16 | currentLevel == 16 && currentGfLevelComplete == 17 | Pharos to Cleopatra.
+            Transition 17 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra to City of the Dead.
         */
         /* Default undesired splits
             Coastal Ruins (15):
-                When entering: only split from Poseidon (20) with Pharos Knot and Pharos Pillar
-                When leaving: only split into Catacombs (18) if the platform has been stabilized by pillar below
+                When entering: only split from Poseidon (20) with Pharos Knot and Pharos Pillar.
+                When leaving: only split into Catacombs (18) if the platform has been stabilized by the pillar below.
             Hall of Demetrius (21)
             Cleopatra's Palaces (17):
                 Only split when Lara enters with required progression item/parts.
@@ -325,21 +325,21 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     private static bool GlitchlessShouldSplitCairo()
     {
         /* Likely route
-            Transition 00 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra's Palaces to City (covered elsewhere)
-            Transition 01 | currentLevel == 22 && currentGfLevelComplete == 24 | City to Tulun
-            Transition 02 | currentLevel == 24 && currentGfLevelComplete == 23 | Tulun to Trenches (x)
-            Transition 03 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar
-            Transition 04 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches (x)
-            Transition 05 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar (x)
-            Transition 06 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches
-            Transition 07 | currentLevel == 23 && currentGfLevelComplete == 26 | Trenches to Citadel Gate (x)
-            Transition 08 | currentLevel == 26 && currentGfLevelComplete == 27 | Citadel Gate to Citadel
-            Transition 09 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex
+            Transition 00 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra's Palaces to City (covered elsewhere).
+            Transition 01 | currentLevel == 22 && currentGfLevelComplete == 24 | City to Tulun.
+            Transition 02 | currentLevel == 24 && currentGfLevelComplete == 23 | Tulun to Trenches (x).
+            Transition 03 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar.
+            Transition 04 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches (x).
+            Transition 05 | currentLevel == 23 && currentGfLevelComplete == 25 | Trenches to Street Bazaar (x).
+            Transition 06 | currentLevel == 25 && currentGfLevelComplete == 23 | Street Bazaar to Trenches.
+            Transition 07 | currentLevel == 23 && currentGfLevelComplete == 26 | Trenches to Citadel Gate (x).
+            Transition 08 | currentLevel == 26 && currentGfLevelComplete == 27 | Citadel Gate to Citadel.
+            Transition 09 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex.
         */
         /* Default undesired splits
             Trenches (23):
-                When leaving: only split when entering Street Bazaar (25) without any Mine Detonator combo/parts
-                When entering: only split when last leaving Street Bazaar (25) with Mine Detonator combo/parts
+                When leaving: only split when entering Street Bazaar (25) without any Mine Detonator combo/parts.
+                When entering: only split when last leaving Street Bazaar (25) with Mine Detonator combo/parts.
         */
         var currentLevel = (Tr4Level)BaseGameData.Level.Current;
         var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;

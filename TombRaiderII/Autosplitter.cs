@@ -77,14 +77,14 @@ internal sealed class Autosplitter : ClassicAutosplitter
             return false;
 
         // Check to see if the player has navigated to the New Game page of the passport.
-        // This prevent some misfires from LiveSplit hooking late.
+        // This prevents some misfires from LiveSplit hooking late.
         // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
         uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
         uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
         if (oldPassportPage == 0 && currentPassportPage == 1)
             _newGamePageSelected = true;
 
-        // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+        // Determine if a new game was started; this applies to all runs but for FG runs, this is the only start condition.
         if (_newGamePageSelected)
         {
             bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;

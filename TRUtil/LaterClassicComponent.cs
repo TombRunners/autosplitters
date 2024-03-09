@@ -33,13 +33,23 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _state.OnUndoSplit += StateOnUndoSplit;
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
     /// <remarks>
-    ///     Returned object must contain at least an empty <see cref="TableLayoutPanel"/>, otherwise the Layout Settings menu doesn't show up!
+    ///     The returned object must contain at least an empty <see cref="TableLayoutPanel"/>,
+    ///     otherwise the Layout Settings menu doesn't show up!
     /// </remarks>
     public override Control GetSettingsControl(LayoutMode mode) => _splitter.Settings;
 
+    /// <inheritdoc />
+    /// <param name="document"><see cref="XmlDocument" /> passed by LiveSplit</param>
+    /// <remarks>
+    ///     Even if you don't have any settings, you can't return with null.
+    ///     If you do, LiveSplit spams the Event Viewer with error messages:
+    ///     <c>Object reference not set to an instance of an object.</c>
+    ///     <see href="https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70" />
+    ///     <see href="https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25" />
+    /// </remarks>
     public override XmlNode GetSettings(XmlDocument document)
     {
         var settingsNode = document.CreateElement("Settings");
@@ -85,8 +95,8 @@ public abstract class LaterClassicComponent : AutoSplitComponent
     /// </summary>
     /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
     /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
-    /// <param name="width">width passed by LiveSplit</param>
-    /// <param name="height">height passed by LiveSplit</param>
+    /// <param name="width">Width passed by LiveSplit</param>
+    /// <param name="height">Height passed by LiveSplit</param>
     /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
     /// <remarks>
     ///     This override allows <see cref="LaterClassicAutosplitter"/> to use <see cref="ClassicGameData"/> in its logic.

@@ -39,8 +39,8 @@ internal sealed class GameData : ClassicGameData
     /// <remarks>
     ///     Value is initialized to zero, and it doesn't change outside the menu.
     ///     In the menu, value is set to zero if the user presses any key.
-    ///     If no menu item is activated, and the value gets higher than 480, Demo Mode is started.
-    ///     If any menu item is active, the value just increases and Demo Mode is not activated.
+    ///     If no menu item is activated, and the value gets higher than 480, Demo Mode starts.
+    ///     If any menu item is active, the value increases and Demo Mode does not activate.
     /// </remarks>
     public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
 

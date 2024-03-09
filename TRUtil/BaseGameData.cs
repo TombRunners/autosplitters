@@ -16,7 +16,7 @@ public abstract class BaseGameData
     protected static readonly List<string> ProcessSearchNames = [];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>Ideally, this will be converted from an <see cref="Enum"/> for clarity.</remarks>
+    /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
     protected static readonly Dictionary<string, uint> VersionHashes = new();
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
@@ -29,7 +29,7 @@ public abstract class BaseGameData
     public static uint Version;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The version found; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
+    /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
     public delegate void GameFoundDelegate(uint version);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
@@ -44,12 +44,12 @@ public abstract class BaseGameData
 
     #region MemoryWatcherList Items
 
-    /// <summary>Gives the value of the active level; for TR1, also matches active cutscene, FMV, or demo.</summary>
+    /// <summary>Gives the value of the active level; for TR1, also matches an active cutscene, FMV, or demo.</summary>
     /// <remarks>
     ///     Usually matches chronological number (TR3 can have exceptions due to level order choice).
     ///     Lara's Home (even if not present in the game) usually counts as 0.
-    ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present
-    ///         and the first level's value is 0 and the main menu is level 4.
+    ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
+    ///         the first level's value is 0, and the main menu is level 4.
     /// </remarks>
     public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
@@ -60,11 +60,11 @@ public abstract class BaseGameData
     #endregion
 
     /// <summary>Sets addresses based on <paramref name="version"/>.</summary>
-    /// <param name="version">Version to base addresses on; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
+    /// <param name="version">Version to base addresses on; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
     protected abstract void SetAddresses(uint version);
 
     /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
-    /// <returns><see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise</returns>
+    /// <returns><see langword="true"/> if game data was updated, <see langword="false"/> otherwise</returns>
     public bool Update()
     {
         try
