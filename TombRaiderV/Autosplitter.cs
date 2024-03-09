@@ -58,8 +58,9 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
 
     public override bool ShouldReset(LiveSplitState state)
     {
-        if (Settings.DisableAutoReset)
+        if (!Settings.EnableAutoReset)
             return false;
+
         bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
         bool comingFromAnotherLevel = GameData.GfInitializeGame.Current && !LaterClassicGameData.Loading.Old && GameData.GfGameMode.Current == 0;
         return loadingIntoMainMenu && comingFromAnotherLevel;

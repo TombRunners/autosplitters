@@ -12,13 +12,13 @@ public class LaterClassicComponentSettings : UserControl
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
     public CheckBox OptionCheckbox;
-    public CheckBox DisableAutoResetCheckbox;
+    public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     public bool FullGame = true;
     public bool Deathrun;
     public bool Option;
-    public bool DisableAutoReset = true;
+    public bool EnableAutoReset = true;
 
     public LaterClassicComponentSettings() => InitializeComponent();
 
@@ -29,7 +29,7 @@ public class LaterClassicComponentSettings : UserControl
         ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
         OptionCheckbox = new CheckBox();
-        DisableAutoResetCheckbox = new CheckBox();
+        EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
         ModeSelect.SuspendLayout();
@@ -39,9 +39,9 @@ public class LaterClassicComponentSettings : UserControl
         ModeSelect.Controls.Add(FullGameModeButton);
         ModeSelect.Controls.Add(ILModeButton);
         ModeSelect.Controls.Add(DeathrunModeButton);
-        ModeSelect.Location = new Point(4, 4);
+        ModeSelect.Location = new Point(10, 10);
         ModeSelect.Name = "ModeSelect";
-        ModeSelect.Size = new Size(297, 53);
+        ModeSelect.Size = new Size(300, 55);
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
@@ -78,54 +78,54 @@ public class LaterClassicComponentSettings : UserControl
         DeathrunModeButton.UseVisualStyleBackColor = true;
         DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
 
-        // GameVersionLabel
-        GameVersionLabel.AutoSize = true;
-        GameVersionLabel.Location = new Point(10, 92);
-        GameVersionLabel.Name = "GameVersionLabel";
-        GameVersionLabel.Size = new Size(186, 13);
-        GameVersionLabel.TabIndex = 1;
-        GameVersionLabel.Text = "Game Version: Unknown/Undetected";
-
-        // AutosplitterVersionLabel
-        AutosplitterVersionLabel.AutoSize = true;
-        AutosplitterVersionLabel.Location = new Point(10, 118);
-        AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-        AutosplitterVersionLabel.Size = new Size(103, 110);
-        AutosplitterVersionLabel.TabIndex = 2;
-        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
-
-        // ComponentSettings
-        Controls.Add(AutosplitterVersionLabel);
-        Controls.Add(GameVersionLabel);
-        Controls.Add(OptionCheckbox);
-        Controls.Add(DisableAutoResetCheckbox);
-        Controls.Add(ModeSelect);
-        Name = "LaterClassicComponentSettings";
-        Size = new Size(350, 145);
-        ModeSelect.ResumeLayout(false);
-        ModeSelect.PerformLayout();
-
-        // DisableAutoResetCheckbox
-        DisableAutoResetCheckbox.AutoSize = true;
-        DisableAutoResetCheckbox.Checked = true;
-        DisableAutoResetCheckbox.Location = new Point(10, 64);
-        DisableAutoResetCheckbox.Size = new Size(72, 17);
-        DisableAutoResetCheckbox.Name = "DisableAutoResetCheckbox";
-        DisableAutoResetCheckbox.Text = "Disable Auto-Reset";
-        DisableAutoResetCheckbox.TabIndex = 0;
-        DisableAutoResetCheckbox.UseVisualStyleBackColor = true;
-        DisableAutoResetCheckbox.CheckedChanged += DisableAutoResetCheckboxCheckedChanged;
+        // EnableAutoResetCheckbox
+        EnableAutoResetCheckbox.AutoSize = true;
+        EnableAutoResetCheckbox.Checked = true;
+        EnableAutoResetCheckbox.Location = new Point(12, 80);
+        EnableAutoResetCheckbox.Size = new Size(72, 17);
+        EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
+        EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
+        EnableAutoResetCheckbox.TabIndex = 0;
+        EnableAutoResetCheckbox.UseVisualStyleBackColor = true;
+        EnableAutoResetCheckbox.CheckedChanged += EnableAutoResetCheckboxCheckedChanged;
 
         // OptionCheckbox
         OptionCheckbox.AutoSize = true;
         OptionCheckbox.Checked = false;
-        OptionCheckbox.Location = new Point(130, 64);
+        OptionCheckbox.Location = new Point(130, 80);
         OptionCheckbox.Size = new Size(72, 17);
         OptionCheckbox.Name = "OptionCheckbox";
         OptionCheckbox.Text = "Option";
         OptionCheckbox.TabIndex = 0;
         OptionCheckbox.UseVisualStyleBackColor = true;
         OptionCheckbox.CheckedChanged += OptionCheckboxCheckedChanged;
+
+        // GameVersionLabel
+        GameVersionLabel.AutoSize = true;
+        GameVersionLabel.Location = new Point(10, 150);
+        GameVersionLabel.Name = "GameVersionLabel";
+        GameVersionLabel.Size = new Size(200, 15);
+        GameVersionLabel.TabIndex = 1;
+        GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+
+        // AutosplitterVersionLabel
+        AutosplitterVersionLabel.AutoSize = true;
+        AutosplitterVersionLabel.Location = new Point(10, 170);
+        AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+        AutosplitterVersionLabel.Size = new Size(200, 15);
+        AutosplitterVersionLabel.TabIndex = 2;
+        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
+
+        // ComponentSettings
+        Controls.Add(AutosplitterVersionLabel);
+        Controls.Add(GameVersionLabel);
+        Controls.Add(OptionCheckbox);
+        Controls.Add(EnableAutoResetCheckbox);
+        Controls.Add(ModeSelect);
+        Name = "LaterClassicComponentSettings";
+        Size = new Size(476, 200);
+        ModeSelect.ResumeLayout(false);
+        ModeSelect.PerformLayout();
 
         ResumeLayout(false);
         PerformLayout();
@@ -153,15 +153,15 @@ public class LaterClassicComponentSettings : UserControl
         Deathrun = true;
     }
 
+    private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox)sender;
+        EnableAutoReset = checkbox.Checked;
+    }
+
     private void OptionCheckboxCheckedChanged(object sender, EventArgs e)
     {
         var checkbox = (CheckBox)sender;
         Option = checkbox.Checked;
-    }
-
-    private void DisableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
-    {
-        var checkbox = (CheckBox)sender;
-        DisableAutoReset = checkbox.Checked;
     }
 }

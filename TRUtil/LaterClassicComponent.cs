@@ -56,7 +56,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoReset), _splitter.Settings.DisableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
         return settingsNode;
     }
 
@@ -66,7 +66,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
         _splitter.Settings.Option = SettingsHelper.ParseBool(settings["Option"], _splitter.Settings.Option);
-        _splitter.Settings.DisableAutoReset = SettingsHelper.ParseBool(settings["DisableAutoReset"], _splitter.Settings.DisableAutoReset);
+        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
 
         // Assign values to Settings.
         if (_splitter.Settings.FullGame)
@@ -76,8 +76,8 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         else
             _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
 
-        _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                     // CheckBox
-        _splitter.Settings.DisableAutoResetCheckbox.Checked = _splitter.Settings.DisableAutoReset; // CheckBox
+        _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                   // CheckBox
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
     }
 
     public override void Dispose()
