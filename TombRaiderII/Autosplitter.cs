@@ -30,6 +30,7 @@ public enum Tr2Level
     FloatingIslands = 16,
     DragonsLair = 17,
     HomeSweetHome = 18,
+    
     // Demos
     DemoVenice = 19,
     DemoWreckOfTheMariaDoria = 20,
@@ -44,6 +45,7 @@ public enum Tr2GoldLevel
     FoolsGold = 02,
     FurnaceOfTheGods = 03,
     Kingdom = 04,
+    
     // Bonus
     NightmareInVegas = 05
 }

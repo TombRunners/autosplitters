@@ -26,6 +26,7 @@ public enum Tr1Level
     NatlasMines      = 13,
     Atlantis         = 14,
     TheGreatPyramid  = 15,
+    
     // Cutscenes and title screen
     QualopecCutscene = 16,
     TihocanCutscene  = 17,

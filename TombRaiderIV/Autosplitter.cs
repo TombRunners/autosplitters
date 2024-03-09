@@ -10,22 +10,27 @@ namespace TR4;
 internal enum Tr4Level
 {
     MainMenu                = 0,
+
     // Cambodia
     AngkorWat               = 1,
     RaceForTheIris          = 2,
+    
     // Valley of the Kings
     TheTombOfSeth           = 3,
     BurialChambers          = 4,
     ValleyOfTheKings        = 5,
     Kv5                     = 6,
+    
     // Karnak
     TempleOfKarnak          = 7,
     GreatHypostyleHall      = 8,
     SacredLake              = 9,
     TombOfSemerkhet         = 11, // 10 is unused.
     GuardianOfSemerkhet     = 12,
+    
     // Eastern Desert
     DesertRailroad          = 13,
+    
     // Alexandria
     Alexandria              = 14,
     CoastalRuins            = 15,
@@ -35,6 +40,7 @@ internal enum Tr4Level
     TempleOfPoseidon        = 19,
     TheLostLibrary          = 20,
     HallOfDemetrius         = 21,
+    
     // Cairo
     CityOfTheDead           = 22,
     Trenches                = 23,
@@ -42,6 +48,7 @@ internal enum Tr4Level
     StreetBazaar            = 25,
     CitadelGate             = 26,
     Citadel                 = 27,
+    
     // Giza
     SphinxComplex           = 28,
     UnderneathTheSphinx     = 30, // 29 is unused.
@@ -51,6 +58,7 @@ internal enum Tr4Level
     TheGreatPyramid         = 34,
     KhufusQueensPyramid     = 35,
     InsideTheGreatPyramid   = 36,
+    
     // Temple of Horus
     TempleOfHorus           = 37,
     HorusBoss               = 38
@@ -61,6 +69,7 @@ internal enum TteLevel
 {
     MainMenu          = 0,
     Office            = 1, // Cutscene
+    
     // Playable Level
     TheTimesExclusive = 2  // At the end of the level, gfLevelComplete is set to 39 to trigger credits.
 }

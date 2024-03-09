@@ -24,6 +24,5 @@ public static class ProcessExtensions
         string md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
         return md5Hash;
-
     }
 }
