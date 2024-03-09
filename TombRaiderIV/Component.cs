@@ -5,12 +5,8 @@ namespace TR4;
 
 /// <inheritdoc />
 /// <summary>Implementation of <see cref="T:TRUtil.LaterClassicComponent" />.</summary>
-internal sealed class Component : LaterClassicComponent
+/// <inheritdoc/>
+internal sealed class Component(LaterClassicAutosplitter autosplitter, LiveSplitState state) : LaterClassicComponent(autosplitter, state)
 {
-    /// <inheritdoc/>
-    public Component(LaterClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
-    {
-    }
-
     public override string ComponentName => "Tomb Raider IV and The Times Exclusive";
 }

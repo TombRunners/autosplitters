@@ -5,12 +5,8 @@ namespace TR2;
 
 /// <inheritdoc />
 /// <summary>Implementation of <see cref="T:TRUtil.ClassicComponent" />.</summary>
-internal sealed class Component : ClassicComponent
+/// <inheritdoc/>
+internal sealed class Component(ClassicAutosplitter autosplitter, LiveSplitState state) : ClassicComponent(autosplitter, state)
 {
-    /// <inheritdoc/>
-    public Component(ClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
-    {
-    }
-
     public override string ComponentName => "Tomb Raider II and Golden Mask";
 }
