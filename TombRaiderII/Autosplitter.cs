@@ -1,13 +1,12 @@
 ﻿using LiveSplit.Model;
-using System.Diagnostics.CodeAnalysis;
 using TRUtil;
 
 // ReSharper disable UnusedMember.Global
 
 namespace TR2;
 
+// ReSharper disable IdentifierTypo
 /// <summary>The game's level and demo values.</summary>
-[SuppressMessage("ReSharper", "IdentifierTypo")]
 public enum Tr2Level
 {
     // Levels
@@ -36,6 +35,7 @@ public enum Tr2Level
     DemoWreckOfTheMariaDoria = 20,
     DemoTibetanFoothills = 21,
 }
+// ReSharper restore IdentifierTypo
 
 /// <summary>The game's level and demo values.</summary>
 public enum Tr2GoldLevel
