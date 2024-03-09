@@ -51,9 +51,9 @@ public abstract class ClassicGameData : BaseGameData
     {
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
-            .Select(completedLevel => (completedLevel - 1) * LevelSaveStructSize)
+            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
             .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
 
         return LevelTimeAsDouble(finishedLevelsTicks);
     }

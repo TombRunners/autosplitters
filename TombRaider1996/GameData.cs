@@ -85,7 +85,7 @@ internal sealed class GameData : ClassicGameData
         int validLevelCount = completedLevels.TakeWhile(completedLevel => completedLevel != currentLevel).Count();
         var finishedLevelsTicks = (uint)CompletedLevelTicks
             .Take(validLevelCount)
-            .Sum(x => x);
+            .Sum(static x => x);
 
         return LevelTimeAsDouble(finishedLevelsTicks);
     }

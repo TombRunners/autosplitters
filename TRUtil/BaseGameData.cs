@@ -95,7 +95,7 @@ public abstract class BaseGameData
     {
         // Find game Process, if any, and set Version member accordingly.
         var gameProcess = ProcessSearchNames.SelectMany(Process.GetProcessesByName)
-            .First(p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+            .First(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
         if (gameProcess is null)
         {
             // Leave game unset and ensure Version is at its default value.
