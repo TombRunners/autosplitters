@@ -13,13 +13,13 @@ public sealed class ComponentSettings : ClassicComponentSettings
 
         string versionText = (GameVersion) version switch
         {
-            GameVersion.Int => intText,
-            GameVersion.Int16x9AspectRatio => intText,
-            GameVersion.JpCracked => jpTr3Text,
-            GameVersion.JpCracked16x9AspectRatio => jpTr3Text,
-            GameVersion.JpTlaCracked => jpTlaText,
+            GameVersion.Int                         => intText,
+            GameVersion.Int16x9AspectRatio          => intText,
+            GameVersion.JpCracked                   => jpTr3Text,
+            GameVersion.JpCracked16x9AspectRatio    => jpTr3Text,
+            GameVersion.JpTlaCracked                => jpTlaText,
             GameVersion.JpTlaCracked16x9AspectRatio => jpTlaText,
-            _ => unknownText,
+            _                                       => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;

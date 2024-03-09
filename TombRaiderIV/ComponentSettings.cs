@@ -21,9 +21,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
         string versionText = (GameVersion) version switch
         {
-            GameVersion.SteamOrGog => digitalText,
+            GameVersion.SteamOrGog        => digitalText,
             GameVersion.TheTimesExclusive => tteText,
-            _ => unknownText,
+            _                             => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;

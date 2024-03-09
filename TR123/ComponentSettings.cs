@@ -135,12 +135,17 @@ public sealed class ComponentSettings : UserControl
 
     public void SetGameVersion(uint version)
     {
+        const string gogV10 = "GOG v1.0";
+        const string gogV101 = "GOG v1.01 / Steam 13430979";
+        const string unknownText = "Unknown/Undetected";
+
         string versionText = (GameVersion)version switch
         {
-            GameVersion.PublicV10 => "GOG v1.0",
-            GameVersion.PublicV101 => "GOG v1.01 / Steam 13430979",
-            _ => "Unknown/Undetected",
+            GameVersion.PublicV10  => gogV10,
+            GameVersion.PublicV101 => gogV101,
+            _                      => unknownText,
         };
+
         GameVersionLabel.Text = $"Game Version: {versionText}";
     }
 

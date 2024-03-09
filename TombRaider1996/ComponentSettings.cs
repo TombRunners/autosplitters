@@ -13,10 +13,10 @@ public sealed class ComponentSettings : ClassicComponentSettings
 
         string versionText = (GameVersion) version switch
         {
-            GameVersion.DOSBox => dosboxText,
-            GameVersion.Ati => atiTr1Text,
+            GameVersion.DOSBox                => dosboxText,
+            GameVersion.Ati                   => atiTr1Text,
             GameVersion.AtiUnfinishedBusiness => atiTrUbText,
-            _ => unknownText,
+            _                                 => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;
