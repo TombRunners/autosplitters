@@ -13,14 +13,14 @@ public abstract class BaseGameData
     protected const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected static readonly List<string> ProcessSearchNames = new();
+    protected static readonly List<string> ProcessSearchNames = [];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from an <see cref="Enum"/> for clarity.</remarks>
     protected static readonly Dictionary<string, uint> VersionHashes = new();
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    protected static readonly MemoryWatcherList Watchers = new();
+    protected static readonly MemoryWatcherList Watchers = [];
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     protected static Process Game;

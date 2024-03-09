@@ -13,7 +13,7 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
     protected int LevelCount = 0;
         
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    protected readonly List<uint> CompletedLevels = new();
+    protected readonly List<uint> CompletedLevels = [];
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {

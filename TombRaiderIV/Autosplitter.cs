@@ -89,8 +89,8 @@ internal enum Tr4LevelSection
 /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
 internal sealed class Autosplitter : LaterClassicAutosplitter
 {
-    private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels = new()
-    {
+    private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels =
+    [
         Tr4Level.TheTombOfSeth,
         Tr4Level.ValleyOfTheKings,
         Tr4Level.TempleOfKarnak,
@@ -101,7 +101,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         Tr4Level.Citadel,
         Tr4Level.SphinxComplex,
         Tr4Level.TempleOfHorus,
-    };
+    ];
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()

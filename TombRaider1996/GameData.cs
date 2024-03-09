@@ -19,7 +19,7 @@ internal enum GameVersion
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : ClassicGameData
 {
-    internal static readonly List<uint> CompletedLevelTicks = new();
+    internal static readonly List<uint> CompletedLevelTicks = [];
 
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal GameData()
