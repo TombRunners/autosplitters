@@ -17,7 +17,7 @@ public abstract class BaseGameData
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    protected static readonly Dictionary<string, uint> VersionHashes = new();
+    protected static readonly Dictionary<string, uint> VersionHashes = [];
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     protected static readonly MemoryWatcherList Watchers = [];
