@@ -3,7 +3,8 @@ using TRUtil;          // LaterClassicAutosplitter, LaterClassicComponent
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicComponent"/>.</summary>
+/// <inheritdoc />
+/// <summary>Implementation of <see cref="T:TRUtil.LaterClassicComponent" />.</summary>
 internal sealed class Component : LaterClassicComponent
 {
     /// <inheritdoc/>
