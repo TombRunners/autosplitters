@@ -13,7 +13,7 @@ internal enum GameVersion
 {
     Ati,
     AtiUnfinishedBusiness,
-    DOSBox
+    DOSBox,
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>

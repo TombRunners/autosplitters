@@ -31,7 +31,7 @@ internal enum Level
     ThirteenthFloor         = 11,
     EscapeWithTheIris       = 12,
     CutsceneSecurityBreach  = 13,
-    RedAlert                = 14
+    RedAlert                = 14,
 }
 
 /// <summary>The "areas" of the game.</summary>
@@ -40,7 +40,7 @@ internal enum LevelSection
     Rome                = Level.StreetsOfRome,
     RussianSubmarine    = Level.TheColosseum,
     Ireland             = Level.TempleofKarnak,
-    VcHeadquarters      = Level.EscapeWithTheIris
+    VcHeadquarters      = Level.EscapeWithTheIris,
 }
 
 /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>

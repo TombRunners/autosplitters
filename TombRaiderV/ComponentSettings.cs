@@ -24,7 +24,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         {
             GameVersion.SteamOrGog => digitalText,
             GameVersion.JapaneseNoCd => jpNoCdText,
-            _ => unknownText
+            _ => unknownText,
         };
         GameVersionLabel.Text = "Game Version: " + versionText;
     }

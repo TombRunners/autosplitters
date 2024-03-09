@@ -40,7 +40,7 @@ internal enum Tr3Level : uint
     MeteoriteCavern = 19,
     
     // Bonus (All Secrets)
-    AllHallows = 20
+    AllHallows = 20,
 }
 
 /// <summary>The game's level and demo values.</summary>
@@ -58,7 +58,7 @@ internal enum TlaLevel : uint
     
     // Paris
     ItsAMadhouse= 05,
-    Reunion = 06
+    Reunion = 06,
 }
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>

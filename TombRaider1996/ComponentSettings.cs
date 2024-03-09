@@ -16,7 +16,7 @@ public sealed class ComponentSettings : ClassicComponentSettings
             GameVersion.DOSBox => dosboxText,
             GameVersion.Ati => atiTr1Text,
             GameVersion.AtiUnfinishedBusiness => atiTrUbText,
-            _ => unknownText
+            _ => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;

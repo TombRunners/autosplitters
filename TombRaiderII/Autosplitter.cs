@@ -34,7 +34,7 @@ public enum Tr2Level
     // Demos
     DemoVenice = 19,
     DemoWreckOfTheMariaDoria = 20,
-    DemoTibetanFoothills = 21
+    DemoTibetanFoothills = 21,
 }
 
 /// <summary>The game's level and demo values.</summary>
@@ -47,7 +47,7 @@ public enum Tr2GoldLevel
     Kingdom = 04,
     
     // Bonus
-    NightmareInVegas = 05
+    NightmareInVegas = 05,
 }
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>

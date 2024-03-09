@@ -32,7 +32,7 @@ public enum Tr1Level
     TihocanCutscene  = 17,
     MinesToAtlantis  = 18,
     AfterAtlantisFMV = 19,
-    TitleAndFirstFMV = 20
+    TitleAndFirstFMV = 20,
 }
     
 /// <summary>The game's level values.</summary>
@@ -42,7 +42,7 @@ public enum TrUbLevel
     TempleOfTheCat      = 01,
     AtlanteanStronghold = 02,
     TheHive             = 03,
-    Title               = 04
+    Title               = 04,
 }
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
@@ -118,7 +118,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
             Tr1Level.TihocanCutscene => Tr1Level.Tihocan,
             Tr1Level.MinesToAtlantis => Tr1Level.NatlasMines,
             Tr1Level.AfterAtlantisFMV => Tr1Level.Atlantis,
-            _ => null
+            _ => null,
         };
     }
 

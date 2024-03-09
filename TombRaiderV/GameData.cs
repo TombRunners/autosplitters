@@ -8,7 +8,7 @@ namespace TR5;
 internal enum GameVersion
 {
     SteamOrGog,
-    JapaneseNoCd
+    JapaneseNoCd,
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>

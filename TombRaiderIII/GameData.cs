@@ -14,7 +14,7 @@ internal enum GameVersion
     JpCracked,                   // No-CD cracked TR3 from JP Gold bundle release
     JpCracked16x9AspectRatio,    // JpCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
     JpTlaCracked,                // No-CD cracked TLA from JP Gold bundle release
-    JpTlaCracked16x9AspectRatio // JpTlaCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+    JpTlaCracked16x9AspectRatio, // JpTlaCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>

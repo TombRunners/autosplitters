@@ -19,7 +19,7 @@ public sealed class ComponentSettings : ClassicComponentSettings
             GameVersion.JpCracked16x9AspectRatio => jpTr3Text,
             GameVersion.JpTlaCracked => jpTlaText,
             GameVersion.JpTlaCracked16x9AspectRatio => jpTlaText,
-            _ => unknownText
+            _ => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;

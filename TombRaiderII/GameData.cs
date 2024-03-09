@@ -13,7 +13,7 @@ internal enum GameVersion
     P1                = 3, // CORE's Patch 1
     UKB               = 4, // Eidos UK Box
     StellaGold        = 5, // TR2G available from Stella's website
-    StellaGoldCracked = 6  // No-CD cracked version of StellaGold
+    StellaGoldCracked = 6, // No-CD cracked version of StellaGold
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>

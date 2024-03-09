@@ -61,7 +61,7 @@ internal enum Tr4Level
     
     // Temple of Horus
     TempleOfHorus           = 37,
-    HorusBoss               = 38
+    HorusBoss               = 38,
 }
 
 /// <summary>The game's level and demo values.</summary>
@@ -71,7 +71,7 @@ internal enum TteLevel
     Office            = 1, // Cutscene
     
     // Playable Level
-    TheTimesExclusive = 2  // At the end of the level, gfLevelComplete is set to 39 to trigger credits.
+    TheTimesExclusive = 2, // At the end of the level, gfLevelComplete is set to 39 to trigger credits.
 }
 
 /// <summary>The "areas" of the game.</summary>
@@ -83,7 +83,7 @@ internal enum Tr4LevelSection
     EasternDesert       = Tr4Level.DesertRailroad,
     Alexandria          = Tr4Level.Alexandria,
     Cairo               = Tr4Level.CityOfTheDead,
-    Giza                = Tr4Level.SphinxComplex
+    Giza                = Tr4Level.SphinxComplex,
 }
 
 /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
@@ -100,7 +100,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         Tr4Level.CityOfTheDead,
         Tr4Level.Citadel,
         Tr4Level.SphinxComplex,
-        Tr4Level.TempleOfHorus
+        Tr4Level.TempleOfHorus,
     };
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
@@ -177,7 +177,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             >= (uint) Tr4LevelSection.EasternDesert    => GlitchlessShouldSplitEasternDesert(),
             >= (uint) Tr4LevelSection.Karnak           => GlitchlessShouldSplitKarnak(),
             >= (uint) Tr4LevelSection.ValleyOfTheKings => GlitchlessShouldSplitValleyOfTheKings(),
-            _                                          => GlitchlessShouldSplitCambodia()
+            _                                          => GlitchlessShouldSplitCambodia(),
         };
 
     private static bool GlitchlessShouldSplitCambodia()

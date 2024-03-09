@@ -8,7 +8,7 @@ namespace TR4;
 internal enum GameVersion
 {
     SteamOrGog,
-    TheTimesExclusive
+    TheTimesExclusive,
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>

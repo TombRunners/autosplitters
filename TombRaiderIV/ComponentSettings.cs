@@ -23,7 +23,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         {
             GameVersion.SteamOrGog => digitalText,
             GameVersion.TheTimesExclusive => tteText,
-            _ => unknownText
+            _ => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;
