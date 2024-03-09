@@ -6,40 +6,23 @@ namespace TR4;
 /// <summary>
 ///     The game uses an array of 8-bit char values. Indices are re-used, with items re-assigned by the game's script.
 /// </summary>
-internal readonly struct PuzzleItems
+internal readonly struct PuzzleItems(
+    byte item01, byte item02, byte item03, byte item04,
+    byte item05, byte item06, byte item07, byte item08,
+    byte item09, byte item10, byte item11, byte item12)
 {
-    private byte Item01 { get; }
-    private byte Item02 { get; }
-    private byte Item03 { get; }
-    private byte Item04 { get; }
-    private byte Item05 { get; }
-    private byte Item06 { get; }
-    private byte Item07 { get; }
-    private byte Item08 { get; }
-    private byte Item09 { get; }
-    private byte Item10 { get; }
-    private byte Item11 { get; }
-    private byte Item12 { get; }
-
-    public PuzzleItems(
-        byte item01, byte item02, byte item03, byte item04, 
-        byte item05, byte item06, byte item07, byte item08, 
-        byte item09, byte item10, byte item11, byte item12
-    )
-    {
-        Item01 = item01;
-        Item02 = item02;
-        Item03 = item03;
-        Item04 = item04;
-        Item05 = item05;
-        Item06 = item06;
-        Item07 = item07;
-        Item08 = item08;
-        Item09 = item09;
-        Item10 = item10;
-        Item11 = item11;
-        Item12 = item12;
-    }
+    private byte Item01 { get; } = item01;
+    private byte Item02 { get; } = item02;
+    private byte Item03 { get; } = item03;
+    private byte Item04 { get; } = item04;
+    private byte Item05 { get; } = item05;
+    private byte Item06 { get; } = item06;
+    private byte Item07 { get; } = item07;
+    private byte Item08 { get; } = item08;
+    private byte Item09 { get; } = item09;
+    private byte Item10 { get; } = item10;
+    private byte Item11 { get; } = item11;
+    private byte Item12 { get; } = item12;
 
     /// <summary>Non-unique item active during <see cref="Tr4Level.AngkorWat"/>.</summary>
     public byte GoldenSkull => Item01;
