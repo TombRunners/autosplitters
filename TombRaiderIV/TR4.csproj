@@ -56,10 +56,13 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameData.cs" />
-    <Compile Include="GameVersion.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PuzzleItems.cs" />
+    <Compile Include="Enums\GameVersion.cs" />
+    <Compile Include="Enums\Tr4Level.cs" />
+    <Compile Include="Enums\Tr4LevelSection.cs" />
+    <Compile Include="Enums\TteLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">
@@ -71,6 +74,9 @@
       <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
       <Name>TRUtil</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Enums\.editorconfig" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

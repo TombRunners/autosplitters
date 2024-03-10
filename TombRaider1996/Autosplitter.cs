@@ -1,49 +1,8 @@
-using LiveSplit.Model;
 using System;
+using LiveSplit.Model;
 using TRUtil;
 
-// ReSharper disable UnusedMember.Global
-
 namespace TR1;
-
-/// <summary>The game's level, FMV, and cutscene values.</summary>
-public enum Tr1Level
-{
-    // Levels
-    LarasHome        = 00,
-    Caves            = 01,
-    Vilcabamba       = 02,
-    LostValley       = 03,
-    Qualopec         = 04,
-    StFrancisFolly   = 05,
-    Colosseum        = 06,
-    PalaceMidas      = 07,
-    Cistern          = 08,
-    Tihocan          = 09,
-    CityOfKhamoon    = 10,
-    ObeliskOfKhamoon = 11,
-    SanctuaryScion   = 12,
-    NatlasMines      = 13,
-    Atlantis         = 14,
-    TheGreatPyramid  = 15,
-
-    // Cutscenes and title screen
-    QualopecCutscene = 16,
-    TihocanCutscene  = 17,
-    MinesToAtlantis  = 18,
-    AfterAtlantisFMV = 19,
-    TitleAndFirstFMV = 20,
-}
-
-/// <summary>The game's level values.</summary>
-public enum TrUbLevel
-{
-    ReturnToEgypt       = 00,
-    TempleOfTheCat      = 01,
-    AtlanteanStronghold = 02,
-    TheHive             = 03,
-    Title               = 04,
-}
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
 internal sealed class Autosplitter : ClassicAutosplitter

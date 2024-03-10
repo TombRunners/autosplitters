@@ -1,0 +1,5 @@
+[*]
+resharper_identifier_typo_highlighting = none
+resharper_inconsistent_naming_highlighting = none
+resharper_unused_member_global_highlighting = none
+resharper_unused_type_global_highlighting = none
