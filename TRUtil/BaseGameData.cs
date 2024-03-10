@@ -93,12 +93,13 @@ public abstract class BaseGameData
     /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
     private bool SetGameProcessAndVersion()
     {
+        const uint noneOrUndetectedValue = 0;
+
         // Find game Processes.
         var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
         if (processes.Count == 0)
         {
             // Set Version to a value indicating no game was found.
-            const uint noneOrUndetectedValue = 0;
             if (Version != noneOrUndetectedValue)
                 OnGameFound.Invoke(noneOrUndetectedValue);
 
@@ -122,7 +123,7 @@ public abstract class BaseGameData
         // Set Game and do some event management.
         Game = gameProcess;
         Game.EnableRaisingEvents = true;
-        Game.Exited += (_, _) => OnGameFound.Invoke(0);
+        Game.Exited += (_, _) => OnGameFound.Invoke(noneOrUndetectedValue);
         return true;
     }
 
