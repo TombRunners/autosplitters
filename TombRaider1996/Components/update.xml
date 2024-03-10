@@ -118,7 +118,7 @@
   </update>
   <update version="2.0.0.0">
     <files>
-      <file path="Components/TR1996.dll" status="changed"/>
+      <file path="Components/TR1996.dll" status="added"/>
     </files>
     <changelog>
       <change>Initial component rewrite version.</change>
