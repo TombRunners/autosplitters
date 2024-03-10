@@ -9,7 +9,7 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="Components/TR123.dll" status="changed"/>
+      <file path="Components/TR123.dll" status="added"/>
     </files>
     <changelog>
       <change>Initial release. FG, IL / Section, and Deathrun support with automatic Start, Split, and optional Reset. Supports LiveSplit's Undo Split.</change>
