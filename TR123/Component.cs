@@ -32,7 +32,7 @@ public class Component : AutoSplitComponent
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 
-    private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
+    private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart(_state);
 
     private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentLevel());
 
