@@ -230,10 +230,13 @@ public class Autosplitter : IAutoSplitter, IDisposable
         };
 
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
-    public void OnStart()
+    public void OnStart(LiveSplitState state)
     {
         foreach (var gameStats in AllGameStats.Values)
             gameStats.Clear();
+
+        if (!state.IsGameTimeInitialized)
+            state.SetGameTime(new TimeSpan(0));
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
