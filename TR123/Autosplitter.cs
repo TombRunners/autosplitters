@@ -237,6 +237,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         if (!state.IsGameTimeInitialized)
             state.SetGameTime(new TimeSpan(0));
+        state.IsGameTimePaused = false;
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
