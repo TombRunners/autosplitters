@@ -8,14 +8,6 @@ using TRUtil;
 
 namespace TR1;
 
-/// <summary>The supported game versions.</summary>
-internal enum GameVersion
-{
-    Ati,
-    AtiUnfinishedBusiness,
-    DOSBox,
-}
-
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : ClassicGameData
 {
@@ -58,6 +50,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x5A080)) { Name = "PickedPassportFunction" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
                 break;
+
             case GameVersion.AtiUnfinishedBusiness:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x59CFC)) { Name = "TitleScreen" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x599EC)) { Name = "LevelComplete" });
@@ -66,6 +59,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59A58)) { Name = "PickedPassportFunction" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x59A04)) { Name = "Health" });
                 break;
+
             case GameVersion.DOSBox:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4)) { Name = "DemoTimer" });
@@ -75,6 +69,8 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x245C04)) { Name = "PickedPassportFunction" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
                 break;
+
+            case GameVersion.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

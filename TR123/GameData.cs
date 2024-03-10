@@ -422,6 +422,7 @@ public class GameData
                 AddWatchersForAllGames(GameVersion.PublicV102);
                 break;
 
+            case GameVersion.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

@@ -1,0 +1,15 @@
+﻿// ReSharper disable InconsistentNaming
+
+namespace TR3;
+
+/// <summary>The supported game versions.</summary>
+internal enum GameVersion
+{
+    None                        = 0,
+    Int                         = 1, // From Steam
+    Int16x9AspectRatio          = 2, // Int with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+    JpCracked                   = 3, // No-CD cracked TR3 from JP Gold bundle release
+    JpCracked16x9AspectRatio    = 4, // JpCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+    JpTlaCracked                = 5, // No-CD cracked TLA from JP Gold bundle release
+    JpTlaCracked16x9AspectRatio = 6, // JpTlaCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
+}

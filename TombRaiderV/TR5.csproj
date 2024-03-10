@@ -55,6 +55,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameData.cs" />
+    <Compile Include="GameVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
