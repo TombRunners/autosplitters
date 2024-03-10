@@ -6,6 +6,7 @@
     </files>
     <changelog>
       <change>Added Auto-Reset checkbox which is unchecked by default.</change>
+	  <change>Improved Game Version text when no game is running and when an unknown version is running.</change>
     </changelog>
   </update>
   <update version="1.4.4.0">
