@@ -13,7 +13,7 @@ internal enum GameVersion
     P1                = 3, // CORE's Patch 1
     UKB               = 4, // Eidos UK Box
     StellaGold        = 5, // TR2G available from Stella's website
-    StellaGoldCracked = 6  // No-CD cracked version of StellaGold
+    StellaGoldCracked = 6, // No-CD cracked version of StellaGold
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
@@ -31,14 +31,14 @@ internal sealed class GameData : ClassicGameData
         VersionHashes.Add("12d56521ce038b55efba97463357a3d7", (uint)GameVersion.UKB);
         VersionHashes.Add("13fa4e8585d1a1d52d342a513f65f19f", (uint)GameVersion.StellaGold);
         VersionHashes.Add("3f262621d07a3c6c6fdd6f654814f988", (uint)GameVersion.StellaGoldCracked);
-            
+
         ProcessSearchNames.Add("tomb2");
         ProcessSearchNames.Add("tr2");
         ProcessSearchNames.Add("t2gold");
 
         LevelSaveStructSize = 0x2C; // All TR2 and TR2G versions
     }
-        
+
     protected override void SetAddresses(uint version)
     {
         Watchers.Clear();

@@ -92,7 +92,7 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="Components/TR3.dll" status="changed"/>
+      <file path="Components/TR3.dll" status="added"/>
     </files>
     <changelog>
       <change>Initial component rewrite version. Adds deathrun and better section run support.</change>

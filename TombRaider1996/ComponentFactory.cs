@@ -15,8 +15,8 @@ namespace TR1;
 /// <remarks>
 ///     This class is necessary for LiveSplit to create and apply metadata to the component.
 ///     It must implement all of <see cref="IComponentFactory"/> which is derived from <see cref="IUpdateable"/>
-///     IComponentFactory: https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/LiveSplit.Core/UI/Components/IComponentFactory.cs
-///     IUpdateable: https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/UpdateManager/IUpdateable.cs
+///     IComponentFactory: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/LiveSplit.Core/UI/Components/IComponentFactory.cs"/>
+///     IUpdateable: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/UpdateManager/IUpdateable.cs"/>
 /// </remarks>
 internal class ComponentFactory : IComponentFactory
 {
@@ -76,7 +76,7 @@ internal class ComponentFactory : IComponentFactory
     ///     It must be a raw link.
     /// </remarks>
     public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/";
-        
+
     /// <summary>
     ///     XML file which is checked to see if the component needs updated.
     /// </summary>

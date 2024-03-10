@@ -10,17 +10,17 @@ namespace TRUtil;
 public abstract class BaseGameData
 {
     /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
-    protected const int IGTTicksPerSecond = 30;
+    private const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected static readonly List<string> ProcessSearchNames = new();
+    protected static readonly List<string> ProcessSearchNames = [];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>Ideally, this will be converted from an <see cref="Enum"/> for clarity.</remarks>
-    protected static readonly Dictionary<string, uint> VersionHashes = new();
+    /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
+    protected static readonly Dictionary<string, uint> VersionHashes = [];
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    protected static readonly MemoryWatcherList Watchers = new();
+    protected static readonly MemoryWatcherList Watchers = [];
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     protected static Process Game;
@@ -29,9 +29,9 @@ public abstract class BaseGameData
     public static uint Version;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The version found; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
+    /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
     public delegate void GameFoundDelegate(uint version);
-        
+
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
 
@@ -41,15 +41,15 @@ public abstract class BaseGameData
         VersionHashes.Clear();
         ProcessSearchNames.Clear();
     }
-        
+
     #region MemoryWatcherList Items
 
-    /// <summary>Gives the value of the active level; for TR1, also matches active cutscene, FMV, or demo.</summary>
+    /// <summary>Gives the value of the active level; for TR1, also matches an active cutscene, FMV, or demo.</summary>
     /// <remarks>
     ///     Usually matches chronological number (TR3 can have exceptions due to level order choice).
     ///     Lara's Home (even if not present in the game) usually counts as 0.
-    ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present
-    ///         and the first level's value is 0 and the main menu is level 4.
+    ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
+    ///         the first level's value is 0, and the main menu is level 4.
     /// </remarks>
     public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
@@ -60,11 +60,11 @@ public abstract class BaseGameData
     #endregion
 
     /// <summary>Sets addresses based on <paramref name="version"/>.</summary>
-    /// <param name="version">Version to base addresses on; ideally, this will be converted from an <see cref="Enum"/> for clarity</param>
+    /// <param name="version">Version to base addresses on; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
     protected abstract void SetAddresses(uint version);
 
     /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
-    /// <returns><see langword="true"/> if game data was able to be updated, <see langword="false"/> otherwise</returns>
+    /// <returns><see langword="true"/> if game data was updated, <see langword="false"/> otherwise</returns>
     public bool Update()
     {
         try
@@ -73,7 +73,7 @@ public abstract class BaseGameData
             {
                 if (!SetGameProcessAndVersion())
                     return false;
-                    
+
                 SetAddresses(Version);
                 OnGameFound.Invoke(Version);
                 return true;
@@ -95,14 +95,14 @@ public abstract class BaseGameData
     {
         // Find game Process, if any, and set Version member accordingly.
         var gameProcess = ProcessSearchNames.SelectMany(Process.GetProcessesByName)
-            .First(p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+            .First(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
         if (gameProcess is null)
         {
             // Leave game unset and ensure Version is at its default value.
             Version = 0;
             return false;
         }
-            
+
         // Set Game and do some event management.
         Game = gameProcess;
         Game.EnableRaisingEvents = true;

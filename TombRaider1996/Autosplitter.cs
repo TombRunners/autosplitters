@@ -26,14 +26,15 @@ public enum Tr1Level
     NatlasMines      = 13,
     Atlantis         = 14,
     TheGreatPyramid  = 15,
+
     // Cutscenes and title screen
     QualopecCutscene = 16,
     TihocanCutscene  = 17,
     MinesToAtlantis  = 18,
     AfterAtlantisFMV = 19,
-    TitleAndFirstFMV = 20
+    TitleAndFirstFMV = 20,
 }
-    
+
 /// <summary>The game's level values.</summary>
 public enum TrUbLevel
 {
@@ -41,7 +42,7 @@ public enum TrUbLevel
     TempleOfTheCat      = 01,
     AtlanteanStronghold = 02,
     TheHive             = 03,
-    Title               = 04
+    Title               = 04,
 }
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
@@ -109,7 +110,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
         var lastLevel = (Tr1Level)level;
         if (lastLevel <= Tr1Level.TheGreatPyramid)
             return lastLevel;
-            
+
         // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
         return lastLevel switch
         {
@@ -117,7 +118,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
             Tr1Level.TihocanCutscene => Tr1Level.Tihocan,
             Tr1Level.MinesToAtlantis => Tr1Level.NatlasMines,
             Tr1Level.AfterAtlantisFMV => Tr1Level.Atlantis,
-            _ => null
+            _ => null,
         };
     }
 
@@ -125,20 +126,20 @@ internal sealed class Autosplitter : ClassicAutosplitter
 
     public override bool ShouldStart(LiveSplitState state)
     {
-        // These initialize to 0 and the game's timer will not tick until the title screen is reached.
+        // These initialize to 0, and the game's timer will not tick until the title screen is reached.
         bool gameJustLaunched = ClassicGameData.LevelTime.Current == 0 && BaseGameData.Level.Old == 0;
         if (gameJustLaunched)
             return false;
-            
+
         // Check to see if the player has navigated to the New Game page of the passport.
-        // This prevent some misfires from LiveSplit hooking late.
+        // This prevents some misfires from LiveSplit hooking late.
         // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
         uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
         uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
         if (oldPassportPage == 0 && currentPassportPage == 1)
             _newGamePageSelected = true;
 
-        // Determine if a new game was started; this applies to all runs but for FG, this is the only start condition.
+        // Determine if a new game was started; this applies to all runs but for FG runs, this is the only start condition.
         uint currentLevel = BaseGameData.Level.Current;
         uint oldLevel = BaseGameData.Level.Old;
         if (_newGamePageSelected)
@@ -185,7 +186,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
 
         uint oldTime = ClassicGameData.LevelTime.Old;
         uint currentTime = ClassicGameData.LevelTime.Current;
-        // The level values switch before the timer resets to 0. If LiveSplit polls at this time,
+        // The level values switch before the timer resets to 0. If LiveSplit polls then,
         // a check for currentTime <= MAGIC_LOW_NUMBER would fail. This more lenient solution
         // could result in a false start if the player would load into the next level
         // with a save which has a higher level IGT than their current position.

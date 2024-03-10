@@ -10,7 +10,7 @@ namespace TR123;
 public class GameData
 {
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
-    public const int IgtTicksPerSecond = 30;
+    private const int IgtTicksPerSecond = 30;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
@@ -59,7 +59,6 @@ public class GameData
     /// <summary>Identifies the game without NG+ identification.</summary>
     private static Game CurrentActiveBaseGame => (Game)(ActiveGame.Current * 3);
 
-    public static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
@@ -67,6 +66,7 @@ public class GameData
     public static MemoryWatcher<uint> LoadFade => LoadFadeWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> TitleLoaded => TitleLoadedWatchers[CurrentActiveBaseGame];
 
+    private static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
     private static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
@@ -324,15 +324,15 @@ public class GameData
             { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
         }.ToImmutableDictionary();
 
-    public static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
+    private static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
 
     #endregion
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
-    public static Process GameProcess;
+    private static Process _gameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    public static uint Version;
+    private static uint _version;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
@@ -413,17 +413,17 @@ public class GameData
     {
         try
         {
-            if (GameProcess is null || GameProcess.HasExited)
+            if (_gameProcess is null || _gameProcess.HasExited)
             {
                 if (!SetGameProcessAndVersion())
                     return false;
 
-                SetAddresses(Version);
-                OnGameFound.Invoke(Version);
+                SetAddresses(_version);
+                OnGameFound.Invoke(_version);
                 return true;
             }
 
-            Watchers.UpdateAll(GameProcess);
+            Watchers.UpdateAll(_gameProcess);
 
             return true;
         }
@@ -435,25 +435,25 @@ public class GameData
 
     /// <summary>If applicable, finds a <see cref="Process" /> running an expected version of the game.</summary>
     /// <returns>
-    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="Version" /> were meaningfully set,
+    ///     <see langword="true" /> if <see cref="_gameProcess" /> and <see cref="_version" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
     private bool SetGameProcessAndVersion()
     {
         // Find game Process, if any, and set Version member accordingly.
         var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName);
-        var gameProcess = processes.FirstOrDefault(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+        var gameProcess = processes.FirstOrDefault(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out _version));
         if (gameProcess is null)
         {
             // Leave game unset and ensure Version is at its default value.
-            Version = 0;
+            _version = 0;
             return false;
         }
 
         // Set GameProcess and do some event management.
-        GameProcess = gameProcess;
-        GameProcess.EnableRaisingEvents = true;
-        GameProcess.Exited += (_, _) => OnGameFound.Invoke(0);
+        _gameProcess = gameProcess;
+        _gameProcess.EnableRaisingEvents = true;
+        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(0);
         return true;
     }
 
@@ -462,23 +462,23 @@ public class GameData
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    public ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
+    public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeBaseGame = CurrentActiveBaseGame;
         string activeModuleName = GameModules[activeBaseGame];
-        var activeModule = GameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
+        var activeModule = _gameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
         if (activeModule is null)
             return 0;
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)Version][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)_version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)
             .Select(levelOffset => (IntPtr)((long)moduleBaseAddress + firstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + _gameProcess.ReadValue<uint>(levelAddress));
 
         return finishedLevelsTicks;
     }

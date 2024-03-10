@@ -10,33 +10,38 @@ namespace TR5;
 internal enum Level
 {
     MainMenu                = 00,
+
     // Rome
     StreetsOfRome           = 01,
     TrajansMarkets          = 02,
     TheColosseum            = 03,
+
     // Russian Submarine
     TheBase                 = 04,
     TheSubmarine            = 05,
     DeepseaDive             = 06,
     TempleofKarnak          = 07,
+
     // Ireland
     GallowsTree             = 08,
     Labyrinth               = 09,
     OldMill                 = 10,
+
     // VC Headquarters
     ThirteenthFloor         = 11,
     EscapeWithTheIris       = 12,
     CutsceneSecurityBreach  = 13,
-    RedAlert                = 14
+    RedAlert                = 14,
 }
 
 /// <summary>The "areas" of the game.</summary>
+// ReSharper disable once UnusedType.Global
 internal enum LevelSection
 {
     Rome                = Level.StreetsOfRome,
     RussianSubmarine    = Level.TheColosseum,
     Ireland             = Level.TempleofKarnak,
-    VcHeadquarters      = Level.EscapeWithTheIris
+    VcHeadquarters      = Level.EscapeWithTheIris,
 }
 
 /// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>

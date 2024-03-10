@@ -8,12 +8,12 @@ namespace TR4;
 internal enum GameVersion
 {
     SteamOrGog,
-    TheTimesExclusive
+    TheTimesExclusive,
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : LaterClassicGameData
-{ 
+{
     private const uint SizeOfItemInfo = 0x15F6;
     private static readonly IntPtr FirstItemInfoPointer = (IntPtr)0x7FE28C;
 
@@ -47,7 +47,7 @@ internal sealed class GameData : LaterClassicGameData
     ///     The corresponding items/indices are relevant for the autosplitter's logic:
     ///         Index 7, Item 8 || Cairo || Mine Detonator (the combined item)
     ///         Index 8, Item 9 || Giza  || Eastern Shaft Key
-    ///     When unique items are in Lara's inventory, the address's value is 1. 
+    ///     When unique items are in Lara's inventory, the address's value is 1.
     ///     Non-unique puzzle items, such as the Golden Skull secrets in Cambodia, continually increment their assigned index.
     /// </remarks>
     public static MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>)Watchers["PuzzleItemsArray"];
@@ -62,7 +62,7 @@ internal sealed class GameData : LaterClassicGameData
     ///     When Lara has both Mine Detonator Body and Mine Position Data before combining them: (1100 0000 0000 0000)
     /// </remarks>
     public static MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>)Watchers["PuzzleItemsCombo"];
-        
+
     /// <summary>
     ///     An unsigned short used as a bitfield to track which keys Lara has in her inventory.
     /// </summary>

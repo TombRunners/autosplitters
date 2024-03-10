@@ -39,7 +39,7 @@ public class ClassicComponentSettings : UserControl
         ModeSelect.TabIndex = 0;
         ModeSelect.TabStop = false;
         ModeSelect.Text = "Mode Selection";
-        
+
         // FullGameModeButton
         FullGameModeButton.AutoSize = true;
         FullGameModeButton.Checked = true;

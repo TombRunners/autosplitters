@@ -106,7 +106,7 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="Components/TR2.dll" status="changed"/>
+      <file path="Components/TR2.dll" status="added"/>
     </files>
     <changelog>
       <change>Initial component rewrite version.</change>

@@ -8,7 +8,7 @@ namespace TR5;
 internal enum GameVersion
 {
     SteamOrGog,
-    JapaneseNoCd
+    JapaneseNoCd,
 }
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
@@ -29,13 +29,13 @@ internal sealed class GameData : LaterClassicGameData
 
     /// <summary>Used to determine when to reset many of the game's global variables.</summary>
     /// <remarks>
-    ///     1 during the main menu and when loading/starting game from main menu, and when loading/watching credits; otherwise, 0.
+    ///     1 during the main menu and when loading/starting game from the main menu, and when loading/watching credits; otherwise, 0.
     /// </remarks>
     public static MemoryWatcher<bool> GfInitializeGame => (MemoryWatcher<bool>)Watchers?["GfInitializeGame"];
 
     /// <summary>Used as a sort of enumeration to allow game flow and other global variables to act appropriately.</summary>
     /// <remarks>
-    ///     0 during regular gameplay, 1 while in the main menu, 4 while loading a save.
+    ///     0 during any gameplay, 1 while in the main menu, 4 while loading a save.
     /// </remarks>
     public static MemoryWatcher<byte> GfGameMode => (MemoryWatcher<byte>)Watchers?["GfGameMode"];
 

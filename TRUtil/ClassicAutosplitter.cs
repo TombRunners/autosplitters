@@ -8,12 +8,12 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
 {
     protected internal ClassicComponentSettings Settings = new();
     public ClassicGameData Data;
-                
+
     /// <summary>Used to size CompletedLevels.</summary>
     protected int LevelCount = 0;
-        
+
     /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    protected readonly List<uint> CompletedLevels = new();
+    protected readonly List<uint> CompletedLevels = [];
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
@@ -53,21 +53,19 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
             bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current == 0;
             return laraJustDied;
         }
-            
+
         // FG & IL/Section
         bool levelJustCompleted = !ClassicGameData.LevelComplete.Old && ClassicGameData.LevelComplete.Current;
         return levelJustCompleted;
     }
 
-    public override bool ShouldReset(LiveSplitState state)
-    {
-        /* It is hypothetically reasonable to use CompletedLevels to reset
-         * if the player loads into a level ahead of their current level.
-         * However, considering a case where a runner accidentally loads an incorrect
-         * save after dying, it's clear that this should be avoided.
-         */
-        return ClassicGameData.PickedPassportFunction.Current == 2;
-    }
+    /* It is hypothetically reasonable to use CompletedLevels to reset
+     * if the player loads into a level ahead of their current level.
+     * However, considering a case where a runner accidentally loads an incorrect
+     * save after dying, it's clear that this should be avoided.
+     */
+    public override bool ShouldReset(LiveSplitState state) =>
+        ClassicGameData.PickedPassportFunction.Current == 2;
 
     public override bool ShouldStart(LiveSplitState state)
     {
@@ -85,7 +83,7 @@ public abstract class ClassicAutosplitter : BaseAutosplitter
         return !Settings.FullGame && levelTimeJustStarted && !oldTitleScreen;
     }
 
-        
+
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
     public virtual void OnStart() => CompletedLevels.Clear();
 

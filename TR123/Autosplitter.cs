@@ -39,7 +39,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    public double SumCompletedLevelTimes(uint? currentLevel)
+    private static double SumCompletedLevelTimes(uint? currentLevel)
     {
         // Sum IGT from other games' completed levels from splitter memory.
         ulong finishedLevelsTicks = AllGameStats
@@ -60,7 +60,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
                 .Aggregate(finishedLevelsTicks, static (current, levelStat) => current + levelStat.Igt);
         else
             finishedLevelsTicks +=
-                Data.SumCompletedLevelTimesInMemory(gameLevelStats.LevelStats.Select(static stats => stats.LevelNumber), currentLevel);
+                GameData.SumCompletedLevelTimesInMemory(gameLevelStats.LevelStats.Select(static stats => stats.LevelNumber), currentLevel);
 
         return GameData.LevelTimeAsDouble(finishedLevelsTicks);
     }
@@ -68,7 +68,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
     private static Game CurrentActiveGame => GameData.CurrentActiveGame;
 
-    internal ComponentSettings Settings = new();
+    internal readonly ComponentSettings Settings = new();
 
     public GameData Data = new();
 
@@ -121,7 +121,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
-    private TimeSpan? IgtGameTime()
+    private static TimeSpan? IgtGameTime()
     {
         // Check that the title screen is not active.
         var title = GameData.TitleLoaded;
@@ -217,7 +217,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines if <paramref name="level" /> is the first of the game or expansion.</summary>
     /// <param name="level">Level to check</param>
     /// <returns><see langword="true" /> if <paramref name="level" /> is the first; <see langword="false" /> otherwise.</returns>
-    public bool IsFirstLevel(uint level) =>
+    private static bool IsFirstLevel(uint level) =>
         CurrentActiveGame switch
         {
             Game.Tr1 or Game.Tr1NgPlus => (Tr1Level)level is Tr1Level.Caves,

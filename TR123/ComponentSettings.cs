@@ -11,7 +11,7 @@ public sealed class ComponentSettings : UserControl
     public RadioButton ILModeButton;
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
-    public Label GameTimeMethodLabel;
+    private Label _gameTimeMethodLabel;
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
@@ -32,7 +32,7 @@ public sealed class ComponentSettings : UserControl
         FullGameModeButton = new RadioButton();
         ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
-        GameTimeMethodLabel = new Label();
+        _gameTimeMethodLabel = new Label();
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
@@ -83,13 +83,13 @@ public sealed class ComponentSettings : UserControl
         DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
 
         // GameTimeMethodLabel
-        GameTimeMethodLabel.AutoSize = true;
-        GameTimeMethodLabel.Location = new Point(328, 25);
-        GameTimeMethodLabel.Name = "GameVersionLabel";
-        GameTimeMethodLabel.Size = new Size(200, 30);
-        GameTimeMethodLabel.TabIndex = 0;
-        GameTimeMethodLabel.Text = "Game Time Method:\nNot Initialized!";
-        GameTimeMethodLabel.TextAlign = ContentAlignment.MiddleCenter;
+        _gameTimeMethodLabel.AutoSize = true;
+        _gameTimeMethodLabel.Location = new Point(328, 25);
+        _gameTimeMethodLabel.Name = "GameVersionLabel";
+        _gameTimeMethodLabel.Size = new Size(200, 30);
+        _gameTimeMethodLabel.TabIndex = 0;
+        _gameTimeMethodLabel.Text = "Game Time Method:\nNot Initialized!";
+        _gameTimeMethodLabel.TextAlign = ContentAlignment.MiddleCenter;
 
         // EnableAutoResetCheckbox
         EnableAutoResetCheckbox.AutoSize = true;
@@ -121,7 +121,7 @@ public sealed class ComponentSettings : UserControl
         // ComponentSettings
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
-        Controls.Add(GameTimeMethodLabel);
+        Controls.Add(_gameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "ComponentSettings";
@@ -135,16 +135,21 @@ public sealed class ComponentSettings : UserControl
 
     public void SetGameVersion(uint version)
     {
+        const string gogV10 = "GOG v1.0";
+        const string gogV101 = "GOG v1.01 / Steam 13430979";
+        const string unknownText = "Unknown/Undetected";
+
         string versionText = (GameVersion)version switch
         {
-            GameVersion.PublicV10 => "GOG v1.0",
-            GameVersion.PublicV101 => "GOG v1.01 / Steam 13430979",
-            _ => "Unknown/Undetected",
+            GameVersion.PublicV10  => gogV10,
+            GameVersion.PublicV101 => gogV101,
+            _                      => unknownText,
         };
+
         GameVersionLabel.Text = $"Game Version: {versionText}";
     }
 
-    public void SetGameTimeMethod(GameTimeMethod method)
+    private void SetGameTimeMethod(GameTimeMethod method)
     {
         string methodText = method switch
         {
@@ -152,7 +157,7 @@ public sealed class ComponentSettings : UserControl
             GameTimeMethod.RtaNoLoads => "RTA w/o Loads",
             _ => "Unknown",
         };
-        GameTimeMethodLabel.Text = $"Game Time Method:\n{methodText}";
+        _gameTimeMethodLabel.Text = $"Game Time Method:\n{methodText}";
 
         GameTimeMethod = method;
     }

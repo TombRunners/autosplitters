@@ -13,9 +13,9 @@ public abstract class ClassicGameData : BaseGameData
 
     /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
     protected static uint LevelSaveStructSize;
-        
+
     #region MemoryWatcherList Items
-        
+
     /// <summary>Indicates if the game is on the title screen (main menu).</summary>
     /// <remarks>Goes back to 0 during demos, if applicable to the game.</remarks>
     public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers?["TitleScreen"];
@@ -51,9 +51,9 @@ public abstract class ClassicGameData : BaseGameData
     {
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
-            .Select(completedLevel => (completedLevel - 1) * LevelSaveStructSize)
+            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
             .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
 
         return LevelTimeAsDouble(finishedLevelsTicks);
     }

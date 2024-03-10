@@ -18,12 +18,12 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         const string digitalText = "Steam/GOG [TR4]";
         const string tteText = "The Times Exclusive [TTE]";
         const string unknownText = "Unknown/Undetected";
-        
+
         string versionText = (GameVersion) version switch
         {
-            GameVersion.SteamOrGog => digitalText,
+            GameVersion.SteamOrGog        => digitalText,
             GameVersion.TheTimesExclusive => tteText,
-            _ => unknownText
+            _                             => unknownText,
         };
 
         GameVersionLabel.Text = "Game Version: " + versionText;
