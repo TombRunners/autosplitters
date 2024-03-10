@@ -1,4 +1,12 @@
 <updates>
+  <update version="1.0.1.0">
+    <files>
+      <file path="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Hotfix for GameTime initialization causing GameTime splits to sometimes not display.</change>
+    </changelog>
+  </update>
   <update version="1.0.0.0">
     <files>
       <file path="Components/TR123.dll" status="changed"/>
