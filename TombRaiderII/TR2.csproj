@@ -67,9 +67,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TRUtil\TRUtil.csproj">
       <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
       <Name>TRUtil</Name>
