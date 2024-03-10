@@ -103,8 +103,9 @@ public class GameData
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
-    private static readonly ImmutableDictionary<string, uint> VersionHashes = new Dictionary<string, uint>
+    private static readonly ImmutableDictionary<string, GameVersion> VersionHashes = new Dictionary<string, GameVersion>
     {
+        { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), (uint)GameVersion.EgsDebug },
         { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.PublicV10 },
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
         { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), (uint)GameVersion.PublicV102 },
@@ -378,22 +379,22 @@ public class GameData
     private static Process _gameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    private static uint _version;
+    private static GameVersion _version;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
-    public delegate void GameFoundDelegate(uint version);
+    public delegate void GameFoundDelegate(GameVersion version);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
 
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
     /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
-    private static void SetAddresses(uint version)
+    private static void SetAddresses(GameVersion version)
     {
         Watchers.Clear();
 
-        switch ((GameVersion)version)
+        switch (version)
         {
             case GameVersion.PublicV10:
                 // Base game EXE (tomb123.exe)
@@ -423,6 +424,8 @@ public class GameData
                 break;
 
             case GameVersion.None:
+            case GameVersion.Unknown:
+            case GameVersion.EgsDebug:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
@@ -480,7 +483,6 @@ public class GameData
             }
 
             Watchers.UpdateAll(_gameProcess);
-
             return true;
         }
         catch
@@ -496,20 +498,38 @@ public class GameData
     /// </returns>
     private bool SetGameProcessAndVersion()
     {
-        // Find game Process, if any, and set Version member accordingly.
-        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName);
+        // Find game Processes.
+        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
+        if (processes.Count == 0)
+        {
+            if (_version != GameVersion.None)
+                OnGameFound.Invoke(GameVersion.None);
+
+            _version = GameVersion.None;
+            return false;
+        }
+
+        // Try finding a match from known version hashes.
         var gameProcess = processes.FirstOrDefault(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out _version));
         if (gameProcess is null)
         {
-            // Leave game unset and ensure Version is at its default value.
-            _version = 0;
+            if (_version != GameVersion.Unknown)
+                OnGameFound.Invoke(GameVersion.Unknown);
+
+            _version = GameVersion.Unknown;
+            return false;
+        }
+
+        if (_version is GameVersion.EgsDebug)
+        {
+            OnGameFound.Invoke(GameVersion.EgsDebug);
             return false;
         }
 
         // Set GameProcess and do some event management.
         _gameProcess = gameProcess;
         _gameProcess.EnableRaisingEvents = true;
-        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(0);
+        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(GameVersion.None);
         return true;
     }
 
@@ -528,7 +548,7 @@ public class GameData
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = GameVersionAddresses[(GameVersion)_version][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)

@@ -108,7 +108,7 @@ public sealed class ComponentSettings : UserControl
         GameVersionLabel.Name = "GameVersionLabel";
         GameVersionLabel.Size = new Size(200, 15);
         GameVersionLabel.TabIndex = 1;
-        GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+        GameVersionLabel.Text = "Game Version: None / Undetected";
 
         // AutosplitterVersionLabel
         AutosplitterVersionLabel.AutoSize = true;
@@ -133,19 +133,24 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
-    public void SetGameVersion(uint version)
+    public void SetGameVersion(GameVersion version)
     {
+        const string noneUndetected = "No tomb123 process found.";
+        const string unknownText = "Found unknown version";
+        const string egsDebug = "EGS debug release (Unsupported)";
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
         const string publicV102 = "Steam 13617493";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion)version switch
+        string versionText = version switch
         {
+            GameVersion.None       => noneUndetected,
+            GameVersion.Unknown    => unknownText,
+            GameVersion.EgsDebug   => egsDebug,
             GameVersion.PublicV10  => publicV10,
             GameVersion.PublicV101 => publicV101,
             GameVersion.PublicV102 => publicV102,
-            _                      => unknownText,
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
         };
 
         GameVersionLabel.Text = $"Game Version: {versionText}";
