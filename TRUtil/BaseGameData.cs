@@ -10,7 +10,7 @@ namespace TRUtil;
 public abstract class BaseGameData
 {
     /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
-    protected const int IGTTicksPerSecond = 30;
+    private const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
     protected static readonly List<string> ProcessSearchNames = [];

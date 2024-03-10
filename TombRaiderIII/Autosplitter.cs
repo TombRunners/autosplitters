@@ -6,6 +6,7 @@
 namespace TR3;
 
 /// <summary>The game's level and demo values.</summary>
+// ReSharper disable once UnusedType.Global
 internal enum Tr3Level : uint
 {
     LarasHome = 00,
@@ -44,6 +45,7 @@ internal enum Tr3Level : uint
 }
 
 /// <summary>The game's level and demo values.</summary>
+// ReSharper disable once UnusedType.Global
 internal enum TlaLevel : uint
 {
     LarasHome = 00,

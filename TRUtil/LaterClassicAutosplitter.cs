@@ -46,6 +46,7 @@ public abstract class LaterClassicAutosplitter : BaseAutosplitter
         return Settings.FullGame ? oldGfLevelComplete == 1 : oldGfLevelComplete != 0;
     }
 
+    // ReSharper disable VirtualMemberNeverOverridden.Global
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
     public virtual void OnStart() => _ticksAtStartOfRun = BaseGameData.Level.Current == 1 ? 0 : LaterClassicGameData.GameTimer.Old;
 
@@ -54,6 +55,7 @@ public abstract class LaterClassicAutosplitter : BaseAutosplitter
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
     public virtual void OnUndoSplit() { }
+    // ReSharper restore VirtualMemberNeverOverridden.Global
 
     public override void Dispose()
     {

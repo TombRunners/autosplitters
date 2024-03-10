@@ -10,10 +10,10 @@ public readonly struct GameStats(int levelCount)
     private readonly Stack<LevelStats> _levelStatistics = new(levelCount);
 
     /// <summary>The number of levels in the game.</summary>
-    public readonly int LevelCount = levelCount;
+    private readonly int _levelCount = levelCount;
 
     /// <summary><see langword="true" /> if all levels have been added into the backing stack; <see langword="false" /> otherwise.</summary>
-    public bool GameComplete => _levelStatistics.Count == LevelCount;
+    public bool GameComplete => _levelStatistics.Count == _levelCount;
 
     /// <summary>Accessor for the backing stack.</summary>
     public IEnumerable<LevelStats> LevelStats => _levelStatistics;

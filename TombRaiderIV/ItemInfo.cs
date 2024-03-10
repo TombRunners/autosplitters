@@ -1,4 +1,6 @@
-﻿#pragma warning disable IDE1006 // Naming Styles
+﻿using System;
+
+#pragma warning disable IDE1006 // Naming Styles
 
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
@@ -6,6 +8,7 @@
 
 namespace TR4;
 
+[Serializable]
 public struct ItemInfo(
     int floor, uint touch_bits, uint mesh_bits, short object_number,
     short current_anim_state, short goal_anim_state, short required_anim_state, short anim_number, short frame_number,

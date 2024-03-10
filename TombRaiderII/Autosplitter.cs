@@ -38,6 +38,7 @@ public enum Tr2Level
 // ReSharper restore IdentifierTypo
 
 /// <summary>The game's level and demo values.</summary>
+// ReSharper disable once UnusedType.Global
 public enum Tr2GoldLevel
 {
     // Levels

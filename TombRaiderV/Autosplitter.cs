@@ -35,6 +35,7 @@ internal enum Level
 }
 
 /// <summary>The "areas" of the game.</summary>
+// ReSharper disable once UnusedType.Global
 internal enum LevelSection
 {
     Rome                = Level.StreetsOfRome,
