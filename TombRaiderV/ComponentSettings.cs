@@ -18,14 +18,24 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     {
         const string digitalText = "Steam/GOG [TR5]";
         const string jpNoCdText = "Japanese No-CD [TR5]";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion) version switch
+        string versionText;
+        switch ((GameVersion)version)
         {
-            GameVersion.SteamOrGog   => digitalText,
-            GameVersion.JapaneseNoCd => jpNoCdText,
-            _                        => unknownText,
-        };
+            case GameVersion.SteamOrGog:
+                versionText = digitalText;
+                break;
+
+            case GameVersion.JapaneseNoCd:
+                versionText = jpNoCdText;
+                break;
+
+            case GameVersion.None:
+            default:
+                base.SetGameVersion(version);
+                return;
+        }
+
         GameVersionLabel.Text = "Game Version: " + versionText;
     }
 }

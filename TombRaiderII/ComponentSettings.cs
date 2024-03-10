@@ -12,18 +12,40 @@ public sealed class ComponentSettings : ClassicComponentSettings
         const string eidosUkBox = "Eidos UK Box [TR2]";
         const string stella = "Stella [TR2G]";
         const string stellaNoCd = "Stella No-CD [TR2G]";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion)version switch
+        string versionText;
+        switch ((GameVersion)version)
         {
-            GameVersion.MP                => multipatch,
-            GameVersion.EPC               => eidosPremierCollection,
-            GameVersion.P1                => corePatch1,
-            GameVersion.UKB               => eidosUkBox,
-            GameVersion.StellaGold        => stella,
-            GameVersion.StellaGoldCracked => stellaNoCd,
-            _                             => unknownText,
-        };
+            case GameVersion.MP:
+                versionText = multipatch;
+                break;
+
+            case GameVersion.EPC:
+                versionText = eidosPremierCollection;
+                break;
+
+            case GameVersion.P1:
+                versionText = corePatch1;
+                break;
+
+            case GameVersion.UKB:
+                versionText = eidosUkBox;
+                break;
+
+            case GameVersion.StellaGold:
+                versionText = stella;
+                break;
+
+            case GameVersion.StellaGoldCracked:
+                versionText = stellaNoCd;
+                break;
+
+            case GameVersion.None:
+            default:
+                base.SetGameVersion(version);
+                return;
+        }
+
         GameVersionLabel.Text = "Game Version: " + versionText;
     }
 }

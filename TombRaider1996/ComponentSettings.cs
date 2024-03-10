@@ -9,15 +9,27 @@ public sealed class ComponentSettings : ClassicComponentSettings
         const string dosboxText = "DOSBox [TR 1996]";
         const string atiTr1Text = "TombATI [TR 1996]";
         const string atiTrUbText = "TombATI [TR:UB]";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion) version switch
+        string versionText;
+        switch ((GameVersion)version)
         {
-            GameVersion.DOSBox                => dosboxText,
-            GameVersion.Ati                   => atiTr1Text,
-            GameVersion.AtiUnfinishedBusiness => atiTrUbText,
-            _                                 => unknownText,
-        };
+            case GameVersion.DOSBox:
+                versionText = dosboxText;
+                break;
+
+            case GameVersion.Ati:
+                versionText = atiTr1Text;
+                break;
+
+            case GameVersion.AtiUnfinishedBusiness:
+                versionText = atiTrUbText;
+                break;
+
+            case GameVersion.None:
+            default:
+                base.SetGameVersion(version);
+                return;
+        }
 
         GameVersionLabel.Text = "Game Version: " + versionText;
     }

@@ -117,6 +117,15 @@ public class ClassicComponentSettings : UserControl
 
     public virtual void SetGameVersion(uint version)
     {
+        const string noneUndetected = "Game Version: None / Undetected";
+        const string unknownText = "Game Version: Found unknown version";
+
+        GameVersionLabel.Text = version switch
+        {
+            0 => noneUndetected,
+            0xDEADBEEF => unknownText,
+            _ => GameVersionLabel.Text,
+        };
     }
 
     private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)

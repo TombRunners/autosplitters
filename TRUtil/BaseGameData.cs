@@ -93,13 +93,29 @@ public abstract class BaseGameData
     /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
     private bool SetGameProcessAndVersion()
     {
-        // Find game Process, if any, and set Version member accordingly.
-        var gameProcess = ProcessSearchNames.SelectMany(Process.GetProcessesByName)
-            .First(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+        // Find game Processes.
+        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
+        if (processes.Count == 0)
+        {
+            // Set Version to a value indicating no game was found.
+            const uint noneOrUndetectedValue = 0;
+            if (Version != noneOrUndetectedValue)
+                OnGameFound.Invoke(noneOrUndetectedValue);
+
+            Version = noneOrUndetectedValue;
+            return false;
+        }
+
+        // Try finding a match from known version hashes.
+        var gameProcess = processes.FirstOrDefault(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
         if (gameProcess is null)
         {
-            // Leave game unset and ensure Version is at its default value.
-            Version = 0;
+            // Set Version to a value indicating the game version is unknown.
+            const uint unknownValue = 0xDEADBEEF;
+            if (Version != unknownValue)
+                OnGameFound.Invoke(unknownValue);
+
+            Version = unknownValue;
             return false;
         }
 
