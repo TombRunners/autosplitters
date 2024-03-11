@@ -1,11 +1,11 @@
 ﻿using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // LayoutMode
-using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
+using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
+using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 using System;                             // EventArgs, IDisposable
-using System.Linq;
+using System.Linq;                        // Any
 using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlElement, XmlNode
+using System.Xml;                         // XmlDocument, XmlNode
 
 namespace TRUtil;
 
