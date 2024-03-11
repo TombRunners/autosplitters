@@ -1,4 +1,13 @@
 <updates>
+  <update version="2024.1.1.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Deathrun improvement when more than 1 split exists: stopped IGT when Lara is dead.</change>
+      <change>Resolved IGT underflow issue occurring when an incongruous save was loaded; IGT now stops in such cases.</change>
+    </changelog>
+  </update>
   <update version="2024.1.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>

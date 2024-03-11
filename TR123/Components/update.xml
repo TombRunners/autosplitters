@@ -1,4 +1,13 @@
 <updates>
+  <update version="2024.1.1.0">
+    <files>
+      <file path="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Deathrun improvement when more than 1 split exists: stopped IGT when Lara is dead.</change>
+      <change>Deathrun improvement: when Enable Auto-Reset is active, a reset is triggered when using the passport from the death menu.</change>
+    </changelog>
+  </update>
   <update version="2024.1.0.0">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
