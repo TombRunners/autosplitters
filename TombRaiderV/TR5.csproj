@@ -55,9 +55,7 @@
     <Compile Include="Autosplitter.cs" />
     <Compile Include="Component Factory.cs" />
     <Compile Include="Component.cs" />
-    <Compile Include="ComponentSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="ComponentSettings.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="Enums\GameVersion.cs" />
     <Compile Include="Enums\Level.cs" />
