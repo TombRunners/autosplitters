@@ -195,16 +195,20 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (!Settings.EnableAutoReset)
             return false;
 
-        var titleLoaded = GameData.TitleLoaded;
-        bool justEnteredTitleScreen = !titleLoaded.Old && titleLoaded.Current;
-        if (!justEnteredTitleScreen)
+        // Reset is only applied when the player uses the passport; this avoids resets after credits, for example.
+        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
+        bool passportWasChosen = GameData.InventoryChosen.Old is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        if (!passportWasChosen)
             return false;
 
-        // Checking LevelComplete is inaccurate; depending on exactly when LiveSplit polls, the Old and Current values may differ.
-        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
-        var inventoryChosen = GameData.InventoryChosen;
-        bool passportWasChosen = inventoryChosen.Old is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
-        return passportWasChosen;
+        // Deathruns should reset in the death menu regardless of if "Load Game", "Restart Level", or "Exit to Title" is selected.
+        if (Settings.Deathrun && GameData.InventoryMode.Current == InventoryMode.Death)
+            return true;
+
+        // Non-deathruns reset when the title is loaded; the player did not load into a level using the passport.
+        var titleLoaded = GameData.TitleLoaded;
+        bool justEnteredTitleScreen = !titleLoaded.Old && titleLoaded.Current;
+        return justEnteredTitleScreen;
     }
 
     /// <summary>Determines if the timer should start.</summary>

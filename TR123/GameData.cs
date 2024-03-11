@@ -61,6 +61,7 @@ public class GameData
 
     public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<InventoryMode> InventoryMode => InventoryModeWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LoadFade => LoadFadeWatchers[CurrentActiveBaseGame];
@@ -316,6 +317,15 @@ public class GameData
             { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
         }.ToImmutableDictionary();
 
+    /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
+    private static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
+        new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
+            { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
+            { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
+        }.ToImmutableDictionary();
+
     /// <summary>Gives the value of the active level.</summary>
     /// <remarks>
     ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
@@ -455,6 +465,9 @@ public class GameData
 
             int inventoryChosenOffset = addresses.InventoryChosen;
             Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
+
+            int inventoryModeOffset = addresses.InventoryMode;
+            Watchers.Add(new MemoryWatcher<InventoryMode>(new DeepPointer(moduleName, inventoryModeOffset)) { Name = $"{game}InventoryMode" });
 
             int levelOffset = addresses.Level;
             Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });
