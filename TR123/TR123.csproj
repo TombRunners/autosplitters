@@ -95,7 +95,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="LiveSplit.ScriptableAutoSplit.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
