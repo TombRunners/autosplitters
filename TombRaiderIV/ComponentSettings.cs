@@ -14,7 +14,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string digitalText = "Steam/GOG [TR4]";
         const string tteText = "The Times Exclusive [TTE]";
@@ -32,7 +32,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
             case GameVersion.None:
             default:
-                base.SetGameVersion(version);
+                base.SetGameVersion(version, hash);
                 return;
         }
 

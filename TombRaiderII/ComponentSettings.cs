@@ -5,7 +5,7 @@ namespace TR2;
 
 public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string multipatch = "Multipatch [TR2]";
         const string eidosPremierCollection = "Eidos Premier Collection [TR2]";
@@ -43,7 +43,7 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
 
             case GameVersion.None:
             default:
-                base.SetGameVersion(version);
+                base.SetGameVersion(version, hash);
                 return;
         }
 

@@ -15,7 +15,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string digitalText = "Steam/GOG [TR5]";
         const string jpNoCdText = "Japanese No-CD [TR5]";
@@ -33,7 +33,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
             case GameVersion.None:
             default:
-                base.SetGameVersion(version);
+                base.SetGameVersion(version, hash);
                 return;
         }
 

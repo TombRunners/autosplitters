@@ -389,7 +389,8 @@ public class GameData
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
-    public delegate void GameFoundDelegate(GameVersion version);
+    /// <param name="hash">The MD5 hash of the game process EXE.</param>
+    public delegate void GameFoundDelegate(GameVersion version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
@@ -479,14 +480,7 @@ public class GameData
         try
         {
             if (_gameProcess is null || _gameProcess.HasExited)
-            {
-                if (!SetGameProcessAndVersion())
-                    return false;
-
-                SetAddresses(_version);
-                OnGameFound.Invoke(_version);
-                return true;
-            }
+                return TrySetGameProcessAndVersion();
 
             Watchers.UpdateAll(_gameProcess);
             return true;
@@ -502,25 +496,31 @@ public class GameData
     ///     <see langword="true" /> if <see cref="_gameProcess" /> and <see cref="_version" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
-    private bool SetGameProcessAndVersion()
+    private bool TrySetGameProcessAndVersion()
     {
         // Find game Processes.
         var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
         if (processes.Count == 0)
         {
             if (_version != GameVersion.None)
-                OnGameFound.Invoke(GameVersion.None);
+                OnGameFound.Invoke(GameVersion.None, string.Empty);
 
             _version = GameVersion.None;
             return false;
         }
 
         // Try finding a match from known version hashes.
-        var gameProcess = processes.FirstOrDefault(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out _version));
+        var hash = string.Empty;
+        var gameProcess = processes.FirstOrDefault(p =>
+            {
+                hash = p.GetMd5Hash();
+                return VersionHashes.TryGetValue(hash, out _version);
+            }
+        );
         if (gameProcess is null)
         {
             if (_version != GameVersion.Unknown)
-                OnGameFound.Invoke(GameVersion.Unknown);
+                OnGameFound.Invoke(GameVersion.Unknown, hash);
 
             _version = GameVersion.Unknown;
             return false;
@@ -528,14 +528,16 @@ public class GameData
 
         if (_version is GameVersion.EgsDebug)
         {
-            OnGameFound.Invoke(GameVersion.EgsDebug);
+            OnGameFound.Invoke(GameVersion.EgsDebug, hash);
             return false;
         }
 
-        // Set GameProcess and do some event management.
+        // Set GameProcess and Watcher addresses, and do some event management.
         _gameProcess = gameProcess;
         _gameProcess.EnableRaisingEvents = true;
-        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(GameVersion.None);
+        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(GameVersion.None, string.Empty);
+        SetAddresses(_version);
+        OnGameFound.Invoke(_version, hash);
         return true;
     }
 

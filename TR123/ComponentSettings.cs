@@ -149,10 +149,9 @@ public sealed class ComponentSettings : UserControl
 
     public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
 
-    public void SetGameVersion(GameVersion version)
+    public void SetGameVersion(GameVersion version, string hash)
     {
         const string noneUndetected = "No tomb123 process found.";
-        const string unknownText = "Found unknown version";
         const string egsDebug = "EGS debug release (Unsupported)";
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
@@ -161,7 +160,7 @@ public sealed class ComponentSettings : UserControl
         string versionText = version switch
         {
             GameVersion.None       => noneUndetected,
-            GameVersion.Unknown    => unknownText,
+            GameVersion.Unknown    => $"Found unknown version, MD5 hash: {hash}",
             GameVersion.EgsDebug   => egsDebug,
             GameVersion.PublicV10  => publicV10,
             GameVersion.PublicV101 => publicV101,

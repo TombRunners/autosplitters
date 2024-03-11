@@ -150,15 +150,14 @@ public class LaterClassicComponentSettings : UserControl
 
     public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
 
-    public virtual void SetGameVersion(uint version)
+    public virtual void SetGameVersion(uint version, string hash)
     {
         const string noneUndetected = "Game Version: None / Undetected";
-        const string unknownText = "Game Version: Found unknown version";
 
         GameVersionLabel.Text = version switch
         {
             0 => noneUndetected,
-            0xDEADBEEF => unknownText,
+            0xDEADBEEF => $"Found unknown version, MD5 hash: {hash}",
             _ => GameVersionLabel.Text,
         };
     }

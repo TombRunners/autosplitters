@@ -5,7 +5,7 @@ namespace TR3;
 
 public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string intText = "International (INT) [TR3]";
         const string jpTr3Text = "Japanese (JP) [TR3]";
@@ -31,7 +31,7 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
 
             case GameVersion.None:
             default:
-                base.SetGameVersion(version);
+                base.SetGameVersion(version, hash);
                 return;
         }
 

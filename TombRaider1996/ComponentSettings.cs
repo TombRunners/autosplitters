@@ -5,7 +5,7 @@ namespace TR1;
 
 public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string dosboxText = "DOSBox [TR 1996]";
         const string atiTr1Text = "TombATI [TR 1996]";
@@ -28,6 +28,7 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
 
             case GameVersion.None:
             default:
+                base.SetGameVersion(version, hash);
                 return;
         }
 
