@@ -24,6 +24,10 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
         if (!LaterClassicGameData.GameTimer.Changed)
             return null;
 
+        // Prevent underflow issues after loading into a different "ticks" timeline.
+        if (_ticksAtStartOfRun > LaterClassicGameData.GameTimer.Current)
+            return null;
+
         return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(LaterClassicGameData.GameTimer.Current - _ticksAtStartOfRun));
     }
 
