@@ -123,13 +123,17 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public TimeSpan? GetGameTime(LiveSplitState state) =>
         Settings.GameTimeMethod switch
         {
-            GameTimeMethod.Igt => IgtGameTime(),
+            GameTimeMethod.Igt => IgtGameTime(Settings.Deathrun),
             GameTimeMethod.RtaNoLoads => null,
             _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
-    private static TimeSpan? IgtGameTime()
+    private static TimeSpan? IgtGameTime(bool deathrun)
     {
+        // Stop IGT when a deathrun is complete.
+        if (deathrun && GameData.Health.Current <= 0)
+            return null;
+
         // Check that the title screen is not active.
         var title = GameData.TitleLoaded;
         if (title.Current)
