@@ -1,6 +1,7 @@
 ﻿using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
 using System;                   // Version
+using System.IO;                // Path
 using System.Reflection;        // Assembly
 using TR123;                    // For [assembly:...]
 using UpdateManager;            // IUpdateable
@@ -68,7 +69,7 @@ internal class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     It must be a raw link.
     /// </remarks>
-    public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/";
+    public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TR123/";
 
     /// <summary>
     ///     XML file which is checked to see if the component needs updated.
@@ -76,7 +77,7 @@ internal class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
     /// </remarks>
-    public string XMLURL => UpdateURL + "TR123/Components/update.xml";
+    public string XMLURL => Path.Combine(UpdateURL, "Components/update.xml");
 
     #endregion
 }

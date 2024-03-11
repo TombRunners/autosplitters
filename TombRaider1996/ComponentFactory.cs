@@ -1,6 +1,7 @@
 ﻿using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
 using System;                   // Version
+using System.IO;                // Path
 using System.Reflection;        // Assembly
 using TR1;                      // For [assembly:...]
 using UpdateManager;            // IUpdateable
@@ -83,7 +84,7 @@ internal class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
     /// </remarks>
-    public string XMLURL => UpdateURL + "TombRaider1996/Components/update.xml";
+    public string XMLURL => Path.Combine(UpdateURL, "TombRaider1996/Components/update.xml");
 
     #endregion
 }
