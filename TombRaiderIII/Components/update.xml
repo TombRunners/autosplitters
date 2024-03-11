@@ -1,14 +1,15 @@
 <updates>
-  <update version="3.0.0.0">
+  <update version="2024.1.0.0">
     <files>
       <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="removed"/>
     </files>
     <changelog>
       <change>Added Auto-Reset checkbox which is unchecked by default.</change>
       <change>Improved Game Version text when no game is running and when an unknown version is running.</change>
       <change>Added a warning label when a Scriptable Auto Splitter is present in the LiveSplit layout to help prevent undefined behavior.</change>
       <change>Removed TRUtil.dll as a separate file dependency.</change>
+      <change>Changed versioning scheme to Year.Major.Minor.Hotfix.</change>
     </changelog>
   </update>
   <update version="2.0.4.0">
