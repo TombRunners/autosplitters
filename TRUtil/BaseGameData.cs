@@ -28,6 +28,12 @@ public abstract class BaseGameData
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
     public static uint Version;
 
+    /// <summary>Allows creation of an event regarding when an ASL Component was found in the LiveSplit layout.</summary>
+    public delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+
+    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    public AslComponentChangedDelegate OnAslComponentChanged;
+
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
     public delegate void GameFoundDelegate(uint version);

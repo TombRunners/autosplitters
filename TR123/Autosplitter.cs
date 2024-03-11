@@ -75,6 +75,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
     {
+        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound += Settings.SetGameVersion;
         Data.OnGameFound += UpdateWatchers;
     }
@@ -270,6 +271,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
+        Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound -= Settings.SetGameVersion;
         Data.OnGameFound -= UpdateWatchers;
         Data = null;

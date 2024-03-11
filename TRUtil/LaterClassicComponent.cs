@@ -3,6 +3,7 @@ using LiveSplit.UI;                       // LayoutMode
 using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 using System;                             // EventArgs, IDisposable
+using System.Linq;
 using System.Windows.Forms;               // Control, TableLayoutPanel
 using System.Xml;                         // XmlDocument, XmlElement, XmlNode
 
@@ -19,6 +20,9 @@ public abstract class LaterClassicComponent : AutoSplitComponent
 {
     private readonly LaterClassicAutosplitter _splitter;
     private readonly LiveSplitState _state;
+
+    private bool? _aslComponentPresent;
+    private int _layoutComponentCount;
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
     private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit();
@@ -103,7 +107,24 @@ public abstract class LaterClassicComponent : AutoSplitComponent
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
+        int layoutComponentsCount = state.Layout.LayoutComponents.Count;
+        if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
+        {
+            _layoutComponentCount = layoutComponentsCount;
+            LayoutUpdates(state);
+        }
+
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
+    }
+
+    private void LayoutUpdates(LiveSplitState state)
+    {
+        bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
+        if (_aslComponentPresent == aslInLayout)
+            return;
+
+        _aslComponentPresent = aslInLayout;
+        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
     }
 }

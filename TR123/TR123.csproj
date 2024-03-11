@@ -38,6 +38,9 @@
     <Reference Include="LiveSplit.Core">
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\LiveSplit.Core\obj\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
+    <Reference Include="LiveSplit.ScriptableAutoSplit">
+      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\Components\LiveSplit.ScriptableAutoSplit.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -92,6 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+    <Content Include="LiveSplit.ScriptableAutoSplit.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">

@@ -12,6 +12,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         Settings = new ComponentSettings();
 
         Data = new GameData();
+        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound += Settings.SetGameVersion;
     }
 

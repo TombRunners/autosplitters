@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using LiveSplit.Model;
@@ -29,6 +30,9 @@ public class Component : AutoSplitComponent
         _state.OnStart += StateOnStart;
         _state.OnUndoSplit += StateOnUndoSplit;
     }
+
+    private bool? _aslComponentPresent;
+    private int _layoutComponentCount;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 
@@ -114,7 +118,24 @@ public class Component : AutoSplitComponent
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
+        int layoutComponentsCount = state.Layout.LayoutComponents.Count;
+        if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
+        {
+            _layoutComponentCount = layoutComponentsCount;
+            LayoutUpdates(state);
+        }
+
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
+    }
+
+    private void LayoutUpdates(LiveSplitState state)
+    {
+        bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
+        if (_aslComponentPresent == aslInLayout)
+            return;
+
+        _aslComponentPresent = aslInLayout;
+        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
     }
 }

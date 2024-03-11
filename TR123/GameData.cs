@@ -381,6 +381,12 @@ public class GameData
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
     private static GameVersion _version;
 
+    /// <summary>Allows creation of an event regarding when an ASL Component was found in the LiveSplit layout.</summary>
+    public delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+
+    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    public AslComponentChangedDelegate OnAslComponentChanged;
+
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
     public delegate void GameFoundDelegate(GameVersion version);

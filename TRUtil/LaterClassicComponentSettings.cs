@@ -15,6 +15,7 @@ public class LaterClassicComponentSettings : UserControl
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
+    private Label _aslWarningLabel;
     public bool FullGame = true;
     public bool Deathrun;
     public bool Option;
@@ -32,6 +33,7 @@ public class LaterClassicComponentSettings : UserControl
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
+        _aslWarningLabel = new Label();
         ModeSelect.SuspendLayout();
         SuspendLayout();
 
@@ -116,20 +118,34 @@ public class LaterClassicComponentSettings : UserControl
         AutosplitterVersionLabel.TabIndex = 2;
         AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
 
+        // _aslWarningLabel
+        _aslWarningLabel.AutoSize = true;
+        _aslWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
+        _aslWarningLabel.ForeColor = Color.Crimson;
+        _aslWarningLabel.Location = new Point(24, 210);
+        _aslWarningLabel.Name = "_aslWarningLabel";
+        _aslWarningLabel.Size = new Size(476, 20);
+        _aslWarningLabel.TabStop = false;
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.Visible = false;
+
         // ComponentSettings
+        Controls.Add(_aslWarningLabel);
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
         Controls.Add(OptionCheckbox);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "LaterClassicComponentSettings";
-        Size = new Size(476, 200);
+        Size = new Size(476, 250);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
         ResumeLayout(false);
         PerformLayout();
     }
+
+    public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
 
     public virtual void SetGameVersion(uint version)
     {
