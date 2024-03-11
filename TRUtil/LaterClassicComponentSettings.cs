@@ -18,7 +18,7 @@ public class LaterClassicComponentSettings : UserControl
     public bool FullGame = true;
     public bool Deathrun;
     public bool Option;
-    public bool EnableAutoReset = true;
+    public bool EnableAutoReset;
 
     public LaterClassicComponentSettings() => InitializeComponent();
 
@@ -80,7 +80,7 @@ public class LaterClassicComponentSettings : UserControl
 
         // EnableAutoResetCheckbox
         EnableAutoResetCheckbox.AutoSize = true;
-        EnableAutoResetCheckbox.Checked = true;
+        EnableAutoResetCheckbox.Checked = false;
         EnableAutoResetCheckbox.Location = new Point(12, 80);
         EnableAutoResetCheckbox.Size = new Size(72, 17);
         EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
