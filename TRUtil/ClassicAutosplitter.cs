@@ -1,12 +1,12 @@
-﻿using LiveSplit.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class ClassicAutosplitter : BaseAutosplitter
+public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
 {
-    protected internal ClassicComponentSettings Settings = new();
+    protected internal ClassicComponentSettings Settings = new(version);
     public ClassicGameData Data;
 
     /// <summary>Used to size CompletedLevels.</summary>

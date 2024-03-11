@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace TRUtil;
@@ -21,7 +20,11 @@ public class LaterClassicComponentSettings : UserControl
     public bool Option;
     public bool EnableAutoReset;
 
-    public LaterClassicComponentSettings() => InitializeComponent();
+    public LaterClassicComponentSettings(Version version)
+    {
+        InitializeComponent();
+        AutosplitterVersionLabel.Text = $"Autosplitter Version: {version.ToString(3)}";
+    }
 
     private void InitializeComponent()
     {
@@ -116,7 +119,7 @@ public class LaterClassicComponentSettings : UserControl
         AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
         AutosplitterVersionLabel.Size = new Size(200, 15);
         AutosplitterVersionLabel.TabIndex = 2;
-        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
+        AutosplitterVersionLabel.Text = "Autosplitter Version: Uninitialized";
 
         // _aslWarningLabel
         _aslWarningLabel.AutoSize = true;

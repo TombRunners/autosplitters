@@ -1,8 +1,9 @@
+using System;
 using TRUtil;
 
 namespace TR1;
 
-public sealed class ComponentSettings : ClassicComponentSettings
+public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
     public override void SetGameVersion(uint version)
     {
@@ -27,7 +28,6 @@ public sealed class ComponentSettings : ClassicComponentSettings
 
             case GameVersion.None:
             default:
-                base.SetGameVersion(version);
                 return;
         }
 

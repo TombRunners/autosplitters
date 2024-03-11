@@ -1,4 +1,5 @@
-﻿using LiveSplit.Model;
+﻿using System;
+using LiveSplit.Model;
 using TRUtil;
 
 namespace TR5;
@@ -7,9 +8,9 @@ namespace TR5;
 internal sealed class Autosplitter : LaterClassicAutosplitter
 {
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
+    public Autosplitter(Version version) : base(version)
     {
-        Settings = new ComponentSettings();
+        Settings = new ComponentSettings(version);
 
         Data = new GameData();
         Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;

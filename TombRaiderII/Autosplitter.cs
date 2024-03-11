@@ -1,4 +1,5 @@
-﻿using LiveSplit.Model;
+﻿using System;
+using LiveSplit.Model;
 using TRUtil;
 
 namespace TR2;
@@ -9,9 +10,9 @@ internal sealed class Autosplitter : ClassicAutosplitter
     private bool _newGamePageSelected;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
+    public Autosplitter(Version version) : base(version)
     {
-        Settings = new ComponentSettings();
+        Settings = new ComponentSettings(version);
 
         LevelCount = 18; // This is the highest between TR2 at 18 and TR2G at 5.
         CompletedLevels.Capacity = LevelCount;

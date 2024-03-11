@@ -13,9 +13,9 @@ internal sealed class Autosplitter : ClassicAutosplitter
     private static uint? LastRealLevel => IsUnfinishedBusiness ? BaseGameData.Level.Current : (uint?)GetLastRealLevel(BaseGameData.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
+    public Autosplitter(Version version) : base(version)
     {
-        Settings = new ComponentSettings();
+        Settings = new ComponentSettings(version);
 
         LevelCount = 15; // This is the highest between TR1 at 15 and TR:UB at 4.
         CompletedLevels.Capacity = LevelCount;

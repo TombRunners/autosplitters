@@ -1,10 +1,11 @@
+using System;
 using TRUtil;
 
 namespace TR5;
 
 public sealed class ComponentSettings : LaterClassicComponentSettings
 {
-    public ComponentSettings()
+    public ComponentSettings(Version version) : base(version)
     {
         SuspendLayout();
         OptionCheckbox.Checked = Option = true;

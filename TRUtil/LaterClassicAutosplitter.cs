@@ -3,9 +3,9 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter : BaseAutosplitter
+public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitter
 {
-    protected internal LaterClassicComponentSettings Settings = new();
+    protected internal LaterClassicComponentSettings Settings = new(version);
     public LaterClassicGameData Data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>

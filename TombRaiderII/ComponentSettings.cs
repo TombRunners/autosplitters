@@ -1,8 +1,9 @@
+using System;
 using TRUtil;
 
 namespace TR2;
 
-public sealed class ComponentSettings : ClassicComponentSettings
+public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
     public override void SetGameVersion(uint version)
     {

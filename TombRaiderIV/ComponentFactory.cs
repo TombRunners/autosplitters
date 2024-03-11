@@ -45,7 +45,7 @@ internal sealed class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     This loads the component's code into LiveSplit.
     /// </remarks>
-    public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(), state);
+    public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(Version), state);
 
     #endregion
 

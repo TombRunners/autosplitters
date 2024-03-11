@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LiveSplit.Model;
 using TRUtil;
 
@@ -22,9 +23,9 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     ];
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
+    public Autosplitter(Version version) : base(version)
     {
-        Settings = new ComponentSettings();
+        Settings = new ComponentSettings(version);
 
         Data = new GameData();
         Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
