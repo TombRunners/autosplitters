@@ -75,6 +75,7 @@
     <Compile Include="GameData.cs" />
     <Compile Include="GameStats.cs" />
     <Compile Include="LevelStats.cs" />
+    <Compile Include="Memory.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
