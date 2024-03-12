@@ -26,4 +26,13 @@ public enum Tr1Level : uint
     TempleOfTheCat = 17,
     AtlanteanStronghold = 18,
     TheHive = 19,
+
+    // Cutscenes
+    AfterQualopec = 20,
+    AfterEgypt = 21,
+    AfterNatlasMines = 22,
+    AfterAtlantis = 23,
+
+    // Title screen
+    Title = 24,
 }
