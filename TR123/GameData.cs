@@ -113,6 +113,7 @@ public class GameData
     {
         { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.PublicV10 },
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
+        { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), (uint)GameVersion.PublicV102 },
     }.ToImmutableDictionary();
 
     /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
@@ -225,6 +226,57 @@ public class GameData
                             LevelIgt = 0x37B7948,
                             LoadFade = 0x31C630,
                             TitleLoaded = 0x180F98,
+                        }
+                    },
+                }
+            },
+            {
+                GameVersion.PublicV102,
+                new Dictionary<Game, GameAddresses>
+                {
+                    {
+                        Game.Tr1,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x372978A,
+                            FirstLevelTime = 0x37291B0,
+                            Health = 0xF3A88,
+                            InventoryChosen = 0xDDF48,
+                            Level = 0x3729788,
+                            LevelComplete = 0xF33A0,
+                            LevelIgt = 0x3729770,
+                            LoadFade = 0x292444,
+                            TitleLoaded = 0xF3398,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x375E9E6,
+                            FirstLevelTime = 0x375E410,
+                            Health = 0x1267B0,
+                            InventoryChosen = 0x10A024,
+                            Level = 0x128808,
+                            LevelComplete = 0x128D24,
+                            LevelIgt = 0x375E9CC,
+                            LoadFade = 0x2C7F54,
+                            TitleLoaded = 0x1288C4,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x37C26F4,
+                            FirstLevelTime = 0x37C1EE4,
+                            Health = 0x182C58,
+                            InventoryChosen = 0x15F224,
+                            Level = 0x184F2C,
+                            LevelComplete = 0x18540C,
+                            LevelIgt = 0x37C26C8,
+                            LoadFade = 0x324ED0,
+                            TitleLoaded = 0x184FF8,
                         }
                     },
                 }
@@ -365,6 +417,15 @@ public class GameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
                 AddWatchersForAllGames(GameVersion.PublicV101);
+                break;
+
+            case GameVersion.PublicV102:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddWatchersForAllGames(GameVersion.PublicV102);
                 break;
 
             default:
