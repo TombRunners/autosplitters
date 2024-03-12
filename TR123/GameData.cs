@@ -502,7 +502,13 @@ public class GameData
         try
         {
             if (_gameProcess is null || _gameProcess.HasExited)
-                return TrySetGameProcessAndVersion();
+            {
+                bool hookedSupportedGame = TrySetGameProcessAndVersion();
+                if (!hookedSupportedGame)
+                    return false;
+                PreLoadWatchers();
+                return true;
+            }
 
             Watchers.UpdateAll(_gameProcess);
             return true;
@@ -561,6 +567,16 @@ public class GameData
         SetAddresses(_version);
         OnGameFound.Invoke(_version, hash);
         return true;
+    }
+
+    /// <summary>
+    ///     This method should be called when successfully hooking a game process to ensure that MemoryWatchers do not have
+    ///     default / zeroed values on initialization, which complicates or ruins some logic.
+    /// </summary>
+    private static void PreLoadWatchers()
+    {
+        Watchers.UpdateAll(_gameProcess); // Loads Current values.
+        Watchers.UpdateAll(_gameProcess); // Moves Current to Old and loads new Current values.
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>

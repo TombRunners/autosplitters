@@ -77,19 +77,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
     {
         Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound += Settings.SetGameVersion;
-        Data.OnGameFound += UpdateWatchers;
-    }
-
-    /// <summary>
-    ///     This method should be called by GameData's OnGameFound to ensure that LiveSplit MemoryWatchers do not have
-    ///     zeroed values on initialization, which ruins some of our logic.
-    /// </summary>
-    private void UpdateWatchers(GameVersion version, string _)
-    {
-        if (version is GameVersion.None or GameVersion.Unknown or GameVersion.EgsDebug)
-            return;
-
-        Data.Update();
     }
 
     /// <summary>
@@ -281,7 +268,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
     {
         Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound -= Settings.SetGameVersion;
-        Data.OnGameFound -= UpdateWatchers;
         Data = null;
         Settings?.Dispose();
     }
