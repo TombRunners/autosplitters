@@ -25,6 +25,8 @@ public class Component : AutoSplitComponent
     public Component(Autosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
         _splitter = autosplitter;
+        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+
         _state = state;
         _state.OnSplit += StateOnSplit;
         _state.OnStart += StateOnStart;
@@ -33,6 +35,12 @@ public class Component : AutoSplitComponent
 
     private bool? _aslComponentPresent;
     private int _layoutComponentCount;
+
+    /// <summary>Allows creation of an event when an ASL Component was found in the LiveSplit layout.</summary>
+    private delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+
+    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    private AslComponentChangedDelegate _onAslComponentChanged;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 
@@ -97,14 +105,6 @@ public class Component : AutoSplitComponent
             _splitter.Settings.ILModeButton.Checked = true; // Grouped RadioButton
     }
 
-    public override void Dispose()
-    {
-        _state.OnSplit -= StateOnSplit;
-        _state.OnStart -= StateOnStart;
-        _state.OnUndoSplit -= StateOnUndoSplit;
-        _splitter?.Dispose();
-    }
-
     /// <summary>
     ///     Adds <see cref="GameData" /> and <see cref="Autosplitter" /> management to <see cref="AutoSplitComponent.Update" />.
     /// </summary>
@@ -122,20 +122,29 @@ public class Component : AutoSplitComponent
         if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
         {
             _layoutComponentCount = layoutComponentsCount;
-            LayoutUpdates(state);
+            HandleLayoutUpdates(state);
         }
 
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
     }
 
-    private void LayoutUpdates(LiveSplitState state)
+    private void HandleLayoutUpdates(LiveSplitState state)
     {
         bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
         if (_aslComponentPresent == aslInLayout)
             return;
 
         _aslComponentPresent = aslInLayout;
-        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
+        _onAslComponentChanged.Invoke(aslInLayout);
+    }
+
+    public override void Dispose()
+    {
+        _state.OnSplit -= StateOnSplit;
+        _state.OnStart -= StateOnStart;
+        _state.OnUndoSplit -= StateOnUndoSplit;
+        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+        _splitter?.Dispose();
     }
 }

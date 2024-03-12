@@ -73,11 +73,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public GameData Data = new();
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
-    {
-        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
-        Data.OnGameFound += Settings.SetGameVersion;
-    }
+    public Autosplitter() => Data.OnGameFound += Settings.SetGameVersion;
 
     /// <summary>
     ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
@@ -266,7 +262,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound -= Settings.SetGameVersion;
         Data = null;
         Settings?.Dispose();
