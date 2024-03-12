@@ -138,10 +138,10 @@ public partial class GameData
         try
         {
             if (_gameProcess is null || _gameProcess.HasExited)
-                return TrySetGameProcessAndVersion();
+                return TrySetGameProcessAndVersion() && GameIsInitialized;
 
             Memory.Watchers.UpdateAll(_gameProcess);
-            return true;
+            return GameIsInitialized;
         }
         catch
         {
@@ -198,6 +198,8 @@ public partial class GameData
         OnGameFound.Invoke(_version, hash);
         return true;
     }
+
+    private static bool GameIsInitialized => Memory.ActiveGame.Old is >= 0 and <= 2;
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IgtTicksPerSecond;

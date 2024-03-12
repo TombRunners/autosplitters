@@ -195,7 +195,7 @@ public partial class GameData
 
         /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
         /// <remarks>The uint should be converted to <see cref="GameVersion" />.</remarks>
-        internal static MemoryWatcher<uint> ActiveGame => (MemoryWatcher<uint>)Watchers?["ActiveGame"];
+        internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
 
         /// <summary>The game's bonus flag which marks NG(+).</summary>
         /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
@@ -304,7 +304,7 @@ public partial class GameData
             {
                 case GameVersion.PublicV10:
                     // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
@@ -313,7 +313,7 @@ public partial class GameData
 
                 case GameVersion.PublicV101:
                     // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
