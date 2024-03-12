@@ -1,7 +1,8 @@
 <updates>
   <update version="1.1.0.0">
     <files>
-      <file path="TR123/Components/TR123.dll" status="changed"/>
+      <file path="TombRaiderV/Components/TR5.dll" localPath="Components/TR5.dll" status="changed"/>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
     </files>
     <changelog>
       <change>Added support for "Patch 1".</change>
@@ -9,7 +10,7 @@
   </update>
   <update version="1.0.1.0">
     <files>
-      <file path="TR123/Components/TR123.dll" status="changed"/>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
     </files>
     <changelog>
       <change>Hotfix for GameTime initialization causing GameTime splits to sometimes not display.</change>
@@ -17,7 +18,7 @@
   </update>
   <update version="1.0.0.0">
     <files>
-      <file path="TR123/Components/TR123.dll" status="added"/>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="added"/>
     </files>
     <changelog>
       <change>Initial release. FG, IL / Section, and Deathrun support with automatic Start, Split, and optional Reset. Supports LiveSplit's Undo Split.</change>
