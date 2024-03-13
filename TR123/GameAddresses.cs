@@ -2,30 +2,33 @@
 
 public readonly record struct GameAddresses
 {
-    /// <summary>Used to distinguish between NG and NG+ playthroughs of non-expansions.</summary>
+    /// <summary>Address of BonusFlag.</summary>
     public int BonusFlag { get; init; }
 
-    /// <summary>The address of the first member of the IGT in-memory array which stores the IGT of completed levels.</summary>
+    /// <summary>Address of FirstLevelTime.</summary>
     public int FirstLevelTime { get; init; }
 
-    /// <summary>Lara's Health.</summary>
+    /// <summary>Address of Lara's Health.</summary>
     public int Health { get; init; }
 
-    /// <summary>Value of inventory selection; -1 when not in the inventory.</summary>
+    /// <summary>Address of InventoryChosen.</summary>
     public int InventoryChosen { get; init; }
 
-    /// <summary>The current level of the game.</summary>
+    /// <summary>Address of InventoryMode.</summary>
+    public int InventoryMode { get; init; }
+
+    /// <summary>Address of the current Level.</summary>
     public int Level { get; init; }
 
-    /// <summary>A flag that dictates the level has been completed and should split.</summary>
+    /// <summary>Address of the LevelComplete flag.</summary>
     public int LevelComplete { get; init; }
 
-    /// <summary>The running IGT of the current level.</summary>
+    /// <summary>Address of the current Level's IGT.</summary>
     public int LevelIgt { get; init; }
 
-    /// <summary>Indicates when in a title or loading screen with a value of 1.</summary>
+    /// <summary>Address of LoadFade.</summary>
     public int LoadFade { get; init; }
 
-    /// <summary>Indicates if the game is in the title screen (main menu).</summary>
+    /// <summary>Address of the TitleLoaded flag.</summary>
     public int TitleLoaded { get; init; }
 }

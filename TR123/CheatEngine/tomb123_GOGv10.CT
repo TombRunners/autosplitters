@@ -2,18 +2,26 @@
 <CheatTable CheatEngineTableVersion="45">
   <CheatEntries>
     <CheatEntry>
-      <ID>0</ID>
-      <Description>"Current Game"</Description>
-      <ShowAsSigned>1</ShowAsSigned>
-      <VariableType>4 Bytes</VariableType>
-      <Address>tomb123.exe + 0x1A5B78</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>1</ID>
-      <Description>"Current Game"</Description>
-      <ShowAsSigned>1</ShowAsSigned>
-      <VariableType>4 Bytes</VariableType>
-      <Address>tomb123.exe +0x39BC40</Address>
+      <ID>163</ID>
+      <Description>"Global"</Description>
+      <Options moHideChildren="1"/>
+      <GroupHeader>1</GroupHeader>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>0</ID>
+          <Description>"Current Game"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb123.exe + 0x1A5B78</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"Current Game"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb123.exe +0x39BC40</Address>
+        </CheatEntry>
+      </CheatEntries>
     </CheatEntry>
     <CheatEntry>
       <ID>7</ID>
@@ -259,6 +267,13 @@
           <Address>tomb3.dll + 0x156224</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>166</ID>
+          <Description>"InventoryMode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x156254</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>156</ID>
           <Description>"TitleLoaded"</Description>
           <ShowAsSigned>1</ShowAsSigned>
@@ -495,6 +510,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
           <Address>tomb2.dll + 0x100024</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>165</ID>
+          <Description>"InventoryMode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0x100084</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>155</ID>
@@ -1090,6 +1112,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
           <Address>tomb1.dll + 0xD4F48</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>164</ID>
+          <Description>"InventoryMode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xD5C18</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>154</ID>

@@ -61,6 +61,7 @@ public class GameData
 
     public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<InventoryMode> InventoryMode => InventoryModeWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<uint> LoadFade => LoadFadeWatchers[CurrentActiveBaseGame];
@@ -131,10 +132,11 @@ public class GameData
                         Game.Tr1,
                         new GameAddresses
                         {
-                            BonusFlag = 0x36CBBEA,
+                            BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
                             FirstLevelTime = 0x36CB610,
                             Health = 0xEAA30,
                             InventoryChosen = 0xD4F48,
+                            InventoryMode = 0xD5C18, // InventoryChosen + 0xCD0
                             Level = 0x36CBBE8,
                             LevelComplete = 0xEA340,
                             LevelIgt = 0x36CBBD0,
@@ -146,10 +148,11 @@ public class GameData
                         Game.Tr2,
                         new GameAddresses
                         {
-                            BonusFlag = 0x36FFE46,
+                            BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
                             FirstLevelTime = 0x36FF870,
                             Health = 0x11C780,
                             InventoryChosen = 0x100024,
+                            InventoryMode = 0x100084, // InventoryChosen + 0x60
                             Level = 0x11E7C8,
                             LevelComplete = 0x11ECE4,
                             LevelIgt = 0x36FFE2C,
@@ -161,10 +164,11 @@ public class GameData
                         Game.Tr3,
                         new GameAddresses
                         {
-                            BonusFlag = 0x3764994,
+                            BonusFlag = 0x3764994, // LevelIgt + 0x2C
                             FirstLevelTime = 0x3764184,
                             Health = 0x179C28,
                             InventoryChosen = 0x156224,
+                            InventoryMode = 0x156254, // InventoryChosen + 0x30
                             Level = 0x17BECC,
                             LevelComplete = 0x17C3AC,
                             LevelIgt = 0x3764968,
@@ -182,10 +186,11 @@ public class GameData
                         Game.Tr1,
                         new GameAddresses
                         {
-                            BonusFlag = 0x371EBEA,
+                            BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
                             FirstLevelTime = 0x371E610,
                             Health = 0xEFA18,
                             InventoryChosen = 0xD9F48,
+                            InventoryMode = 0xDAC18, // InventoryChosen + 0xCD0
                             Level = 0x371EBE8,
                             LevelComplete = 0xEF340,
                             LevelIgt = 0x371EBD0,
@@ -197,10 +202,11 @@ public class GameData
                         Game.Tr2,
                         new GameAddresses
                         {
-                            BonusFlag = 0x3753E26,
+                            BonusFlag = 0x3753E26, // LevelIgt + 0x1A
                             FirstLevelTime = 0x3753850,
                             Health = 0x122780,
                             InventoryChosen = 0x106024,
+                            InventoryMode = 0x106084, // InventoryChosen + 0x60
                             Level = 0x1247C8,
                             LevelComplete = 0x124CE4,
                             LevelIgt = 0x3753E0C,
@@ -212,10 +218,11 @@ public class GameData
                         Game.Tr3,
                         new GameAddresses
                         {
-                            BonusFlag = 0x37B7974,
+                            BonusFlag = 0x37B7974, // LevelIgt + 0x2C
                             FirstLevelTime = 0x37B7164,
                             Health = 0x17EC28,
                             InventoryChosen = 0x15B224,
+                            InventoryMode = 0x15B254, // InventoryChosen + 0x30
                             Level = 0x180ECC,
                             LevelComplete = 0x1813AC,
                             LevelIgt = 0x37B7948,
@@ -233,10 +240,11 @@ public class GameData
                         Game.Tr1,
                         new GameAddresses
                         {
-                            BonusFlag = 0x372978A,
+                            BonusFlag = 0x372978A, // LevelIgt + 0x1A
                             FirstLevelTime = 0x37291B0,
                             Health = 0xF3A88,
                             InventoryChosen = 0xDDF48,
+                            InventoryMode = 0xDEC18, // InventoryChosen + 0xCD0
                             Level = 0x3729788,
                             LevelComplete = 0xF33A0,
                             LevelIgt = 0x3729770,
@@ -248,10 +256,11 @@ public class GameData
                         Game.Tr2,
                         new GameAddresses
                         {
-                            BonusFlag = 0x375E9E6,
+                            BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
                             FirstLevelTime = 0x375E410,
                             Health = 0x1267B0,
                             InventoryChosen = 0x10A024,
+                            InventoryMode = 0x10A084, // InventoryChosen + 0x60
                             Level = 0x128808,
                             LevelComplete = 0x128D24,
                             LevelIgt = 0x375E9CC,
@@ -263,10 +272,11 @@ public class GameData
                         Game.Tr3,
                         new GameAddresses
                         {
-                            BonusFlag = 0x37C26F4,
+                            BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
                             FirstLevelTime = 0x37C1EE4,
                             Health = 0x182C58,
                             InventoryChosen = 0x15F224,
+                            InventoryMode = 0x15F254, // InventoryChosen + 0x30
                             Level = 0x184F2C,
                             LevelComplete = 0x18540C,
                             LevelIgt = 0x37C26C8,
@@ -314,6 +324,15 @@ public class GameData
             { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
             { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
             { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
+        }.ToImmutableDictionary();
+
+    /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
+    private static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
+        new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
+            { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
+            { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the active level.</summary>
@@ -455,6 +474,9 @@ public class GameData
 
             int inventoryChosenOffset = addresses.InventoryChosen;
             Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
+
+            int inventoryModeOffset = addresses.InventoryMode;
+            Watchers.Add(new MemoryWatcher<InventoryMode>(new DeepPointer(moduleName, inventoryModeOffset)) { Name = $"{game}InventoryMode" });
 
             int levelOffset = addresses.Level;
             Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });

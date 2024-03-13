@@ -15,8 +15,17 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
     /// </remarks>
     private static ulong _ticksAtStartOfRun;
 
-    public override TimeSpan? GetGameTime(LiveSplitState state) {
+    public override TimeSpan? GetGameTime(LiveSplitState state)
+    {
+        // Stop IGT when a deathrun is complete.
+        if (Settings.Deathrun && BaseGameData.Health.Current <= 0)
+            return null;
+
         if (!LaterClassicGameData.GameTimer.Changed)
+            return null;
+
+        // Prevent underflow issues after loading into a different "ticks" timeline.
+        if (_ticksAtStartOfRun > LaterClassicGameData.GameTimer.Current)
             return null;
 
         return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(LaterClassicGameData.GameTimer.Current - _ticksAtStartOfRun));

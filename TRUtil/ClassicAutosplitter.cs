@@ -17,6 +17,10 @@ public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
+        // Stop IGT when a deathrun is complete.
+        if (Settings.Deathrun && BaseGameData.Health.Current <= 0)
+            return null;
+
         // Check that IGT is ticking.
         uint currentLevelTicks = ClassicGameData.LevelTime.Current;
         uint oldLevelTicks = ClassicGameData.LevelTime.Old;
