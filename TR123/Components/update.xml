@@ -1,4 +1,12 @@
 <updates>
+  <update version="1.1.1.0">
+    <files>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed double-split issue in Natla's Mines due to an in-game cutscene after the stats screen.</change>
+    </changelog>
+  </update>
   <update version="1.1.0.0">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>

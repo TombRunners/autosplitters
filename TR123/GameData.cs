@@ -77,20 +77,14 @@ public class GameData
             return Level.Current;
 
         uint levelCutsceneValue = Tr1LevelCutscene.Current;
+        bool levelCutsceneIsAfterStatsScreen = (Tr1Level)levelCutsceneValue is Tr1Level.AfterNatlasMines;
+        if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
+            return Level.Current - 1U;
+
+        // First level check is necessary because Level value is based on save-game info, so it is not updated until the first level ends.
+        // Otherwise, we use the Level value because we don't want to use cutscene values.
         bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
         return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
-    }
-
-    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
-    /// <returns>Correct old level of the game</returns>
-    public static uint OldLevel()
-    {
-        if (CurrentActiveBaseGame is not Game.Tr1)
-            return Level.Old;
-
-        uint levelCutsceneValue = Tr1LevelCutscene.Old;
-        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
-        return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Old;
     }
 
     /// <summary>Base games included within the remastered EXE.</summary>
