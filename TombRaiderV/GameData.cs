@@ -4,13 +4,6 @@ using TRUtil;
 
 namespace TR5;
 
-/// <summary>The supported game versions.</summary>
-internal enum GameVersion
-{
-    SteamOrGog,
-    JapaneseNoCd,
-}
-
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : LaterClassicGameData
 {
@@ -55,6 +48,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082C1)) { Name = "GfInitializeGame" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082C0)) { Name = "GfGameMode" });
                 break;
+
             case GameVersion.JapaneseNoCd:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3D0)) { Name = "Level"});
@@ -64,6 +58,8 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082D1)) { Name = "GfInitializeGame" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082D0)) { Name = "GfGameMode" });
                 break;
+
+            case GameVersion.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

@@ -3,9 +3,9 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter : BaseAutosplitter
+public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitter
 {
-    protected internal LaterClassicComponentSettings Settings = new();
+    protected internal LaterClassicComponentSettings Settings = new(version);
     public LaterClassicGameData Data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
@@ -24,8 +24,9 @@ public abstract class LaterClassicAutosplitter : BaseAutosplitter
 
     public override bool ShouldReset(LiveSplitState state)
     {
-        if (Settings.DisableAutoReset)
+        if (!Settings.EnableAutoReset)
             return false;
+
         bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
         // Checking the old level number ensures that someone re-opening the game (perhaps after a crash or Alt+F4) does not Reset.
         // This works because when loading non-test/demo versions of the games, the level variable initializes as 0 before the main menu load is called.
@@ -59,6 +60,7 @@ public abstract class LaterClassicAutosplitter : BaseAutosplitter
 
     public override void Dispose()
     {
+        Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound -= Settings.SetGameVersion;
         Data = null;
     }

@@ -4,19 +4,6 @@ using TRUtil;
 
 namespace TR3;
 
-// ReSharper disable InconsistentNaming
-/// <summary>The supported game versions.</summary>
-internal enum GameVersion
-{
-    Int,                         // From Steam
-    Int16x9AspectRatio,          // Int with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
-    JpCracked,                   // No-CD cracked TR3 from JP Gold bundle release
-    JpCracked16x9AspectRatio,    // JpCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
-    JpTlaCracked,                // No-CD cracked TLA from JP Gold bundle release
-    JpTlaCracked16x9AspectRatio, // JpTlaCracked with bytes at address 0xA9410 changed to 39 8E E3 (float value 1.7777, 16/9)
-}
-// ReSharper restore InconsistentNaming
-
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : ClassicGameData
 {
@@ -54,6 +41,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x22640C)) { Name = "Health"});
                 FirstLevelTimeAddress = TR3FirstLevelTimeAddress;
                 break;
+
             case GameVersion.JpCracked:
             case GameVersion.JpCracked16x9AspectRatio:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x2A1C60)) { Name = "TitleScreen"});
@@ -64,6 +52,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x22640C)) { Name = "Health"});
                 FirstLevelTimeAddress = TR3FirstLevelTimeAddress;
                 break;
+
             case GameVersion.JpTlaCracked:
             case GameVersion.JpTlaCracked16x9AspectRatio:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x29AA04)) { Name = "TitleScreen"});
@@ -74,6 +63,8 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x21F2DC)) { Name = "Health"});
                 FirstLevelTimeAddress = TlaFirstLevelTimeAddress;
                 break;
+
+            case GameVersion.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

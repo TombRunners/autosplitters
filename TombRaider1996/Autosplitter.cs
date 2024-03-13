@@ -1,49 +1,8 @@
-using LiveSplit.Model;
 using System;
+using LiveSplit.Model;
 using TRUtil;
 
-// ReSharper disable UnusedMember.Global
-
 namespace TR1;
-
-/// <summary>The game's level, FMV, and cutscene values.</summary>
-public enum Tr1Level
-{
-    // Levels
-    LarasHome        = 00,
-    Caves            = 01,
-    Vilcabamba       = 02,
-    LostValley       = 03,
-    Qualopec         = 04,
-    StFrancisFolly   = 05,
-    Colosseum        = 06,
-    PalaceMidas      = 07,
-    Cistern          = 08,
-    Tihocan          = 09,
-    CityOfKhamoon    = 10,
-    ObeliskOfKhamoon = 11,
-    SanctuaryScion   = 12,
-    NatlasMines      = 13,
-    Atlantis         = 14,
-    TheGreatPyramid  = 15,
-
-    // Cutscenes and title screen
-    QualopecCutscene = 16,
-    TihocanCutscene  = 17,
-    MinesToAtlantis  = 18,
-    AfterAtlantisFMV = 19,
-    TitleAndFirstFMV = 20,
-}
-
-/// <summary>The game's level values.</summary>
-public enum TrUbLevel
-{
-    ReturnToEgypt       = 00,
-    TempleOfTheCat      = 01,
-    AtlanteanStronghold = 02,
-    TheHive             = 03,
-    Title               = 04,
-}
 
 /// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
 internal sealed class Autosplitter : ClassicAutosplitter
@@ -54,15 +13,16 @@ internal sealed class Autosplitter : ClassicAutosplitter
     private static uint? LastRealLevel => IsUnfinishedBusiness ? BaseGameData.Level.Current : (uint?)GetLastRealLevel(BaseGameData.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter()
+    public Autosplitter(Version version) : base(version)
     {
-        Settings = new ComponentSettings();
+        Settings = new ComponentSettings(version);
 
         LevelCount = 15; // This is the highest between TR1 at 15 and TR:UB at 4.
         CompletedLevels.Capacity = LevelCount;
         GameData.CompletedLevelTicks.Capacity = LevelCount;
 
         Data = new GameData();
+        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound += Settings.SetGameVersion;
     }
 

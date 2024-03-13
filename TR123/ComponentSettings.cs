@@ -15,6 +15,7 @@ public sealed class ComponentSettings : UserControl
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
+    private Label _aslWarningLabel;
     public bool FullGame = true;
     public bool Deathrun;
     public GameTimeMethod GameTimeMethod;
@@ -36,6 +37,7 @@ public sealed class ComponentSettings : UserControl
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
+        _aslWarningLabel = new Label();
         ModeSelect.SuspendLayout();
         SuspendLayout();
 
@@ -108,7 +110,7 @@ public sealed class ComponentSettings : UserControl
         GameVersionLabel.Name = "GameVersionLabel";
         GameVersionLabel.Size = new Size(200, 15);
         GameVersionLabel.TabIndex = 1;
-        GameVersionLabel.Text = "Game Version: Unknown/Undetected";
+        GameVersionLabel.Text = "Game Version: None / Undetected";
 
         // AutosplitterVersionLabel
         AutosplitterVersionLabel.AutoSize = true;
@@ -118,14 +120,26 @@ public sealed class ComponentSettings : UserControl
         AutosplitterVersionLabel.TabIndex = 2;
         AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
 
+        // _aslWarningLabel
+        _aslWarningLabel.AutoSize = true;
+        _aslWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
+        _aslWarningLabel.ForeColor = Color.Crimson;
+        _aslWarningLabel.Location = new Point(24, 210);
+        _aslWarningLabel.Name = "_aslWarningLabel";
+        _aslWarningLabel.Size = new Size(476, 20);
+        _aslWarningLabel.TabStop = false;
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.Visible = false;
+
         // ComponentSettings
+        Controls.Add(_aslWarningLabel);
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
         Controls.Add(_gameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(ModeSelect);
         Name = "ComponentSettings";
-        Size = new Size(476, 200);
+        Size = new Size(476, 250);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
@@ -133,19 +147,25 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
-    public void SetGameVersion(uint version)
+    public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
+
+    public void SetGameVersion(GameVersion version, string hash)
     {
+        const string noneUndetected = "No tomb123 process found.";
+        const string egsDebug = "EGS debug release (Unsupported)";
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
         const string publicV102 = "Steam 13617493";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion)version switch
+        string versionText = version switch
         {
+            GameVersion.None       => noneUndetected,
+            GameVersion.Unknown    => $"Found unknown version, MD5 hash: {hash}",
+            GameVersion.EgsDebug   => egsDebug,
             GameVersion.PublicV10  => publicV10,
             GameVersion.PublicV101 => publicV101,
             GameVersion.PublicV102 => publicV102,
-            _                      => unknownText,
+            _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
         };
 
         GameVersionLabel.Text = $"Game Version: {versionText}";

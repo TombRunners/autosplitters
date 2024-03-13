@@ -1,10 +1,11 @@
-using System;
-using System.Windows.Forms;
-using System.Xml;
-using LiveSplit.Model;
-using LiveSplit.UI;
-using LiveSplit.UI.Components;
-using LiveSplit.UI.Components.AutoSplit;
+using LiveSplit.Model;                    // LiveSplitState
+using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
+using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
+using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
+using System;                             // EventArgs, IDisposable
+using System.Linq;                        // Any
+using System.Windows.Forms;               // Control, TableLayoutPanel
+using System.Xml;                         // XmlDocument, XmlNode
 
 namespace TR123;
 
@@ -29,6 +30,9 @@ public class Component : AutoSplitComponent
         _state.OnStart += StateOnStart;
         _state.OnUndoSplit += StateOnUndoSplit;
     }
+
+    private bool? _aslComponentPresent;
+    private int _layoutComponentCount;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 
@@ -114,7 +118,24 @@ public class Component : AutoSplitComponent
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
+        int layoutComponentsCount = state.Layout.LayoutComponents.Count;
+        if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
+        {
+            _layoutComponentCount = layoutComponentsCount;
+            LayoutUpdates(state);
+        }
+
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
+    }
+
+    private void LayoutUpdates(LiveSplitState state)
+    {
+        bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
+        if (_aslComponentPresent == aslInLayout)
+            return;
+
+        _aslComponentPresent = aslInLayout;
+        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
     }
 }

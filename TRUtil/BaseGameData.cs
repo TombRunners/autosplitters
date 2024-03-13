@@ -28,9 +28,16 @@ public abstract class BaseGameData
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
     public static uint Version;
 
+    /// <summary>Allows creation of an event regarding when an ASL Component was found in the LiveSplit layout.</summary>
+    public delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+
+    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    public AslComponentChangedDelegate OnAslComponentChanged;
+
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
-    public delegate void GameFoundDelegate(uint version);
+    /// <param name="hash">The MD5 hash of the game process EXE.</param>
+    public delegate void GameFoundDelegate(uint version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameFoundDelegate OnGameFound;
@@ -70,20 +77,12 @@ public abstract class BaseGameData
         try
         {
             if (Game is null || Game.HasExited)
-            {
-                if (!SetGameProcessAndVersion())
-                    return false;
-
-                SetAddresses(Version);
-                OnGameFound.Invoke(Version);
-                return true;
-            }
+                return TrySetGameProcessAndVersion();
 
             Watchers.UpdateAll(Game);
-
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
@@ -91,22 +90,47 @@ public abstract class BaseGameData
 
     /// <summary>If applicable, finds a <see cref="Process"/> running an expected version of the game.</summary>
     /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
-    private bool SetGameProcessAndVersion()
+    private bool TrySetGameProcessAndVersion()
     {
-        // Find game Process, if any, and set Version member accordingly.
-        var gameProcess = ProcessSearchNames.SelectMany(Process.GetProcessesByName)
-            .First(static p => VersionHashes.TryGetValue(p.GetMd5Hash(), out Version));
+        const uint noneOrUndetectedValue = 0;
+
+        // Find game Processes.
+        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
+        if (processes.Count == 0)
+        {
+            // Set Version to a value indicating no game was found.
+            if (Version != noneOrUndetectedValue)
+                OnGameFound.Invoke(noneOrUndetectedValue, string.Empty);
+
+            Version = noneOrUndetectedValue;
+            return false;
+        }
+
+        // Try finding a match from known version hashes.
+        var hash = string.Empty;
+        var gameProcess = processes.FirstOrDefault(p =>
+            {
+                hash = p.GetMd5Hash();
+                return VersionHashes.TryGetValue(hash, out Version);
+            }
+        );
         if (gameProcess is null)
         {
-            // Leave game unset and ensure Version is at its default value.
-            Version = 0;
+            // Set Version to a value indicating the game version is unknown.
+            const uint unknownValue = 0xDEADBEEF;
+            if (Version != unknownValue)
+                OnGameFound.Invoke(unknownValue, hash);
+
+            Version = unknownValue;
             return false;
         }
 
         // Set Game and do some event management.
         Game = gameProcess;
         Game.EnableRaisingEvents = true;
-        Game.Exited += (_, _) => OnGameFound.Invoke(0);
+        Game.Exited += (_, _) => OnGameFound.Invoke(noneOrUndetectedValue, string.Empty);
+        SetAddresses(Version);
+        OnGameFound.Invoke(Version, hash);
         return true;
     }
 

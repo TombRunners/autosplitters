@@ -1,10 +1,11 @@
+using System;
 using TRUtil;
 
 namespace TR5;
 
 public sealed class ComponentSettings : LaterClassicComponentSettings
 {
-    public ComponentSettings()
+    public ComponentSettings(Version version) : base(version)
     {
         SuspendLayout();
         OptionCheckbox.Checked = Option = true;
@@ -14,18 +15,28 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    public override void SetGameVersion(uint version)
+    public override void SetGameVersion(uint version, string hash)
     {
         const string digitalText = "Steam/GOG [TR5]";
         const string jpNoCdText = "Japanese No-CD [TR5]";
-        const string unknownText = "Unknown/Undetected";
 
-        string versionText = (GameVersion) version switch
+        string versionText;
+        switch ((GameVersion)version)
         {
-            GameVersion.SteamOrGog   => digitalText,
-            GameVersion.JapaneseNoCd => jpNoCdText,
-            _                        => unknownText,
-        };
+            case GameVersion.SteamOrGog:
+                versionText = digitalText;
+                break;
+
+            case GameVersion.JapaneseNoCd:
+                versionText = jpNoCdText;
+                break;
+
+            case GameVersion.None:
+            default:
+                base.SetGameVersion(version, hash);
+                return;
+        }
+
         GameVersionLabel.Text = "Game Version: " + versionText;
     }
 }

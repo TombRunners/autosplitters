@@ -1,10 +1,11 @@
 ﻿using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // LayoutMode
-using LiveSplit.UI.Components;            // IComponent, LogicComponent, SettingsHelper
+using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
+using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 using System;                             // EventArgs, IDisposable
+using System.Linq;                        // Any
 using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlElement, XmlNode
+using System.Xml;                         // XmlDocument, XmlNode
 
 namespace TRUtil;
 
@@ -19,6 +20,9 @@ public abstract class LaterClassicComponent : AutoSplitComponent
 {
     private readonly LaterClassicAutosplitter _splitter;
     private readonly LiveSplitState _state;
+
+    private bool? _aslComponentPresent;
+    private int _layoutComponentCount;
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
     private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit();
@@ -56,7 +60,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.DisableAutoReset), _splitter.Settings.DisableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
         return settingsNode;
     }
 
@@ -66,7 +70,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
         _splitter.Settings.Option = SettingsHelper.ParseBool(settings["Option"], _splitter.Settings.Option);
-        _splitter.Settings.DisableAutoReset = SettingsHelper.ParseBool(settings["DisableAutoReset"], _splitter.Settings.DisableAutoReset);
+        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
 
         // Assign values to Settings.
         if (_splitter.Settings.FullGame)
@@ -76,8 +80,8 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         else
             _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
 
-        _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                     // CheckBox
-        _splitter.Settings.DisableAutoResetCheckbox.Checked = _splitter.Settings.DisableAutoReset; // CheckBox
+        _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                   // CheckBox
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
     }
 
     public override void Dispose()
@@ -103,7 +107,24 @@ public abstract class LaterClassicComponent : AutoSplitComponent
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
+        int layoutComponentsCount = state.Layout.LayoutComponents.Count;
+        if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
+        {
+            _layoutComponentCount = layoutComponentsCount;
+            LayoutUpdates(state);
+        }
+
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
+    }
+
+    private void LayoutUpdates(LiveSplitState state)
+    {
+        bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
+        if (_aslComponentPresent == aslInLayout)
+            return;
+
+        _aslComponentPresent = aslInLayout;
+        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
     }
 }

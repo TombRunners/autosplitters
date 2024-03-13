@@ -1,6 +1,7 @@
 ﻿using LiveSplit.Model;          // LiveSplitState
 using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
 using System;                   // Version
+using System.IO;                // Path
 using System.Reflection;        // Assembly
 using TR5;                      // For [assembly:...]
 using UpdateManager;            // IUpdateable
@@ -45,7 +46,7 @@ internal sealed class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     This loads the component's code into LiveSplit.
     /// </remarks>
-    public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(), state);
+    public IComponent Create(LiveSplitState state) => new Component(new Autosplitter(Version), state);
 
     #endregion
 
@@ -83,7 +84,7 @@ internal sealed class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
     /// </remarks>
-    public string XMLURL => UpdateURL + "TombRaiderV/Components/update.xml";
+    public string XMLURL => Path.Combine(UpdateURL, "TombRaiderV/Components/update.xml");
 
     #endregion
 }
