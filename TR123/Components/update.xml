@@ -1,7 +1,7 @@
 <updates>
   <update version="2024.1.1.0">
     <files>
-      <file path="Components/TR123.dll" status="changed"/>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
     </files>
     <changelog>
       <change>Deathrun improvement when more than 1 split exists: stopped IGT when Lara is dead.</change>
