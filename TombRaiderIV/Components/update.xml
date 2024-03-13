@@ -5,7 +5,7 @@
       <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="removed"/>
     </files>
     <changelog>
-      <change>Improved Auto-Reset checkbox to now enable instead of disable, unchecked by default.</change>
+      <change>Changed Auto-Reset checkbox to now enable instead of disable, unchecked by default.</change>
       <change>Improved Game Version text when no game is running and when an unknown version is running.</change>
       <change>Added a warning label when a Scriptable Auto Splitter is present in the LiveSplit layout to help prevent undefined behavior.</change>
       <change>Removed TRUtil.dll as a separate file dependency.</change>
