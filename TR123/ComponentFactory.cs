@@ -69,7 +69,7 @@ internal class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     It must be a raw link.
     /// </remarks>
-    public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/TR123/";
+    public string UpdateURL => "https://raw.githubusercontent.com/TombRunners/autosplitters/master/";
 
     /// <summary>
     ///     XML file which is checked to see if the component needs updated.
@@ -77,7 +77,7 @@ internal class ComponentFactory : IComponentFactory
     /// <remarks>
     ///     Value should be: UpdateURL + <c>[relative path to the XML file]</c>
     /// </remarks>
-    public string XMLURL => Path.Combine(UpdateURL, "Components/update.xml");
+    public string XMLURL => Path.Combine(UpdateURL, "TR123/Components/update.xml");
 
     #endregion
 }

@@ -1,8 +1,7 @@
 <updates>
   <update version="2024.1.0.0">
     <files>
-      <file path="Components/TR123.dll" status="added"/>
-      <file path="TR123/Components/TR123.dll" status="removed"/>
+      <file path="TR123/Components/TR123.dll" status="changed"/>
     </files>
     <changelog>
       <change>Improved Game Version text when no game is running, an unknown version is running, and an unsupported version is running.</change>
