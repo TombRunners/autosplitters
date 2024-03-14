@@ -322,7 +322,7 @@ public static partial class GameData
 
                 case GameVersion.PublicV102:
                     // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs

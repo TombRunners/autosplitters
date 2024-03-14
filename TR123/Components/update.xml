@@ -1,4 +1,12 @@
 <updates>
+  <update version="2024.1.1.2">
+    <files>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Hotfix for broken Start and version string.</change>
+    </changelog>
+  </update>
   <update version="2024.1.1.1">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
