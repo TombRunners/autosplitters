@@ -118,7 +118,7 @@ public sealed class ComponentSettings : UserControl
         AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
         AutosplitterVersionLabel.Size = new Size(200, 15);
         AutosplitterVersionLabel.TabIndex = 2;
-        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version.ToString(3);
+        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
 
         // _aslWarningLabel
         _aslWarningLabel.AutoSize = true;
