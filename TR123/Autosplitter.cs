@@ -148,8 +148,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
     public bool ShouldSplit(LiveSplitState state)
     {
-        // Determine if the player is in a level we have not already split.
+        // If the run is in Lara's Home, split when Lara's Home is exited via passport at the time the passport is selected.
         uint currentLevel = GameData.CurrentLevel();
+        if (currentLevel == 0)
+            return GameData.InventoryChosen.Changed && GameData.PassportWasChosen(GameData.InventoryChosen.Current);
+
+        // Determine if the player is in a level we have not already split.
         bool onValidLevelToSplit = AllGameStats[CurrentActiveGame].LevelStats.All(stats => stats.LevelNumber != currentLevel);
         if (!onValidLevelToSplit)
             return false;
@@ -177,8 +181,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         // Reset is only applied when the player uses the passport; this avoids resets after credits, for example.
-        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
-        bool passportWasChosen = GameData.InventoryChosen.Old is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        bool passportWasChosen = GameData.PassportWasChosen(GameData.InventoryChosen.Old);
         if (!passportWasChosen)
             return false;
 
@@ -240,6 +243,10 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <param name="completedLevel">Level to add to <see cref="AllGameStats" /></param>
     public void OnSplit(uint completedLevel)
     {
+        // Don't save any stats from Lara's Home.
+        if (completedLevel == 0)
+            return;
+
         var stats = new LevelStats
         {
             LevelNumber = completedLevel,

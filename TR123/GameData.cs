@@ -14,6 +14,13 @@ public static partial class GameData
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IgtTicksPerSecond = 30;
 
+    public static bool PassportWasChosen(short inventoryChosen)
+    {
+        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
+        bool passportWasChosen = inventoryChosen is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        return passportWasChosen;
+    }
+
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
     {
@@ -80,6 +87,10 @@ public static partial class GameData
             return Level.Current;
 
         uint levelCutsceneValue = GameMemory.Tr1LevelCutscene.Current;
+        bool levelCutsceneIsTitleScreen = (Tr1Level)levelCutsceneValue is Tr1Level.Title;
+        if (levelCutsceneIsTitleScreen)
+            return levelCutsceneValue;
+
         bool levelCutsceneIsAfterStatsScreen = (Tr1Level)levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
             return Level.Current - 1U;
