@@ -70,10 +70,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     internal readonly ComponentSettings Settings = new();
 
-    public GameData Data = new();
-
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter() => Data.OnGameFound += Settings.SetGameVersion;
+    public Autosplitter() => GameData.OnGameVersionChanged += Settings.SetGameVersion;
 
     /// <summary>
     ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
@@ -262,8 +260,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        Data.OnGameFound -= Settings.SetGameVersion;
-        Data = null;
+        GameData.OnGameVersionChanged -= Settings.SetGameVersion;
         Settings?.Dispose();
     }
 }

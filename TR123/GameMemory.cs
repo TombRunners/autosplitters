@@ -5,9 +5,9 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public partial class GameData
+public static partial class GameData
 {
-    private static partial class Memory
+    private static partial class GameMemory
     {
         /// <summary>Base games included within the remastered EXE.</summary>
         private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];

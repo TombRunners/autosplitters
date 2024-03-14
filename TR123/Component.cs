@@ -125,7 +125,7 @@ public class Component : AutoSplitComponent
             HandleLayoutUpdates(state);
         }
 
-        if (_splitter.Data.Update())
+        if (GameData.Update())
             base.Update(invalidator, state, width, height, mode);
     }
 

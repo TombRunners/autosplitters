@@ -7,9 +7,9 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public partial class GameData
+public static partial class GameData
 {
-    private static partial class Memory;
+    private static partial class GameMemory;
 
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IgtTicksPerSecond = 30;
@@ -40,7 +40,7 @@ public partial class GameData
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(Memory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame.");
+                    throw new ArgumentOutOfRangeException(nameof(GameMemory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame.");
             }
 
             bool bonusFlag = BonusFlag.Current;
@@ -53,24 +53,24 @@ public partial class GameData
                 Game.Tr1 => (Tr1Level)currentLevel < Tr1Level.ReturnToEgypt ? Game.Tr1NgPlus : Game.Tr1,
                 Game.Tr2 => (Tr2Level)currentLevel < Tr2Level.TheColdWar ? Game.Tr2NgPlus : Game.Tr2,
                 Game.Tr3 => (Tr3Level)currentLevel < Tr3Level.HighlandFling ? Game.Tr3NgPlus : Game.Tr3,
-                _ => throw new ArgumentOutOfRangeException(nameof(Memory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame."),
+                _ => throw new ArgumentOutOfRangeException(nameof(GameMemory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame."),
             };
         }
     }
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    private static Game CurrentActiveBaseGame => (Game)(Memory.ActiveGame.Current * 3);
+    private static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
-    public static MemoryWatcher<short> Health => Memory.HealthWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<short> InventoryChosen => Memory.InventoryChosenWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<InventoryMode> InventoryMode => Memory.InventoryModeWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<bool> LevelComplete => Memory.LevelCompleteWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<uint> LevelIgt => Memory.LevelIgtWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<uint> LoadFade => Memory.LoadFadeWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<bool> TitleLoaded => Memory.TitleLoadedWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<InventoryMode> InventoryMode => GameMemory.InventoryModeWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> LevelComplete => GameMemory.LevelCompleteWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgtWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LoadFade => GameMemory.LoadFadeWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> TitleLoaded => GameMemory.TitleLoadedWatchers[CurrentActiveBaseGame];
 
-    private static MemoryWatcher<bool> BonusFlag => Memory.BonusFlagWatchers[CurrentActiveBaseGame];
-    private static MemoryWatcher<byte> Level => Memory.LevelWatchers[CurrentActiveBaseGame];
+    private static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlagWatchers[CurrentActiveBaseGame];
+    private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Correct current level of the game</returns>
@@ -79,7 +79,7 @@ public partial class GameData
         if (CurrentActiveBaseGame is not Game.Tr1)
             return Level.Current;
 
-        uint levelCutsceneValue = Memory.Tr1LevelCutscene.Current;
+        uint levelCutsceneValue = GameMemory.Tr1LevelCutscene.Current;
         bool levelCutsceneIsAfterStatsScreen = (Tr1Level)levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
             return Level.Current - 1U;
@@ -90,25 +90,15 @@ public partial class GameData
         return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
     }
 
+    /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
+    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
+
     /// <summary>Contains the sizes of the save game structs for each base <see cref="Game" />.</summary>
     private static readonly ImmutableDictionary<Game, uint> GameSaveStructSizes = new Dictionary<Game, uint>(3)
     {
         { Game.Tr1, 0x30 },
         { Game.Tr2, 0x30 },
         { Game.Tr3, 0x40 },
-    }.ToImmutableDictionary();
-
-    /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
-    private static readonly ImmutableList<string> ProcessSearchNames = ["tomb123"];
-
-    /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
-    private static readonly ImmutableDictionary<string, GameVersion> VersionHashes = new Dictionary<string, GameVersion>
-    {
-        { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), GameVersion.EgsDebug },
-        { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), GameVersion.PublicV10 },
-        { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), GameVersion.PublicV101 },
-        { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), GameVersion.PublicV102 },
     }.ToImmutableDictionary();
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
@@ -118,23 +108,29 @@ public partial class GameData
     private static GameVersion _version;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
-    /// <param name="hash">The MD5 hash of the game process EXE.</param>
-    public delegate void GameFoundDelegate(GameVersion version, string hash);
+    /// <param name="version">The new <see cref="GameVersion" /></param>
+    /// <param name="hash">MD5 hash of the game EXE</param>
+    public delegate void GameVersionChangedDelegate(GameVersion version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public GameFoundDelegate OnGameFound;
+    public static GameVersionChangedDelegate OnGameVersionChanged;
 
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
-    public bool Update()
+    public static bool Update()
     {
         try
         {
             if (_gameProcess is null || _gameProcess.HasExited)
-                return TrySetGameProcessAndVersion() && GameIsInitialized;
+            {
+                if (!FindSupportedGame())
+                    return false;
 
-            Memory.Watchers.UpdateAll(_gameProcess);
+                GameMemory.InitializeMemoryWatchers(_version);
+                return GameIsInitialized;
+            }
+
+            GameMemory.Watchers.UpdateAll(_gameProcess);
             return GameIsInitialized;
         }
         catch
@@ -148,52 +144,30 @@ public partial class GameData
     ///     <see langword="true" /> if <see cref="_gameProcess" /> and <see cref="_version" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
-    private bool TrySetGameProcessAndVersion()
+    private static bool FindSupportedGame()
     {
-        // Find game Processes.
-        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
-        if (processes.Count == 0)
+        var detectedVersion = VersionDetector.DetectVersion(out var gameProcess, out string hash);
+        if (_version != detectedVersion)
         {
-            if (_version != GameVersion.None)
-                OnGameFound.Invoke(GameVersion.None, string.Empty);
-
-            _version = GameVersion.None;
-            return false;
+            _version = detectedVersion;
+            OnGameVersionChanged.Invoke(_version, hash);
         }
 
-        // Try finding a match from known version hashes.
-        var hash = string.Empty;
-        var gameProcess = processes.FirstOrDefault(p =>
-            {
-                hash = p.GetMd5Hash();
-                return VersionHashes.TryGetValue(hash, out _version);
-            }
-        );
-        if (gameProcess is null)
-        {
-            if (_version != GameVersion.Unknown)
-                OnGameFound.Invoke(GameVersion.Unknown, hash);
-
-            _version = GameVersion.Unknown;
+        if (gameProcess is null || _version is GameVersion.EgsDebug) // EGS Debug is not supported.
             return false;
-        }
 
-        if (_version is GameVersion.EgsDebug)
-        {
-            OnGameFound.Invoke(GameVersion.EgsDebug, hash);
-            return false;
-        }
-
-        // Set GameProcess and Watcher addresses, and do some event management.
-        _gameProcess = gameProcess;
-        _gameProcess.EnableRaisingEvents = true;
-        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(GameVersion.None, string.Empty);
-        Memory.InitializeMemoryWatchers(_version);
-        OnGameFound.Invoke(_version, hash);
+        SetGameProcess(gameProcess);
         return true;
     }
 
-    private static bool GameIsInitialized => Memory.ActiveGame.Old is >= 0 and <= 2;
+    /// <summary>Sets <see cref="_gameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
+    /// <param name="gameProcess">Game process</param>
+    private static void SetGameProcess(Process gameProcess)
+    {
+        _gameProcess = gameProcess;
+        _gameProcess.EnableRaisingEvents = true;
+        _gameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
+    }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IgtTicksPerSecond;
@@ -203,14 +177,14 @@ public partial class GameData
     public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeBaseGame = CurrentActiveBaseGame;
-        string activeModuleName = Memory.GameModules[activeBaseGame];
+        string activeModuleName = GameMemory.GameModules[activeBaseGame];
         var activeModule = _gameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
         if (activeModule is null)
             return 0;
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = Memory.GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
