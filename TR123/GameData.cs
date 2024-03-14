@@ -7,8 +7,10 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public class GameData
+public static partial class GameData
 {
+    private static partial class GameMemory;
+
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IgtTicksPerSecond = 30;
 
@@ -38,7 +40,7 @@ public class GameData
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame.");
+                    throw new ArgumentOutOfRangeException(nameof(GameMemory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame.");
             }
 
             bool bonusFlag = BonusFlag.Current;
@@ -51,24 +53,24 @@ public class GameData
                 Game.Tr1 => (Tr1Level)currentLevel < Tr1Level.ReturnToEgypt ? Game.Tr1NgPlus : Game.Tr1,
                 Game.Tr2 => (Tr2Level)currentLevel < Tr2Level.TheColdWar ? Game.Tr2NgPlus : Game.Tr2,
                 Game.Tr3 => (Tr3Level)currentLevel < Tr3Level.HighlandFling ? Game.Tr3NgPlus : Game.Tr3,
-                _ => throw new ArgumentOutOfRangeException(nameof(ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame."),
+                _ => throw new ArgumentOutOfRangeException(nameof(GameMemory.ActiveGame.Current), "Unknown Game value read from CurrentActiveBaseGame."),
             };
         }
     }
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    private static Game CurrentActiveBaseGame => (Game)(ActiveGame.Current * 3);
+    private static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
-    public static MemoryWatcher<short> Health => HealthWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<short> InventoryChosen => InventoryChosenWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<InventoryMode> InventoryMode => InventoryModeWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<bool> LevelComplete => LevelCompleteWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<uint> LevelIgt => LevelIgtWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<uint> LoadFade => LoadFadeWatchers[CurrentActiveBaseGame];
-    public static MemoryWatcher<bool> TitleLoaded => TitleLoadedWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<InventoryMode> InventoryMode => GameMemory.InventoryModeWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> LevelComplete => GameMemory.LevelCompleteWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgtWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<uint> LoadFade => GameMemory.LoadFadeWatchers[CurrentActiveBaseGame];
+    public static MemoryWatcher<bool> TitleLoaded => GameMemory.TitleLoadedWatchers[CurrentActiveBaseGame];
 
-    private static MemoryWatcher<bool> BonusFlag => BonusFlagWatchers[CurrentActiveBaseGame];
-    private static MemoryWatcher<byte> Level => LevelWatchers[CurrentActiveBaseGame];
+    private static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlagWatchers[CurrentActiveBaseGame];
+    private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Correct current level of the game</returns>
@@ -77,7 +79,7 @@ public class GameData
         if (CurrentActiveBaseGame is not Game.Tr1)
             return Level.Current;
 
-        uint levelCutsceneValue = Tr1LevelCutscene.Current;
+        uint levelCutsceneValue = GameMemory.Tr1LevelCutscene.Current;
         bool levelCutsceneIsAfterStatsScreen = (Tr1Level)levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
             return Level.Current - 1U;
@@ -88,8 +90,8 @@ public class GameData
         return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
     }
 
-    /// <summary>Base games included within the remastered EXE.</summary>
-    private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
+    /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
+    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
 
     /// <summary>Contains the sizes of the save game structs for each base <see cref="Game" />.</summary>
     private static readonly ImmutableDictionary<Game, uint> GameSaveStructSizes = new Dictionary<Game, uint>(3)
@@ -99,413 +101,37 @@ public class GameData
         { Game.Tr3, 0x40 },
     }.ToImmutableDictionary();
 
-    /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
-    private static readonly ImmutableList<string> ProcessSearchNames = ["tomb123"];
-
-    /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>
-    private static readonly ImmutableDictionary<string, GameVersion> VersionHashes = new Dictionary<string, GameVersion>
-    {
-        { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), GameVersion.EgsDebug },
-        { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), GameVersion.PublicV10 },
-        { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), GameVersion.PublicV101 },
-        { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), GameVersion.PublicV102 },
-    }.ToImmutableDictionary();
-
-    /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
-    private static readonly ImmutableDictionary<Game, string> GameModules = new Dictionary<Game, string>(3)
-    {
-        { Game.Tr1, "tomb1.dll" },
-        { Game.Tr2, "tomb2.dll" },
-        { Game.Tr3, "tomb3.dll" },
-    }.ToImmutableDictionary();
-
-    /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
-    private static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
-        new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
-        {
-            {
-                GameVersion.PublicV10,
-                new Dictionary<Game, GameAddresses>
-                {
-                    {
-                        Game.Tr1,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x36CB610,
-                            Health = 0xEAA30,
-                            InventoryChosen = 0xD4F48,
-                            InventoryMode = 0xD5C18, // InventoryChosen + 0xCD0
-                            Level = 0x36CBBE8,
-                            LevelComplete = 0xEA340,
-                            LevelIgt = 0x36CBBD0,
-                            LoadFade = 0x2D7650,
-                            TitleLoaded = 0xEA338,
-                        }
-                    },
-                    {
-                        Game.Tr2,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x36FF870,
-                            Health = 0x11C780,
-                            InventoryChosen = 0x100024,
-                            InventoryMode = 0x100084, // InventoryChosen + 0x60
-                            Level = 0x11E7C8,
-                            LevelComplete = 0x11ECE4,
-                            LevelIgt = 0x36FFE2C,
-                            LoadFade = 0x2796F4,
-                            TitleLoaded = 0x11E884,
-                        }
-                    },
-                    {
-                        Game.Tr3,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x3764994, // LevelIgt + 0x2C
-                            FirstLevelTime = 0x3764184,
-                            Health = 0x179C28,
-                            InventoryChosen = 0x156224,
-                            InventoryMode = 0x156254, // InventoryChosen + 0x30
-                            Level = 0x17BECC,
-                            LevelComplete = 0x17C3AC,
-                            LevelIgt = 0x3764968,
-                            LoadFade = 0x244BC4,
-                            TitleLoaded = 0x17BF98,
-                        }
-                    },
-                }
-            },
-            {
-                GameVersion.PublicV101,
-                new Dictionary<Game, GameAddresses>
-                {
-                    {
-                        Game.Tr1,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x371E610,
-                            Health = 0xEFA18,
-                            InventoryChosen = 0xD9F48,
-                            InventoryMode = 0xDAC18, // InventoryChosen + 0xCD0
-                            Level = 0x371EBE8,
-                            LevelComplete = 0xEF340,
-                            LevelIgt = 0x371EBD0,
-                            LoadFade = 0x2619CE0,
-                            TitleLoaded = 0xEF338,
-                        }
-                    },
-                    {
-                        Game.Tr2,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x3753E26, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x3753850,
-                            Health = 0x122780,
-                            InventoryChosen = 0x106024,
-                            InventoryMode = 0x106084, // InventoryChosen + 0x60
-                            Level = 0x1247C8,
-                            LevelComplete = 0x124CE4,
-                            LevelIgt = 0x3753E0C,
-                            LoadFade = 0x2BF6D4,
-                            TitleLoaded = 0x124884,
-                        }
-                    },
-                    {
-                        Game.Tr3,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x37B7974, // LevelIgt + 0x2C
-                            FirstLevelTime = 0x37B7164,
-                            Health = 0x17EC28,
-                            InventoryChosen = 0x15B224,
-                            InventoryMode = 0x15B254, // InventoryChosen + 0x30
-                            Level = 0x180ECC,
-                            LevelComplete = 0x1813AC,
-                            LevelIgt = 0x37B7948,
-                            LoadFade = 0x31C630,
-                            TitleLoaded = 0x180F98,
-                        }
-                    },
-                }
-            },
-            {
-                GameVersion.PublicV102,
-                new Dictionary<Game, GameAddresses>
-                {
-                    {
-                        Game.Tr1,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x372978A, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x37291B0,
-                            Health = 0xF3A88,
-                            InventoryChosen = 0xDDF48,
-                            InventoryMode = 0xDEC18, // InventoryChosen + 0xCD0
-                            Level = 0x3729788,
-                            LevelComplete = 0xF33A0,
-                            LevelIgt = 0x3729770,
-                            LoadFade = 0x292444,
-                            TitleLoaded = 0xF3398,
-                        }
-                    },
-                    {
-                        Game.Tr2,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
-                            FirstLevelTime = 0x375E410,
-                            Health = 0x1267B0,
-                            InventoryChosen = 0x10A024,
-                            InventoryMode = 0x10A084, // InventoryChosen + 0x60
-                            Level = 0x128808,
-                            LevelComplete = 0x128D24,
-                            LevelIgt = 0x375E9CC,
-                            LoadFade = 0x2C7F54,
-                            TitleLoaded = 0x1288C4,
-                        }
-                    },
-                    {
-                        Game.Tr3,
-                        new GameAddresses
-                        {
-                            BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
-                            FirstLevelTime = 0x37C1EE4,
-                            Health = 0x182C58,
-                            InventoryChosen = 0x15F224,
-                            InventoryMode = 0x15F254, // InventoryChosen + 0x30
-                            Level = 0x184F2C,
-                            LevelComplete = 0x18540C,
-                            LevelIgt = 0x37C26C8,
-                            LoadFade = 0x324ED0,
-                            TitleLoaded = 0x184FF8,
-                        }
-                    },
-                }
-            },
-        }.ToImmutableDictionary();
-
-    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    private static readonly MemoryWatcherList Watchers = [];
-
-    #region MemoryWatcherList Items
-
-    /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
-    /// <remarks>The uint should be converted to <see cref="GameVersion" />.</remarks>
-    private static MemoryWatcher<uint> ActiveGame => (MemoryWatcher<uint>)Watchers?["ActiveGame"];
-
-    /// <summary>The game's bonus flag which marks NG(+).</summary>
-    /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Lara's current HP.</summary>
-    /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
-        new Dictionary<Game, MemoryWatcher<short>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
-            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
-            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
-        new Dictionary<Game, MemoryWatcher<short>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
-            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
-            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
-        new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
-            { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
-            { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Gives the value of the active level.</summary>
-    /// <remarks>
-    ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
-    ///     Business.
-    /// </remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
-        new Dictionary<Game, MemoryWatcher<byte>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
-            { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
-            { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Indicates if the current level is finished.</summary>
-    /// <remarks>
-    ///     1 while an end-level stats screen is active.
-    ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
-    ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
-    ///     Otherwise, the value is 0.
-    /// </remarks>
-    private static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Gives the running IGT of the current level.</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
-        new Dictionary<Game, MemoryWatcher<uint>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
-            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
-            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
-        new Dictionary<Game, MemoryWatcher<uint>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
-            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LoadFade"] },
-            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
-        }.ToImmutableDictionary();
-
-    /// <summary>Tells if the game is currently in the title screen.</summary>
-    private static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
-        {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2TitleLoaded"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
-        }.ToImmutableDictionary();
-
-    private static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
-
-    #endregion
-
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     private static Process _gameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
     private static GameVersion _version;
 
-    /// <summary>Allows creation of an event regarding when an ASL Component was found in the LiveSplit layout.</summary>
-    public delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
-
-    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
-    public AslComponentChangedDelegate OnAslComponentChanged;
-
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The version found; the uint will be converted to <see cref="GameVersion" />.</param>
-    /// <param name="hash">The MD5 hash of the game process EXE.</param>
-    public delegate void GameFoundDelegate(GameVersion version, string hash);
+    /// <param name="version">The new <see cref="GameVersion" /></param>
+    /// <param name="hash">MD5 hash of the game EXE</param>
+    public delegate void GameVersionChangedDelegate(GameVersion version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public GameFoundDelegate OnGameFound;
-
-    /// <summary>Sets addresses based on <paramref name="version" />.</summary>
-    /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
-    private static void SetAddresses(GameVersion version)
-    {
-        Watchers.Clear();
-
-        switch (version)
-        {
-            case GameVersion.PublicV10:
-                // Base game EXE (tomb123.exe)
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
-                // One-offs from DLLs
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
-                // Common items for all game's DLLs
-                AddWatchersForAllGames(GameVersion.PublicV10);
-                break;
-
-            case GameVersion.PublicV101:
-                // Base game EXE (tomb123.exe)
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
-                // One-offs from DLLs
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
-                // Common items for all game's DLLs
-                AddWatchersForAllGames(GameVersion.PublicV101);
-                break;
-
-            case GameVersion.PublicV102:
-                // Base game EXE (tomb123.exe)
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
-                // One-offs from DLLs
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
-                // Common items for all game's DLLs
-                AddWatchersForAllGames(GameVersion.PublicV102);
-                break;
-
-            case GameVersion.None:
-            case GameVersion.Unknown:
-            case GameVersion.EgsDebug:
-            default:
-                throw new ArgumentOutOfRangeException(nameof(version), version, null);
-        }
-    }
-
-    /// <summary>Adds MemoryWatchers which are common across all games.</summary>
-    /// <param name="version">Game version</param>
-    private static void AddWatchersForAllGames(GameVersion version)
-    {
-        foreach (var game in BaseGames)
-        {
-            string moduleName = GameModules[game];
-            var addresses = GameVersionAddresses[version][game];
-
-            int bonusFlagOffset = addresses.BonusFlag;
-            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, bonusFlagOffset)) { Name = $"{game}BonusFlag"});
-
-            int healthOffset = addresses.Health;
-            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, healthOffset)) { Name = $"{game}Health" });
-
-            int inventoryChosenOffset = addresses.InventoryChosen;
-            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
-
-            int inventoryModeOffset = addresses.InventoryMode;
-            Watchers.Add(new MemoryWatcher<InventoryMode>(new DeepPointer(moduleName, inventoryModeOffset)) { Name = $"{game}InventoryMode" });
-
-            int levelOffset = addresses.Level;
-            Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });
-
-            int levelCompleteOffset = addresses.LevelComplete;
-            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, levelCompleteOffset)) { Name = $"{game}LevelComplete" });
-
-            int levelIgtOffset = addresses.LevelIgt;
-            Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, levelIgtOffset)) { Name = $"{game}LevelIgt" });
-
-            int loadFadeOffset = addresses.LoadFade;
-            Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, loadFadeOffset)) { Name = $"{game}LoadFade" });
-
-            int titleLoadedOffset = addresses.TitleLoaded;
-            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });
-        }
-    }
+    public static GameVersionChangedDelegate OnGameVersionChanged;
 
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
-    public bool Update()
+    public static bool Update()
     {
         try
         {
             if (_gameProcess is null || _gameProcess.HasExited)
-                return TrySetGameProcessAndVersion();
+            {
+                if (!FindSupportedGame())
+                    return false;
 
-            Watchers.UpdateAll(_gameProcess);
-            return true;
+                GameMemory.InitializeMemoryWatchers(_version);
+                return GameIsInitialized;
+            }
+
+            GameMemory.Watchers.UpdateAll(_gameProcess);
+            return GameIsInitialized;
         }
         catch
         {
@@ -518,49 +144,29 @@ public class GameData
     ///     <see langword="true" /> if <see cref="_gameProcess" /> and <see cref="_version" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
-    private bool TrySetGameProcessAndVersion()
+    private static bool FindSupportedGame()
     {
-        // Find game Processes.
-        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
-        if (processes.Count == 0)
+        var detectedVersion = VersionDetector.DetectVersion(out var gameProcess, out string hash);
+        if (_version != detectedVersion)
         {
-            if (_version != GameVersion.None)
-                OnGameFound.Invoke(GameVersion.None, string.Empty);
-
-            _version = GameVersion.None;
-            return false;
+            _version = detectedVersion;
+            OnGameVersionChanged.Invoke(_version, hash);
         }
 
-        // Try finding a match from known version hashes.
-        var hash = string.Empty;
-        var gameProcess = processes.FirstOrDefault(p =>
-            {
-                hash = p.GetMd5Hash();
-                return VersionHashes.TryGetValue(hash, out _version);
-            }
-        );
-        if (gameProcess is null)
-        {
-            if (_version != GameVersion.Unknown)
-                OnGameFound.Invoke(GameVersion.Unknown, hash);
-
-            _version = GameVersion.Unknown;
+        if (gameProcess is null || _version is GameVersion.EgsDebug) // EGS Debug is not supported.
             return false;
-        }
 
-        if (_version is GameVersion.EgsDebug)
-        {
-            OnGameFound.Invoke(GameVersion.EgsDebug, hash);
-            return false;
-        }
+        SetGameProcess(gameProcess);
+        return true;
+    }
 
-        // Set GameProcess and Watcher addresses, and do some event management.
+    /// <summary>Sets <see cref="_gameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
+    /// <param name="gameProcess">Game process</param>
+    private static void SetGameProcess(Process gameProcess)
+    {
         _gameProcess = gameProcess;
         _gameProcess.EnableRaisingEvents = true;
-        _gameProcess.Exited += (_, _) => OnGameFound.Invoke(GameVersion.None, string.Empty);
-        SetAddresses(_version);
-        OnGameFound.Invoke(_version, hash);
-        return true;
+        _gameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
@@ -571,14 +177,14 @@ public class GameData
     public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         var activeBaseGame = CurrentActiveBaseGame;
-        string activeModuleName = GameModules[activeBaseGame];
+        string activeModuleName = GameMemory.GameModules[activeBaseGame];
         var activeModule = _gameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
         if (activeModule is null)
             return 0;
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
