@@ -105,7 +105,6 @@ public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
 
     public override void Dispose()
     {
-        Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound -= Settings.SetGameVersion;
         Data = null;
     }
