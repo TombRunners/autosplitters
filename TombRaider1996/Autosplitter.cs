@@ -22,7 +22,6 @@ internal sealed class Autosplitter : ClassicAutosplitter
         GameData.CompletedLevelTicks.Capacity = LevelCount;
 
         Data = new GameData();
-        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
         Data.OnGameFound += Settings.SetGameVersion;
     }
 
