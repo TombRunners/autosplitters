@@ -73,12 +73,13 @@
     <Compile Include="Enums\Tr3Level.cs" />
     <Compile Include="GameAddresses.cs" />
     <Compile Include="GameData.cs" />
-    <Compile Include="GameStats.cs" />
-    <Compile Include="LevelStats.cs" />
-    <Compile Include="VersionDetector.cs" />
     <Compile Include="GameMemory.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stats\GameStats.cs" />
+    <Compile Include="Stats\LevelStats.cs" />
+    <Compile Include="Stats\RunStats.cs" />
+    <Compile Include="VersionDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">

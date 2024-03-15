@@ -20,20 +20,23 @@ public readonly struct GameStats(int levelCount)
 
     /// <summary>Pushes <paramref name="stats" /> to the backing stack.</summary>
     /// <param name="stats">Stats to add</param>
-    public void AddLevelStats(LevelStats stats)
+    public bool AddLevelStats(LevelStats stats)
     {
-        if (GameComplete)
-            return;
-
-        if (_levelStatistics.Select(static stats => stats.LevelNumber).Contains(stats.LevelNumber))
-            return;
+        if (GameComplete || LevelAlreadyComplete(stats.LevelNumber))
+            return false;
 
         _levelStatistics.Push(stats);
+        return true;
     }
 
     /// <summary>Pops the most recently added <see cref="LevelStats" /> from the backing stack.</summary>
-    public void RemoveLevelStats() => _ = _levelStatistics.Pop();
+    public LevelStats PopLevelStats() => _levelStatistics.Pop();
 
     /// <summary>Clears the backing stack of all <see cref="LevelStats" />.</summary>
     public void Clear() => _levelStatistics.Clear();
+
+    /// <summary>Determines if the stats for <paramref name="levelNumber" /> are already present.</summary>
+    /// <param name="levelNumber">Level number</param>
+    /// <returns><see langword="true" /> if the level is present in the backing stack; <see langword="false" /> otherwise</returns>
+    public bool LevelAlreadyComplete(uint levelNumber) => LevelStats.Any(stats => stats.LevelNumber == levelNumber);
 }
