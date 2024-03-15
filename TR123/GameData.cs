@@ -66,7 +66,7 @@ public static partial class GameData
     }
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    private static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
+    public static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
     public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
     public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
@@ -86,19 +86,24 @@ public static partial class GameData
         if (CurrentActiveBaseGame is not Game.Tr1)
             return Level.Current;
 
-        uint levelCutsceneValue = GameMemory.Tr1LevelCutscene.Current;
-        bool levelCutsceneIsTitleScreen = (Tr1Level)levelCutsceneValue is Tr1Level.Title;
-        if (levelCutsceneIsTitleScreen)
-            return levelCutsceneValue;
+        // Level value is based on save-game info and only updates after a level is completed; it also doesn't reflect cutscenes.
+        var levelCutsceneValue = (Tr1Level)GameMemory.Tr1LevelCutscene.Current;
 
-        bool levelCutsceneIsAfterStatsScreen = (Tr1Level)levelCutsceneValue is Tr1Level.AfterNatlasMines;
+        // Save-game Level will never purposely show Lara's Home or Title screen values.
+        // The anomaly is before any level is completed after game launch, it stays 0 and matches Lara's Home, which is unreliable.
+        bool levelCutsceneIsLarasHome = levelCutsceneValue is Tr1Level.LarasHome;
+        bool levelCutsceneIsTitleScreen = levelCutsceneValue is Tr1Level.Title;
+        if (levelCutsceneIsLarasHome || levelCutsceneIsTitleScreen)
+            return (uint)levelCutsceneValue;
+
+        bool levelCutsceneIsAfterStatsScreen = levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
             return Level.Current - 1U;
 
         // First level check is necessary because Level value is based on save-game info, so it is not updated until the first level ends.
         // Otherwise, we use the Level value because we don't want to use cutscene values.
-        bool levelCutsceneIsFirstLevel = (Tr1Level)levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
-        return levelCutsceneIsFirstLevel ? levelCutsceneValue : Level.Current;
+        bool levelCutsceneIsFirstLevel = levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
+        return levelCutsceneIsFirstLevel ? (uint)levelCutsceneValue : Level.Current;
     }
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
@@ -185,7 +190,7 @@ public static partial class GameData
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint? currentLevel)
+    public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint currentLevel)
     {
         var activeBaseGame = CurrentActiveBaseGame;
         string activeModuleName = GameMemory.GameModules[activeBaseGame];
