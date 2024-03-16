@@ -89,6 +89,25 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
     public bool ShouldSplit(LiveSplitState state)
     {
+        // Handle Lara's Home special case.
+        uint oldLevel = GameData.OldLevel();
+        if (oldLevel == 0 && !GameData.TitleLoaded.Old) // Title Screen disambiguation
+        {
+            // The runner must be using the passport for this special case.
+            if (!GameData.PassportWasChosen(GameData.InventoryChosen.Current))
+                return false;
+
+            // Prevent re-splits in this special case.
+            bool homeAlreadySplit = RunStats.LevelHasBeenSplit(CurrentActiveGame, oldLevel);
+            if (homeAlreadySplit)
+                return false;
+
+            // Split if OverlayFlag has changed to represent the title (Exit to Title), an FMV (New Game), or a loading screen (Load Game).
+            bool overlayFlagChangedFromInventory =
+                GameData.OverlayFlag.Old == OverlayFlag.Inventory && GameData.OverlayFlag.Current == OverlayFlag.Other;
+            return overlayFlagChangedFromInventory;
+        }
+
         // Prevent title screen splits.
         if (GameData.TitleLoaded.Current)
             return false;
@@ -105,15 +124,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
             var health = GameData.Health;
             bool laraJustDied = health.Old > 0 && health.Current <= 0;
             return laraJustDied;
-        }
-
-        // Handle Lara's Home special case.
-        if (currentLevel == 0)
-        {
-            // Split when Lara's Home is exited via passport at the time the passport is selected.
-            bool passportWasJustChosen = GameData.InventoryChosen.Changed && GameData.PassportWasChosen(GameData.InventoryChosen.Current);
-            if (passportWasJustChosen)
-                return true;
         }
 
         // Handle any level.
