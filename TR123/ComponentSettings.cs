@@ -155,7 +155,7 @@ public sealed class ComponentSettings : UserControl
         const string egsDebug = "EGS debug release (Unsupported)";
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
-        const string publicV102 = "Steam 13617493";
+        const string publicV102 = "GOG v1.01 Patch 1 / Steam 13617493";
 
         string versionText = version switch
         {
