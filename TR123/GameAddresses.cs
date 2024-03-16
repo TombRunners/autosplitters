@@ -29,6 +29,9 @@ public readonly record struct GameAddresses
     /// <summary>Address of LoadFade.</summary>
     public int LoadFade { get; init; }
 
+    /// <summary>Address of OverlayFlag.</summary>
+    public int OverlayFlag { get; init; }
+
     /// <summary>Address of the TitleLoaded flag.</summary>
     public int TitleLoaded { get; init; }
 }

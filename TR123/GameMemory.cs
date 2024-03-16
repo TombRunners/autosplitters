@@ -41,6 +41,7 @@ public static partial class GameData
                                 LevelComplete = 0xEA340,
                                 LevelIgt = 0x36CBBD0,
                                 LoadFade = 0x2D7650,
+                                OverlayFlag = 0xCFA78,
                                 TitleLoaded = 0xEA338,
                             }
                         },
@@ -57,6 +58,7 @@ public static partial class GameData
                                 LevelComplete = 0x11ECE4,
                                 LevelIgt = 0x36FFE2C,
                                 LoadFade = 0x2796F4,
+                                OverlayFlag = 0xFFEEC,
                                 TitleLoaded = 0x11E884,
                             }
                         },
@@ -73,6 +75,7 @@ public static partial class GameData
                                 LevelComplete = 0x17C3AC,
                                 LevelIgt = 0x3764968,
                                 LoadFade = 0x244BC4,
+                                OverlayFlag = 0x155BDC,
                                 TitleLoaded = 0x17BF98,
                             }
                         },
@@ -95,6 +98,7 @@ public static partial class GameData
                                 LevelComplete = 0xEF340,
                                 LevelIgt = 0x371EBD0,
                                 LoadFade = 0x2619CE0,
+                                OverlayFlag = 0xD4A78,
                                 TitleLoaded = 0xEF338,
                             }
                         },
@@ -111,6 +115,7 @@ public static partial class GameData
                                 LevelComplete = 0x124CE4,
                                 LevelIgt = 0x3753E0C,
                                 LoadFade = 0x2BF6D4,
+                                OverlayFlag = 0x105EEC,
                                 TitleLoaded = 0x124884,
                             }
                         },
@@ -127,6 +132,7 @@ public static partial class GameData
                                 LevelComplete = 0x1813AC,
                                 LevelIgt = 0x37B7948,
                                 LoadFade = 0x31C630,
+                                OverlayFlag = 0x15ABDC,
                                 TitleLoaded = 0x180F98,
                             }
                         },
@@ -149,6 +155,7 @@ public static partial class GameData
                                 LevelComplete = 0xF33A0,
                                 LevelIgt = 0x3729770,
                                 LoadFade = 0x292444,
+                                OverlayFlag = 0xD8A78,
                                 TitleLoaded = 0xF3398,
                             }
                         },
@@ -165,6 +172,7 @@ public static partial class GameData
                                 LevelComplete = 0x128D24,
                                 LevelIgt = 0x375E9CC,
                                 LoadFade = 0x2C7F54,
+                                OverlayFlag = 0x109EEC,
                                 TitleLoaded = 0x1288C4,
                             }
                         },
@@ -181,6 +189,7 @@ public static partial class GameData
                                 LevelComplete = 0x18540C,
                                 LevelIgt = 0x37C26C8,
                                 LoadFade = 0x324ED0,
+                                OverlayFlag = 0x15EBDC,
                                 TitleLoaded = 0x184FF8,
                             }
                         },
@@ -281,6 +290,21 @@ public static partial class GameData
                 { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
             }.ToImmutableDictionary();
 
+        /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
+        /// <remarks>
+        ///    In the Save Game shortcut menu (F9), it's -2.
+        ///    In the Load Game shortcut menu (F5), it's -1. (If F9 is used when no saves are present, the game defaults to Save Game, but this value is still -1.)
+        ///    In inventory, it's 0.
+        ///    In any gameplay, FMVs, cutscenes, stats screens, loading screens, a crystal save menu, a death menu, credits, & title screen, it's 1.
+        /// </remarks>
+        internal static ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers =>
+            new Dictionary<Game, MemoryWatcher<OverlayFlag>>(3)
+            {
+                { Game.Tr1, (MemoryWatcher<OverlayFlag>)Watchers?["Tr1OverlayFlag"] },
+                { Game.Tr2, (MemoryWatcher<OverlayFlag>)Watchers?["Tr2OverlayFlag"] },
+                { Game.Tr3, (MemoryWatcher<OverlayFlag>)Watchers?["Tr3OverlayFlag"] },
+            }.ToImmutableDictionary();
+
         /// <summary>Tells if the game is currently in the title screen.</summary>
         internal static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
             new Dictionary<Game, MemoryWatcher<bool>>(3)
@@ -371,6 +395,9 @@ public static partial class GameData
 
                 int loadFadeOffset = addresses.LoadFade;
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, loadFadeOffset)) { Name = $"{game}LoadFade" });
+
+                int overlayFlagOffset = addresses.OverlayFlag;
+                Watchers.Add(new MemoryWatcher<OverlayFlag>(new DeepPointer(moduleName, overlayFlagOffset)) { Name = $"{game}OverlayFlag" });
 
                 int titleLoadedOffset = addresses.TitleLoaded;
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });

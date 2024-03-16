@@ -68,6 +68,7 @@
     <Compile Include="Enums\GameTimeMethod.cs" />
     <Compile Include="Enums\GameVersion.cs" />
     <Compile Include="Enums\InventoryMode.cs" />
+    <Compile Include="Enums\OverlayFlag.cs" />
     <Compile Include="Enums\Tr1Level.cs" />
     <Compile Include="Enums\Tr2Level.cs" />
     <Compile Include="Enums\Tr3Level.cs" />

@@ -14,6 +14,9 @@ public static partial class GameData
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IgtTicksPerSecond = 30;
 
+    /// <summary>Tests if the passes <paramref name="inventoryChosen" /> value matches a game's passport.</summary>
+    /// <param name="inventoryChosen">Value of chosen inventory item</param>
+    /// <returns><see langword="true" /> if a game's passport was chosen, <see langword="false" /> otherwise</returns>
     public static bool PassportWasChosen(short inventoryChosen)
     {
         const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
@@ -68,23 +71,52 @@ public static partial class GameData
     /// <summary>Identifies the game without NG+ identification.</summary>
     public static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
+    /// <inheritdoc cref="GameMemory.HealthWatchers" />
     public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.InventoryChosenWatchers" />
     public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.InventoryModeWatchers" />
     public static MemoryWatcher<InventoryMode> InventoryMode => GameMemory.InventoryModeWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelCompleteWatchers" />
     public static MemoryWatcher<bool> LevelComplete => GameMemory.LevelCompleteWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelIgtWatchers" />
     public static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgtWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LoadFadeWatchers" />
     public static MemoryWatcher<uint> LoadFade => GameMemory.LoadFadeWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.OverlayFlagWatchers" />
+    public static MemoryWatcher<OverlayFlag> OverlayFlag => GameMemory.OverlayFlagWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.TitleLoadedWatchers" />
     public static MemoryWatcher<bool> TitleLoaded => GameMemory.TitleLoadedWatchers[CurrentActiveBaseGame];
 
+    /// <inheritdoc cref="GameMemory.BonusFlagWatchers" />
     private static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlagWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelWatchers" />
     private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
-    /// <returns>Correct current level of the game</returns>
-    public static uint CurrentLevel()
+    /// <returns>Current level of the game</returns>
+    public static uint CurrentLevel() => RealGameLevel(true);
+
+    /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
+    /// <returns>Old level of the game</returns>
+    public static uint OldLevel() => RealGameLevel(false);
+
+    /// <summary>Accounts for special cases of Level readings to match the expected values at those points.</summary>
+    /// <param name="current">Whether to use Level.Current; false means to use Level.Old.</param>
+    /// <returns>Real game level, anomalies normalized.</returns>
+    private static uint RealGameLevel(bool current)
     {
+        byte level = current ? Level.Current : Level.Old;
         if (CurrentActiveBaseGame is not Game.Tr1)
-            return Level.Current;
+            return level;
 
         // Level value is based on save-game info and only updates after a level is completed; it also doesn't reflect cutscenes.
         var levelCutsceneValue = (Tr1Level)GameMemory.Tr1LevelCutscene.Current;
@@ -98,12 +130,12 @@ public static partial class GameData
 
         bool levelCutsceneIsAfterStatsScreen = levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
-            return Level.Current - 1U;
+            return level;
 
         // First level check is necessary because Level value is based on save-game info, so it is not updated until the first level ends.
         // Otherwise, we use the Level value because we don't want to use cutscene values.
         bool levelCutsceneIsFirstLevel = levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
-        return levelCutsceneIsFirstLevel ? (uint)levelCutsceneValue : Level.Current;
+        return levelCutsceneIsFirstLevel ? (uint)levelCutsceneValue : level;
     }
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>

@@ -235,11 +235,39 @@
           <Address>tomb3.dll + 0x179C28</Address>
         </CheatEntry>
         <CheatEntry>
+          <ID>169</ID>
+          <Description>"OverlayFlag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x155BDC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>159</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb3.dll + 0x156224</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>166</ID>
+          <Description>"InventoryMode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x156254</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>2</ID>
           <Description>"Current Level"</Description>
           <ShowAsSigned>0</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb3.dll + 0x17BECC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>156</ID>
+          <Description>"TitleLoaded"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb3.dll + 0x17BF98</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>6</ID>
@@ -258,27 +286,6 @@
               <ID>0</ID>
             </Hotkey>
           </Hotkeys>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>159</ID>
-          <Description>"InventoryChosen"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>tomb3.dll + 0x156224</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>166</ID>
-          <Description>"InventoryMode"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>tomb3.dll + 0x156254</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>156</ID>
-          <Description>"TitleLoaded"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>tomb3.dll + 0x17BF98</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>162</ID>
@@ -473,11 +480,38 @@
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
+          <ID>168</ID>
+          <Description>"OverlayFlag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0xFFEEC</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>158</ID>
+          <Description>"InventoryChosen"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb2.dll + 0x100024</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>165</ID>
+          <Description>"InventoryMode"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll + 0x100084</Address>
+        </CheatEntry>
+        <CheatEntry>
           <ID>17</ID>
           <Description>"Health"</Description>
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>2 Bytes</VariableType>
           <Address>tomb2.dll + 0x11C780</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>155</ID>
+          <Description>"TitleLoaded"</Description>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb2.dll+11E884</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>11</ID>
@@ -503,26 +537,6 @@
               <ID>0</ID>
             </Hotkey>
           </Hotkeys>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>158</ID>
-          <Description>"InventoryChosen"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>2 Bytes</VariableType>
-          <Address>tomb2.dll + 0x100024</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>165</ID>
-          <Description>"InventoryMode"</Description>
-          <ShowAsSigned>1</ShowAsSigned>
-          <VariableType>4 Bytes</VariableType>
-          <Address>tomb2.dll + 0x100084</Address>
-        </CheatEntry>
-        <CheatEntry>
-          <ID>155</ID>
-          <Description>"TitleLoaded"</Description>
-          <VariableType>4 Bytes</VariableType>
-          <Address>tomb2.dll+11E884</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>161</ID>
@@ -1126,6 +1140,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0xEA338</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>167</ID>
+          <Description>"OverlayFlag"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb1.dll + 0xCFA78</Address>
         </CheatEntry>
         <CheatEntry>
           <ID>160</ID>
