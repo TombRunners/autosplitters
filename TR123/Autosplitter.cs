@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
@@ -9,62 +6,6 @@ namespace TR123;
 
 public class Autosplitter : IAutoSplitter, IDisposable
 {
-    /// <summary>Used to size new entries to AllGameStats.</summary>
-    private static readonly ImmutableDictionary<Game, int> LevelCount = new Dictionary<Game, int>(9)
-    {
-        { Game.Tr1,                   15 },
-        { Game.Tr1NgPlus,             15 },
-        { Game.Tr1UnfinishedBusiness, 04 },
-        { Game.Tr2,                   18 },
-        { Game.Tr2NgPlus,             18 },
-        { Game.Tr2GoldenMask,         05 },
-        { Game.Tr3,                   20 },
-        { Game.Tr3NgPlus,             20 },
-        { Game.Tr3TheLostArtifact,    06 },
-    }.ToImmutableDictionary();
-
-    /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    private static readonly ImmutableDictionary<Game, GameStats> AllGameStats = new Dictionary<Game, GameStats>(9)
-    {
-        { Game.Tr1,                   new GameStats(LevelCount[Game.Tr1]) },
-        { Game.Tr1NgPlus,             new GameStats(LevelCount[Game.Tr1NgPlus]) },
-        { Game.Tr1UnfinishedBusiness, new GameStats(LevelCount[Game.Tr1UnfinishedBusiness]) },
-        { Game.Tr2,                   new GameStats(LevelCount[Game.Tr2]) },
-        { Game.Tr2NgPlus,             new GameStats(LevelCount[Game.Tr2NgPlus]) },
-        { Game.Tr2GoldenMask,         new GameStats(LevelCount[Game.Tr2GoldenMask]) },
-        { Game.Tr3,                   new GameStats(LevelCount[Game.Tr3]) },
-        { Game.Tr3NgPlus,             new GameStats(LevelCount[Game.Tr3NgPlus]) },
-        { Game.Tr3TheLostArtifact,    new GameStats(LevelCount[Game.Tr3TheLostArtifact]) },
-    }.ToImmutableDictionary();
-
-    /// <summary>Sums completed levels' times.</summary>
-    /// <returns>The sum of completed levels' times</returns>
-    private static double SumCompletedLevelTimes(uint? currentLevel)
-    {
-        // Sum IGT from other games' completed levels from splitter memory.
-        ulong finishedLevelsTicks = AllGameStats
-            .Where(static entry => entry.Key != CurrentActiveGame)
-            .Select(static entry => entry.Value)
-            .Aggregate<GameStats, ulong>(
-                0, static (current1, gameStats) =>
-                gameStats
-                    .LevelStats
-                    .Aggregate(current1, static (current, levelStats) => current + levelStats.Igt)
-            );
-
-        // Sum the current game's completed levels up to the current level from game memory if the game is not already complete.
-        var gameLevelStats = AllGameStats[CurrentActiveGame];
-        if (gameLevelStats.GameComplete)
-            finishedLevelsTicks = gameLevelStats
-                .LevelStats
-                .Aggregate(finishedLevelsTicks, static (current, levelStat) => current + levelStat.Igt);
-        else
-            finishedLevelsTicks +=
-                GameData.SumCompletedLevelTimesInMemory(gameLevelStats.LevelStats.Select(static stats => stats.LevelNumber), currentLevel);
-
-        return GameData.LevelTimeAsDouble(finishedLevelsTicks);
-    }
-
     /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
     private static Game CurrentActiveGame => GameData.CurrentActiveGame;
 
@@ -132,15 +73,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
         var levelComplete = GameData.LevelComplete;
         bool levelCompleteStillActive = levelComplete.Old && levelComplete.Current;
         uint currentLevel = GameData.CurrentLevel();
-        bool currentLevelWasAlreadyCompleted = AllGameStats[CurrentActiveGame].LevelStats.Any(stats => stats.LevelNumber == currentLevel);
+        bool currentLevelWasAlreadyCompleted = RunStats.LevelHasBeenSplit(CurrentActiveGame, currentLevel);
         if (currentLevelWasAlreadyCompleted && levelCompleteStillActive)
             return null;
 
         // Sum the current and completed levels' IGT.
         uint currentLevelTicks = levelIgt.Current;
-        double currentLevelTime = GameData.LevelTimeAsDouble(currentLevelTicks);
-        double finishedLevelsTime = SumCompletedLevelTimes(currentLevel);
-        return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
+        ulong otherLevelTicks = RunStats.GetCompletedLevelIgtTicks(CurrentActiveGame, currentLevel);
+        double totalTicks = GameData.LevelTimeAsDouble(otherLevelTicks + currentLevelTicks);
+        return TimeSpan.FromSeconds(totalTicks);
     }
 
     /// <summary>Determines if the timer should split.</summary>
@@ -148,13 +89,36 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
     public bool ShouldSplit(LiveSplitState state)
     {
-        // Determine if the player is in a level we have not already split.
-        uint currentLevel = GameData.CurrentLevel();
-        bool onValidLevelToSplit = AllGameStats[CurrentActiveGame].LevelStats.All(stats => stats.LevelNumber != currentLevel);
-        if (!onValidLevelToSplit)
+        // Handle Lara's Home special case.
+        uint oldLevel = GameData.OldLevel();
+        if (oldLevel == 0 && !GameData.TitleLoaded.Old) // Title Screen disambiguation
+        {
+            // The runner must be using the passport for this special case.
+            if (!GameData.PassportWasChosen(GameData.InventoryChosen.Current))
+                return false;
+
+            // Prevent re-splits in this special case.
+            bool homeAlreadySplit = RunStats.LevelHasBeenSplit(CurrentActiveGame, oldLevel);
+            if (homeAlreadySplit)
+                return false;
+
+            // Split if OverlayFlag has changed to represent the title (Exit to Title), an FMV (New Game), or a loading screen (Load Game).
+            bool overlayFlagChangedFromInventory =
+                GameData.OverlayFlag.Old == OverlayFlag.Inventory && GameData.OverlayFlag.Current == OverlayFlag.Other;
+            return overlayFlagChangedFromInventory;
+        }
+
+        // Prevent title screen splits.
+        if (GameData.TitleLoaded.Current)
             return false;
 
-        // Deathrun
+        // Prevent re-splits.
+        uint currentLevel = GameData.CurrentLevel();
+        bool levelAlreadySplit = RunStats.LevelHasBeenSplit(CurrentActiveGame, currentLevel);
+        if (levelAlreadySplit)
+            return false;
+
+        // Handle deathruns.
         if (Settings.Deathrun)
         {
             var health = GameData.Health;
@@ -162,7 +126,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return laraJustDied;
         }
 
-        // FG & IL/Section
+        // Handle any level.
         var levelComplete = GameData.LevelComplete;
         bool levelJustCompleted = !levelComplete.Old && levelComplete.Current;
         return levelJustCompleted;
@@ -177,8 +141,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         // Reset is only applied when the player uses the passport; this avoids resets after credits, for example.
-        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
-        bool passportWasChosen = GameData.InventoryChosen.Old is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        bool passportWasChosen = GameData.PassportWasChosen(GameData.InventoryChosen.Old);
         if (!passportWasChosen)
             return false;
 
@@ -228,18 +191,20 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart(LiveSplitState state)
     {
-        foreach (var gameStats in AllGameStats.Values)
-            gameStats.Clear();
+        // Clear tracked progress.
+        RunStats.Clear();
 
+        // Ensure LiveSplit's GameTime initializes.
         if (!state.IsGameTimeInitialized)
             state.SetGameTime(new TimeSpan(0));
         state.IsGameTimePaused = false;
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
-    /// <param name="completedLevel">Level to add to <see cref="AllGameStats" /></param>
+    /// <param name="completedLevel">Level to add to <see cref="RunStats" /></param>
     public void OnSplit(uint completedLevel)
     {
+        // Store stats for tracking and to prevent re-splits.
         var stats = new LevelStats
         {
             LevelNumber = completedLevel,
@@ -247,15 +212,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
         };
 
         var activeGame = CurrentActiveGame;
-        AllGameStats[activeGame].AddLevelStats(stats);
+        RunStats.AddLevelStats(activeGame, stats);
     }
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
-    public void OnUndoSplit()
-    {
-        var activeGame = CurrentActiveGame;
-        AllGameStats[activeGame].RemoveLevelStats();
-    }
+    public void OnUndoSplit() => RunStats.UndoLevelStats();
 
     /// <inheritdoc />
     public void Dispose()

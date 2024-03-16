@@ -1,4 +1,13 @@
 <updates>
+  <update version="2024.1.2.0">
+    <files>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Improved support for Achievements runs: Split when runner exits Lara's Home using passport.</change>
+	  <change>Improved run tracking to support Lara's Home splits; prevent re-splits from the same Lara's Home during a run.</change>
+    </changelog>
+  </update>
   <update version="2024.1.1.2">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
