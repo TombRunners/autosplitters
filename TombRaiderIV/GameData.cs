@@ -2,21 +2,25 @@
 using LiveSplit.ComponentUtil;
 using TRUtil;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace TR4;
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
-internal sealed class GameData : LaterClassicGameData
+internal class GameData : LaterClassicGameData
 {
     private const uint SizeOfItemInfo = 0x15F6;
     private static readonly IntPtr FirstItemInfoPointer = (IntPtr)0x7FE28C;
 
-    /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
-    internal GameData()
+    /// <summary>A constructor substitute that primarily exists to set/modify static values/objects.</summary>
+    internal static void InitializeGameData()
     {
         VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)GameVersion.SteamOrGog);
         VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)GameVersion.TheTimesExclusive);
 
         ProcessSearchNames.Add("tomb4");
+
+        SetAddresses += SetMemoryAddresses;
     }
 
     /// <summary>
@@ -65,7 +69,7 @@ internal sealed class GameData : LaterClassicGameData
     /// </remarks>
     public static MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
 
-    protected override void SetAddresses(uint version)
+    private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((GameVersion)version)

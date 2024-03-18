@@ -1,5 +1,7 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LiveSplit.ComponentUtil;
 using TRUtil;
 
 namespace TR3;
@@ -24,9 +26,12 @@ internal sealed class GameData : ClassicGameData
         ProcessSearchNames.Add("tr3gold");
 
         LevelSaveStructSize = 0x33; // All TR3 and TLA versions.
+
+        SetAddresses += SetMemoryAddresses;
+        SumLevelTimes += SumCompletedLevelTimes;
     }
 
-    protected override void SetAddresses(uint version)
+    private static void SetMemoryAddresses(uint version)
     {
         switch ((GameVersion)version)
         {
@@ -68,5 +73,18 @@ internal sealed class GameData : ClassicGameData
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
+    }
+
+    /// <summary>Sums completed levels' times.</summary>
+    /// <returns>The sum of completed levels' times</returns>
+    private static ulong SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    {
+        uint finishedLevelsTicks = completedLevels
+            .TakeWhile(completedLevel => completedLevel != currentLevel)
+            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
+            .Select(static levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
+
+        return finishedLevelsTicks;
     }
 }

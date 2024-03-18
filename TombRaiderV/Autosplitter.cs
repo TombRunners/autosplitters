@@ -12,8 +12,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     {
         Settings = new ComponentSettings(version);
 
-        Data = new GameData();
-        Data.OnGameFound += Settings.SetGameVersion;
+        GameData.InitializeGameData();
+        BaseGameData.OnGameVersionChanged += Settings.SetGameVersion;
     }
 
     public override bool ShouldReset(LiveSplitState state)

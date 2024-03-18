@@ -1,18 +1,23 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using LiveSplit.ComponentUtil;
 
 namespace TRUtil;
 
 public abstract class ClassicGameData : BaseGameData
 {
     /// <summary>Used to locate the first in-memory saved level time.</summary>
-    protected uint FirstLevelTimeAddress;
+    protected static uint FirstLevelTimeAddress;
 
     /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
     protected static uint LevelSaveStructSize;
+
+    /// <summary>Sums level times based on <paramref name="completedLevels" /> and <paramref name="currentLevel" />.</summary>
+    /// <param name="completedLevels">Levels completed</param>
+    /// <param name="currentLevel"></param>
+    public delegate ulong SumCompletedLevelTimesDelegate(IEnumerable<uint> completedLevels, uint? currentLevel);
+
+    /// <summary>Allows a specific method to be assigned for use in summing completed levels' times.</summary>
+    public SumCompletedLevelTimesDelegate SumLevelTimes;
 
     #region MemoryWatcherList Items
 
@@ -44,17 +49,4 @@ public abstract class ClassicGameData : BaseGameData
     public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers?["PickedPassportFunction"];
 
     #endregion
-
-    /// <summary>Sums completed levels' times.</summary>
-    /// <returns>The sum of completed levels' times</returns>
-    public virtual double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
-    {
-        uint finishedLevelsTicks = completedLevels
-            .TakeWhile(completedLevel => completedLevel != currentLevel)
-            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
-            .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
-
-        return LevelTimeAsDouble(finishedLevelsTicks);
-    }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TRUtil;
 
-// ReSharper disable StringLiteralTypo
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace TR1;
 
@@ -20,9 +20,14 @@ internal sealed class GameData : ClassicGameData
         VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint)GameVersion.DOSBox);
         VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint)GameVersion.AtiUnfinishedBusiness);
 
+        // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("dosbox");
         ProcessSearchNames.Add("tombati");
         ProcessSearchNames.Add("tombub");
+        // ReSharper restore StringLiteralTypo
+
+        SetAddresses += SetMemoryAddresses;
+        SumLevelTimes += SumCompletedLevelTimes;
     }
 
     /// <summary>
@@ -36,7 +41,7 @@ internal sealed class GameData : ClassicGameData
     /// </remarks>
     public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
 
-    protected override void SetAddresses(uint version)
+    private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((GameVersion)version)
@@ -76,13 +81,16 @@ internal sealed class GameData : ClassicGameData
         }
     }
 
-    public override double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    /// <summary>Sums completed levels' times.</summary>
+    /// <remarks>TR1 does not store level times accessible from memory; GameData holds the values instead.</remarks>
+    /// <returns>The sum of completed levels' times</returns>
+    private static ulong SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         int validLevelCount = completedLevels.TakeWhile(completedLevel => completedLevel != currentLevel).Count();
         var finishedLevelsTicks = (uint)CompletedLevelTicks
             .Take(validLevelCount)
             .Sum(static x => x);
 
-        return LevelTimeAsDouble(finishedLevelsTicks);
+        return finishedLevelsTicks;
     }
 }

@@ -114,7 +114,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
             HandleLayoutUpdates(state);
         }
 
-        if (_splitter.Data.Update())
+        if (BaseGameData.Update())
             base.Update(invalidator, state, width, height, mode);
     }
 
