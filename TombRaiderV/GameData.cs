@@ -2,20 +2,25 @@
 using LiveSplit.ComponentUtil;
 using TRUtil;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace TR5;
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
 internal sealed class GameData : LaterClassicGameData
 {
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
-    internal GameData()
+    internal static void InitializeGameData()
     {
         VersionHashes.Add("179164156e3ca6641708d0419d6a91e9", (uint)GameVersion.SteamOrGog);
         VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint)GameVersion.JapaneseNoCd);
 
+        // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("PCTomb5");
-        // ReSharper disable once StringLiteralTypo
         ProcessSearchNames.Add("PCTomb5-nocd");
+        // ReSharper restore StringLiteralTypo
+
+        SetAddresses += SetMemoryAddresses;
     }
 
     #region MemoryWatcherList Items
@@ -34,7 +39,7 @@ internal sealed class GameData : LaterClassicGameData
 
     #endregion
 
-    protected override void SetAddresses(uint version)
+    private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((GameVersion)version)

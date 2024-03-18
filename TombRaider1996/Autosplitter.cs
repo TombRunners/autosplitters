@@ -19,10 +19,10 @@ internal sealed class Autosplitter : ClassicAutosplitter
 
         LevelCount = 15; // This is the highest between TR1 at 15 and TR:UB at 4.
         CompletedLevels.Capacity = LevelCount;
-        GameData.CompletedLevelTicks.Capacity = LevelCount;
 
         Data = new GameData();
-        Data.OnGameFound += Settings.SetGameVersion;
+        GameData.CompletedLevelTicks.Capacity = LevelCount;
+        BaseGameData.OnGameVersionChanged += Settings.SetGameVersion;
     }
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
@@ -54,9 +54,8 @@ internal sealed class Autosplitter : ClassicAutosplitter
         }
 
         // Sum the current and completed levels' IGT.
-        double currentLevelTime = BaseGameData.LevelTimeAsDouble(currentLevelTicks);
-        double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, LastRealLevel);
-        return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
+        ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, LastRealLevel);
+        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
     }
 
     /// <summary>

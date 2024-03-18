@@ -34,7 +34,7 @@ public abstract class BaseGameData
     public delegate void GameFoundDelegate(uint version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public GameFoundDelegate OnGameFound;
+    public static GameFoundDelegate OnGameVersionChanged;
 
     /// <summary>A constructor existing primarily to clear static fields expected to be managed only in derived classes' constructors.</summary>
     protected BaseGameData()
@@ -62,16 +62,19 @@ public abstract class BaseGameData
 
     /// <summary>Sets addresses based on <paramref name="version"/>.</summary>
     /// <param name="version">Version to base addresses on; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
-    protected abstract void SetAddresses(uint version);
+    protected delegate void SetAddressesDelegate(uint version);
+
+    /// <summary>Allows a specific method to be assigned for use in MemoryWatcher initialization to set watchers and offsets.</summary>
+    protected static SetAddressesDelegate SetAddresses;
 
     /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
     /// <returns><see langword="true"/> if game data was updated, <see langword="false"/> otherwise</returns>
-    public bool Update()
+    public static bool Update()
     {
         try
         {
             if (Game is null || Game.HasExited)
-                return TrySetGameProcessAndVersion();
+                return TrySetGameProcessAndVersion(SetAddresses);
 
             Watchers.UpdateAll(Game);
             return true;
@@ -84,7 +87,7 @@ public abstract class BaseGameData
 
     /// <summary>If applicable, finds a <see cref="Process"/> running an expected version of the game.</summary>
     /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
-    private bool TrySetGameProcessAndVersion()
+    private static bool TrySetGameProcessAndVersion(SetAddressesDelegate setAddresses)
     {
         const uint noneOrUndetectedValue = 0;
 
@@ -94,7 +97,7 @@ public abstract class BaseGameData
         {
             // Set Version to a value indicating no game was found.
             if (Version != noneOrUndetectedValue)
-                OnGameFound.Invoke(noneOrUndetectedValue, string.Empty);
+                OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
 
             Version = noneOrUndetectedValue;
             return false;
@@ -113,7 +116,7 @@ public abstract class BaseGameData
             // Set Version to a value indicating the game version is unknown.
             const uint unknownValue = 0xDEADBEEF;
             if (Version != unknownValue)
-                OnGameFound.Invoke(unknownValue, hash);
+                OnGameVersionChanged.Invoke(unknownValue, hash);
 
             Version = unknownValue;
             return false;
@@ -122,9 +125,9 @@ public abstract class BaseGameData
         // Set Game and do some event management.
         Game = gameProcess;
         Game.EnableRaisingEvents = true;
-        Game.Exited += (_, _) => OnGameFound.Invoke(noneOrUndetectedValue, string.Empty);
-        SetAddresses(Version);
-        OnGameFound.Invoke(Version, hash);
+        Game.Exited += static (_, _) => OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
+        setAddresses(Version);
+        OnGameVersionChanged.Invoke(Version, hash);
         return true;
     }
 

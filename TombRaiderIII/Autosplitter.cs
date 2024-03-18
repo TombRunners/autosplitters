@@ -15,6 +15,6 @@ internal sealed class Autosplitter : ClassicAutosplitter
         CompletedLevels.Capacity = LevelCount;
 
         Data = new GameData();
-        Data.OnGameFound += Settings.SetGameVersion;
+        BaseGameData.OnGameVersionChanged += Settings.SetGameVersion;
     }
 }

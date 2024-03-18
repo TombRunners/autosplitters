@@ -7,7 +7,7 @@ namespace TRUtil;
 public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
 {
     protected internal ClassicComponentSettings Settings = new(version);
-    public ClassicGameData Data;
+    protected ClassicGameData Data;
 
     /// <summary>Used to size CompletedLevels.</summary>
     protected int LevelCount = 0;
@@ -38,9 +38,8 @@ public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
             return null;
 
         // Sum the current and completed levels' IGT.
-        double currentLevelTime = BaseGameData.LevelTimeAsDouble(currentLevelTicks);
-        double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, currentLevel);
-        return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
+        ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, currentLevel);
+        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
     }
 
     public override bool ShouldSplit(LiveSplitState state)
@@ -105,7 +104,7 @@ public abstract class ClassicAutosplitter(Version version) : BaseAutosplitter
 
     public override void Dispose()
     {
-        Data.OnGameFound -= Settings.SetGameVersion;
+        BaseGameData.OnGameVersionChanged -= Settings.SetGameVersion;
         Data = null;
     }
 }

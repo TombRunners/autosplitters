@@ -6,7 +6,6 @@ namespace TRUtil;
 public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitter
 {
     protected internal LaterClassicComponentSettings Settings = new(version);
-    public LaterClassicGameData Data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
     /// <remarks>
@@ -69,7 +68,6 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
 
     public override void Dispose()
     {
-        Data.OnGameFound -= Settings.SetGameVersion;
-        Data = null;
+        BaseGameData.OnGameVersionChanged -= Settings.SetGameVersion;
     }
 }

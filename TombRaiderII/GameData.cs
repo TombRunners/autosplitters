@@ -1,10 +1,12 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using LiveSplit.ComponentUtil;
 using TRUtil;
 
 namespace TR2;
 
-/// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
+/// <summary>Manages the game's watched memory values for <see cref="Autosplitter" />'s use.</summary>
 internal sealed class GameData : ClassicGameData
 {
     private const uint TR2FirstLevelTimeAddress = 0x51EA24;
@@ -25,9 +27,12 @@ internal sealed class GameData : ClassicGameData
         ProcessSearchNames.Add("t2gold");
 
         LevelSaveStructSize = 0x2C; // All TR2 and TR2G versions
+
+        SetAddresses += SetMemoryAddresses;
+        SumLevelTimes += SumCompletedLevelTimes; // Use default provided by ClassicGameData.
     }
 
-    protected override void SetAddresses(uint version)
+    private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((GameVersion)version)
@@ -66,5 +71,18 @@ internal sealed class GameData : ClassicGameData
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
+    }
+
+    /// <summary>Sums completed levels' times.</summary>
+    /// <returns>The sum of completed levels' times</returns>
+    private static ulong SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    {
+        uint finishedLevelsTicks = completedLevels
+            .TakeWhile(completedLevel => completedLevel != currentLevel)
+            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
+            .Select(static levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
+
+        return finishedLevelsTicks;
     }
 }
