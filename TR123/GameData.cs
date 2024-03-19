@@ -130,7 +130,7 @@ public static partial class GameData
 
         bool levelCutsceneIsAfterStatsScreen = levelCutsceneValue is Tr1Level.AfterNatlasMines;
         if (levelCutsceneIsAfterStatsScreen) // A cutscene after a stats screen increments the value to the level which hasn't started yet.
-            return (uint)levelCutsceneValue;
+            return level - 1U;
 
         // First level check is necessary because Level value is based on save-game info, so it is not updated until the first level ends.
         // Otherwise, we use the Level value because we don't want to use cutscene values.
