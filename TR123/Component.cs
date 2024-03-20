@@ -2,10 +2,12 @@ using LiveSplit.Model;                    // LiveSplitState
 using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
 using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
 using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
-using System;                             // EventArgs, IDisposable
+using System;
+using System.Collections.Generic; // EventArgs, IDisposable
 using System.Linq;                        // Any
 using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlNode
+using System.Xml;
+using Timer = LiveSplit.UI.Components.Timer; // XmlDocument, XmlNode
 
 namespace TR123;
 
@@ -25,7 +27,7 @@ public class Component : AutoSplitComponent
     public Component(Autosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
         _splitter = autosplitter;
-        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+        _onImportantLayoutOrSettingChanged += _splitter.Settings.SetWarningLabelVisibilities;
 
         _state = state;
         _state.OnSplit += StateOnSplit;
@@ -34,13 +36,15 @@ public class Component : AutoSplitComponent
     }
 
     private bool? _aslComponentPresent;
-    private int _layoutComponentCount;
+    private bool? _timerWithGameTimePresent;
+    private TimingMethod? _lsCurrentTimingMethod;
+    private List<string> _layoutAndTimingMethods = [];
 
     /// <summary>Allows creation of an event when an ASL Component was found in the LiveSplit layout.</summary>
-    private delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+    private delegate void ImportantLayoutOrSettingChangedDelegate(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent);
 
     /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
-    private AslComponentChangedDelegate _onAslComponentChanged;
+    private ImportantLayoutOrSettingChangedDelegate _onImportantLayoutOrSettingChanged;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 
@@ -118,25 +122,68 @@ public class Component : AutoSplitComponent
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
-        int layoutComponentsCount = state.Layout.LayoutComponents.Count;
-        if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
+        bool valuesNotInitialized = _aslComponentPresent is null;
+
+        var currentTimingMethod = state.CurrentTimingMethod;
+        var layoutAndTimingMethods = state
+            .Layout
+            .LayoutComponents
+            .Select(static comp =>
+                {
+                    return comp.Component switch
+                    {
+                        Timer timer => timer.Settings.TimingMethod,
+                        DetailedTimer detailedTimer => detailedTimer.Settings.TimingMethod,
+                        _ => comp.Component.ComponentName,
+                    };
+                }
+            )
+            .ToList();
+        bool layoutOrTimingMethodChanged = currentTimingMethod != _lsCurrentTimingMethod || !layoutAndTimingMethods.SequenceEqual(_layoutAndTimingMethods);
+
+        bool importantLayoutOrSettingChanged = valuesNotInitialized || layoutOrTimingMethodChanged;
+        if (importantLayoutOrSettingChanged)
         {
-            _layoutComponentCount = layoutComponentsCount;
-            HandleLayoutUpdates(state);
+            _layoutAndTimingMethods = layoutAndTimingMethods;
+            _lsCurrentTimingMethod = currentTimingMethod;
+            HandleLayoutOrSettingUpdates(state);
         }
 
         if (GameData.Update())
             base.Update(invalidator, state, width, height, mode);
     }
 
-    private void HandleLayoutUpdates(LiveSplitState state)
+    private void HandleLayoutOrSettingUpdates(LiveSplitState state)
     {
+        bool lsTimingMethodIsGameTime = _lsCurrentTimingMethod == TimingMethod.GameTime;
+        var timerWithGameTimeInLayout = false;
+        foreach (var timer in state.Layout.LayoutComponents.Where(static comp => comp.Component is Timer or DetailedTimer))
+        {
+            const string current = "Current Timing Method";
+            const string gameTime = "Game Time";
+            switch (timer.Component)
+            {
+                case DetailedTimer detailedTimerComponent:
+                    string method = detailedTimerComponent.Settings.TimingMethod;
+                    timerWithGameTimeInLayout = method == gameTime || (lsTimingMethodIsGameTime && method == current);
+                    break;
+                case Timer timerComponent:
+                    string timerMethod = timerComponent.Settings.TimingMethod;
+                    timerWithGameTimeInLayout = timerMethod == gameTime || (lsTimingMethodIsGameTime && timerMethod == current);
+                    break;
+            }
+
+            if (timerWithGameTimeInLayout)
+                break;
+        }
+
         bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
-        if (_aslComponentPresent == aslInLayout)
+        if (_aslComponentPresent == aslInLayout && timerWithGameTimeInLayout == _timerWithGameTimePresent)
             return;
 
         _aslComponentPresent = aslInLayout;
-        _onAslComponentChanged.Invoke(aslInLayout);
+        _timerWithGameTimePresent = timerWithGameTimeInLayout;
+        _onImportantLayoutOrSettingChanged.Invoke(aslInLayout, timerWithGameTimeInLayout);
     }
 
     public override void Dispose()
@@ -144,7 +191,7 @@ public class Component : AutoSplitComponent
         _state.OnSplit -= StateOnSplit;
         _state.OnStart -= StateOnStart;
         _state.OnUndoSplit -= StateOnUndoSplit;
-        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+        _onImportantLayoutOrSettingChanged -= _splitter.Settings.SetWarningLabelVisibilities;
         _splitter?.Dispose();
     }
 }

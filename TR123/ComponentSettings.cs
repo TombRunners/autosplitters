@@ -16,6 +16,7 @@ public sealed class ComponentSettings : UserControl
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     private Label _aslWarningLabel;
+    private Label _timerWarningLabel;
     public bool FullGame = true;
     public bool Deathrun;
     public GameTimeMethod GameTimeMethod;
@@ -38,6 +39,7 @@ public sealed class ComponentSettings : UserControl
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
         _aslWarningLabel = new Label();
+        _timerWarningLabel = new Label();
         ModeSelect.SuspendLayout();
         SuspendLayout();
 
@@ -131,15 +133,27 @@ public sealed class ComponentSettings : UserControl
         _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
         _aslWarningLabel.Visible = false;
 
+        // _timerWarningLabel
+        _timerWarningLabel.AutoSize = true;
+        _timerWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
+        _timerWarningLabel.ForeColor = Color.Crimson;
+        _timerWarningLabel.Location = new Point(55, 240);
+        _timerWarningLabel.Name = "_timerWarningLabel";
+        _timerWarningLabel.Size = new Size(476, 20);
+        _timerWarningLabel.TabStop = false;
+        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
+        _timerWarningLabel.Visible = false;
+
         // ComponentSettings
-        Controls.Add(_aslWarningLabel);
-        Controls.Add(AutosplitterVersionLabel);
-        Controls.Add(GameVersionLabel);
+        Controls.Add(ModeSelect);
         Controls.Add(_gameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
-        Controls.Add(ModeSelect);
+        Controls.Add(GameVersionLabel);
+        Controls.Add(AutosplitterVersionLabel);
+        Controls.Add(_aslWarningLabel);
+        Controls.Add(_timerWarningLabel);
         Name = "ComponentSettings";
-        Size = new Size(476, 250);
+        Size = new Size(476, 275);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
@@ -147,7 +161,11 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
-    public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
+    public void SetWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
+    {
+        _aslWarningLabel.Visible = aslComponentIsPresent;
+        _timerWarningLabel.Visible = !timerWithGameTimeIsPresent;
+    }
 
     public void SetGameVersion(GameVersion version, string hash)
     {
