@@ -22,10 +22,13 @@ public sealed class ComponentSettings : UserControl
     public GameTimeMethod GameTimeMethod;
     public bool EnableAutoReset;
 
+    internal static bool GameVersionInitialized;
+
     public ComponentSettings()
     {
         InitializeComponent();
         SetGameTimeMethod(Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
+        GameVersionInitialized = false;
     }
 
     private void InitializeComponent()
@@ -187,6 +190,7 @@ public sealed class ComponentSettings : UserControl
         };
 
         GameVersionLabel.Text = $"Game Version: {versionText}";
+        GameVersionInitialized = true;
     }
 
     private void SetGameTimeMethod(GameTimeMethod method)

@@ -147,6 +147,12 @@ public class Component : AutoSplitComponent
             _layoutAndTimingMethods = layoutAndTimingMethods;
             _lsCurrentTimingMethod = currentTimingMethod;
             HandleLayoutOrSettingUpdates(state);
+
+            if (!ComponentSettings.GameVersionInitialized)
+            {
+                GameData.GameProcess = null;
+                GameData.GameVersion = GameVersion.None;
+            }
         }
 
         if (GameData.Update())

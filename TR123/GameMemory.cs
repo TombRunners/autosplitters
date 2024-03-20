@@ -410,8 +410,8 @@ public static partial class GameData
         /// </summary>
         private static void PreLoadWatchers()
         {
-            Watchers.UpdateAll(_gameProcess); // Loads Current values.
-            Watchers.UpdateAll(_gameProcess); // Moves Current to Old and loads new Current values.
+            Watchers.UpdateAll(GameProcess); // Loads Current values.
+            Watchers.UpdateAll(GameProcess); // Moves Current to Old and loads new Current values.
         }
     }
 }
