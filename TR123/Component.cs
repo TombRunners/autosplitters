@@ -163,21 +163,14 @@ public class Component : AutoSplitComponent
     {
         bool lsTimingMethodIsGameTime = _lsCurrentTimingMethod == TimingMethod.GameTime;
         var timerWithGameTimeInLayout = false;
-        foreach (var timer in state.Layout.LayoutComponents.Where(static comp => comp.Component is Timer or DetailedTimer))
+        foreach (var timerComponent in state.Layout.LayoutComponents.Where(static comp => comp.Component is Timer or DetailedTimer))
         {
-            const string current = "Current Timing Method";
-            const string gameTime = "Game Time";
-            switch (timer.Component)
+            timerWithGameTimeInLayout = timerComponent.Component switch
             {
-                case DetailedTimer detailedTimerComponent:
-                    string method = detailedTimerComponent.Settings.TimingMethod;
-                    timerWithGameTimeInLayout = method == gameTime || (lsTimingMethodIsGameTime && method == current);
-                    break;
-                case Timer timerComponent:
-                    string timerMethod = timerComponent.Settings.TimingMethod;
-                    timerWithGameTimeInLayout = timerMethod == gameTime || (lsTimingMethodIsGameTime && timerMethod == current);
-                    break;
-            }
+                DetailedTimer detailedTimer => TimerUsesGameTime(detailedTimer.Settings.TimingMethod, lsTimingMethodIsGameTime),
+                Timer timer => TimerUsesGameTime(timer.Settings.TimingMethod, lsTimingMethodIsGameTime),
+                _ => false,
+            };
 
             if (timerWithGameTimeInLayout)
                 break;
@@ -190,6 +183,14 @@ public class Component : AutoSplitComponent
         _aslComponentPresent = aslInLayout;
         _timerWithGameTimePresent = timerWithGameTimeInLayout;
         _onImportantLayoutOrSettingChanged.Invoke(aslInLayout, timerWithGameTimeInLayout);
+    }
+
+    private static bool TimerUsesGameTime(string method, bool globalMethodIsGameTime)
+    {
+        const string current = "Current Timing Method";
+        const string gameTime = "Game Time";
+        bool timerWithGameTimeInLayout = method == gameTime || (globalMethodIsGameTime && method == current);
+        return timerWithGameTimeInLayout;
     }
 
     public override void Dispose()
