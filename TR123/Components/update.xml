@@ -5,6 +5,7 @@
     </files>
     <changelog>
       <change>Added Settings screen warning when the LS Layout is missing a Game Time timer (Timer or DetailedTimer).</change>
+	  <change>Added Settings link to SRcom LS guide.</change>
     </changelog>
   </update>
   <update version="2024.1.2.1">
