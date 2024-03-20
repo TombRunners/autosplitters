@@ -150,10 +150,10 @@ public static partial class GameData
     }.ToImmutableDictionary();
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
-    private static Process _gameProcess;
+    internal static Process GameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    private static GameVersion _version;
+    internal static GameVersion GameVersion;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The new <see cref="GameVersion" /></param>
@@ -169,16 +169,16 @@ public static partial class GameData
     {
         try
         {
-            if (_gameProcess is null || _gameProcess.HasExited)
+            if (GameProcess is null || GameProcess.HasExited)
             {
                 if (!FindSupportedGame())
                     return false;
 
-                GameMemory.InitializeMemoryWatchers(_version);
+                GameMemory.InitializeMemoryWatchers(GameVersion);
                 return GameIsInitialized;
             }
 
-            GameMemory.Watchers.UpdateAll(_gameProcess);
+            GameMemory.Watchers.UpdateAll(GameProcess);
             return GameIsInitialized;
         }
         catch
@@ -189,32 +189,32 @@ public static partial class GameData
 
     /// <summary>If applicable, finds a <see cref="Process" /> running an expected version of the game.</summary>
     /// <returns>
-    ///     <see langword="true" /> if <see cref="_gameProcess" /> and <see cref="_version" /> were meaningfully set,
+    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="GameVersion" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
     private static bool FindSupportedGame()
     {
         var detectedVersion = VersionDetector.DetectVersion(out var gameProcess, out string hash);
-        if (_version != detectedVersion)
+        if (GameVersion != detectedVersion)
         {
-            _version = detectedVersion;
-            OnGameVersionChanged.Invoke(_version, hash);
+            GameVersion = detectedVersion;
+            OnGameVersionChanged.Invoke(GameVersion, hash);
         }
 
-        if (gameProcess is null || _version is GameVersion.EgsDebug) // EGS Debug is not supported.
+        if (gameProcess is null || GameVersion is GameVersion.EgsDebug) // EGS Debug is not supported.
             return false;
 
         SetGameProcess(gameProcess);
         return true;
     }
 
-    /// <summary>Sets <see cref="_gameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
+    /// <summary>Sets <see cref="GameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
     /// <param name="gameProcess">Game process</param>
     private static void SetGameProcess(Process gameProcess)
     {
-        _gameProcess = gameProcess;
-        _gameProcess.EnableRaisingEvents = true;
-        _gameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
+        GameProcess = gameProcess;
+        GameProcess.EnableRaisingEvents = true;
+        GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
@@ -226,19 +226,19 @@ public static partial class GameData
     {
         var activeBaseGame = CurrentActiveBaseGame;
         string activeModuleName = GameMemory.GameModules[activeBaseGame];
-        var activeModule = _gameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
+        var activeModule = GameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
         if (activeModule is null)
             return 0;
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[_version][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[GameVersion][activeBaseGame].FirstLevelTime;
         var moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)
             .Select(levelOffset => (IntPtr)((long)moduleBaseAddress + firstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + _gameProcess.ReadValue<uint>(levelAddress));
+            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
         return finishedLevelsTicks;
     }

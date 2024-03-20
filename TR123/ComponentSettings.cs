@@ -15,16 +15,21 @@ public sealed class ComponentSettings : UserControl
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
+    private LinkLabel _guideLabel;
     private Label _aslWarningLabel;
+    private Label _timerWarningLabel;
     public bool FullGame = true;
     public bool Deathrun;
     public GameTimeMethod GameTimeMethod;
     public bool EnableAutoReset;
 
+    internal static bool GameVersionInitialized;
+
     public ComponentSettings()
     {
         InitializeComponent();
         SetGameTimeMethod(Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
+        GameVersionInitialized = false;
     }
 
     private void InitializeComponent()
@@ -37,7 +42,9 @@ public sealed class ComponentSettings : UserControl
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
+        _guideLabel = new LinkLabel();
         _aslWarningLabel = new Label();
+        _timerWarningLabel = new Label();
         ModeSelect.SuspendLayout();
         SuspendLayout();
 
@@ -131,15 +138,39 @@ public sealed class ComponentSettings : UserControl
         _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
         _aslWarningLabel.Visible = false;
 
+        // _timerWarningLabel
+        _timerWarningLabel.AutoSize = true;
+        _timerWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
+        _timerWarningLabel.ForeColor = Color.Crimson;
+        _timerWarningLabel.Location = new Point(55, 240);
+        _timerWarningLabel.Name = "_timerWarningLabel";
+        _timerWarningLabel.Size = new Size(476, 20);
+        _timerWarningLabel.TabStop = false;
+        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
+        _timerWarningLabel.Visible = false;
+
+        // _guideLabel
+        _guideLabel.AutoSize = false;
+        _guideLabel.Font = new Font(FontFamily.GenericSansSerif, 8.25f);
+        _guideLabel.Location = new Point(10, 275);
+        _guideLabel.LinkClicked += GuideLinkClicked;
+        _guideLabel.Links.Add(11, 55, "https://www.speedrun.com/tr123_remastered/guides/afl7w");
+        _guideLabel.Name = "_guideLabel";
+        _guideLabel.Size = new Size(476, 15);
+        _guideLabel.TabIndex = 3;
+        _guideLabel.Text = "Need help? https://www.speedrun.com/tr123_remastered/guides/afl7w";
+
         // ComponentSettings
-        Controls.Add(_aslWarningLabel);
-        Controls.Add(AutosplitterVersionLabel);
-        Controls.Add(GameVersionLabel);
+        Controls.Add(ModeSelect);
         Controls.Add(_gameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
-        Controls.Add(ModeSelect);
+        Controls.Add(GameVersionLabel);
+        Controls.Add(AutosplitterVersionLabel);
+        Controls.Add(_aslWarningLabel);
+        Controls.Add(_timerWarningLabel);
+        Controls.Add(_guideLabel);
         Name = "ComponentSettings";
-        Size = new Size(476, 250);
+        Size = new Size(476, 290);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
@@ -147,7 +178,17 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
-    public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
+    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        if (e.Link.LinkData is string target)
+            System.Diagnostics.Process.Start(target);
+    }
+
+    public void SetWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
+    {
+        _aslWarningLabel.Visible = aslComponentIsPresent;
+        _timerWarningLabel.Visible = !timerWithGameTimeIsPresent;
+    }
 
     public void SetGameVersion(GameVersion version, string hash)
     {
@@ -169,6 +210,7 @@ public sealed class ComponentSettings : UserControl
         };
 
         GameVersionLabel.Text = $"Game Version: {versionText}";
+        GameVersionInitialized = true;
     }
 
     private void SetGameTimeMethod(GameTimeMethod method)
