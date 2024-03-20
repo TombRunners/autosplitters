@@ -15,6 +15,7 @@ public sealed class ComponentSettings : UserControl
     public CheckBox EnableAutoResetCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
+    private LinkLabel _guideLabel;
     private Label _aslWarningLabel;
     private Label _timerWarningLabel;
     public bool FullGame = true;
@@ -41,6 +42,7 @@ public sealed class ComponentSettings : UserControl
         EnableAutoResetCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
+        _guideLabel = new LinkLabel();
         _aslWarningLabel = new Label();
         _timerWarningLabel = new Label();
         ModeSelect.SuspendLayout();
@@ -147,6 +149,17 @@ public sealed class ComponentSettings : UserControl
         _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
         _timerWarningLabel.Visible = false;
 
+        // _guideLabel
+        _guideLabel.AutoSize = false;
+        _guideLabel.Font = new Font(FontFamily.GenericSansSerif, 8.25f);
+        _guideLabel.Location = new Point(10, 275);
+        _guideLabel.LinkClicked += GuideLinkClicked;
+        _guideLabel.Links.Add(11, 55, "https://www.speedrun.com/tr123_remastered/guides/afl7w");
+        _guideLabel.Name = "_guideLabel";
+        _guideLabel.Size = new Size(476, 15);
+        _guideLabel.TabIndex = 3;
+        _guideLabel.Text = "Need help? https://www.speedrun.com/tr123_remastered/guides/afl7w";
+
         // ComponentSettings
         Controls.Add(ModeSelect);
         Controls.Add(_gameTimeMethodLabel);
@@ -155,13 +168,20 @@ public sealed class ComponentSettings : UserControl
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(_aslWarningLabel);
         Controls.Add(_timerWarningLabel);
+        Controls.Add(_guideLabel);
         Name = "ComponentSettings";
-        Size = new Size(476, 275);
+        Size = new Size(476, 290);
         ModeSelect.ResumeLayout(false);
         ModeSelect.PerformLayout();
 
         ResumeLayout(false);
         PerformLayout();
+    }
+
+    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        if (e.Link.LinkData is string target)
+            System.Diagnostics.Process.Start(target);
     }
 
     public void SetWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
