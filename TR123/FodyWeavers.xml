@@ -3,7 +3,9 @@
   <Costura>
 	<ExcludeAssemblies>
 		LiveSplit.Core
+		LiveSplit.DetailedTimer
 		LiveSplit.ScriptableAutoSplit
+		LiveSplit.Timer
 		UpdateManager
 	</ExcludeAssemblies>  
   </Costura>
