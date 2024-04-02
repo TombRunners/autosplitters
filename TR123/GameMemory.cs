@@ -260,8 +260,13 @@ public static partial class GameData
         internal static readonly MemoryWatcherList Watchers = [];
 
         /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
-        /// <remarks>The uint should be converted to <see cref="GameVersion" />.</remarks>
+        /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
         internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal static MemoryWatcher<int> GlobalFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
 
         /// <summary>The game's bonus flag which marks NG(+).</summary>
         /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>

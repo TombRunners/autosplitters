@@ -40,10 +40,10 @@ public class Component : AutoSplitComponent
     private TimingMethod? _lsCurrentTimingMethod;
     private List<string> _layoutAndTimingMethods = [];
 
-    /// <summary>Allows creation of an event when an ASL Component was found in the LiveSplit layout.</summary>
+    /// <summary>Allows creation of an event when an important LiveSplit layout or setting change occurs.</summary>
     private delegate void ImportantLayoutOrSettingChangedDelegate(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent);
 
-    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    /// <summary>Allows subscribers to know when an important LiveSplit layout or setting change occurs.</summary>
     private ImportantLayoutOrSettingChangedDelegate _onImportantLayoutOrSettingChanged;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
