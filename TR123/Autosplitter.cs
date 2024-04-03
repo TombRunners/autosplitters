@@ -14,6 +14,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter() => GameData.OnGameVersionChanged += Settings.SetGameVersion;
 
+    private static bool _loadingScreenFadedIn;
+
     /// <summary>
     ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
     /// </summary>
@@ -32,10 +34,21 @@ public class Autosplitter : IAutoSplitter, IDisposable
         // RTA w/o Loads should tick whenever a loading screen is not active.
         var loadFade = GameData.LoadFade;
         if (loadFade.Current <= 0)
+        {
+            _loadingScreenFadedIn = false;
             return false;
+        }
 
         // A loading screen is active; check if loadFade is decreasing.
-        bool fadeDecreasing = loadFade.Old > loadFade.Current; // Decreasing => loading screen is fading out, level is starting.
+        const int loadFadeFullAmount = 255;
+        if (!_loadingScreenFadedIn)
+        {
+            _loadingScreenFadedIn = loadFade.Current == loadFadeFullAmount;
+            return true;
+        }
+
+        // Decreasing => loading screen is fading out, and the level has started.
+        bool fadeDecreasing = loadFade.Current < loadFadeFullAmount;
         return !fadeDecreasing;
     }
 
@@ -193,10 +206,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
     {
         // Clear tracked progress.
         RunStats.Clear();
+        _loadingScreenFadedIn = true; // For a level to have started, a loading screen must have been active.
 
-        // Ensure LiveSplit's GameTime initializes.
+        // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
         if (!state.IsGameTimeInitialized)
-            state.SetGameTime(new TimeSpan(0));
+            state.SetGameTime(state.CurrentTime.RealTime ?? TimeSpan.Zero);
         state.IsGameTimePaused = false;
     }
 
