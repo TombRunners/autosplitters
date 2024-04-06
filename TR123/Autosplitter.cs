@@ -14,6 +14,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter() => GameData.OnGameVersionChanged += Settings.SetGameVersion;
 
+    private static bool _cinematicValueUpdatedLastFrame;
     private static bool _loadingScreenFadedIn;
 
     /// <summary>
@@ -25,6 +26,19 @@ public class Autosplitter : IAutoSplitter, IDisposable
     {
         if (Settings.GameTimeMethod == GameTimeMethod.Igt)
             return true;
+
+        // RTA w/o Loads should not tick if a "freeze-frame load" is occuring.
+        // These can occur on slower drives after a level's gameplay has ended, when a cutscene is loading.
+        if (_cinematicValueUpdatedLastFrame)
+        {
+            if (!GameData.GlobalFrameIndex.Changed)
+                return true;
+            _cinematicValueUpdatedLastFrame = false;
+        }
+        else
+        {
+            _cinematicValueUpdatedLastFrame = GameData.Cinematic.Changed;
+        }
 
         // RTA w/o Loads should tick at the title screen once a run has started.
         var title = GameData.TitleLoaded;
