@@ -71,6 +71,12 @@ public static partial class GameData
     /// <summary>Identifies the game without NG+ identification.</summary>
     public static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
+    /// <inheritdoc cref="GameMemory.GFrameIndex" />
+    public static MemoryWatcher<int> GlobalFrameIndex => GameMemory.GFrameIndex;
+
+    /// <inheritdoc cref="GameMemory.CineWatchers"/>
+    public static MemoryWatcher<short> Cinematic => GameMemory.CineWatchers[CurrentActiveBaseGame];
+
     /// <inheritdoc cref="GameMemory.HealthWatchers" />
     public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
 

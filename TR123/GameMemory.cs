@@ -33,6 +33,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
+                                Cine = 0x35F86F0,
                                 FirstLevelTime = 0x36CB610,
                                 Health = 0xEAA30,
                                 InventoryChosen = 0xD4F48,
@@ -50,6 +51,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
+                                Cine = 0x3606928,
                                 FirstLevelTime = 0x36FF870,
                                 Health = 0x11C780,
                                 InventoryChosen = 0x100024,
@@ -67,6 +69,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x3764994, // LevelIgt + 0x2C
+                                Cine = 0x3666000,
                                 FirstLevelTime = 0x3764184,
                                 Health = 0x179C28,
                                 InventoryChosen = 0x156224,
@@ -90,6 +93,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
+                                Cine = 0x364B6F0,
                                 FirstLevelTime = 0x371E610,
                                 Health = 0xEFA18,
                                 InventoryChosen = 0xD9F48,
@@ -107,6 +111,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x3753E26, // LevelIgt + 0x1A
+                                Cine = 0x365A908,
                                 FirstLevelTime = 0x3753850,
                                 Health = 0x122780,
                                 InventoryChosen = 0x106024,
@@ -124,6 +129,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x37B7974, // LevelIgt + 0x2C
+                                Cine = 0x36B8FE0,
                                 FirstLevelTime = 0x37B7164,
                                 Health = 0x17EC28,
                                 InventoryChosen = 0x15B224,
@@ -147,6 +153,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x372978A, // LevelIgt + 0x1A
+                                Cine = 0x36561D8,
                                 FirstLevelTime = 0x37291B0,
                                 Health = 0xF3A88,
                                 InventoryChosen = 0xDDF48,
@@ -164,6 +171,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
+                                Cine = 0x36633E8,
                                 FirstLevelTime = 0x375E410,
                                 Health = 0x1267B0,
                                 InventoryChosen = 0x10A024,
@@ -181,6 +189,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
+                                Cine = 0x36C1C80,
                                 FirstLevelTime = 0x37C1EE4,
                                 Health = 0x182C58,
                                 InventoryChosen = 0x15F224,
@@ -264,9 +273,11 @@ public static partial class GameData
         internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
 
         /// <summary>
-        /// 
+        ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
+        ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
+        ///     During actual loading time (asset loading, etc.), freezes.
         /// </summary>
-        internal static MemoryWatcher<int> GlobalFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
+        internal static MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
 
         /// <summary>The game's bonus flag which marks NG(+).</summary>
         /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
@@ -276,6 +287,15 @@ public static partial class GameData
                 { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
                 { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
                 { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
+            }.ToImmutableDictionary();
+
+        /// <summary>This value is set immediately before a file read of an upcoming cutscene.</summary>
+        internal static ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
+            new Dictionary<Game, MemoryWatcher<short>>(3)
+            {
+                { Game.Tr1,( MemoryWatcher<short>)Watchers?["Tr1Cine"] },
+                { Game.Tr2,( MemoryWatcher<short>)Watchers?["Tr2Cine"] },
+                { Game.Tr3,( MemoryWatcher<short>)Watchers?["Tr3Cine"] },
             }.ToImmutableDictionary();
 
         /// <summary>Lara's current HP.</summary>
@@ -391,6 +411,7 @@ public static partial class GameData
                 case GameVersion.PublicV10:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x3B9C44)) { Name = "GlobalFrameIndex" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
@@ -400,6 +421,7 @@ public static partial class GameData
                 case GameVersion.PublicV101:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2EAC08)) { Name = "GlobalFrameIndex" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
@@ -409,6 +431,7 @@ public static partial class GameData
                 case GameVersion.PublicV101Patch1:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D0C)) { Name = "GlobalFrameIndex" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
@@ -445,6 +468,9 @@ public static partial class GameData
 
                 int bonusFlagOffset = addresses.BonusFlag;
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, bonusFlagOffset)) { Name = $"{game}BonusFlag" });
+
+                int cineOffset = addresses.Cine;
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, cineOffset)) { Name = $"{game}Cine" });
 
                 int healthOffset = addresses.Health;
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, healthOffset)) { Name = $"{game}Health" });
