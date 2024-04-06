@@ -5,6 +5,7 @@
     </files>
     <changelog>
       <change>Improved GameTime accuracy during fading loading screens and run Starts.</change>
+	  <change>Improved load removal by detecting end-level cutscene loads (freeze frames), common on HDDs.</change>
     </changelog>
   </update>
   <update version="2024.1.4.0">
