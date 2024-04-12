@@ -416,7 +416,7 @@ public static partial class GameData
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV101Patch1);
+                    AddCommonDllWatchers(GameVersion.PublicV102);
                     break;
 
                 case GameVersion.None:
