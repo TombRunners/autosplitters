@@ -17,7 +17,8 @@ internal static class VersionDetector
         { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), GameVersion.EgsDebug },
         { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), GameVersion.PublicV10 },
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), GameVersion.PublicV101 },
-        { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), GameVersion.PublicV102 },
+        { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), GameVersion.PublicV101Patch1 },
+        { "224D11BEBEC79A0B579C0001C66E64CF".ToLowerInvariant(), GameVersion.PublicV102 },
     }.ToImmutableDictionary();
 
     public static GameVersion DetectVersion(out Process gameProcess, out string hash)
