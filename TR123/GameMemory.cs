@@ -139,7 +139,7 @@ public static partial class GameData
                     }
                 },
                 {
-                    GameVersion.PublicV102,
+                    GameVersion.PublicV101Patch1,
                     new Dictionary<Game, GameAddresses>
                     {
                         {
@@ -191,6 +191,63 @@ public static partial class GameData
                                 LoadFade = 0x324ED0,
                                 OverlayFlag = 0x15EBDC,
                                 TitleLoaded = 0x184FF8,
+                            }
+                        },
+                    }
+                },
+                {
+                    GameVersion.PublicV102,
+                    new Dictionary<Game, GameAddresses>
+                    {
+                        {
+                            Game.Tr1,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x373BFEA, // LevelIgt + 0x1A
+                                FirstLevelTime = 0x373BA10,
+                                Health = 0xF6B68,
+                                InventoryChosen = 0xE0F48,
+                                InventoryMode = 0xE1C18, // InventoryChosen + 0xCD0
+                                Level = 0x373BFE8,
+                                LevelComplete = 0xF6480,
+                                LevelIgt = 0x373BFD0,
+                                LoadFade = 0x295564,
+                                OverlayFlag = 0xDBA78,
+                                TitleLoaded = 0xF6478,
+                            }
+                        },
+                        {
+                            Game.Tr2,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x3772246, // LevelIgt + 0x1A
+                                FirstLevelTime = 0x3771C70,
+                                Health = 0x12A818,
+                                InventoryChosen = 0x10E024,
+                                InventoryMode = 0x10E084, // InventoryChosen + 0x60
+                                Level = 0x12C908,
+                                LevelComplete = 0x12CE24,
+                                LevelIgt = 0x377222C,
+                                LoadFade = 0x2CC094,
+                                OverlayFlag = 0x10DEEC,
+                                TitleLoaded = 0x12C9C4,
+                            }
+                        },
+                        {
+                            Game.Tr3,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x37D8394, // LevelIgt + 0x2C
+                                FirstLevelTime = 0x37D7B84,
+                                Health = 0x187CA8,
+                                InventoryChosen = 0x164224,
+                                InventoryMode = 0x164254, // InventoryChosen + 0x30
+                                Level = 0x18A00C,
+                                LevelComplete = 0x18A4EC,
+                                LevelIgt = 0x37D8368,
+                                LoadFade = 0x329FF0,
+                                OverlayFlag = 0x163BDC,
+                                TitleLoaded = 0x18A0D8,
                             }
                         },
                     }
@@ -344,11 +401,20 @@ public static partial class GameData
                     AddCommonDllWatchers(GameVersion.PublicV101);
                     break;
 
-                case GameVersion.PublicV102:
+                case GameVersion.PublicV101Patch1:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
+                    // Common items for all game's DLLs
+                    AddCommonDllWatchers(GameVersion.PublicV101Patch1);
+                    break;
+
+                case GameVersion.PublicV102:
+                    // Base game EXE (tomb123.exe)
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                    // One-offs from DLLs
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
                     AddCommonDllWatchers(GameVersion.PublicV102);
                     break;
