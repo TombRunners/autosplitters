@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveSplit.Core">
-      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\LiveSplit.Core\obj\Release\LiveSplit.Core.dll</HintPath>
+      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.DetailedTimer">
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\Components\LiveSplit.DetailedTimer.dll</HintPath>
@@ -60,7 +60,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="UpdateManager">
-      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\UpdateManager\obj\Release\UpdateManager.dll</HintPath>
+      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\UpdateManager.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
