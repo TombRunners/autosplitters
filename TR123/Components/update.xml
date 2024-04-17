@@ -1,5 +1,5 @@
 <updates>
-  <update version="2024.1.4.1">
+  <update version="2024.1.5.0">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
     </files>
