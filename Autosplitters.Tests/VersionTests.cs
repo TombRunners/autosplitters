@@ -23,7 +23,7 @@ public class VersionTests
 
         var assemblyInfoPath = Path.Combine(currentDirectory, $"../../../{project}/Properties/AssemblyInfo.cs");
         var assemblyInfoContents = File.ReadAllText(assemblyInfoPath);
-        var assemblyInfoVersionString = Regex.Matches(assemblyInfoContents, @"\[assembly: AssemblyVersion\(""(?<VersionString>.+)""\)]")
+        var assemblyInfoVersionString = Regex.Matches(assemblyInfoContents, """\[assembly: AssemblyVersion\("(?<VersionString>.+)"\)]""")
                                              .Cast<Match>()
                                              .Last()
                                              .Groups["VersionString"]
@@ -32,7 +32,7 @@ public class VersionTests
 
         var updateXmlPath = Path.Combine(currentDirectory, $"../../../{project}/Components/update.xml");
         var updateXmlContents = File.ReadAllText(updateXmlPath);
-        var updateXmlVersionString = Regex.Match(updateXmlContents, @"<update version=""(?<VersionString>.+)"">")
+        var updateXmlVersionString = Regex.Match(updateXmlContents, """<update version="(?<VersionString>.+)">""")
                                           .Groups["VersionString"]
                                           .Value;
         var updateXmlVersion = ParseVersion(updateXmlVersionString);
