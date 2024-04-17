@@ -205,7 +205,7 @@ public static partial class GameData
                     }
                 },
                 {
-                    GameVersion.PublicV102,
+                    GameVersion.PublicV101Patch2,
                     new Dictionary<Game, GameAddresses>
                     {
                         {
@@ -438,13 +438,13 @@ public static partial class GameData
                     AddCommonDllWatchers(GameVersion.PublicV101Patch1);
                     break;
 
-                case GameVersion.PublicV102:
+                case GameVersion.PublicV101Patch2:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV102);
+                    AddCommonDllWatchers(GameVersion.PublicV101Patch2);
                     break;
 
                 case GameVersion.None:
