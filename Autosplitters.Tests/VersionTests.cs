@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -27,17 +28,29 @@ public class VersionTests
                                              .Last()
                                              .Groups["VersionString"]
                                              .Value;
+        var assemblyInfoVersion = ParseVersion(assemblyInfoVersionString);
 
         var updateXmlPath = Path.Combine(currentDirectory, $"../../../{project}/Components/update.xml");
         var updateXmlContents = File.ReadAllText(updateXmlPath);
         var updateXmlVersionString = Regex.Match(updateXmlContents, @"<update version=""(?<VersionString>.+)"">")
                                           .Groups["VersionString"]
                                           .Value;
+        var updateXmlVersion = ParseVersion(updateXmlVersionString);
 
         var dllPath = Path.Combine(currentDirectory, $"../../../{project}/Components/{dll}.dll");
         var dllVersionInfo = FileVersionInfo.GetVersionInfo(dllPath).FileVersion;
+        var dllVersion = ParseVersion(dllVersionInfo);
 
-        assemblyInfoVersionString.Should().Be(dllVersionInfo);
-        updateXmlVersionString.Should().Be(dllVersionInfo);
+        assemblyInfoVersion.Should().Be(dllVersion, $"Assembly Info version {assemblyInfoVersionString} must match DLL version {dllVersionInfo}");
+        updateXmlVersion.Should().Be(dllVersion, $"Update XML version {updateXmlVersionString} must match DLL version {dllVersionInfo}");
+    }
+
+    private static Version ParseVersion(string versionString)
+    {
+        var version = new Version(versionString);
+
+        return version.Revision == -1
+            ? new Version(version.Major, version.Minor, version.Build, 0)
+            : version;
     }
 }
