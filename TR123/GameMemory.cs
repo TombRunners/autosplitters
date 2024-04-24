@@ -41,7 +41,7 @@ public static partial class GameData
                                 Level = 0x36CBBE8,
                                 LevelComplete = 0xEA340,
                                 LevelIgt = 0x36CBBD0,
-                                LoadFade = 0x2D7650,
+                                LoadFade = 0x244BC4,
                                 OverlayFlag = 0xCFA78,
                                 TitleLoaded = 0xEA338,
                             }
@@ -77,7 +77,7 @@ public static partial class GameData
                                 Level = 0x17BECC,
                                 LevelComplete = 0x17C3AC,
                                 LevelIgt = 0x3764968,
-                                LoadFade = 0x244BC4,
+                                LoadFade = 0x2D7650,
                                 OverlayFlag = 0x155BDC,
                                 TitleLoaded = 0x17BF98,
                             }
