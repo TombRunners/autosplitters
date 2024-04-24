@@ -5,6 +5,9 @@ public readonly record struct GameAddresses
     /// <summary>Address of BonusFlag.</summary>
     public int BonusFlag { get; init; }
 
+    /// <summary>Address of Cine.</summary>
+    public int Cine { get; init; }
+
     /// <summary>Address of FirstLevelTime.</summary>
     public int FirstLevelTime { get; init; }
 

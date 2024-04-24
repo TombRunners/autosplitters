@@ -8,5 +8,5 @@ public enum GameVersion
     PublicV10        = 3, // GOG v1.0
     PublicV101       = 4, // GOG v1.01, Steam 13430979
     PublicV101Patch1 = 5, // GOG v1.01 Patch 1, Steam 13617493
-    PublicV102       = 6, // GOG v???, Steam 13946608
+    PublicV101Patch2 = 6, // GOG v1.02 Patch 1, Steam 13946608
 }

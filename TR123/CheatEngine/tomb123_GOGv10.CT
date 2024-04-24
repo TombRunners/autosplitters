@@ -21,6 +21,13 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb123.exe +0x39BC40</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>173</ID>
+          <Description>"gFrameIndex"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>4 Bytes</VariableType>
+          <Address>tomb123.exe + 0x3B9C44</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -294,6 +301,13 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb3.dll + 0x2D7650</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>172</ID>
+          <Description>"Cine"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb3.dll + 0x3666000</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
     <CheatEntry>
@@ -544,6 +558,13 @@
           <ShowAsSigned>1</ShowAsSigned>
           <VariableType>4 Bytes</VariableType>
           <Address>tomb2.dll + 0x2796F4</Address>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>171</ID>
+          <Description>"Cine"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb2.dll + 0x3606928</Address>
         </CheatEntry>
       </CheatEntries>
     </CheatEntry>
@@ -1155,33 +1176,15 @@
           <VariableType>4 Bytes</VariableType>
           <Address>tomb1.dll + 0x244BC4</Address>
         </CheatEntry>
+        <CheatEntry>
+          <ID>170</ID>
+          <Description>"Cine"</Description>
+          <ShowAsSigned>1</ShowAsSigned>
+          <VariableType>2 Bytes</VariableType>
+          <Address>tomb1.dll + 0x35F86F0</Address>
+        </CheatEntry>
       </CheatEntries>
     </CheatEntry>
   </CheatEntries>
-  <UserdefinedSymbols>
-    <SymbolEntry>
-      <Name>Tr1TrophyData</Name>
-      <Address>Tr1LevelStats + 0x28</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>Tr1LevelStats</Name>
-      <Address>tomb1.dll + 0x36CBBD0</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>Tr1SecretsArray</Name>
-      <Address>Tr1LevelStats + 0x28</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>Tr1IgtArray</Name>
-      <Address>tomb1.dll + 0x36CB610</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>Tr2IgtArray</Name>
-      <Address>tomb2.dll + 0x36FF870</Address>
-    </SymbolEntry>
-    <SymbolEntry>
-      <Name>Tr3IgtArray</Name>
-      <Address>tomb3.dll + 0x3764184</Address>
-    </SymbolEntry>
-  </UserdefinedSymbols>
+  <UserdefinedSymbols/>
 </CheatTable>
