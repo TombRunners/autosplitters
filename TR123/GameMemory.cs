@@ -213,6 +213,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x373BFEA, // LevelIgt + 0x1A
+                                Cine = 0x3668A38,
                                 FirstLevelTime = 0x373BA10,
                                 Health = 0xF6B68,
                                 InventoryChosen = 0xE0F48,
@@ -230,6 +231,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x3772246, // LevelIgt + 0x1A
+                                Cine = 0x3674C28,
                                 FirstLevelTime = 0x3771C70,
                                 Health = 0x12A818,
                                 InventoryChosen = 0x10E024,
@@ -247,6 +249,7 @@ public static partial class GameData
                             new GameAddresses
                             {
                                 BonusFlag = 0x37D8394, // LevelIgt + 0x2C
+                                Cine = 0x36D4940,
                                 FirstLevelTime = 0x37D7B84,
                                 Health = 0x187CA8,
                                 InventoryChosen = 0x164224,
@@ -441,6 +444,7 @@ public static partial class GameData
                 case GameVersion.PublicV101Patch2:
                     // Base game EXE (tomb123.exe)
                     Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D34)) { Name = "GlobalFrameIndex" });
                     // One-offs from DLLs
                     Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
                     // Common items for all game's DLLs
