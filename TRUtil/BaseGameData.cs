@@ -13,20 +13,20 @@ public abstract class BaseGameData
     private const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected static readonly List<string> ProcessSearchNames = [];
+    protected readonly List<string> ProcessSearchNames = [];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    protected static readonly Dictionary<string, uint> VersionHashes = [];
+    protected readonly Dictionary<string, uint> VersionHashes = [];
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    protected static readonly MemoryWatcherList Watchers = [];
+    protected readonly MemoryWatcherList Watchers = [];
 
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
-    protected static Process Game;
+    protected Process GameProcess { get; private set; }
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    public static uint Version;
+    public uint GameVersion { get; private set; }
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
@@ -34,14 +34,7 @@ public abstract class BaseGameData
     public delegate void GameFoundDelegate(uint version, string hash);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public static GameFoundDelegate OnGameVersionChanged;
-
-    /// <summary>A constructor existing primarily to clear static fields expected to be managed only in derived classes' constructors.</summary>
-    protected BaseGameData()
-    {
-        VersionHashes.Clear();
-        ProcessSearchNames.Clear();
-    }
+    public GameFoundDelegate OnGameVersionChanged;
 
     #region MemoryWatcherList Items
 
@@ -52,11 +45,11 @@ public abstract class BaseGameData
     ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
     ///         the first level's value is 0, and the main menu is level 4.
     /// </remarks>
-    public static MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
+    public MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
 
     /// <summary>Lara's current HP.</summary>
     /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
-    public static MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
+    public MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
 
     #endregion
 
@@ -65,18 +58,18 @@ public abstract class BaseGameData
     protected delegate void SetAddressesDelegate(uint version);
 
     /// <summary>Allows a specific method to be assigned for use in MemoryWatcher initialization to set watchers and offsets.</summary>
-    protected static SetAddressesDelegate SetAddresses;
+    protected SetAddressesDelegate SetAddresses;
 
     /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
     /// <returns><see langword="true"/> if game data was updated, <see langword="false"/> otherwise</returns>
-    public static bool Update()
+    public bool Update()
     {
         try
         {
-            if (Game is null || Game.HasExited)
+            if (GameProcess is null || GameProcess.HasExited)
                 return TrySetGameProcessAndVersion(SetAddresses);
 
-            Watchers.UpdateAll(Game);
+            Watchers.UpdateAll(GameProcess);
             return true;
         }
         catch
@@ -86,8 +79,8 @@ public abstract class BaseGameData
     }
 
     /// <summary>If applicable, finds a <see cref="Process"/> running an expected version of the game.</summary>
-    /// <returns><see langword="true"/> if <see cref="Game"/> and <see cref="Version"/> were meaningfully set, <see langword="false"/> otherwise</returns>
-    private static bool TrySetGameProcessAndVersion(SetAddressesDelegate setAddresses)
+    /// <returns><see langword="true"/> if <see cref="GameProcess"/> and <see cref="GameVersion"/> were meaningfully set, <see langword="false"/> otherwise</returns>
+    private bool TrySetGameProcessAndVersion(SetAddressesDelegate setAddresses)
     {
         const uint noneOrUndetectedValue = 0;
 
@@ -96,10 +89,10 @@ public abstract class BaseGameData
         if (processes.Count == 0)
         {
             // Set Version to a value indicating no game was found.
-            if (Version != noneOrUndetectedValue)
+            if (GameVersion != noneOrUndetectedValue)
                 OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
 
-            Version = noneOrUndetectedValue;
+            GameVersion = noneOrUndetectedValue;
             return false;
         }
 
@@ -108,26 +101,30 @@ public abstract class BaseGameData
         var gameProcess = processes.FirstOrDefault(p =>
             {
                 hash = p.GetMd5Hash();
-                return VersionHashes.TryGetValue(hash, out Version);
+                if (!VersionHashes.TryGetValue(hash, out uint gameVersion))
+                    return false;
+
+                GameVersion = gameVersion;
+                return true;
             }
         );
         if (gameProcess is null)
         {
             // Set Version to a value indicating the game version is unknown.
             const uint unknownValue = 0xDEADBEEF;
-            if (Version != unknownValue)
+            if (GameVersion != unknownValue)
                 OnGameVersionChanged.Invoke(unknownValue, hash);
 
-            Version = unknownValue;
+            GameVersion = unknownValue;
             return false;
         }
 
         // Set Game and do some event management.
-        Game = gameProcess;
-        Game.EnableRaisingEvents = true;
-        Game.Exited += static (_, _) => OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
-        setAddresses(Version);
-        OnGameVersionChanged.Invoke(Version, hash);
+        GameProcess = gameProcess;
+        GameProcess.EnableRaisingEvents = true;
+        GameProcess.Exited += (_, _) => OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
+        setAddresses(GameVersion);
+        OnGameVersionChanged.Invoke(GameVersion, hash);
         return true;
     }
 

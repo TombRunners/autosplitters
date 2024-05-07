@@ -4,16 +4,15 @@ using TRUtil;
 
 namespace TR5;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
-internal sealed class Autosplitter : LaterClassicAutosplitter
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData}"/>.</summary>
+internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
 {
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter(Version version) : base(version)
+    public Autosplitter(Version version) : base(version, new GameData())
     {
         Settings = new ComponentSettings(version);
 
-        GameData.InitializeGameData();
-        BaseGameData.OnGameVersionChanged += Settings.SetGameVersion;
+        Data.OnGameVersionChanged += Settings.SetGameVersion;
     }
 
     public override bool ShouldReset(LiveSplitState state)
@@ -21,8 +20,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         if (!Settings.EnableAutoReset)
             return false;
 
-        bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
-        bool comingFromAnotherLevel = GameData.GfInitializeGame.Current && !LaterClassicGameData.Loading.Old && GameData.GfGameMode.Current == 0;
+        bool loadingIntoMainMenu = Data.GfLevelComplete.Current == 0 && Data.Level.Current == 0 && Data.Loading.Current;
+        bool comingFromAnotherLevel = Data.GfInitializeGame.Current && !Data.Loading.Old && Data.GfGameMode.Current == 0;
         return loadingIntoMainMenu && comingFromAnotherLevel;
     }
 
@@ -31,12 +30,12 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         // Handle deathruns for both rulesets.
         if (Settings.Deathrun)
         {
-            bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
+            bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
             return laraJustDied;
         }
 
-        uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
-        uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
+        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
 
         // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
         bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
