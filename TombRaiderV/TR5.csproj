@@ -53,8 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autosplitter.cs" />
-    <Compile Include="Component Factory.cs" />
     <Compile Include="Component.cs" />
+	<Compile Include="ComponentFactory.cs" />
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
