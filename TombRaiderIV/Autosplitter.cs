@@ -56,7 +56,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
 
         // In the case of The Times Exclusive, there is only one playable level with a value of 2;
         // the main menu is 0, and the opening cutscene has a level value of 1.
-        bool playingTheTimesExclusive = BaseGameData.Version == (uint)GameVersion.TheTimesExclusive;
+        bool playingTheTimesExclusive = BaseGameData.Version == (uint)Tr4Version.TheTimesExclusive;
         if (playingTheTimesExclusive && BaseGameData.Level.Current != (uint)TteLevel.TheTimesExclusive)
             return false;
 

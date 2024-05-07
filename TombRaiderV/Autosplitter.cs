@@ -46,7 +46,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         // Handle ILs and FG for both rulesets.
         bool loadingAnotherLevel = currentGfLevelComplete != 0;
         if (!Settings.Option)  // Property name should be SplitCutscene.
-            loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint)Level.CutsceneSecurityBreach;
+            loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint)Tr5Level.CutsceneSecurityBreach;
         return loadingAnotherLevel;
     }
 }

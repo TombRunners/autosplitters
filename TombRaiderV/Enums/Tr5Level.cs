@@ -1,7 +1,7 @@
 ﻿namespace TR5;
 
 /// <summary>The game's level and demo values.</summary>
-internal enum Level
+internal enum Tr5Level
 {
     MainMenu = 00,
 

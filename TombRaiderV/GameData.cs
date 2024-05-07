@@ -12,8 +12,8 @@ internal sealed class GameData : LaterClassicGameData
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal static void InitializeGameData()
     {
-        VersionHashes.Add("179164156e3ca6641708d0419d6a91e9", (uint)GameVersion.SteamOrGog);
-        VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint)GameVersion.JapaneseNoCd);
+        VersionHashes.Add("179164156e3ca6641708d0419d6a91e9", (uint)Tr5Version.SteamOrGog);
+        VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint)Tr5Version.JapaneseNoCd);
 
         // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("PCTomb5");
@@ -42,9 +42,9 @@ internal sealed class GameData : LaterClassicGameData
     private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((GameVersion)version)
+        switch ((Tr5Version)version)
         {
-            case GameVersion.SteamOrGog:
+            case Tr5Version.SteamOrGog:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2D0)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C27C)) { Name = "GameTimer"});
@@ -54,7 +54,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082C0)) { Name = "GfGameMode" });
                 break;
 
-            case GameVersion.JapaneseNoCd:
+            case Tr5Version.JapaneseNoCd:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3D0)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C37C)) { Name = "GameTimer"});
@@ -64,7 +64,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082D0)) { Name = "GfGameMode" });
                 break;
 
-            case GameVersion.None:
+            case Tr5Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

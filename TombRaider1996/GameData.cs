@@ -16,9 +16,9 @@ internal sealed class GameData : ClassicGameData
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal GameData()
     {
-        VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint)GameVersion.Ati);
-        VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint)GameVersion.DOSBox);
-        VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint)GameVersion.AtiUnfinishedBusiness);
+        VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint)Tr1Version.Ati);
+        VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint)Tr1Version.DOSBox);
+        VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint)Tr1Version.AtiUnfinishedBusiness);
 
         // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("dosbox");
@@ -44,9 +44,9 @@ internal sealed class GameData : ClassicGameData
     private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((GameVersion)version)
+        switch ((Tr1Version)version)
         {
-            case GameVersion.Ati:
+            case Tr1Version.Ati:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x59F4C)) { Name = "DemoTimer" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A014)) { Name = "LevelComplete" });
@@ -56,7 +56,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x5A02C)) { Name = "Health" });
                 break;
 
-            case GameVersion.AtiUnfinishedBusiness:
+            case Tr1Version.AtiUnfinishedBusiness:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x59CFC)) { Name = "TitleScreen" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x599EC)) { Name = "LevelComplete" });
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x599E8)) { Name = "Level" });
@@ -65,7 +65,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x59A04)) { Name = "Health" });
                 break;
 
-            case GameVersion.DOSBox:
+            case Tr1Version.DOSBox:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x247B34)) { Name = "TitleScreen" });
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA786B4, 0x243BD4)) { Name = "DemoTimer" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA786B4, 0x243D3C)) { Name = "LevelComplete" });
@@ -75,7 +75,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
                 break;
 
-            case GameVersion.None:
+            case Tr1Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

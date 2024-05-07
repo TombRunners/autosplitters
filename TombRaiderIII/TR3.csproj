@@ -60,10 +60,10 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameData.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Enums\GameVersion.cs" />
     <Compile Include="Enums\TlaLevel.cs" />
     <Compile Include="Enums\Tr3Level.cs" />
+    <Compile Include="Enums\Tr3Version.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">

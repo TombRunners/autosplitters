@@ -20,17 +20,17 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         const string tteText = "The Times Exclusive [TTE]";
 
         string versionText;
-        switch ((GameVersion)version)
+        switch ((Tr4Version)version)
         {
-            case GameVersion.SteamOrGog:
+            case Tr4Version.SteamOrGog:
                 versionText = digitalText;
                 break;
 
-            case GameVersion.TheTimesExclusive:
+            case Tr4Version.TheTimesExclusive:
                 versionText = tteText;
                 break;
 
-            case GameVersion.None:
+            case Tr4Version.None:
             default:
                 base.SetGameVersion(version, hash);
                 return;
