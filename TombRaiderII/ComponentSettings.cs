@@ -15,33 +15,33 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
         const string stellaNoCd = "Stella No-CD [TR2G]";
 
         string versionText;
-        switch ((GameVersion)version)
+        switch ((Tr2Version)version)
         {
-            case GameVersion.MP:
+            case Tr2Version.MP:
                 versionText = multipatch;
                 break;
 
-            case GameVersion.EPC:
+            case Tr2Version.EPC:
                 versionText = eidosPremierCollection;
                 break;
 
-            case GameVersion.P1:
+            case Tr2Version.P1:
                 versionText = corePatch1;
                 break;
 
-            case GameVersion.UKB:
+            case Tr2Version.UKB:
                 versionText = eidosUkBox;
                 break;
 
-            case GameVersion.StellaGold:
+            case Tr2Version.StellaGold:
                 versionText = stella;
                 break;
 
-            case GameVersion.StellaGoldCracked:
+            case Tr2Version.StellaGoldCracked:
                 versionText = stellaNoCd;
                 break;
 
-            case GameVersion.None:
+            case Tr2Version.None:
             default:
                 base.SetGameVersion(version, hash);
                 return;

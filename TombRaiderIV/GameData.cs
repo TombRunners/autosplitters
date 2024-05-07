@@ -15,8 +15,8 @@ internal class GameData : LaterClassicGameData
     /// <summary>A constructor substitute that primarily exists to set/modify static values/objects.</summary>
     internal static void InitializeGameData()
     {
-        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)GameVersion.SteamOrGog);
-        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)GameVersion.TheTimesExclusive);
+        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)Tr4Version.SteamOrGog);
+        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)Tr4Version.TheTimesExclusive);
 
         ProcessSearchNames.Add("tomb4");
 
@@ -72,9 +72,9 @@ internal class GameData : LaterClassicGameData
     private static void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((GameVersion)version)
+        switch ((Tr4Version)version)
         {
-            case GameVersion.SteamOrGog:
+            case Tr4Version.SteamOrGog:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
@@ -86,7 +86,7 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems"});
                 break;
 
-            case GameVersion.TheTimesExclusive:
+            case Tr4Version.TheTimesExclusive:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
@@ -94,7 +94,7 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
                 break;
 
-            case GameVersion.None:
+            case Tr4Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

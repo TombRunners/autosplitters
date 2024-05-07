@@ -12,24 +12,24 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
         const string jpTlaText = "Japanese (JP) [TLA]";
 
         string versionText;
-        switch ((GameVersion)version)
+        switch ((Tr3Version)version)
         {
-            case GameVersion.Int:
-            case GameVersion.Int16x9AspectRatio:
+            case Tr3Version.Int:
+            case Tr3Version.Int16x9AspectRatio:
                 versionText = intText;
                 break;
 
-            case GameVersion.JpCracked:
-            case GameVersion.JpCracked16x9AspectRatio:
+            case Tr3Version.JpCracked:
+            case Tr3Version.JpCracked16x9AspectRatio:
                 versionText = jpTr3Text;
                 break;
 
-            case GameVersion.JpTlaCracked:
-            case GameVersion.JpTlaCracked16x9AspectRatio:
+            case Tr3Version.JpTlaCracked:
+            case Tr3Version.JpTlaCracked16x9AspectRatio:
                 versionText = jpTlaText;
                 break;
 
-            case GameVersion.None:
+            case Tr3Version.None:
             default:
                 base.SetGameVersion(version, hash);
                 return;

@@ -15,12 +15,12 @@ internal sealed class GameData : ClassicGameData
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal GameData()
     {
-        VersionHashes.Add("4044dc2c58f02bfea2572e80dd8f2abb", (uint)GameVersion.Int);
-        VersionHashes.Add("46a780f8f5314d5284f1d1b3ab468ab2", (uint)GameVersion.Int16x9AspectRatio);
-        VersionHashes.Add("66404f58bb5dbf30707abfd245692cd2", (uint)GameVersion.JpCracked);
-        VersionHashes.Add("1c9bdf6b998b34752cb0c7d315129af6", (uint)GameVersion.JpCracked16x9AspectRatio);
-        VersionHashes.Add("c3030264e597a496cc920d9c97324046", (uint)GameVersion.JpTlaCracked);
-        VersionHashes.Add("64a166ef57aa4f786e6a7f41eae14806", (uint)GameVersion.JpTlaCracked16x9AspectRatio);
+        VersionHashes.Add("4044dc2c58f02bfea2572e80dd8f2abb", (uint)Tr3Version.Int);
+        VersionHashes.Add("46a780f8f5314d5284f1d1b3ab468ab2", (uint)Tr3Version.Int16x9AspectRatio);
+        VersionHashes.Add("66404f58bb5dbf30707abfd245692cd2", (uint)Tr3Version.JpCracked);
+        VersionHashes.Add("1c9bdf6b998b34752cb0c7d315129af6", (uint)Tr3Version.JpCracked16x9AspectRatio);
+        VersionHashes.Add("c3030264e597a496cc920d9c97324046", (uint)Tr3Version.JpTlaCracked);
+        VersionHashes.Add("64a166ef57aa4f786e6a7f41eae14806", (uint)Tr3Version.JpTlaCracked16x9AspectRatio);
 
         ProcessSearchNames.Add("tomb3");
         ProcessSearchNames.Add("tr3gold");
@@ -33,10 +33,10 @@ internal sealed class GameData : ClassicGameData
 
     private static void SetMemoryAddresses(uint version)
     {
-        switch ((GameVersion)version)
+        switch ((Tr3Version)version)
         {
-            case GameVersion.Int:
-            case GameVersion.Int16x9AspectRatio:
+            case Tr3Version.Int:
+            case Tr3Version.Int16x9AspectRatio:
                 Watchers.Clear();
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x2A1C58)) { Name = "TitleScreen"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x233F54)) { Name = "LevelComplete"});
@@ -47,8 +47,8 @@ internal sealed class GameData : ClassicGameData
                 FirstLevelTimeAddress = TR3FirstLevelTimeAddress;
                 break;
 
-            case GameVersion.JpCracked:
-            case GameVersion.JpCracked16x9AspectRatio:
+            case Tr3Version.JpCracked:
+            case Tr3Version.JpCracked16x9AspectRatio:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x2A1C60)) { Name = "TitleScreen"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x233F5C)) { Name = "LevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xC561C)) { Name = "Level"});
@@ -58,8 +58,8 @@ internal sealed class GameData : ClassicGameData
                 FirstLevelTimeAddress = TR3FirstLevelTimeAddress;
                 break;
 
-            case GameVersion.JpTlaCracked:
-            case GameVersion.JpTlaCracked16x9AspectRatio:
+            case Tr3Version.JpTlaCracked:
+            case Tr3Version.JpTlaCracked16x9AspectRatio:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x29AA04)) { Name = "TitleScreen"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x22CE38)) { Name = "LevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x22CE34)) { Name = "Level"});
@@ -69,7 +69,7 @@ internal sealed class GameData : ClassicGameData
                 FirstLevelTimeAddress = TlaFirstLevelTimeAddress;
                 break;
 
-            case GameVersion.None:
+            case Tr3Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

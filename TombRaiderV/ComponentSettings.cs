@@ -21,17 +21,17 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         const string jpNoCdText = "Japanese No-CD [TR5]";
 
         string versionText;
-        switch ((GameVersion)version)
+        switch ((Tr5Version)version)
         {
-            case GameVersion.SteamOrGog:
+            case Tr5Version.SteamOrGog:
                 versionText = digitalText;
                 break;
 
-            case GameVersion.JapaneseNoCd:
+            case Tr5Version.JapaneseNoCd:
                 versionText = jpNoCdText;
                 break;
 
-            case GameVersion.None:
+            case Tr5Version.None:
             default:
                 base.SetGameVersion(version, hash);
                 return;

@@ -9,7 +9,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
 {
     private bool _newGamePageSelected;
 
-    private static bool IsUnfinishedBusiness => BaseGameData.Version == (uint)GameVersion.AtiUnfinishedBusiness;
+    private static bool IsUnfinishedBusiness => BaseGameData.Version == (uint)Tr1Version.AtiUnfinishedBusiness;
     private static uint? LastRealLevel => IsUnfinishedBusiness ? BaseGameData.Level.Current : (uint?)GetLastRealLevel(BaseGameData.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>

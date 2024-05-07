@@ -1,7 +1,7 @@
 namespace TR1;
 
 /// <summary>The supported game versions.</summary>
-internal enum GameVersion
+internal enum Tr1Version
 {
     None                  = 0,
     Ati                   = 1,
