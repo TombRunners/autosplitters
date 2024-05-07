@@ -32,7 +32,7 @@ internal sealed class GameData : ClassicGameData
         SumLevelTimes += SumCompletedLevelTimes; // Use default provided by ClassicGameData.
     }
 
-    private static void SetMemoryAddresses(uint version)
+    private void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((Tr2Version)version)
@@ -75,13 +75,13 @@ internal sealed class GameData : ClassicGameData
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>
-    private static ulong SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
+    private ulong SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
     {
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
-            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
-            .Select(static levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
+            .Select(completedLevel => (completedLevel - 1) * LevelSaveStructSize)
+            .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
+            .Aggregate<IntPtr, uint>(0, (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
         return finishedLevelsTicks;
     }

@@ -39,9 +39,9 @@ internal sealed class GameData : ClassicGameData
     ///     If no menu item is activated, and the value gets higher than 480, Demo Mode starts.
     ///     If any menu item is active, the value increases and Demo Mode does not activate.
     /// </remarks>
-    public static MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
+    public MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
 
-    private static void SetMemoryAddresses(uint version)
+    private void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((Tr1Version)version)
