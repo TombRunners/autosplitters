@@ -31,7 +31,8 @@ internal sealed class GameData : ClassicGameData
         SumLevelTimes += SumCompletedLevelTimes;
     }
 
-    private void SetMemoryAddresses(uint version)
+    /// <inheritdoc />
+    protected override void SetMemoryAddresses(uint version)
     {
         switch ((Tr3Version)version)
         {
@@ -74,6 +75,9 @@ internal sealed class GameData : ClassicGameData
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
     }
+
+    /// <inheritdoc />
+    protected override bool IsGameInitialized() => true;
 
     /// <summary>Sums completed levels' times.</summary>
     /// <returns>The sum of completed levels' times</returns>

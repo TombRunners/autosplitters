@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VersionDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="LaterClassicComponentSettings.resx">

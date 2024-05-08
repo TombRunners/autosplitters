@@ -9,15 +9,24 @@ namespace TRUtil;
 
 public abstract class BaseGameData
 {
+    private readonly VersionDetector _versionDetector = new ();
+
     /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
     private const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected readonly List<string> ProcessSearchNames = [];
+    protected internal List<string> ProcessSearchNames
+    {
+        get => _versionDetector.ProcessSearchNames;
+        set => _versionDetector.ProcessSearchNames = value;
+    }
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    protected readonly Dictionary<string, uint> VersionHashes = [];
+    protected Dictionary<string, uint> VersionHashes     {
+        get => _versionDetector.VersionHashes;
+        set => _versionDetector.VersionHashes = value;
+    }
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     protected readonly MemoryWatcherList Watchers = [];
@@ -60,17 +69,42 @@ public abstract class BaseGameData
     /// <summary>Allows a specific method to be assigned for use in MemoryWatcher initialization to set watchers and offsets.</summary>
     protected SetAddressesDelegate SetAddresses;
 
-    /// <summary>Updates <see cref="ClassicGameData"/> implementation and its addresses' values.</summary>
-    /// <returns><see langword="true"/> if game data was updated, <see langword="false"/> otherwise</returns>
+    /// <summary>Sets addresses for <see cref="Watchers" /> based on <paramref name="version" />.</summary>
+    /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
+    protected abstract void SetMemoryAddresses(uint version);
+
+    /// <summary>Tests that the game has fully initialized based on expected memory readings.</summary>
+    /// <returns><see langword="true" /> if game is fully initialized, <see langword="false" /> otherwise</returns>
+    protected abstract bool IsGameInitialized();
+
+    /// <summary>
+    ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
+    ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
+    /// </summary>
+    private void PreLoadWatchers()
+    {
+        Watchers.UpdateAll(GameProcess); // Loads Current values.
+        Watchers.UpdateAll(GameProcess); // Moves Current to Old and loads new Current values.
+    }
+
+    /// <summary>Updates <see cref="BaseGameData" /> implementation and its addresses' values.</summary>
+    /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
     public bool Update()
     {
         try
         {
             if (GameProcess is null || GameProcess.HasExited)
-                return TrySetGameProcessAndVersion(SetAddresses);
+            {
+                if (!FindSupportedGame())
+                    return false;
+
+                SetMemoryAddresses(GameVersion);
+                PreLoadWatchers();
+                return IsGameInitialized();
+            }
 
             Watchers.UpdateAll(GameProcess);
-            return true;
+            return IsGameInitialized();
         }
         catch
         {
@@ -78,54 +112,34 @@ public abstract class BaseGameData
         }
     }
 
-    /// <summary>If applicable, finds a <see cref="Process"/> running an expected version of the game.</summary>
-    /// <returns><see langword="true"/> if <see cref="GameProcess"/> and <see cref="GameVersion"/> were meaningfully set, <see langword="false"/> otherwise</returns>
-    private bool TrySetGameProcessAndVersion(SetAddressesDelegate setAddresses)
+    /// <summary>If applicable, finds a <see cref="Process" /> running an expected version of the game.</summary>
+    /// <returns>
+    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="GameVersion" /> were meaningfully set,
+    ///     <see langword="false" /> otherwise
+    /// </returns>
+    private bool FindSupportedGame()
     {
-        const uint noneOrUndetectedValue = 0;
-
-        // Find game Processes.
-        var processes = ProcessSearchNames.SelectMany(Process.GetProcessesByName).ToList();
-        if (processes.Count == 0)
+        uint detectedVersion = _versionDetector.DetectVersion(out var gameProcess, out string hash);
+        if (GameVersion != detectedVersion)
         {
-            // Set Version to a value indicating no game was found.
-            if (GameVersion != noneOrUndetectedValue)
-                OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
-
-            GameVersion = noneOrUndetectedValue;
-            return false;
+            GameVersion = detectedVersion;
+            OnGameVersionChanged.Invoke(GameVersion, hash);
         }
 
-        // Try finding a match from known version hashes.
-        var hash = string.Empty;
-        var gameProcess = processes.FirstOrDefault(p =>
-            {
-                hash = p.GetMd5Hash();
-                if (!VersionHashes.TryGetValue(hash, out uint gameVersion))
-                    return false;
-
-                GameVersion = gameVersion;
-                return true;
-            }
-        );
         if (gameProcess is null)
-        {
-            // Set Version to a value indicating the game version is unknown.
-            const uint unknownValue = 0xDEADBEEF;
-            if (GameVersion != unknownValue)
-                OnGameVersionChanged.Invoke(unknownValue, hash);
-
-            GameVersion = unknownValue;
             return false;
-        }
 
-        // Set Game and do some event management.
+        SetGameProcess(gameProcess);
+        return true;
+    }
+
+    /// <summary>Sets <see cref="GameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
+    /// <param name="gameProcess">Game process</param>
+    private void SetGameProcess(Process gameProcess)
+    {
         GameProcess = gameProcess;
         GameProcess.EnableRaisingEvents = true;
-        GameProcess.Exited += (_, _) => OnGameVersionChanged.Invoke(noneOrUndetectedValue, string.Empty);
-        setAddresses(GameVersion);
-        OnGameVersionChanged.Invoke(GameVersion, hash);
-        return true;
+        GameProcess.Exited += (_, _) => OnGameVersionChanged.Invoke(VersionDetector.NoneOrUndetectedValue, string.Empty);
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
