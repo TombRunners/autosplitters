@@ -39,7 +39,8 @@ internal sealed class GameData : LaterClassicGameData
 
     #endregion
 
-    private void SetMemoryAddresses(uint version)
+    /// <inheritdoc />
+    protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((Tr5Version)version)
@@ -69,4 +70,7 @@ internal sealed class GameData : LaterClassicGameData
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
     }
+
+    /// <inheritdoc />
+    protected override bool IsGameInitialized() => true;
 }

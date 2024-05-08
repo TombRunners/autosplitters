@@ -69,7 +69,8 @@ internal class GameData : LaterClassicGameData
     /// </remarks>
     public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
 
-    private void SetMemoryAddresses(uint version)
+    /// <inheritdoc />
+    protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((Tr4Version)version)
@@ -99,6 +100,9 @@ internal class GameData : LaterClassicGameData
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
     }
+
+    /// <inheritdoc />
+    protected override bool IsGameInitialized() => true;
 
     internal ItemInfo GetItemInfoAtIndex(uint itemNumber)
     {

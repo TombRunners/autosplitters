@@ -41,7 +41,8 @@ internal sealed class GameData : ClassicGameData
     /// </remarks>
     public MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
 
-    private void SetMemoryAddresses(uint version)
+    /// <inheritdoc />
+    protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
         switch ((Tr1Version)version)
@@ -80,6 +81,9 @@ internal sealed class GameData : ClassicGameData
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
     }
+
+    /// <inheritdoc />
+    protected override bool IsGameInitialized() => true;
 
     /// <summary>Sums completed levels' times.</summary>
     /// <remarks>TR1 does not store level times accessible from memory; GameData holds the values instead.</remarks>
