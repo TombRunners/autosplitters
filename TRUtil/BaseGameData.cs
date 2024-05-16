@@ -13,18 +13,11 @@ public abstract class BaseGameData
     private const int IGTTicksPerSecond = 30;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected internal List<string> ProcessSearchNames
-    {
-        get => _versionDetector.ProcessSearchNames;
-        set => _versionDetector.ProcessSearchNames = value;
-    }
+    protected List<string> ProcessSearchNames => _versionDetector.ProcessSearchNames;
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    protected Dictionary<string, uint> VersionHashes     {
-        get => _versionDetector.VersionHashes;
-        set => _versionDetector.VersionHashes = value;
-    }
+    protected Dictionary<string, uint> VersionHashes => _versionDetector.VersionHashes;
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     protected readonly MemoryWatcherList Watchers = [];
