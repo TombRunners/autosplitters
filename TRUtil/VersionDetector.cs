@@ -11,11 +11,11 @@ public class VersionDetector()
     private const uint UnknownValue = 0xDEADBEEF;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    internal List<string> ProcessSearchNames = [];
+    internal readonly List<string> ProcessSearchNames = [];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    internal Dictionary<string, uint> VersionHashes = [];
+    internal readonly Dictionary<string, uint> VersionHashes = [];
 
     public uint DetectVersion(out Process gameProcess, out string hash)
     {
