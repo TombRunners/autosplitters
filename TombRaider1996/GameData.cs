@@ -26,7 +26,6 @@ internal sealed class GameData : ClassicGameData
         ProcessSearchNames.Add("tombub");
         // ReSharper restore StringLiteralTypo
 
-        SetAddresses += SetMemoryAddresses;
         SumLevelTimes += SumCompletedLevelTimes;
     }
 

@@ -19,8 +19,6 @@ internal class GameData : LaterClassicGameData
         VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)Tr4Version.TheTimesExclusive);
 
         ProcessSearchNames.Add("tomb4");
-
-        SetAddresses += SetMemoryAddresses;
     }
 
     /// <summary>

@@ -19,8 +19,6 @@ internal sealed class GameData : LaterClassicGameData
         ProcessSearchNames.Add("PCTomb5");
         ProcessSearchNames.Add("PCTomb5-nocd");
         // ReSharper restore StringLiteralTypo
-
-        SetAddresses += SetMemoryAddresses;
     }
 
     #region MemoryWatcherList Items
