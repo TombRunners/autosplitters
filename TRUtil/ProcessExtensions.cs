@@ -3,9 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
-// ReSharper disable CheckNamespace
-
-namespace ExtensionMethods;
+namespace TRUtil;
 
 public static class ProcessExtensions
 {
