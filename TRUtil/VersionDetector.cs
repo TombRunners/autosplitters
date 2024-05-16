@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace TRUtil;
 
-public class VersionDetector()
+public class VersionDetector
 {
     internal const uint NoneOrUndetectedValue = 0;
     private const uint UnknownValue = 0xDEADBEEF;
