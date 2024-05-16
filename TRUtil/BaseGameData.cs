@@ -53,12 +53,6 @@ public abstract class BaseGameData
 
     #endregion
 
-    /// <summary>Sets addresses based on <paramref name="version"/>.</summary>
-    /// <param name="version">Version to base addresses on; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
-    protected delegate void SetAddressesDelegate(uint version);
-
-    /// <summary>Allows a specific method to be assigned for use in MemoryWatcher initialization to set watchers and offsets.</summary>
-    protected SetAddressesDelegate SetAddresses;
 
     /// <summary>Sets addresses for <see cref="Watchers" /> based on <paramref name="version" />.</summary>
     /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>

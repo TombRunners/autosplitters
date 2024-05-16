@@ -27,7 +27,6 @@ internal sealed class GameData : ClassicGameData
 
         LevelSaveStructSize = 0x33; // All TR3 and TLA versions.
 
-        SetAddresses += SetMemoryAddresses;
         SumLevelTimes += SumCompletedLevelTimes;
     }
 
