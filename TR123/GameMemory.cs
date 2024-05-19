@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-internal static class GameMemory
+internal class GameMemory
 {
     /// <summary>Base games included within the remastered EXE.</summary>
     private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
@@ -327,22 +328,22 @@ internal static class GameMemory
     #region MemoryWatcher Definitions
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    internal static readonly MemoryWatcherList Watchers = [];
+    internal readonly MemoryWatcherList Watchers = [];
 
     /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
     /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
 
     /// <summary>
     ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
     ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
     ///     During actual loading time (asset loading, etc.), freezes.
     /// </summary>
-    internal static MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
+    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
 
     /// <summary>The game's bonus flag which marks NG(+).</summary>
     /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
-    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
         new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
             { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
@@ -351,7 +352,7 @@ internal static class GameMemory
         }.ToImmutableDictionary();
 
     /// <summary>This value is set immediately before a file read of an upcoming cutscene.</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
         new Dictionary<Game, MemoryWatcher<short>>(3)
         {
             { Game.Tr1,( MemoryWatcher<short>)Watchers?["Tr1Cine"] },
@@ -361,7 +362,7 @@ internal static class GameMemory
 
     /// <summary>Lara's current HP.</summary>
     /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-    internal static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
         new Dictionary<Game, MemoryWatcher<short>>(3)
         {
             { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
@@ -370,7 +371,7 @@ internal static class GameMemory
         }.ToImmutableDictionary();
 
     /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
         new Dictionary<Game, MemoryWatcher<short>>(3)
         {
             { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
@@ -379,7 +380,7 @@ internal static class GameMemory
         }.ToImmutableDictionary();
 
     /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
         new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
         {
             { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
@@ -392,7 +393,7 @@ internal static class GameMemory
     ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
     ///     Business.
     /// </remarks>
-    internal static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
         new Dictionary<Game, MemoryWatcher<byte>>(3)
         {
             { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
@@ -407,7 +408,7 @@ internal static class GameMemory
     ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
     ///     Otherwise, the value is 0.
     /// </remarks>
-    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
         new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
             { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
@@ -416,7 +417,7 @@ internal static class GameMemory
         }.ToImmutableDictionary();
 
     /// <summary>Gives the running IGT of the current level.</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
         new Dictionary<Game, MemoryWatcher<uint>>(3)
         {
             { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
@@ -425,7 +426,7 @@ internal static class GameMemory
         }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
         new Dictionary<Game, MemoryWatcher<uint>>(3)
         {
             { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
@@ -449,7 +450,7 @@ internal static class GameMemory
             }.ToImmutableDictionary();
 
     /// <summary>Tells if the game is currently in the title screen.</summary>
-    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
         new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
             { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
@@ -457,13 +458,14 @@ internal static class GameMemory
             { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
         }.ToImmutableDictionary();
 
-    internal static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
+    internal MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
 
     #endregion
 
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
-    /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
-    internal static void InitializeMemoryWatchers(GameVersion version)
+    /// <param name="version">Game version to base addresses on</param>
+    /// <param name="gameProcess"><see cref="Process" /> of the game</param>
+    internal void InitializeMemoryWatchers(GameVersion version, Process gameProcess)
     {
         Watchers.Clear();
 
@@ -525,12 +527,12 @@ internal static class GameMemory
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
 
-        PreLoadWatchers();
+        PreLoadWatchers(gameProcess);
     }
 
     /// <summary>Adds MemoryWatchers which are common across all games.</summary>
     /// <param name="version">Game version</param>
-    private static void AddCommonDllWatchers(GameVersion version)
+    private void AddCommonDllWatchers(GameVersion version)
     {
         foreach (var game in BaseGames)
         {
@@ -576,9 +578,9 @@ internal static class GameMemory
     ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
     ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
     /// </summary>
-    private static void PreLoadWatchers()
+    private void PreLoadWatchers(Process gameProcess)
     {
-        Watchers.UpdateAll(GameData.GameProcess); // Loads Current values.
-        Watchers.UpdateAll(GameData.GameProcess); // Moves Current to Old and loads new Current values.
+        Watchers.UpdateAll(gameProcess); // Loads Current values.
+        Watchers.UpdateAll(gameProcess); // Moves Current to Old and loads new Current values.
     }
 }
