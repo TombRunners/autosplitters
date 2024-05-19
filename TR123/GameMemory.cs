@@ -5,20 +5,18 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public static partial class GameData
+internal static class GameMemory
 {
-    private static partial class GameMemory
-    {
-        /// <summary>Base games included within the remastered EXE.</summary>
-        private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
+    /// <summary>Base games included within the remastered EXE.</summary>
+    private static readonly ImmutableList<Game> BaseGames = [Game.Tr1, Game.Tr2, Game.Tr3];
 
-        /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
-        internal static readonly ImmutableDictionary<Game, string> GameModules = new Dictionary<Game, string>(3)
-        {
-            { Game.Tr1, "tomb1.dll" },
-            { Game.Tr2, "tomb2.dll" },
-            { Game.Tr3, "tomb3.dll" },
-        }.ToImmutableDictionary();
+    /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
+    internal static readonly ImmutableDictionary<Game, string> GameModules = new Dictionary<Game, string>(3)
+    {
+        { Game.Tr1, "tomb1.dll" },
+        { Game.Tr2, "tomb2.dll" },
+        { Game.Tr3, "tomb3.dll" },
+    }.ToImmutableDictionary();
 
         /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
         internal static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
@@ -326,114 +324,114 @@ public static partial class GameData
                 },
             }.ToImmutableDictionary();
 
-        #region MemoryWatcher Definitions
+    #region MemoryWatcher Definitions
 
-        /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-        internal static readonly MemoryWatcherList Watchers = [];
+    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
+    internal static readonly MemoryWatcherList Watchers = [];
 
-        /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
-        /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-        internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
+    /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
+    /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
+    internal static MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
 
-        /// <summary>
-        ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
-        ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
-        ///     During actual loading time (asset loading, etc.), freezes.
-        /// </summary>
-        internal static MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
+    /// <summary>
+    ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
+    ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
+    ///     During actual loading time (asset loading, etc.), freezes.
+    /// </summary>
+    internal static MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
 
-        /// <summary>The game's bonus flag which marks NG(+).</summary>
-        /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
-        internal static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
-            new Dictionary<Game, MemoryWatcher<bool>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
-                { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
-                { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
-            }.ToImmutableDictionary();
+    /// <summary>The game's bonus flag which marks NG(+).</summary>
+    /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
+    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>This value is set immediately before a file read of an upcoming cutscene.</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
-            new Dictionary<Game, MemoryWatcher<short>>(3)
-            {
-                { Game.Tr1,( MemoryWatcher<short>)Watchers?["Tr1Cine"] },
-                { Game.Tr2,( MemoryWatcher<short>)Watchers?["Tr2Cine"] },
-                { Game.Tr3,( MemoryWatcher<short>)Watchers?["Tr3Cine"] },
-            }.ToImmutableDictionary();
+    /// <summary>This value is set immediately before a file read of an upcoming cutscene.</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
+        new Dictionary<Game, MemoryWatcher<short>>(3)
+        {
+            { Game.Tr1,( MemoryWatcher<short>)Watchers?["Tr1Cine"] },
+            { Game.Tr2,( MemoryWatcher<short>)Watchers?["Tr2Cine"] },
+            { Game.Tr3,( MemoryWatcher<short>)Watchers?["Tr3Cine"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Lara's current HP.</summary>
-        /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-        internal static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
-            new Dictionary<Game, MemoryWatcher<short>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
-                { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
-                { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
-            }.ToImmutableDictionary();
+    /// <summary>Lara's current HP.</summary>
+    /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
+    internal static ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
+        new Dictionary<Game, MemoryWatcher<short>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
+            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
+            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
-            new Dictionary<Game, MemoryWatcher<short>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
-                { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
-                { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
-            }.ToImmutableDictionary();
+    /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
+        new Dictionary<Game, MemoryWatcher<short>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
+            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
+            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
-            new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
-                { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
-                { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
-            }.ToImmutableDictionary();
+    /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
+        new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
+            { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
+            { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Gives the value of the active level.</summary>
-        /// <remarks>
-        ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
-        ///     Business.
-        /// </remarks>
-        internal static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
-            new Dictionary<Game, MemoryWatcher<byte>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
-                { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
-                { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
-            }.ToImmutableDictionary();
+    /// <summary>Gives the value of the active level.</summary>
+    /// <remarks>
+    ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
+    ///     Business.
+    /// </remarks>
+    internal static ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
+        new Dictionary<Game, MemoryWatcher<byte>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
+            { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
+            { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Indicates if the current level is finished.</summary>
-        /// <remarks>
-        ///     1 while an end-level stats screen is active.
-        ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
-        ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
-        ///     Otherwise, the value is 0.
-        /// </remarks>
-        internal static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
-            new Dictionary<Game, MemoryWatcher<bool>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
-                { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
-                { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
-            }.ToImmutableDictionary();
+    /// <summary>Indicates if the current level is finished.</summary>
+    /// <remarks>
+    ///     1 while an end-level stats screen is active.
+    ///     Remains 1 through FMVs that immediately follow a stats screen, i.e., until the next level starts.
+    ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
+    ///     Otherwise, the value is 0.
+    /// </remarks>
+    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Gives the running IGT of the current level.</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
-            new Dictionary<Game, MemoryWatcher<uint>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
-                { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
-                { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
-            }.ToImmutableDictionary();
+    /// <summary>Gives the running IGT of the current level.</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
+        new Dictionary<Game, MemoryWatcher<uint>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
+            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
+            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
+        }.ToImmutableDictionary();
 
-        /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
-            new Dictionary<Game, MemoryWatcher<uint>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
-                { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LoadFade"] },
-                { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
-            }.ToImmutableDictionary();
+    /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
+        new Dictionary<Game, MemoryWatcher<uint>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
+            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LoadFade"] },
+            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
+        }.ToImmutableDictionary();
 
         /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
         /// <remarks>
@@ -450,66 +448,66 @@ public static partial class GameData
                 { Game.Tr3, (MemoryWatcher<OverlayFlag>)Watchers?["Tr3OverlayFlag"] },
             }.ToImmutableDictionary();
 
-        /// <summary>Tells if the game is currently in the title screen.</summary>
-        internal static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
-            new Dictionary<Game, MemoryWatcher<bool>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
-                { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2TitleLoaded"] },
-                { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
-            }.ToImmutableDictionary();
-
-        internal static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
-
-        #endregion
-
-        /// <summary>Sets addresses based on <paramref name="version" />.</summary>
-        /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
-        internal static void InitializeMemoryWatchers(GameVersion version)
+    /// <summary>Tells if the game is currently in the title screen.</summary>
+    internal static ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
+        new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
-            Watchers.Clear();
+            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
+            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2TitleLoaded"] },
+            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
+        }.ToImmutableDictionary();
 
-            switch (version)
-            {
-                case GameVersion.PublicV10:
-                    // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x3B9C44)) { Name = "GlobalFrameIndex" });
-                    // One-offs from DLLs
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
-                    // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV10);
-                    break;
+    internal static MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
 
-                case GameVersion.PublicV101:
-                    // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2EAC08)) { Name = "GlobalFrameIndex" });
-                    // One-offs from DLLs
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
-                    // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV101);
-                    break;
+    #endregion
 
-                case GameVersion.PublicV101Patch1:
-                    // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D0C)) { Name = "GlobalFrameIndex" });
-                    // One-offs from DLLs
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
-                    // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV101Patch1);
-                    break;
+    /// <summary>Sets addresses based on <paramref name="version" />.</summary>
+    /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
+    internal static void InitializeMemoryWatchers(GameVersion version)
+    {
+        Watchers.Clear();
 
-                case GameVersion.PublicV101Patch2:
-                    // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D34)) { Name = "GlobalFrameIndex" });
-                    // One-offs from DLLs
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
-                    // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV101Patch2);
-                    break;
+        switch (version)
+        {
+            case GameVersion.PublicV10:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x3B9C44)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV10);
+                break;
+
+            case GameVersion.PublicV101:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xD6B68)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2EAC08)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD4A54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV101);
+                break;
+
+            case GameVersion.PublicV101Patch1:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D0C)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV101Patch1);
+                break;
+
+            case GameVersion.PublicV101Patch2:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D34)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV101Patch2);
+                break;
 
                 case GameVersion.PublicV101Patch3:
                     // Base game EXE (tomb123.exe)
@@ -527,61 +525,60 @@ public static partial class GameData
                     throw new ArgumentOutOfRangeException(nameof(version), version, null);
             }
 
-            PreLoadWatchers();
-        }
+        PreLoadWatchers();
+    }
 
-        /// <summary>Adds MemoryWatchers which are common across all games.</summary>
-        /// <param name="version">Game version</param>
-        private static void AddCommonDllWatchers(GameVersion version)
+    /// <summary>Adds MemoryWatchers which are common across all games.</summary>
+    /// <param name="version">Game version</param>
+    private static void AddCommonDllWatchers(GameVersion version)
+    {
+        foreach (var game in BaseGames)
         {
-            foreach (var game in BaseGames)
-            {
-                string moduleName = GameModules[game];
-                var addresses = GameVersionAddresses[version][game];
+            string moduleName = GameModules[game];
+            var addresses = GameVersionAddresses[version][game];
 
-                int bonusFlagOffset = addresses.BonusFlag;
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, bonusFlagOffset)) { Name = $"{game}BonusFlag" });
+            int bonusFlagOffset = addresses.BonusFlag;
+            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, bonusFlagOffset)) { Name = $"{game}BonusFlag" });
 
-                int cineOffset = addresses.Cine;
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, cineOffset)) { Name = $"{game}Cine" });
+            int cineOffset = addresses.Cine;
+            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, cineOffset)) { Name = $"{game}Cine" });
 
-                int healthOffset = addresses.Health;
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, healthOffset)) { Name = $"{game}Health" });
+            int healthOffset = addresses.Health;
+            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, healthOffset)) { Name = $"{game}Health" });
 
-                int inventoryChosenOffset = addresses.InventoryChosen;
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
+            int inventoryChosenOffset = addresses.InventoryChosen;
+            Watchers.Add(new MemoryWatcher<short>(new DeepPointer(moduleName, inventoryChosenOffset)) { Name = $"{game}InventoryChosen" });
 
-                int inventoryModeOffset = addresses.InventoryMode;
-                Watchers.Add(new MemoryWatcher<InventoryMode>(new DeepPointer(moduleName, inventoryModeOffset)) { Name = $"{game}InventoryMode" });
+            int inventoryModeOffset = addresses.InventoryMode;
+            Watchers.Add(new MemoryWatcher<InventoryMode>(new DeepPointer(moduleName, inventoryModeOffset)) { Name = $"{game}InventoryMode" });
 
-                int levelOffset = addresses.Level;
-                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });
+            int levelOffset = addresses.Level;
+            Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(moduleName, levelOffset)) { Name = $"{game}Level" });
 
-                int levelCompleteOffset = addresses.LevelComplete;
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, levelCompleteOffset)) { Name = $"{game}LevelComplete" });
+            int levelCompleteOffset = addresses.LevelComplete;
+            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, levelCompleteOffset)) { Name = $"{game}LevelComplete" });
 
-                int levelIgtOffset = addresses.LevelIgt;
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, levelIgtOffset)) { Name = $"{game}LevelIgt" });
+            int levelIgtOffset = addresses.LevelIgt;
+            Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, levelIgtOffset)) { Name = $"{game}LevelIgt" });
 
-                int loadFadeOffset = addresses.LoadFade;
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, loadFadeOffset)) { Name = $"{game}LoadFade" });
+            int loadFadeOffset = addresses.LoadFade;
+            Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(moduleName, loadFadeOffset)) { Name = $"{game}LoadFade" });
 
-                int overlayFlagOffset = addresses.OverlayFlag;
-                Watchers.Add(new MemoryWatcher<OverlayFlag>(new DeepPointer(moduleName, overlayFlagOffset)) { Name = $"{game}OverlayFlag" });
+            int overlayFlagOffset = addresses.OverlayFlag;
+            Watchers.Add(new MemoryWatcher<OverlayFlag>(new DeepPointer(moduleName, overlayFlagOffset)) { Name = $"{game}OverlayFlag" });
 
-                int titleLoadedOffset = addresses.TitleLoaded;
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });
-            }
+            int titleLoadedOffset = addresses.TitleLoaded;
+            Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, titleLoadedOffset)) { Name = $"{game}TitleLoaded" });
         }
+    }
 
-        /// <summary>
-        ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
-        ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
-        /// </summary>
-        private static void PreLoadWatchers()
-        {
-            Watchers.UpdateAll(GameProcess); // Loads Current values.
-            Watchers.UpdateAll(GameProcess); // Moves Current to Old and loads new Current values.
-        }
+    /// <summary>
+    ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
+    ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
+    /// </summary>
+    private static void PreLoadWatchers()
+    {
+        Watchers.UpdateAll(GameData.GameProcess); // Loads Current values.
+        Watchers.UpdateAll(GameData.GameProcess); // Moves Current to Old and loads new Current values.
     }
 }

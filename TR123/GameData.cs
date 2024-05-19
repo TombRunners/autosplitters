@@ -7,10 +7,8 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public static partial class GameData
+public static class GameData
 {
-    private static partial class GameMemory;
-
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IgtTicksPerSecond = 30;
 
