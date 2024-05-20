@@ -1,7 +1,7 @@
 ﻿namespace TR3;
 
 /// <summary>The supported game versions.</summary>
-internal enum GameVersion
+internal enum Tr3Version
 {
     None                        = 0,
     Int                         = 1, // From Steam

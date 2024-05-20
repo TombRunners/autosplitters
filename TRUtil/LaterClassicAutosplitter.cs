@@ -3,32 +3,33 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitter
+public abstract class LaterClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
+    where TData : LaterClassicGameData
 {
     protected internal LaterClassicComponentSettings Settings = new(version);
-    public LaterClassicGameData Data;
+    public readonly TData Data = data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
     /// <remarks>
     ///     <see cref="_ticksAtStartOfRun"/> is used in <see cref="GetGameTime(LiveSplitState)"/> to subtract from <see cref="LaterClassicGameData.GameTimer"/>.
     ///     The subtraction is necessary for ILs/section runs starting on any level besides the first to get an accurate IGT from the start of the run.
     /// </remarks>
-    private static ulong _ticksAtStartOfRun;
+    private ulong _ticksAtStartOfRun;
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
         // Stop IGT when a deathrun is complete.
-        if (Settings.Deathrun && BaseGameData.Health.Current <= 0)
+        if (Settings.Deathrun && Data.Health.Current <= 0)
             return null;
 
-        if (!LaterClassicGameData.GameTimer.Changed)
+        if (!Data.GameTimer.Changed)
             return null;
 
         // Prevent underflow issues after loading into a different "ticks" timeline.
-        if (_ticksAtStartOfRun > LaterClassicGameData.GameTimer.Current)
+        if (_ticksAtStartOfRun > Data.GameTimer.Current)
             return null;
 
-        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(LaterClassicGameData.GameTimer.Current - _ticksAtStartOfRun));
+        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(Data.GameTimer.Current - _ticksAtStartOfRun));
     }
 
     public override bool ShouldReset(LiveSplitState state)
@@ -36,17 +37,17 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
         if (!Settings.EnableAutoReset)
             return false;
 
-        bool loadingIntoMainMenu = LaterClassicGameData.GfLevelComplete.Current == 0 && BaseGameData.Level.Current == 0 && LaterClassicGameData.Loading.Current;
+        bool loadingIntoMainMenu = Data.GfLevelComplete.Current == 0 && Data.Level.Current == 0 && Data.Loading.Current;
         // Checking the old level number ensures that someone re-opening the game (perhaps after a crash or Alt+F4) does not Reset.
         // This works because when loading non-test/demo versions of the games, the level variable initializes as 0 before the main menu load is called.
-        bool comingFromALevel = BaseGameData.Level.Old != 0;
+        bool comingFromALevel = Data.Level.Old != 0;
         return loadingIntoMainMenu && comingFromALevel;
     }
 
     public override bool ShouldStart(LiveSplitState state)
     {
-        uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
-        uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
+        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
 
         bool justFinishedLoading = currentGfLevelComplete == 0 && oldGfLevelComplete != 0;
         if (!justFinishedLoading)
@@ -58,7 +59,7 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
 
     // ReSharper disable VirtualMemberNeverOverridden.Global
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
-    public virtual void OnStart() => _ticksAtStartOfRun = BaseGameData.Level.Current == 1 ? 0 : LaterClassicGameData.GameTimer.Old;
+    public virtual void OnStart() => _ticksAtStartOfRun = Data.Level.Current == 1 ? 0 : Data.GameTimer.Old;
 
     /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
     public virtual void OnSplit() { }
@@ -69,8 +70,6 @@ public abstract class LaterClassicAutosplitter(Version version) : BaseAutosplitt
 
     public override void Dispose()
     {
-        Data.OnAslComponentChanged -= Settings.SetAslWarningLabelVisibility;
-        Data.OnGameFound -= Settings.SetGameVersion;
-        Data = null;
+        Data.OnGameVersionChanged -= Settings.SetGameVersion;
     }
 }

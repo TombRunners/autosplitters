@@ -21,7 +21,7 @@ public class ClassicComponentSettings : UserControl
     public ClassicComponentSettings(Version version)
     {
         InitializeComponent();
-        AutosplitterVersionLabel.Text = $"Autosplitter Version: {version.ToString(3)}";
+        AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
     }
 
     private void InitializeComponent()

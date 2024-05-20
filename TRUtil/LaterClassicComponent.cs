@@ -16,21 +16,30 @@ namespace TRUtil;
 ///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
 ///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
 /// </remarks>
-public abstract class LaterClassicComponent : AutoSplitComponent
+public abstract class LaterClassicComponent<TData> : AutoSplitComponent
+    where TData : LaterClassicGameData
 {
-    private readonly LaterClassicAutosplitter _splitter;
+    private readonly LaterClassicAutosplitter<TData> _splitter;
     private readonly LiveSplitState _state;
 
     private bool? _aslComponentPresent;
     private int _layoutComponentCount;
 
+    /// <summary>Allows creation of an event when an ASL Component was found in the LiveSplit layout.</summary>
+    private delegate void AslComponentChangedDelegate(bool aslComponentIsPresent);
+
+    /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
+    private AslComponentChangedDelegate _onAslComponentChanged;
+
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart();
     private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit();
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
 
-    protected LaterClassicComponent(LaterClassicAutosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
+    protected LaterClassicComponent(LaterClassicAutosplitter<TData> autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
         _splitter = autosplitter;
+        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+
         _state = state;
         _state.OnSplit += StateOnSplit;
         _state.OnStart += StateOnStart;
@@ -84,18 +93,10 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
     }
 
-    public override void Dispose()
-    {
-        _state.OnSplit -= StateOnSplit;
-        _state.OnStart -= StateOnStart;
-        _state.OnUndoSplit -= StateOnUndoSplit;
-        _splitter?.Dispose();
-    }
-
     public override string ComponentName => "Later Classic Tomb Raider Component";
 
     /// <summary>
-    ///     Adds <see cref="LaterClassicGameData"/> and <see cref="LaterClassicAutosplitter"/> management to <see cref="AutoSplitComponent.Update"/>.
+    ///     Adds <see cref="LaterClassicGameData"/> and <see cref="LaterClassicAutosplitter{TData}"/> management to <see cref="AutoSplitComponent.Update"/>.
     /// </summary>
     /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
     /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -103,7 +104,7 @@ public abstract class LaterClassicComponent : AutoSplitComponent
     /// <param name="height">Height passed by LiveSplit</param>
     /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
     /// <remarks>
-    ///     This override allows <see cref="LaterClassicAutosplitter"/> to use <see cref="ClassicGameData"/> in its logic.
+    ///     This override allows <see cref="LaterClassicAutosplitter{TData}"/> to use <see cref="ClassicGameData"/> in its logic.
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {
@@ -111,20 +112,29 @@ public abstract class LaterClassicComponent : AutoSplitComponent
         if (_aslComponentPresent is null || layoutComponentsCount != _layoutComponentCount)
         {
             _layoutComponentCount = layoutComponentsCount;
-            LayoutUpdates(state);
+            HandleLayoutUpdates(state);
         }
 
         if (_splitter.Data.Update())
             base.Update(invalidator, state, width, height, mode);
     }
 
-    private void LayoutUpdates(LiveSplitState state)
+    private void HandleLayoutUpdates(LiveSplitState state)
     {
         bool aslInLayout = state.Layout.LayoutComponents.Any(static comp => comp.Component is ASLComponent);
         if (_aslComponentPresent == aslInLayout)
             return;
 
         _aslComponentPresent = aslInLayout;
-        _splitter.Data.OnAslComponentChanged.Invoke(aslInLayout);
+        _onAslComponentChanged.Invoke(aslInLayout);
+    }
+
+    public override void Dispose()
+    {
+        _state.OnSplit -= StateOnSplit;
+        _state.OnStart -= StateOnStart;
+        _state.OnUndoSplit -= StateOnUndoSplit;
+        _onAslComponentChanged += _splitter.Settings.SetAslWarningLabelVisibility;
+        _splitter?.Dispose();
     }
 }

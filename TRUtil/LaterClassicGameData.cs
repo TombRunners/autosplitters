@@ -13,13 +13,13 @@ public abstract class LaterClassicGameData : BaseGameData
     ///     The values 10 and 29 do not correspond to a level and will instead load the following real level.
     ///     The value 39 is coded to start the end-game credits.
     /// </remarks>
-    public static MemoryWatcher<uint> GfLevelComplete => (MemoryWatcher<uint>)Watchers?["GfLevelComplete"];
+    public MemoryWatcher<uint> GfLevelComplete => (MemoryWatcher<uint>)Watchers?["GfLevelComplete"];
 
     /// <summary>Represents a "global" timer tracking ticks since New Game. It is saved/reloaded. </summary>
-    public static MemoryWatcher<uint> GameTimer => (MemoryWatcher<uint>)Watchers?["GameTimer"];
+    public MemoryWatcher<uint> GameTimer => (MemoryWatcher<uint>)Watchers?["GameTimer"];
 
     /// <summary>Indicates if a loading screen is active.</summary>
-    public static MemoryWatcher<bool> Loading => (MemoryWatcher<bool>)Watchers?["Loading"];
+    public MemoryWatcher<bool> Loading => (MemoryWatcher<bool>)Watchers?["Loading"];
 
     #endregion
 }
