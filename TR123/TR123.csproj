@@ -104,9 +104,11 @@
     <None Include="Hashes\gog_v1.0_hashes.csv" />
     <None Include="Hashes\gog_v1.01_hashes.csv" />
     <None Include="Hashes\gog_v1.01Patch1_hashes.csv" />
-    <None Include="Hashes\gog_v1.01Patch2_hashes.csv" />
+	<None Include="Hashes\gog_v1.01Patch2_hashes.csv" />
+    <None Include="Hashes\gog_v1.01Patch3_hashes.csv" />
     <None Include="Hashes\steam_13430979_hashes.csv" />
     <None Include="Hashes\steam_13946608_hashes.csv" />
+    <None Include="Hashes\steam_14397396_hashes.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
