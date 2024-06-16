@@ -264,6 +264,66 @@ public static partial class GameData
                         },
                     }
                 },
+                {
+                    GameVersion.PublicV101Patch3,
+                    new Dictionary<Game, GameAddresses>
+                    {
+                        {
+                            Game.Tr1,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x373E1EA, // LevelIgt + 0x1A
+                                Cine = 0x366AC38,
+                                FirstLevelTime = 0x373DC10,
+                                Health = 0xF7C88,
+                                InventoryChosen = 0xE1F88,
+                                InventoryMode = 0xE2C58, // InventoryChosen + 0xCD0
+                                Level = 0x373E1E8, // LevelIgt + 0x18
+                                LevelComplete = 0xF7560, // TitleLoaded + 0x8
+                                LevelIgt = 0x373E1D0,
+                                LoadFade = 0x297764,
+                                OverlayFlag = 0xDCA78,
+                                TitleLoaded = 0xF7558,
+                            }
+                        },
+                        {
+                            Game.Tr2,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x3775446, // LevelIgt + 0x1A
+                                Cine = 0x3677E28,
+                                FirstLevelTime = 0x3774E70,
+                                Health = 0x12C8A8,
+                                InventoryChosen = 0x110024,
+                                InventoryMode = 0x110084, // InventoryChosen + 0x60
+                                Level = 0x12E9E8,
+                                LevelComplete = 0x12EF44,
+                                LevelIgt = 0x377542C,
+                                LoadFade = 0x2CF274,
+                                OverlayFlag = 0x10FEEC,
+                                TitleLoaded = 0x12EAA4,
+                            }
+                        },
+                        {
+                            Game.Tr3,
+                            new GameAddresses
+                            {
+                                BonusFlag = 0x37D95B4, // LevelIgt + 0x2C
+                                Cine = 0x36D5B60,
+                                FirstLevelTime = 0x37D8DA4,
+                                Health = 0x187D38,
+                                InventoryChosen = 0x164224,
+                                InventoryMode = 0x164254, // InventoryChosen + 0x30
+                                Level = 0x18A0EC,
+                                LevelComplete = 0x18A60C,
+                                LevelIgt = 0x37D9588,
+                                LoadFade = 0x32B1F0,
+                                OverlayFlag = 0x163BDC,
+                                TitleLoaded = 0x18A1B8,
+                            }
+                        },
+                    }
+                },
             }.ToImmutableDictionary();
 
         #region MemoryWatcher Definitions
@@ -377,9 +437,9 @@ public static partial class GameData
 
         /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
         /// <remarks>
-        ///    In the Save Game shortcut menu (F9), it's -2.
-        ///    In the Load Game shortcut menu (F5), it's -1. (If F9 is used when no saves are present, the game defaults to Save Game, but this value is still -1.)
-        ///    In inventory, it's 0.
+        ///    In the Save Game shortcut menu (F5), it's -2.
+        ///    In the Load Game shortcut menu (F9), it's -1. (If F9 is used when no saves are present, the game defaults to Save Game, but this value is still -1.)
+        ///    In the inventory, it's 0.
         ///    In any gameplay, FMVs, cutscenes, stats screens, loading screens, a crystal save menu, a death menu, credits, & title screen, it's 1.
         /// </remarks>
         internal static ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers =>
@@ -451,6 +511,15 @@ public static partial class GameData
                     AddCommonDllWatchers(GameVersion.PublicV101Patch2);
                     break;
 
+                case GameVersion.PublicV101Patch3:
+                    // Base game EXE (tomb123.exe)
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3DB4)) { Name = "GlobalFrameIndex" });
+                    // One-offs from DLLs
+                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
+                    // Common items for all game's DLLs
+                    AddCommonDllWatchers(GameVersion.PublicV101Patch3);
+                    break;
                 case GameVersion.None:
                 case GameVersion.Unknown:
                 case GameVersion.EgsDebug:
