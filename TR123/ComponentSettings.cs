@@ -197,7 +197,8 @@ public sealed class ComponentSettings : UserControl
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
         const string publicV101Patch1 = "GOG v1.01 Patch 1 / Steam 13617493";
-        const string publicV102 = "GOG v1.01 Patch 2 / Steam 13946608";
+        const string publicV101Patch2 = "GOG v1.01 Patch 2 / Steam 13946608";
+        const string publicV101Patch3 = "GOG v1.01 Patch 3 / Steam 14397396";
 
         string versionText = version switch
         {
@@ -207,7 +208,8 @@ public sealed class ComponentSettings : UserControl
             GameVersion.PublicV10  => publicV10,
             GameVersion.PublicV101 => publicV101,
             GameVersion.PublicV101Patch1 => publicV101Patch1,
-            GameVersion.PublicV101Patch2 => publicV102,
+            GameVersion.PublicV101Patch2 => publicV101Patch2,
+            GameVersion.PublicV101Patch3 => publicV101Patch3,
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
         };
 

@@ -19,6 +19,7 @@ internal static class VersionDetector
         { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), GameVersion.PublicV101 },
         { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), GameVersion.PublicV101Patch1 },
         { "224D11BEBEC79A0B579C0001C66E64CF".ToLowerInvariant(), GameVersion.PublicV101Patch2 },
+        { "02D456CC7FEAAC61819BE9A05228D2B3".ToLowerInvariant(), GameVersion.PublicV101Patch3 },
     }.ToImmutableDictionary();
 
     public static GameVersion DetectVersion(out Process gameProcess, out string hash)
