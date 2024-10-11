@@ -434,20 +434,20 @@ internal class GameMemory
             { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
         }.ToImmutableDictionary();
 
-        /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
-        /// <remarks>
-        ///    In the Save Game shortcut menu (F5), it's -2.
-        ///    In the Load Game shortcut menu (F9), it's -1. (If F9 is used when no saves are present, the game defaults to Save Game, but this value is still -1.)
-        ///    In the inventory, it's 0.
-        ///    In any gameplay, FMVs, cutscenes, stats screens, loading screens, a crystal save menu, a death menu, credits, & title screen, it's 1.
-        /// </remarks>
-        internal static ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers =>
-            new Dictionary<Game, MemoryWatcher<OverlayFlag>>(3)
-            {
-                { Game.Tr1, (MemoryWatcher<OverlayFlag>)Watchers?["Tr1OverlayFlag"] },
-                { Game.Tr2, (MemoryWatcher<OverlayFlag>)Watchers?["Tr2OverlayFlag"] },
-                { Game.Tr3, (MemoryWatcher<OverlayFlag>)Watchers?["Tr3OverlayFlag"] },
-            }.ToImmutableDictionary();
+    /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
+    /// <remarks>
+    ///    In the Save Game shortcut menu (F5), it's -2.
+    ///    In the Load Game shortcut menu (F9), it's -1. (If F9 is used when no saves are present, the game defaults to Save Game, but this value is still -1.)
+    ///    In the inventory, it's 0.
+    ///    In any gameplay, FMVs, cutscenes, stats screens, loading screens, a crystal save menu, a death menu, credits, & title screen, it's 1.
+    /// </remarks>
+    internal ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers =>
+        new Dictionary<Game, MemoryWatcher<OverlayFlag>>(3)
+        {
+            { Game.Tr1, (MemoryWatcher<OverlayFlag>)Watchers?["Tr1OverlayFlag"] },
+            { Game.Tr2, (MemoryWatcher<OverlayFlag>)Watchers?["Tr2OverlayFlag"] },
+            { Game.Tr3, (MemoryWatcher<OverlayFlag>)Watchers?["Tr3OverlayFlag"] },
+        }.ToImmutableDictionary();
 
     /// <summary>Tells if the game is currently in the title screen.</summary>
     internal ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
