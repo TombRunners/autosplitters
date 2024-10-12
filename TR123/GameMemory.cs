@@ -19,311 +19,311 @@ internal class GameMemory
         { Game.Tr3, "tomb3.dll" },
     }.ToImmutableDictionary();
 
-        /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
-        internal static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
-            new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
+    /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
+    internal static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
+        new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
+        {
             {
+                GameVersion.PublicV10,
+                new Dictionary<Game, GameAddresses>
                 {
-                    GameVersion.PublicV10,
-                    new Dictionary<Game, GameAddresses>
                     {
+                        Game.Tr1,
+                        new GameAddresses
                         {
-                            Game.Tr1,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
-                                Cine = 0x35F86F0,
-                                FirstLevelTime = 0x36CB610,
-                                Health = 0xEAA30,
-                                InventoryChosen = 0xD4F48,
-                                InventoryMode = 0xD5C18, // InventoryChosen + 0xCD0
-                                Level = 0x36CBBE8,
-                                LevelComplete = 0xEA340,
-                                LevelIgt = 0x36CBBD0,
-                                LoadFade = 0x244BC4,
-                                OverlayFlag = 0xCFA78,
-                                TitleLoaded = 0xEA338,
-                            }
-                        },
+                            BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
+                            Cine = 0x35F86F0,
+                            FirstLevelTime = 0x36CB610,
+                            Health = 0xEAA30,
+                            InventoryChosen = 0xD4F48,
+                            InventoryMode = 0xD5C18, // InventoryChosen + 0xCD0
+                            Level = 0x36CBBE8,
+                            LevelComplete = 0xEA340,
+                            LevelIgt = 0x36CBBD0,
+                            LoadFade = 0x244BC4,
+                            OverlayFlag = 0xCFA78,
+                            TitleLoaded = 0xEA338,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
                         {
-                            Game.Tr2,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
-                                Cine = 0x3606928,
-                                FirstLevelTime = 0x36FF870,
-                                Health = 0x11C780,
-                                InventoryChosen = 0x100024,
-                                InventoryMode = 0x100084, // InventoryChosen + 0x60
-                                Level = 0x11E7C8,
-                                LevelComplete = 0x11ECE4,
-                                LevelIgt = 0x36FFE2C,
-                                LoadFade = 0x2796F4,
-                                OverlayFlag = 0xFFEEC,
-                                TitleLoaded = 0x11E884,
-                            }
-                        },
+                            BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
+                            Cine = 0x3606928,
+                            FirstLevelTime = 0x36FF870,
+                            Health = 0x11C780,
+                            InventoryChosen = 0x100024,
+                            InventoryMode = 0x100084, // InventoryChosen + 0x60
+                            Level = 0x11E7C8,
+                            LevelComplete = 0x11ECE4,
+                            LevelIgt = 0x36FFE2C,
+                            LoadFade = 0x2796F4,
+                            OverlayFlag = 0xFFEEC,
+                            TitleLoaded = 0x11E884,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
                         {
-                            Game.Tr3,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x3764994, // LevelIgt + 0x2C
-                                Cine = 0x3666000,
-                                FirstLevelTime = 0x3764184,
-                                Health = 0x179C28,
-                                InventoryChosen = 0x156224,
-                                InventoryMode = 0x156254, // InventoryChosen + 0x30
-                                Level = 0x17BECC,
-                                LevelComplete = 0x17C3AC,
-                                LevelIgt = 0x3764968,
-                                LoadFade = 0x2D7650,
-                                OverlayFlag = 0x155BDC,
-                                TitleLoaded = 0x17BF98,
-                            }
-                        },
-                    }
-                },
+                            BonusFlag = 0x3764994, // LevelIgt + 0x2C
+                            Cine = 0x3666000,
+                            FirstLevelTime = 0x3764184,
+                            Health = 0x179C28,
+                            InventoryChosen = 0x156224,
+                            InventoryMode = 0x156254, // InventoryChosen + 0x30
+                            Level = 0x17BECC,
+                            LevelComplete = 0x17C3AC,
+                            LevelIgt = 0x3764968,
+                            LoadFade = 0x2D7650,
+                            OverlayFlag = 0x155BDC,
+                            TitleLoaded = 0x17BF98,
+                        }
+                    },
+                }
+            },
+            {
+                GameVersion.PublicV101,
+                new Dictionary<Game, GameAddresses>
                 {
-                    GameVersion.PublicV101,
-                    new Dictionary<Game, GameAddresses>
                     {
+                        Game.Tr1,
+                        new GameAddresses
                         {
-                            Game.Tr1,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
-                                Cine = 0x364B6F0,
-                                FirstLevelTime = 0x371E610,
-                                Health = 0xEFA18,
-                                InventoryChosen = 0xD9F48,
-                                InventoryMode = 0xDAC18, // InventoryChosen + 0xCD0
-                                Level = 0x371EBE8,
-                                LevelComplete = 0xEF340,
-                                LevelIgt = 0x371EBD0,
-                                LoadFade = 0x2619CE0,
-                                OverlayFlag = 0xD4A78,
-                                TitleLoaded = 0xEF338,
-                            }
-                        },
+                            BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
+                            Cine = 0x364B6F0,
+                            FirstLevelTime = 0x371E610,
+                            Health = 0xEFA18,
+                            InventoryChosen = 0xD9F48,
+                            InventoryMode = 0xDAC18, // InventoryChosen + 0xCD0
+                            Level = 0x371EBE8,
+                            LevelComplete = 0xEF340,
+                            LevelIgt = 0x371EBD0,
+                            LoadFade = 0x2619CE0,
+                            OverlayFlag = 0xD4A78,
+                            TitleLoaded = 0xEF338,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
                         {
-                            Game.Tr2,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x3753E26, // LevelIgt + 0x1A
-                                Cine = 0x365A908,
-                                FirstLevelTime = 0x3753850,
-                                Health = 0x122780,
-                                InventoryChosen = 0x106024,
-                                InventoryMode = 0x106084, // InventoryChosen + 0x60
-                                Level = 0x1247C8,
-                                LevelComplete = 0x124CE4,
-                                LevelIgt = 0x3753E0C,
-                                LoadFade = 0x2BF6D4,
-                                OverlayFlag = 0x105EEC,
-                                TitleLoaded = 0x124884,
-                            }
-                        },
+                            BonusFlag = 0x3753E26, // LevelIgt + 0x1A
+                            Cine = 0x365A908,
+                            FirstLevelTime = 0x3753850,
+                            Health = 0x122780,
+                            InventoryChosen = 0x106024,
+                            InventoryMode = 0x106084, // InventoryChosen + 0x60
+                            Level = 0x1247C8,
+                            LevelComplete = 0x124CE4,
+                            LevelIgt = 0x3753E0C,
+                            LoadFade = 0x2BF6D4,
+                            OverlayFlag = 0x105EEC,
+                            TitleLoaded = 0x124884,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
                         {
-                            Game.Tr3,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x37B7974, // LevelIgt + 0x2C
-                                Cine = 0x36B8FE0,
-                                FirstLevelTime = 0x37B7164,
-                                Health = 0x17EC28,
-                                InventoryChosen = 0x15B224,
-                                InventoryMode = 0x15B254, // InventoryChosen + 0x30
-                                Level = 0x180ECC,
-                                LevelComplete = 0x1813AC,
-                                LevelIgt = 0x37B7948,
-                                LoadFade = 0x31C630,
-                                OverlayFlag = 0x15ABDC,
-                                TitleLoaded = 0x180F98,
-                            }
-                        },
-                    }
-                },
+                            BonusFlag = 0x37B7974, // LevelIgt + 0x2C
+                            Cine = 0x36B8FE0,
+                            FirstLevelTime = 0x37B7164,
+                            Health = 0x17EC28,
+                            InventoryChosen = 0x15B224,
+                            InventoryMode = 0x15B254, // InventoryChosen + 0x30
+                            Level = 0x180ECC,
+                            LevelComplete = 0x1813AC,
+                            LevelIgt = 0x37B7948,
+                            LoadFade = 0x31C630,
+                            OverlayFlag = 0x15ABDC,
+                            TitleLoaded = 0x180F98,
+                        }
+                    },
+                }
+            },
+            {
+                GameVersion.PublicV101Patch1,
+                new Dictionary<Game, GameAddresses>
                 {
-                    GameVersion.PublicV101Patch1,
-                    new Dictionary<Game, GameAddresses>
                     {
+                        Game.Tr1,
+                        new GameAddresses
                         {
-                            Game.Tr1,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x372978A, // LevelIgt + 0x1A
-                                Cine = 0x36561D8,
-                                FirstLevelTime = 0x37291B0,
-                                Health = 0xF3A88,
-                                InventoryChosen = 0xDDF48,
-                                InventoryMode = 0xDEC18, // InventoryChosen + 0xCD0
-                                Level = 0x3729788,
-                                LevelComplete = 0xF33A0,
-                                LevelIgt = 0x3729770,
-                                LoadFade = 0x292444,
-                                OverlayFlag = 0xD8A78,
-                                TitleLoaded = 0xF3398,
-                            }
-                        },
+                            BonusFlag = 0x372978A, // LevelIgt + 0x1A
+                            Cine = 0x36561D8,
+                            FirstLevelTime = 0x37291B0,
+                            Health = 0xF3A88,
+                            InventoryChosen = 0xDDF48,
+                            InventoryMode = 0xDEC18, // InventoryChosen + 0xCD0
+                            Level = 0x3729788,
+                            LevelComplete = 0xF33A0,
+                            LevelIgt = 0x3729770,
+                            LoadFade = 0x292444,
+                            OverlayFlag = 0xD8A78,
+                            TitleLoaded = 0xF3398,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
                         {
-                            Game.Tr2,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
-                                Cine = 0x36633E8,
-                                FirstLevelTime = 0x375E410,
-                                Health = 0x1267B0,
-                                InventoryChosen = 0x10A024,
-                                InventoryMode = 0x10A084, // InventoryChosen + 0x60
-                                Level = 0x128808,
-                                LevelComplete = 0x128D24,
-                                LevelIgt = 0x375E9CC,
-                                LoadFade = 0x2C7F54,
-                                OverlayFlag = 0x109EEC,
-                                TitleLoaded = 0x1288C4,
-                            }
-                        },
+                            BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
+                            Cine = 0x36633E8,
+                            FirstLevelTime = 0x375E410,
+                            Health = 0x1267B0,
+                            InventoryChosen = 0x10A024,
+                            InventoryMode = 0x10A084, // InventoryChosen + 0x60
+                            Level = 0x128808,
+                            LevelComplete = 0x128D24,
+                            LevelIgt = 0x375E9CC,
+                            LoadFade = 0x2C7F54,
+                            OverlayFlag = 0x109EEC,
+                            TitleLoaded = 0x1288C4,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
                         {
-                            Game.Tr3,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
-                                Cine = 0x36C1C80,
-                                FirstLevelTime = 0x37C1EE4,
-                                Health = 0x182C58,
-                                InventoryChosen = 0x15F224,
-                                InventoryMode = 0x15F254, // InventoryChosen + 0x30
-                                Level = 0x184F2C,
-                                LevelComplete = 0x18540C,
-                                LevelIgt = 0x37C26C8,
-                                LoadFade = 0x324ED0,
-                                OverlayFlag = 0x15EBDC,
-                                TitleLoaded = 0x184FF8,
-                            }
-                        },
-                    }
-                },
+                            BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
+                            Cine = 0x36C1C80,
+                            FirstLevelTime = 0x37C1EE4,
+                            Health = 0x182C58,
+                            InventoryChosen = 0x15F224,
+                            InventoryMode = 0x15F254, // InventoryChosen + 0x30
+                            Level = 0x184F2C,
+                            LevelComplete = 0x18540C,
+                            LevelIgt = 0x37C26C8,
+                            LoadFade = 0x324ED0,
+                            OverlayFlag = 0x15EBDC,
+                            TitleLoaded = 0x184FF8,
+                        }
+                    },
+                }
+            },
+            {
+                GameVersion.PublicV101Patch2,
+                new Dictionary<Game, GameAddresses>
                 {
-                    GameVersion.PublicV101Patch2,
-                    new Dictionary<Game, GameAddresses>
                     {
+                        Game.Tr1,
+                        new GameAddresses
                         {
-                            Game.Tr1,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x373BFEA, // LevelIgt + 0x1A
-                                Cine = 0x3668A38,
-                                FirstLevelTime = 0x373BA10,
-                                Health = 0xF6B68,
-                                InventoryChosen = 0xE0F48,
-                                InventoryMode = 0xE1C18, // InventoryChosen + 0xCD0
-                                Level = 0x373BFE8,
-                                LevelComplete = 0xF6480,
-                                LevelIgt = 0x373BFD0,
-                                LoadFade = 0x295564,
-                                OverlayFlag = 0xDBA78,
-                                TitleLoaded = 0xF6478,
-                            }
-                        },
+                            BonusFlag = 0x373BFEA, // LevelIgt + 0x1A
+                            Cine = 0x3668A38,
+                            FirstLevelTime = 0x373BA10,
+                            Health = 0xF6B68,
+                            InventoryChosen = 0xE0F48,
+                            InventoryMode = 0xE1C18, // InventoryChosen + 0xCD0
+                            Level = 0x373BFE8,
+                            LevelComplete = 0xF6480,
+                            LevelIgt = 0x373BFD0,
+                            LoadFade = 0x295564,
+                            OverlayFlag = 0xDBA78,
+                            TitleLoaded = 0xF6478,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
                         {
-                            Game.Tr2,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x3772246, // LevelIgt + 0x1A
-                                Cine = 0x3674C28,
-                                FirstLevelTime = 0x3771C70,
-                                Health = 0x12A818,
-                                InventoryChosen = 0x10E024,
-                                InventoryMode = 0x10E084, // InventoryChosen + 0x60
-                                Level = 0x12C908,
-                                LevelComplete = 0x12CE24,
-                                LevelIgt = 0x377222C,
-                                LoadFade = 0x2CC094,
-                                OverlayFlag = 0x10DEEC,
-                                TitleLoaded = 0x12C9C4,
-                            }
-                        },
+                            BonusFlag = 0x3772246, // LevelIgt + 0x1A
+                            Cine = 0x3674C28,
+                            FirstLevelTime = 0x3771C70,
+                            Health = 0x12A818,
+                            InventoryChosen = 0x10E024,
+                            InventoryMode = 0x10E084, // InventoryChosen + 0x60
+                            Level = 0x12C908,
+                            LevelComplete = 0x12CE24,
+                            LevelIgt = 0x377222C,
+                            LoadFade = 0x2CC094,
+                            OverlayFlag = 0x10DEEC,
+                            TitleLoaded = 0x12C9C4,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
                         {
-                            Game.Tr3,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x37D8394, // LevelIgt + 0x2C
-                                Cine = 0x36D4940,
-                                FirstLevelTime = 0x37D7B84,
-                                Health = 0x187CA8,
-                                InventoryChosen = 0x164224,
-                                InventoryMode = 0x164254, // InventoryChosen + 0x30
-                                Level = 0x18A00C,
-                                LevelComplete = 0x18A4EC,
-                                LevelIgt = 0x37D8368,
-                                LoadFade = 0x329FF0,
-                                OverlayFlag = 0x163BDC,
-                                TitleLoaded = 0x18A0D8,
-                            }
-                        },
-                    }
-                },
+                            BonusFlag = 0x37D8394, // LevelIgt + 0x2C
+                            Cine = 0x36D4940,
+                            FirstLevelTime = 0x37D7B84,
+                            Health = 0x187CA8,
+                            InventoryChosen = 0x164224,
+                            InventoryMode = 0x164254, // InventoryChosen + 0x30
+                            Level = 0x18A00C,
+                            LevelComplete = 0x18A4EC,
+                            LevelIgt = 0x37D8368,
+                            LoadFade = 0x329FF0,
+                            OverlayFlag = 0x163BDC,
+                            TitleLoaded = 0x18A0D8,
+                        }
+                    },
+                }
+            },
+            {
+                GameVersion.PublicV101Patch3,
+                new Dictionary<Game, GameAddresses>
                 {
-                    GameVersion.PublicV101Patch3,
-                    new Dictionary<Game, GameAddresses>
                     {
+                        Game.Tr1,
+                        new GameAddresses
                         {
-                            Game.Tr1,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x373E1EA, // LevelIgt + 0x1A
-                                Cine = 0x366AC38,
-                                FirstLevelTime = 0x373DC10,
-                                Health = 0xF7C88,
-                                InventoryChosen = 0xE1F88,
-                                InventoryMode = 0xE2C58, // InventoryChosen + 0xCD0
-                                Level = 0x373E1E8, // LevelIgt + 0x18
-                                LevelComplete = 0xF7560, // TitleLoaded + 0x8
-                                LevelIgt = 0x373E1D0,
-                                LoadFade = 0x297764,
-                                OverlayFlag = 0xDCA78,
-                                TitleLoaded = 0xF7558,
-                            }
-                        },
+                            BonusFlag = 0x373E1EA, // LevelIgt + 0x1A
+                            Cine = 0x366AC38,
+                            FirstLevelTime = 0x373DC10,
+                            Health = 0xF7C88,
+                            InventoryChosen = 0xE1F88,
+                            InventoryMode = 0xE2C58, // InventoryChosen + 0xCD0
+                            Level = 0x373E1E8, // LevelIgt + 0x18
+                            LevelComplete = 0xF7560, // TitleLoaded + 0x8
+                            LevelIgt = 0x373E1D0,
+                            LoadFade = 0x297764,
+                            OverlayFlag = 0xDCA78,
+                            TitleLoaded = 0xF7558,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
                         {
-                            Game.Tr2,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x3775446, // LevelIgt + 0x1A
-                                Cine = 0x3677E28,
-                                FirstLevelTime = 0x3774E70,
-                                Health = 0x12C8A8,
-                                InventoryChosen = 0x110024,
-                                InventoryMode = 0x110084, // InventoryChosen + 0x60
-                                Level = 0x12E9E8,
-                                LevelComplete = 0x12EF44,
-                                LevelIgt = 0x377542C,
-                                LoadFade = 0x2CF274,
-                                OverlayFlag = 0x10FEEC,
-                                TitleLoaded = 0x12EAA4,
-                            }
-                        },
+                            BonusFlag = 0x3775446, // LevelIgt + 0x1A
+                            Cine = 0x3677E28,
+                            FirstLevelTime = 0x3774E70,
+                            Health = 0x12C8A8,
+                            InventoryChosen = 0x110024,
+                            InventoryMode = 0x110084, // InventoryChosen + 0x60
+                            Level = 0x12E9E8,
+                            LevelComplete = 0x12EF44,
+                            LevelIgt = 0x377542C,
+                            LoadFade = 0x2CF274,
+                            OverlayFlag = 0x10FEEC,
+                            TitleLoaded = 0x12EAA4,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
                         {
-                            Game.Tr3,
-                            new GameAddresses
-                            {
-                                BonusFlag = 0x37D95B4, // LevelIgt + 0x2C
-                                Cine = 0x36D5B60,
-                                FirstLevelTime = 0x37D8DA4,
-                                Health = 0x187D38,
-                                InventoryChosen = 0x164224,
-                                InventoryMode = 0x164254, // InventoryChosen + 0x30
-                                Level = 0x18A0EC,
-                                LevelComplete = 0x18A60C,
-                                LevelIgt = 0x37D9588,
-                                LoadFade = 0x32B1F0,
-                                OverlayFlag = 0x163BDC,
-                                TitleLoaded = 0x18A1B8,
-                            }
-                        },
-                    }
-                },
-            }.ToImmutableDictionary();
+                            BonusFlag = 0x37D95B4, // LevelIgt + 0x2C
+                            Cine = 0x36D5B60,
+                            FirstLevelTime = 0x37D8DA4,
+                            Health = 0x187D38,
+                            InventoryChosen = 0x164224,
+                            InventoryMode = 0x164254, // InventoryChosen + 0x30
+                            Level = 0x18A0EC,
+                            LevelComplete = 0x18A60C,
+                            LevelIgt = 0x37D9588,
+                            LoadFade = 0x32B1F0,
+                            OverlayFlag = 0x163BDC,
+                            TitleLoaded = 0x18A1B8,
+                        }
+                    },
+                }
+            },
+        }.ToImmutableDictionary();
 
     #region MemoryWatcher Definitions
 
@@ -511,21 +511,22 @@ internal class GameMemory
                 AddCommonDllWatchers(GameVersion.PublicV101Patch2);
                 break;
 
-                case GameVersion.PublicV101Patch3:
-                    // Base game EXE (tomb123.exe)
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
-                    Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3DB4)) { Name = "GlobalFrameIndex" });
-                    // One-offs from DLLs
-                    Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
-                    // Common items for all game's DLLs
-                    AddCommonDllWatchers(GameVersion.PublicV101Patch3);
-                    break;
-                case GameVersion.None:
-                case GameVersion.Unknown:
-                case GameVersion.EgsDebug:
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(version), version, null);
-            }
+            case GameVersion.PublicV101Patch3:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3DB4)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV101Patch3);
+                break;
+
+            case GameVersion.None:
+            case GameVersion.Unknown:
+            case GameVersion.EgsDebug:
+            default:
+                throw new ArgumentOutOfRangeException(nameof(version), version, null);
+        }
 
         PreLoadWatchers(gameProcess);
     }
@@ -578,6 +579,7 @@ internal class GameMemory
     ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
     ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
     /// </summary>
+    /// <param name="gameProcess"><see cref="Process" /> of the game</param>
     private void PreLoadWatchers(Process gameProcess)
     {
         Watchers.UpdateAll(gameProcess); // Loads Current values.
