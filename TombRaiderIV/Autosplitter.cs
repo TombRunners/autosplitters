@@ -45,7 +45,12 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
         // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
         bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
         if (ignoringSubsequentFramesOfThisLoadState)
-            return false;
+        {
+            var currentLevel = (Tr4Level)Data.Level.Current;
+            // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
+            bool specialExceptionForGlitchlessPostLoadSplits = Settings.FullGame && currentLevel is Tr4Level.Catacombs;
+            return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
+        }
 
         // In the case of The Times Exclusive, there is only one playable level with a value of 2;
         // the main menu is 0, and the opening cutscene has a level value of 1.
@@ -198,15 +203,28 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
         var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
         var oldGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Old;
 
-        // Handle special exception case(s) with a post-load split.
-        bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && Data.Loading.Old && !Data.Loading.Current;
+        /* Handle special case(s) with a post-load split.
+        / Needed first because there is a timing issue / inconsistency on the frame where the Loading value flips back to 0.
+        / GfLevelComplete may also switch to 0 (if applicable), sometimes it happens on the frame after.
+        / Since we cannot rely on either GfLevelComplete being the same as last frame or switching, assume neither.
+        */
+        bool finishedLoadingCatacombs = Data.Loading.Old && !Data.Loading.Current && currentLevel == Tr4Level.Catacombs;
         if (finishedLoadingCatacombs)
         {
+            // When loading a save from the same level, GfLevelComplete remains 0 for the whole load.
+            bool fromAnotherLevel = oldGfLevelComplete == Tr4Level.Catacombs || currentGfLevelComplete == Tr4Level.Catacombs;
+            if (!fromAnotherLevel)
+                return false;
+
             // The level must finish loading before its ITEM_INFO array can be checked reliably.
             var platform = Data.GetItemInfoAtIndex(79);
             bool platformTriggerUndone = (platform.flags & 0x3E00) == 0;
             return platformTriggerUndone;
         }
+
+        // End post-load splits.
+        if (currentGfLevelComplete == oldGfLevelComplete)
+            return false;
 
         bool loadingFromDemetriusToCoastal = currentLevel == Tr4Level.HallOfDemetrius && currentGfLevelComplete == Tr4Level.CoastalRuins;
         bool loadingFromLostLibraryToPoseidon = currentLevel == Tr4Level.TheLostLibrary && currentGfLevelComplete == Tr4Level.TempleOfPoseidon;
