@@ -1,8 +1,5 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
+using LiveSplit.ComponentUtil;
 
 namespace TRUtil;
 
@@ -12,13 +9,21 @@ public abstract class ClassicGameData : BaseGameData
     protected uint FirstLevelTimeAddress;
 
     /// <summary>The memory struct size of save game info; used to find subsequent level time addresses.</summary>
-    protected static uint LevelSaveStructSize;
+    protected uint LevelSaveStructSize;
+
+    /// <summary>Sums level times based on <paramref name="completedLevels" /> and <paramref name="currentLevel" />.</summary>
+    /// <param name="completedLevels">Levels completed</param>
+    /// <param name="currentLevel"></param>
+    public delegate ulong SumCompletedLevelTimesDelegate(IEnumerable<uint> completedLevels, uint? currentLevel);
+
+    /// <summary>Allows a specific method to be assigned for use in summing completed levels' times.</summary>
+    public SumCompletedLevelTimesDelegate SumLevelTimes;
 
     #region MemoryWatcherList Items
 
     /// <summary>Indicates if the game is on the title screen (main menu).</summary>
     /// <remarks>Goes back to 0 during demos, if applicable to the game.</remarks>
-    public static MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers?["TitleScreen"];
+    public MemoryWatcher<bool> TitleScreen => (MemoryWatcher<bool>)Watchers?["TitleScreen"];
 
     /// <summary>Indicates if the current level is finished.</summary>
     /// <remarks>
@@ -27,10 +32,10 @@ public abstract class ClassicGameData : BaseGameData
     ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
     ///     Otherwise, the value is 0.
     /// </remarks>
-    public static MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers?["LevelComplete"];
+    public MemoryWatcher<bool> LevelComplete => (MemoryWatcher<bool>)Watchers?["LevelComplete"];
 
     /// <summary>Gives the IGT value for the current level.</summary>
-    public static MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers?["LevelTime"];
+    public MemoryWatcher<uint> LevelTime => (MemoryWatcher<uint>)Watchers?["LevelTime"];
 
     /// <summary>Indicates the passport function chosen by the user.</summary>
     /// <remarks>
@@ -41,20 +46,7 @@ public abstract class ClassicGameData : BaseGameData
     ///     The value is always 2 when using the <c>Exit To Title</c> or <c>Exit Game</c> pages.
     ///     Elsewhere, the value is 0.
     /// </remarks>
-    public static MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers?["PickedPassportFunction"];
+    public MemoryWatcher<uint> PickedPassportFunction => (MemoryWatcher<uint>)Watchers?["PickedPassportFunction"];
 
     #endregion
-
-    /// <summary>Sums completed levels' times.</summary>
-    /// <returns>The sum of completed levels' times</returns>
-    public virtual double SumCompletedLevelTimes(IEnumerable<uint> completedLevels, uint? currentLevel)
-    {
-        uint finishedLevelsTicks = completedLevels
-            .TakeWhile(completedLevel => completedLevel != currentLevel)
-            .Select(static completedLevel => (completedLevel - 1) * LevelSaveStructSize)
-            .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
-            .Aggregate<IntPtr, uint>(0, static (ticks, levelAddress) => ticks + Game.ReadValue<uint>(levelAddress));
-
-        return LevelTimeAsDouble(finishedLevelsTicks);
-    }
 }

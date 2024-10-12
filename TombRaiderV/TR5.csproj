@@ -53,15 +53,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autosplitter.cs" />
-    <Compile Include="Component Factory.cs" />
     <Compile Include="Component.cs" />
+	<Compile Include="ComponentFactory.cs" />
     <Compile Include="ComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameData.cs" />
-    <Compile Include="Enums\GameVersion.cs" />
-    <Compile Include="Enums\Level.cs" />
-    <Compile Include="Enums\LevelSection.cs" />
+    <Compile Include="Enums\Tr5Level.cs" />
+    <Compile Include="Enums\Tr5LevelSection.cs" />
+    <Compile Include="Enums\Tr5Version.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

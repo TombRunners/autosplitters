@@ -7,12 +7,9 @@ using LiveSplit.ComponentUtil;
 
 namespace TR123;
 
-public static partial class GameData
+public static class GameData
 {
-    private static partial class GameMemory;
-
-    /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
-    private const int IgtTicksPerSecond = 30;
+    private static readonly GameMemory GameMemory = new ();
 
     /// <summary>Tests if the passes <paramref name="inventoryChosen" /> value matches a game's passport.</summary>
     /// <param name="inventoryChosen">Value of chosen inventory item</param>
@@ -180,7 +177,7 @@ public static partial class GameData
                 if (!FindSupportedGame())
                     return false;
 
-                GameMemory.InitializeMemoryWatchers(GameVersion);
+                GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
                 return GameIsInitialized;
             }
 
@@ -222,6 +219,9 @@ public static partial class GameData
         GameProcess.EnableRaisingEvents = true;
         GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
     }
+
+    /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
+    private const int IgtTicksPerSecond = 30;
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IgtTicksPerSecond;

@@ -5,8 +5,8 @@ using TRUtil;
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter"/>.</summary>
-internal sealed class Autosplitter : LaterClassicAutosplitter
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData}"/>.</summary>
+internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
 {
     private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels =
     [
@@ -23,32 +23,30 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
     ];
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter(Version version) : base(version)
+    public Autosplitter(Version version) : base(version, new GameData())
     {
         Settings = new ComponentSettings(version);
 
-        Data = new GameData();
-        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
-        Data.OnGameFound += Settings.SetGameVersion;
+        Data.OnGameVersionChanged += Settings.SetGameVersion;
     }
 
     public override bool ShouldSplit(LiveSplitState state)
     {
         // Handle deathruns for both rulesets.
-        if (Settings.Deathrun && !LaterClassicGameData.Loading.Current)
+        if (Settings.Deathrun && !Data.Loading.Current)
         {
-            bool laraJustDied = BaseGameData.Health.Old > 0 && BaseGameData.Health.Current <= 0;
+            bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
             return laraJustDied;
         }
 
-        uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
-        uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
+        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
 
         // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
         bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
         if (ignoringSubsequentFramesOfThisLoadState)
         {
-            var currentLevel = (Tr4Level)BaseGameData.Level.Current;
+            var currentLevel = (Tr4Level)Data.Level.Current;
             // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
             bool specialExceptionForGlitchlessPostLoadSplits =
                 Settings.FullGame && currentLevel is Tr4Level.Catacombs;
@@ -57,8 +55,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
 
         // In the case of The Times Exclusive, there is only one playable level with a value of 2;
         // the main menu is 0, and the opening cutscene has a level value of 1.
-        bool playingTheTimesExclusive = BaseGameData.Version == (uint)GameVersion.TheTimesExclusive;
-        if (playingTheTimesExclusive && BaseGameData.Level.Current != (uint)TteLevel.TheTimesExclusive)
+        bool playingTheTimesExclusive = Data.GameVersion == (uint)Tr4Version.TheTimesExclusive;
+        if (playingTheTimesExclusive && Data.Level.Current != (uint)TteLevel.TheTimesExclusive)
             return false;
 
         // Handle all of TTE as well as TR4 ILs for both rulesets.
@@ -74,22 +72,22 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         return glitchless ? GlitchlessShouldSplit() : GlitchedShouldSplit();
     }
 
-    private static bool GlitchedShouldSplit()
+    private bool GlitchedShouldSplit()
     {
-        uint oldGfLevelComplete = LaterClassicGameData.GfLevelComplete.Old;
+        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
         bool leavingUnusedLevelValue = oldGfLevelComplete is 10 or 29;
         if (leavingUnusedLevelValue)
             return false;
 
-        uint currentGfLevelComplete = LaterClassicGameData.GfLevelComplete.Current;
+        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
         bool enteringUnusedLevelValue = currentGfLevelComplete is 10 or 29;
         bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Tr4Level) currentGfLevelComplete);
         bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits for both TR4 and TTE.
         return enteringUnusedLevelValue || enteringNextSplitLevel || finishedGame;
     }
 
-    private static bool GlitchlessShouldSplit()
-        => BaseGameData.Level.Current switch
+    private bool GlitchlessShouldSplit()
+        => Data.Level.Current switch
         {
             >= (uint) Tr4LevelSection.Giza             => GlitchlessShouldSplitGiza(),
             >= (uint) Tr4LevelSection.Cairo            => GlitchlessShouldSplitCairo(),
@@ -100,7 +98,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             _                                          => GlitchlessShouldSplitCambodia(),
         };
 
-    private static bool GlitchlessShouldSplitCambodia()
+    private bool GlitchlessShouldSplitCambodia()
     {
         /* Route
             Transition 00 | currentLevel == 00 && currentGfLevelComplete == 01 | Main Menu to Angkor Wat (covered by ShouldStart).
@@ -110,15 +108,15 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         /* Default undesired splits
             Loading into Race for the Iris (2)
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
 
         bool loadingIntoNextLevel = currentGfLevelComplete == currentLevel + 1;
         bool loadingRaceForTheIris = currentGfLevelComplete == Tr4Level.RaceForTheIris;
         return loadingIntoNextLevel && !loadingRaceForTheIris;
     }
 
-    private static bool GlitchlessShouldSplitValleyOfTheKings()
+    private bool GlitchlessShouldSplitValleyOfTheKings()
     {
         /* Route
             Transition 00 | currentLevel == 02 && currentGfLevelComplete == 03 | Race for the Iris to Tomb of Seth (covered elsewhere).
@@ -127,13 +125,13 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             Transition 03 | currentLevel == 05 && currentGfLevelComplete == 06 | Valley of the Kings to KV5.
             Transition 04 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak.
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
 
         return currentGfLevelComplete == currentLevel + 1;
     }
 
-    private static bool GlitchlessShouldSplitKarnak()
+    private bool GlitchlessShouldSplitKarnak()
     {
         /* Likely route
             Transition 00 | currentLevel == 06 && currentGfLevelComplete == 07 | KV5 to Karnak (covered elsewhere).
@@ -150,13 +148,13 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             The Great Hypostyle Hall (08):
                 Only split when Lara enters with required progression item/parts.
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
 
         bool loadingFromKarnakToHypostyle = currentLevel == Tr4Level.TempleOfKarnak && currentGfLevelComplete == Tr4Level.GreatHypostyleHall;
         if (loadingFromKarnakToHypostyle)
         {
-            bool laraHasHypostyleKey = (GameData.KeyItems.Current & 0b0000_0010) == 0b0000_0010;
+            bool laraHasHypostyleKey = (Data.KeyItems.Current & 0b0000_0010) == 0b0000_0010;
             return laraHasHypostyleKey;
         }
 
@@ -165,14 +163,14 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         return loadingNextLevel || circlingBackToTheBeginning;
     }
 
-    private static bool GlitchlessShouldSplitEasternDesert()
+    private bool GlitchlessShouldSplitEasternDesert()
         /* Route
         Transition 00 | currentLevel == 12 && currentGfLevelComplete == 13 | Guardian of Semerkhet to Desert Railroad (covered elsewhere).
         Transition 01 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria.
         */
-        => LaterClassicGameData.GfLevelComplete.Current == (uint) Tr4Level.Alexandria;
+        => Data.GfLevelComplete.Current == (uint) Tr4Level.Alexandria;
 
-    private static bool GlitchlessShouldSplitAlexandria()
+    private bool GlitchlessShouldSplitAlexandria()
     {
         /* Likely route
             Transition 00 | currentLevel == 13 && currentGfLevelComplete == 14 | Desert Railroad to Alexandria (covered elsewhere).
@@ -202,20 +200,20 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
             Cleopatra's Palaces (17):
                 Only split when Lara enters with required progression item/parts.
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
-        var oldGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Old;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
+        var oldGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Old;
 
         // Handle special exception case(s) that ignore that the game is in the same load state.
         bool sameLoadState = currentGfLevelComplete == oldGfLevelComplete;
         if (sameLoadState)
         {
-            bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+            bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && Data.Loading.Old && !Data.Loading.Current;
             if (!finishedLoadingCatacombs)
                 return false;
 
             // The level must finish loading before its ITEM_INFO array can be checked.
-            var platform = GameData.GetItemInfoAtIndex(79);
+            var platform = Data.GetItemInfoAtIndex(79);
             return platform.flags == 0x20;
         }
 
@@ -223,16 +221,16 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         bool loadingFromLostLibraryToPoseidon = currentLevel == Tr4Level.TheLostLibrary && currentGfLevelComplete == Tr4Level.TempleOfPoseidon;
         if (loadingFromDemetriusToCoastal || loadingFromLostLibraryToPoseidon)
         {
-            bool laraHasPharosPillar = GameData.PuzzleItems.Current.PharosPillar == 1;
-            bool laraHasPharosKnot = GameData.PuzzleItems.Current.PharosKnot == 1;
+            bool laraHasPharosPillar = Data.PuzzleItems.Current.PharosPillar == 1;
+            bool laraHasPharosKnot = Data.PuzzleItems.Current.PharosKnot == 1;
             return laraHasPharosPillar && laraHasPharosKnot;
         }
 
         bool loadingFromPharosToCleopatra = currentLevel == Tr4Level.PharosTempleOfIsis && currentGfLevelComplete == Tr4Level.CleopatrasPalaces;
         if (loadingFromPharosToCleopatra)
         {
-            bool laraHasCombinedClockworkBeetle = (GameData.MechanicalScarab.Current & 0b0000_0001) == 0b0000_0001;
-            bool laraHasBothClockworkBeetleParts = (GameData.MechanicalScarab.Current & 0b0000_0110) == 0b0000_0110;
+            bool laraHasCombinedClockworkBeetle = (Data.MechanicalScarab.Current & 0b0000_0001) == 0b0000_0001;
+            bool laraHasBothClockworkBeetleParts = (Data.MechanicalScarab.Current & 0b0000_0110) == 0b0000_0110;
             return laraHasCombinedClockworkBeetle || laraHasBothClockworkBeetleParts;
         }
 
@@ -242,7 +240,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         return loadingFromCatacombsToPoseidon || loadingFromPoseidonToLostLibrary || loadingCityOfTheDead;
     }
 
-    private static bool GlitchlessShouldSplitCairo()
+    private bool GlitchlessShouldSplitCairo()
     {
         /* Likely route
             Transition 00 | currentLevel == 17 && currentGfLevelComplete == 22 | Cleopatra's Palaces to City (covered elsewhere).
@@ -261,27 +259,27 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
                 When leaving: only split when entering Street Bazaar (25) without any Mine Detonator combo/parts.
                 When entering: only split when last leaving Street Bazaar (25) with Mine Detonator combo/parts.
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
 
         bool inTrenches = currentLevel == Tr4Level.Trenches;
         if (inTrenches)
         {
-            bool laraHasCombinedDetonator = GameData.PuzzleItems.Current.MineDetonator == 1;
+            bool laraHasCombinedDetonator = Data.PuzzleItems.Current.MineDetonator == 1;
 
             bool loadingToStreetBazaar = currentGfLevelComplete == Tr4Level.StreetBazaar;
             if (loadingToStreetBazaar)
             {
-                bool laraHasNeitherDetonatorPart = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b0000_0000_0000_0000;
+                bool laraHasNeitherDetonatorPart = (Data.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b0000_0000_0000_0000;
                 return !laraHasCombinedDetonator && laraHasNeitherDetonatorPart;
             }
 
-            bool justFinishedLoadingIntoLevel = LaterClassicGameData.Loading.Old && !LaterClassicGameData.Loading.Current;
+            bool justFinishedLoadingIntoLevel = Data.Loading.Old && !Data.Loading.Current;
             if (!justFinishedLoadingIntoLevel)
                 return false;
 
-            bool laraHasDetonatorParts = (GameData.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b1100_0000_0000_0000;
-            bool laraStartedNextToMinefield = GameData.GetItemInfoAtIndex(51).room_number == 26;
+            bool laraHasDetonatorParts = (Data.PuzzleItemsCombo.Current & 0b1100_0000_0000_0000) == 0b1100_0000_0000_0000;
+            bool laraStartedNextToMinefield = Data.GetItemInfoAtIndex(51).room_number == 26;
             return (laraHasCombinedDetonator || laraHasDetonatorParts) && laraStartedNextToMinefield;
         }
 
@@ -292,7 +290,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         return loadingFromCityToTulun || loadingFromCitadelGateToCitadel || loadingFromCitadelToSphinxComplex;
     }
 
-    private static bool GlitchlessShouldSplitGiza()
+    private bool GlitchlessShouldSplitGiza()
     {
         /* Likely route
             Transition 00 | currentLevel == 27 && currentGfLevelComplete == 28 | Citadel to Sphinx Complex (covered elsewhere)
@@ -314,8 +312,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
                 Only split when Lara enters with required progression item/parts.
             Loading into boss (38)
         */
-        var currentLevel = (Tr4Level)BaseGameData.Level.Current;
-        var currentGfLevelComplete = (Tr4Level)LaterClassicGameData.GfLevelComplete.Current;
+        var currentLevel = (Tr4Level)Data.Level.Current;
+        var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
 
         bool justFinishedLoadingALevel = currentGfLevelComplete == 0;
         if (justFinishedLoadingALevel)
@@ -331,7 +329,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter
         bool loadingInsideTheGreatPyramid = currentGfLevelComplete == Tr4Level.InsideTheGreatPyramid;
         if (loadingInsideTheGreatPyramid)
         {
-            bool laraHasEasternShaftKey = GameData.PuzzleItems.Current.EasternShaftKey == 1;
+            bool laraHasEasternShaftKey = Data.PuzzleItems.Current.EasternShaftKey == 1;
             return laraHasEasternShaftKey;
         }
 

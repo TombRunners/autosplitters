@@ -4,33 +4,31 @@ using TRUtil;
 
 namespace TR1;
 
-/// <summary>Implementation of <see cref="ClassicAutosplitter"/>.</summary>
-internal sealed class Autosplitter : ClassicAutosplitter
+/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}"/>.</summary>
+internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 {
     private bool _newGamePageSelected;
 
-    private static bool IsUnfinishedBusiness => BaseGameData.Version == (uint)GameVersion.AtiUnfinishedBusiness;
-    private static uint? LastRealLevel => IsUnfinishedBusiness ? BaseGameData.Level.Current : (uint?)GetLastRealLevel(BaseGameData.Level.Current);
+    private bool IsUnfinishedBusiness => Data.GameVersion == (uint)Tr1Version.AtiUnfinishedBusiness;
+    private uint? LastRealLevel => IsUnfinishedBusiness ? Data.Level.Current : (uint?)GetLastRealLevel(Data.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter(Version version) : base(version)
+    public Autosplitter(Version version) : base(version, new GameData())
     {
         Settings = new ComponentSettings(version);
 
         LevelCount = 15; // This is the highest between TR1 at 15 and TR:UB at 4.
         CompletedLevels.Capacity = LevelCount;
-        GameData.CompletedLevelTicks.Capacity = LevelCount;
 
-        Data = new GameData();
-        Data.OnAslComponentChanged += Settings.SetAslWarningLabelVisibility;
-        Data.OnGameFound += Settings.SetGameVersion;
+        GameData.CompletedLevelTicks.Capacity = LevelCount;
+        Data.OnGameVersionChanged += Settings.SetGameVersion;
     }
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
         // Check that IGT is ticking and not reset.
-        uint currentLevelTicks = ClassicGameData.LevelTime.Current;
-        uint oldLevelTicks = ClassicGameData.LevelTime.Old;
+        uint currentLevelTicks = Data.LevelTime.Current;
+        uint oldLevelTicks = Data.LevelTime.Old;
         bool igtNotTicking = currentLevelTicks - oldLevelTicks == 0;
         // IGT reset: the moment when the game is restarted after a quit-out,
         // or when you transition from a level to the next,
@@ -42,22 +40,21 @@ internal sealed class Autosplitter : ClassicAutosplitter
         if (!IsUnfinishedBusiness)
         {
             // Check the demo isn't running.
-            uint currentDemoTimer = GameData.DemoTimer.Current;
+            uint currentDemoTimer = Data.DemoTimer.Current;
             const uint demoStartThreshold = 480;
             if (currentDemoTimer > demoStartThreshold)
                 return null;
 
             // Check that the player is in a real level.
-            uint currentLevel = BaseGameData.Level.Current;
+            uint currentLevel = Data.Level.Current;
             var lastRealLevel = GetLastRealLevel(currentLevel);
             if (lastRealLevel is null)
                 return null;
         }
 
         // Sum the current and completed levels' IGT.
-        double currentLevelTime = BaseGameData.LevelTimeAsDouble(currentLevelTicks);
-        double finishedLevelsTime = Data.SumCompletedLevelTimes(CompletedLevels, LastRealLevel);
-        return TimeSpan.FromSeconds(currentLevelTime + finishedLevelsTime);
+        ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, LastRealLevel);
+        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
     }
 
     /// <summary>
@@ -87,21 +84,21 @@ internal sealed class Autosplitter : ClassicAutosplitter
     public override bool ShouldStart(LiveSplitState state)
     {
         // These initialize to 0, and the game's timer will not tick until the title screen is reached.
-        bool gameJustLaunched = ClassicGameData.LevelTime.Current == 0 && BaseGameData.Level.Old == 0;
+        bool gameJustLaunched = Data.LevelTime.Current == 0 && Data.Level.Old == 0;
         if (gameJustLaunched)
             return false;
 
         // Check to see if the player has navigated to the New Game page of the passport.
         // This prevents some misfires from LiveSplit hooking late.
         // If LiveSplit hooks after the player has already navigated to the New Game page, this fails.
-        uint oldPassportPage = ClassicGameData.PickedPassportFunction.Old;
-        uint currentPassportPage = ClassicGameData.PickedPassportFunction.Current;
+        uint oldPassportPage = Data.PickedPassportFunction.Old;
+        uint currentPassportPage = Data.PickedPassportFunction.Current;
         if (oldPassportPage == 0 && currentPassportPage == 1)
             _newGamePageSelected = true;
 
         // Determine if a new game was started; this applies to all runs but for FG runs, this is the only start condition.
-        uint currentLevel = BaseGameData.Level.Current;
-        uint oldLevel = BaseGameData.Level.Old;
+        uint currentLevel = Data.Level.Current;
+        uint oldLevel = Data.Level.Old;
         if (_newGamePageSelected)
         {
             if (IsUnfinishedBusiness)
@@ -114,7 +111,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
             }
             else
             {
-                bool cameFromTitleScreen = ClassicGameData.TitleScreen.Old && !ClassicGameData.TitleScreen.Current;
+                bool cameFromTitleScreen = Data.TitleScreen.Old && !Data.TitleScreen.Current;
                 bool cameFromLarasHome = oldLevel == (uint)Tr1Level.LarasHome;
                 bool justStartedFirstLevel = currentLevel == (uint)Tr1Level.Caves;
                 bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
@@ -144,8 +141,8 @@ internal sealed class Autosplitter : ClassicAutosplitter
             wentToNextLevel = currentRealLevel == oldRealLevel + 1;
         }
 
-        uint oldTime = ClassicGameData.LevelTime.Old;
-        uint currentTime = ClassicGameData.LevelTime.Current;
+        uint oldTime = Data.LevelTime.Old;
+        uint currentTime = Data.LevelTime.Current;
         // The level values switch before the timer resets to 0. If LiveSplit polls then,
         // a check for currentTime <= MAGIC_LOW_NUMBER would fail. This more lenient solution
         // could result in a false start if the player would load into the next level
@@ -163,7 +160,7 @@ internal sealed class Autosplitter : ClassicAutosplitter
 
     public override void OnSplit(uint completedLevel)
     {
-        GameData.CompletedLevelTicks.Add(ClassicGameData.LevelTime.Current);
+        GameData.CompletedLevelTicks.Add(Data.LevelTime.Current);
         base.OnSplit(LastRealLevel!.Value);
     }
 

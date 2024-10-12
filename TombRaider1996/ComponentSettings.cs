@@ -12,21 +12,21 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
         const string atiTrUbText = "TombATI [TR:UB]";
 
         string versionText;
-        switch ((GameVersion)version)
+        switch ((Tr1Version)version)
         {
-            case GameVersion.DOSBox:
+            case Tr1Version.DOSBox:
                 versionText = dosboxText;
                 break;
 
-            case GameVersion.Ati:
+            case Tr1Version.Ati:
                 versionText = atiTr1Text;
                 break;
 
-            case GameVersion.AtiUnfinishedBusiness:
+            case Tr1Version.AtiUnfinishedBusiness:
                 versionText = atiTrUbText;
                 break;
 
-            case GameVersion.None:
+            case Tr1Version.None:
             default:
                 base.SetGameVersion(version, hash);
                 return;

@@ -2,19 +2,21 @@
 using LiveSplit.ComponentUtil;
 using TRUtil;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace TR4;
 
 /// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
-internal sealed class GameData : LaterClassicGameData
+internal class GameData : LaterClassicGameData
 {
     private const uint SizeOfItemInfo = 0x15F6;
     private static readonly IntPtr FirstItemInfoPointer = (IntPtr)0x7FE28C;
 
-    /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
-    internal GameData()
+    /// <summary>A constructor that primarily exists to set/modify values/objects.</summary>
+    public GameData()
     {
-        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)GameVersion.SteamOrGog);
-        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)GameVersion.TheTimesExclusive);
+        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)Tr4Version.SteamOrGog);
+        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)Tr4Version.TheTimesExclusive);
 
         ProcessSearchNames.Add("tomb4");
     }
@@ -33,7 +35,7 @@ internal sealed class GameData : LaterClassicGameData
     ///         <see cref="MechanicalScarab"/> & 4 => Mechanical Scarab (0000 0100)
     ///     When Lara has both Winding Key and Mechanical Scarab before combining them: (0000 0110)
     /// </remarks>
-    public static MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>)Watchers["MechanicalScarab"];
+    public MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>)Watchers["MechanicalScarab"];
 
     /// <inheritdoc cref="TR4.PuzzleItems"/>
     /// <remarks>
@@ -43,7 +45,7 @@ internal sealed class GameData : LaterClassicGameData
     ///     When unique items are in Lara's inventory, the address's value is 1.
     ///     Non-unique puzzle items, such as the Golden Skull secrets in Cambodia, continually increment their assigned index.
     /// </remarks>
-    public static MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>)Watchers["PuzzleItemsArray"];
+    public MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>)Watchers["PuzzleItemsArray"];
 
     /// <summary>
     ///     An unsigned short used as a bitfield to track which combinable puzzle items Lara has in her inventory.
@@ -54,7 +56,7 @@ internal sealed class GameData : LaterClassicGameData
     ///         <see cref="PuzzleItemsCombo"/> & 0x80 => Mine Position Data  (1000 0000 0000 0000)
     ///     When Lara has both Mine Detonator Body and Mine Position Data before combining them: (1100 0000 0000 0000)
     /// </remarks>
-    public static MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>)Watchers["PuzzleItemsCombo"];
+    public MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>)Watchers["PuzzleItemsCombo"];
 
     /// <summary>
     ///     An unsigned short used as a bitfield to track which keys Lara has in her inventory.
@@ -63,14 +65,15 @@ internal sealed class GameData : LaterClassicGameData
     ///     The corresponding bits are relevant for the autosplitter's logic:
     ///         <see cref="KeyItems"/> & 2 => Hypostyle Key (0000 0000 0000 0010)
     /// </remarks>
-    public static MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
+    public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
 
-    protected override void SetAddresses(uint version)
+    /// <inheritdoc />
+    protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((GameVersion)version)
+        switch ((Tr4Version)version)
         {
-            case GameVersion.SteamOrGog:
+            case Tr4Version.SteamOrGog:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
@@ -82,7 +85,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems"});
                 break;
 
-            case GameVersion.TheTimesExclusive:
+            case Tr4Version.TheTimesExclusive:
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level"});
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
@@ -90,17 +93,20 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
                 break;
 
-            case GameVersion.None:
+            case Tr4Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
     }
 
-    internal static ItemInfo GetItemInfoAtIndex(uint itemNumber)
+    /// <inheritdoc />
+    protected override bool IsGameInitialized() => true;
+
+    internal ItemInfo GetItemInfoAtIndex(uint itemNumber)
     {
         uint offset = SizeOfItemInfo * itemNumber;
-        var firstItemInfoAddress = Game.ReadPointer(FirstItemInfoPointer);
+        var firstItemInfoAddress = GameProcess.ReadPointer(FirstItemInfoPointer);
         var finalAddress = new IntPtr(firstItemInfoAddress.ToInt64() + offset);
-        return Game.ReadValue<ItemInfo>(finalAddress);
+        return GameProcess.ReadValue<ItemInfo>(finalAddress);
     }
 }
