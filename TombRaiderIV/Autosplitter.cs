@@ -45,13 +45,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
         // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
         bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
         if (ignoringSubsequentFramesOfThisLoadState)
-        {
-            var currentLevel = (Tr4Level)Data.Level.Current;
-            // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
-            bool specialExceptionForGlitchlessPostLoadSplits =
-                Settings.FullGame && currentLevel is Tr4Level.Catacombs;
-            return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
-        }
+            return false;
 
         // In the case of The Times Exclusive, there is only one playable level with a value of 2;
         // the main menu is 0, and the opening cutscene has a level value of 1.
@@ -204,17 +198,14 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
         var currentGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Current;
         var oldGfLevelComplete = (Tr4Level)Data.GfLevelComplete.Old;
 
-        // Handle special exception case(s) that ignore that the game is in the same load state.
-        bool sameLoadState = currentGfLevelComplete == oldGfLevelComplete;
-        if (sameLoadState)
+        // Handle special exception case(s) with a post-load split.
+        bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && Data.Loading.Old && !Data.Loading.Current;
+        if (finishedLoadingCatacombs)
         {
-            bool finishedLoadingCatacombs = currentLevel == Tr4Level.Catacombs && Data.Loading.Old && !Data.Loading.Current;
-            if (!finishedLoadingCatacombs)
-                return false;
-
-            // The level must finish loading before its ITEM_INFO array can be checked.
+            // The level must finish loading before its ITEM_INFO array can be checked reliably.
             var platform = Data.GetItemInfoAtIndex(79);
-            return platform.flags == 0x20;
+            bool platformTriggerUndone = (platform.flags & 0x3E00) == 0;
+            return platformTriggerUndone;
         }
 
         bool loadingFromDemetriusToCoastal = currentLevel == Tr4Level.HallOfDemetrius && currentGfLevelComplete == Tr4Level.CoastalRuins;
