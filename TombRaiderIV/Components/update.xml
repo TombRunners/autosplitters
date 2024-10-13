@@ -1,4 +1,13 @@
 <updates>
+  <update version="2024.1.1.1">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Improved Glitchless splits for Catacombs and Trenches to better match splits file on SRC.</change>
+      <change>Prevented save and load Glitchless re-splits on Catacombs and Trenches (levels with post-load splits).</change>
+    </changelog>
+  </update>
   <update version="2024.1.1.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
