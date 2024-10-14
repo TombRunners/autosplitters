@@ -70,6 +70,7 @@ public abstract class LaterClassicComponent<TData> : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Option), _splitter.Settings.Option));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.SplitSecrets), _splitter.Settings.SplitSecrets));
         return settingsNode;
     }
 
@@ -80,6 +81,7 @@ public abstract class LaterClassicComponent<TData> : AutoSplitComponent
         _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
         _splitter.Settings.Option = SettingsHelper.ParseBool(settings["Option"], _splitter.Settings.Option);
         _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
+        _splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], _splitter.Settings.SplitSecrets);
 
         // Assign values to Settings.
         if (_splitter.Settings.FullGame)
@@ -91,6 +93,7 @@ public abstract class LaterClassicComponent<TData> : AutoSplitComponent
 
         _splitter.Settings.OptionCheckbox.Checked = _splitter.Settings.Option;                   // CheckBox
         _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
+        _splitter.Settings.SplitSecretsCheckbox.Checked = _splitter.Settings.SplitSecrets;       // CheckBox
     }
 
     public override string ComponentName => "Later Classic Tomb Raider Component";

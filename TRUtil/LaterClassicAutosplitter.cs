@@ -44,6 +44,38 @@ public abstract class LaterClassicAutosplitter<TData>(Version version, TData dat
         return loadingIntoMainMenu && comingFromALevel;
     }
 
+    public override bool ShouldSplit(LiveSplitState state)
+    {
+        if (Settings.Deathrun)
+            return DeathrunShouldSplit();
+
+        if (Settings.SplitSecrets && Data.Secrets.Changed)
+            return SecretShouldSplit();
+
+        return false;
+    }
+
+    private bool DeathrunShouldSplit()
+    {
+        bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
+        return laraJustDied;
+    }
+
+    private bool SecretShouldSplit()
+    {
+        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
+        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
+
+        if (currentGfLevelComplete != oldGfLevelComplete)
+            return false;
+
+        if (currentGfLevelComplete != 0)
+            return false;
+
+        bool secretWasTriggered = Data.Secrets.Current > Data.Secrets.Old;
+        return secretWasTriggered;
+    }
+
     public override bool ShouldStart(LiveSplitState state)
     {
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;

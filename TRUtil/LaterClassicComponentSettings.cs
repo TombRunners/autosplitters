@@ -12,11 +12,13 @@ public class LaterClassicComponentSettings : UserControl
     public RadioButton DeathrunModeButton;
     public CheckBox OptionCheckbox;
     public CheckBox EnableAutoResetCheckbox;
+    public CheckBox SplitSecretsCheckbox;
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     private Label _aslWarningLabel;
     public bool FullGame = true;
     public bool Deathrun;
+    public bool SplitSecrets;
     public bool Option;
     public bool EnableAutoReset;
 
@@ -34,6 +36,7 @@ public class LaterClassicComponentSettings : UserControl
         DeathrunModeButton = new RadioButton();
         OptionCheckbox = new CheckBox();
         EnableAutoResetCheckbox = new CheckBox();
+        SplitSecretsCheckbox = new CheckBox();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
         _aslWarningLabel = new Label();
@@ -105,6 +108,17 @@ public class LaterClassicComponentSettings : UserControl
         OptionCheckbox.UseVisualStyleBackColor = true;
         OptionCheckbox.CheckedChanged += OptionCheckboxCheckedChanged;
 
+        // SplitSecretsCheckbox
+        SplitSecretsCheckbox.AutoSize = true;
+        SplitSecretsCheckbox.Checked = false;
+        SplitSecretsCheckbox.Location = new Point(12, 100);
+        SplitSecretsCheckbox.Size = new Size(72, 17);
+        SplitSecretsCheckbox.Name = "SplitSecretsCheckbox";
+        SplitSecretsCheckbox.Text = "Split When Secret is Triggered";
+        SplitSecretsCheckbox.TabIndex = 0;
+        SplitSecretsCheckbox.UseVisualStyleBackColor = true;
+        SplitSecretsCheckbox.CheckedChanged += SplitSecretsCheckboxCheckedChanged;
+
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;
         GameVersionLabel.Location = new Point(10, 150);
@@ -138,6 +152,7 @@ public class LaterClassicComponentSettings : UserControl
         Controls.Add(GameVersionLabel);
         Controls.Add(OptionCheckbox);
         Controls.Add(EnableAutoResetCheckbox);
+        Controls.Add(SplitSecretsCheckbox);
         Controls.Add(ModeSelect);
         Name = "LaterClassicComponentSettings";
         Size = new Size(476, 250);
@@ -190,5 +205,11 @@ public class LaterClassicComponentSettings : UserControl
     {
         var checkbox = (CheckBox)sender;
         Option = checkbox.Checked;
+    }
+
+    private void SplitSecretsCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox)sender;
+        SplitSecrets = checkbox.Checked;
     }
 }

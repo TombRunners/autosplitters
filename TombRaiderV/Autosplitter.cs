@@ -27,12 +27,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
 
     public override bool ShouldSplit(LiveSplitState state)
     {
-        // Handle deathruns for both rulesets.
-        if (Settings.Deathrun)
-        {
-            bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
-            return laraJustDied;
-        }
+        if (base.ShouldSplit(state))
+            return true;
 
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
         uint oldGfLevelComplete = Data.GfLevelComplete.Old;
