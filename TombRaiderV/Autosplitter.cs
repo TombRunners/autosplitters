@@ -4,16 +4,12 @@ using TRUtil;
 
 namespace TR5;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData}"/>.</summary>
-internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData, TSettings}"/>.</summary>
+internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter(Version version) : base(version, new GameData())
-    {
-        Settings = new ComponentSettings(version);
-
-        Data.OnGameVersionChanged += Settings.SetGameVersion;
-    }
+    public Autosplitter(Version version) : base(new GameData(), new ComponentSettings(version))
+        => Data.OnGameVersionChanged += Settings.SetGameVersion;
 
     public override bool ShouldReset(LiveSplitState state)
     {
@@ -40,7 +36,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
 
         // Handle ILs and FG for both rulesets.
         bool loadingAnotherLevel = currentGfLevelComplete != 0;
-        if (!Settings.Option)  // Property name should be SplitCutscene.
+        if (!Settings.SplitSecurityBreach)
             loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint)Tr5Level.CutsceneSecurityBreach;
         return loadingAnotherLevel;
     }

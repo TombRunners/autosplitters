@@ -5,8 +5,8 @@ using TRUtil;
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData}"/>.</summary>
-internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData, TSettings}"/>.</summary>
+internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels =
     [
@@ -23,12 +23,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
     ];
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter(Version version) : base(version, new GameData())
-    {
-        Settings = new ComponentSettings(version);
-
-        Data.OnGameVersionChanged += Settings.SetGameVersion;
-    }
+    public Autosplitter(Version version) : base(new GameData(), new ComponentSettings(version))
+        => Data.OnGameVersionChanged += Settings.SetGameVersion;
 
     public override bool ShouldSplit(LiveSplitState state)
     {
@@ -64,7 +60,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData>
         }
 
         // Handle FG for each ruleset (TR4 only).
-        bool glitchless = Settings.Option;
+        bool glitchless = Settings.Glitchless;
         return glitchless ? GlitchlessShouldSplit() : GlitchedShouldSplit();
     }
 

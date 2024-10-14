@@ -3,11 +3,12 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
+public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSettings settings) : BaseAutosplitter
     where TData : LaterClassicGameData
+    where TSettings : LaterClassicComponentSettings
 {
-    protected internal LaterClassicComponentSettings Settings = new(version);
-    public readonly TData Data = data;
+    public readonly TSettings Settings = settings;
+    protected internal readonly TData Data = data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
     /// <remarks>
