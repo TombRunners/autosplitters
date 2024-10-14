@@ -49,6 +49,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C27C)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5BF60)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5BF08, 0x22)) { Name = "Health"});
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F7864)) { Name = "Secrets" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082C1)) { Name = "GfInitializeGame" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082C0)) { Name = "GfGameMode" });
                 break;
@@ -59,6 +60,7 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C37C)) { Name = "GameTimer"});
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5C060)) { Name = "Loading"});
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5C008, 0x22)) { Name = "Health"});
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0xA53140)) { Name = "Secrets" });
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082D1)) { Name = "GfInitializeGame" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082D0)) { Name = "GfGameMode" });
                 break;
