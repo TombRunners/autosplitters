@@ -1,7 +1,7 @@
 ﻿namespace TR4;
 
 /// <summary>The game's level and demo values.</summary>
-internal enum Tr4Level
+public enum Tr4Level
 {
     MainMenu = 0,
 
