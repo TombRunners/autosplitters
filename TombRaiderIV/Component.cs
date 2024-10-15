@@ -30,11 +30,15 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.EnableAutoReset), Splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.SplitSecrets), Splitter.Settings.SplitSecrets));
 
-        var transitionsNode = document.CreateElement("LevelTransitions");
-        foreach (var transition in Splitter.Settings.LevelTransitions)
-            transitionsNode.AppendChild(transition.ToXmlElement(document));
+        var tr4TransitionsNode = document.CreateElement("Tr4LevelTransitions");
+        foreach (var transition in Splitter.Settings.Tr4LevelTransitions)
+            tr4TransitionsNode.AppendChild(transition.ToXmlElement(document));
+        settingsNode.AppendChild(tr4TransitionsNode);
 
-        settingsNode.AppendChild(transitionsNode);
+        var tteTransitionsNode = document.CreateElement("TteLevelTransitions");
+        foreach (var transition in Splitter.Settings.TteLevelTransitions)
+            tteTransitionsNode.AppendChild(transition.ToXmlElement(document));
+        settingsNode.AppendChild(tteTransitionsNode);
 
         return settingsNode;
     }
@@ -48,12 +52,20 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], Splitter.Settings.EnableAutoReset);
         Splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], Splitter.Settings.SplitSecrets);
 
-        var transitionsNode = settings["LevelTransitions"];
-        if (transitionsNode != null)
+        var tr4TransitionsNode = settings["Tr4LevelTransitions"];
+        if (tr4TransitionsNode != null)
         {
-            Splitter.Settings.LevelTransitions.Clear();
-            foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
-                Splitter.Settings.LevelTransitions.Add(TransitionSetting.FromXmlElement(transitionNode));
+            Splitter.Settings.Tr4LevelTransitions.Clear();
+            foreach (XmlNode transitionNode in tr4TransitionsNode.ChildNodes)
+                Splitter.Settings.Tr4LevelTransitions.Add(TransitionSetting<Tr4Level>.Tr4FromXmlElement(transitionNode));
+        }
+
+        var tteTransitionsNode = settings["TteLevelTransitions"];
+        if (tteTransitionsNode != null)
+        {
+            Splitter.Settings.TteLevelTransitions.Clear();
+            foreach (XmlNode transitionNode in tteTransitionsNode.ChildNodes)
+                Splitter.Settings.TteLevelTransitions.Add(TransitionSetting<TteLevel>.TteFromXmlElement(transitionNode));
         }
 
         // Assign values to Settings.
@@ -68,6 +80,9 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset; // CheckBox
         Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;       // CheckBox
 
-        Splitter.Settings.RefreshLevelTransitions();
+        var activeVersion = Splitter.Settings.ActiveVersion;
+        Splitter.Settings.RefreshLevelTransitions(Tr4Version.SteamOrGog);
+        Splitter.Settings.RefreshLevelTransitions(Tr4Version.TheTimesExclusive);
+        Splitter.Settings.RefreshLevelTransitions(activeVersion);
     }
 }

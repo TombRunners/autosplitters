@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using TRUtil;
 
@@ -22,8 +23,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
-    internal readonly List<TransitionSetting> LevelTransitions =
-        [
+    public Tr4Version ActiveVersion { get; private set; } = Tr4Version.None;
+
+    internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions = [
             // Cambodia
             new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
             new(Tr4Level.RaceForTheIris, Tr4Level.TheTombOfSeth, TransitionDirection.OneWayFromLower), // 02  -> 03
@@ -85,11 +87,16 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             new(Tr4Level.HorusBoss, Tr4Level.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 38  -> End
         ];
 
+    internal readonly List<TransitionSetting<TteLevel>> TteLevelTransitions =
+    [
+        new(TteLevel.Office, TteLevel.TheTimesExclusive, TransitionDirection.OneWayFromLower, null, null, null, note: "Cutscene"),                             // 01  -> 02
+        new(TteLevel.TheTimesExclusive, TteLevel.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 02  -> End
+    ];
+
     public ComponentSettings(Version version)
     {
         InitializeComponent();
         AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
-        RefreshLevelTransitions();
     }
 
     private void InitializeComponent()
@@ -268,7 +275,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    internal void RefreshLevelTransitions()
+    internal void RefreshLevelTransitions(Tr4Version version)
     {
         // Suspend layouts.
         SuspendLayout();
@@ -278,24 +285,49 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
         // Edit Controls in Panel.
         _levelTransitionSettingsPanel.Controls.Clear();
+        if (version == Tr4Version.None)
+        {
+            _levelTransitionSettings.Visible = false;
+        }
+        else
+        {
+            if (ActiveVersion == Tr4Version.SteamOrGog)
+                PopulateControl(Tr4LevelTransitions);
+            else
+                PopulateControl(TteLevelTransitions);
+            _levelTransitionSettings.Visible = true;
+        }
+
+        // Resume layouts.
+        _modeSelect.ResumeLayout(false);
+        _modeSelect.PerformLayout();
+        _levelTransitionSettings.ResumeLayout(false);
+        _levelTransitionSettings.PerformLayout();
+        _levelTransitionSettingsPanel.ResumeLayout(false);
+        _levelTransitionSettingsPanel.PerformLayout();
+        ResumeLayout(false);
+        PerformLayout();
+    }
+
+    private void PopulateControl<TLevel>(List<TransitionSetting<TLevel>> referenceList)
+        where TLevel : Enum
+    {
         var yOffset = 0;
         var font = new Font(_levelTransitionSettings.Font, FontStyle.Regular);
-        foreach (var transition in LevelTransitions)
+        foreach (var transition in referenceList)
         {
             // CheckBox
-            int widthNeeded = TextRenderer.MeasureText(transition.DisplayName, font).Width + 20;
+            int widthNeeded = TextRenderer.MeasureText(transition.DisplayName(), font).Width + 20;
             transition.CheckBox = new CheckBox
             {
-                Text = transition.DisplayName,
+                Text = transition.DisplayName(),
                 Location = new Point(0, yOffset),
                 Size = new Size(widthNeeded, 20),
                 Padding = Padding with { Left = 0, Right = 0 },
-                Checked = transition.Enabled,
+                Checked = transition.UnusedLevelNumber is 39 || transition.Enabled,
+                Enabled = transition.UnusedLevelNumber is not 39,
             };
-            transition.CheckBox.CheckedChanged += (_, _) =>
-            {
-                transition.UpdateEnabled();
-            };
+            transition.CheckBox.CheckedChanged += (_, _) => { transition.UpdateEnabled(); };
             _levelTransitionSettingsPanel.Controls.Add(transition.CheckBox);
 
             // ComboBox
@@ -313,7 +345,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Font = font,
                     Padding = Padding with { Left = 0, Right = 0 },
                 };
-                directionComboBox.Items.AddRange(["Two-Way", $"From {transition.Lower.Name()}", $"From {transition.Higher.Name()}"]);
+
+                string lowerName = transition.Lower.Description();
+                string higherName = transition.Higher.Description();
+                directionComboBox.Items.AddRange(["Two-Way", $"From {lowerName}", $"From {higherName}"]);
+
                 directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
                 directionComboBox.SelectedIndexChanged += (_, _) =>
                 {
@@ -325,28 +361,29 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
             yOffset += 22;
         }
-
-        // Resume layouts.
-        _modeSelect.ResumeLayout(false);
-        _modeSelect.PerformLayout();
-        _levelTransitionSettings.ResumeLayout(false);
-        _levelTransitionSettings.PerformLayout();
-        _levelTransitionSettingsPanel.ResumeLayout(false);
-        _levelTransitionSettingsPanel.PerformLayout();
-        ResumeLayout(false);
-        PerformLayout();
     }
 
     private void SelectAllButton_Click(object sender, EventArgs e)
     {
-        foreach (var transition in LevelTransitions)
-            transition.CheckBox.Checked = true;
+        if (ActiveVersion == Tr4Version.SteamOrGog)
+            SetAllCheckBoxes(Tr4LevelTransitions, true);
+        else
+            SetAllCheckBoxes(TteLevelTransitions, true);
     }
 
     private void UnselectAllButton_Click(object sender, EventArgs e)
     {
-        foreach (var transition in LevelTransitions)
-            transition.CheckBox.Checked = false;
+        if (ActiveVersion == Tr4Version.SteamOrGog)
+            SetAllCheckBoxes(Tr4LevelTransitions, false);
+        else
+            SetAllCheckBoxes(TteLevelTransitions, false);
+    }
+
+    private static void SetAllCheckBoxes<TLevel>(List<TransitionSetting<TLevel>> referenceList, bool check)
+        where TLevel : Enum
+    {
+        foreach (var transition in referenceList.Where(static transition => transition.CheckBox.Enabled))
+            transition.CheckBox.Checked = check;
     }
 
     private void GlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
@@ -360,8 +397,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         const string digitalText = "Steam/GOG [TR4]";
         const string tteText = "The Times Exclusive [TTE]";
 
+        ActiveVersion = (Tr4Version)version;
+        RefreshLevelTransitions(ActiveVersion);
+
         string versionText;
-        switch ((Tr4Version)version)
+        switch (ActiveVersion)
         {
             case Tr4Version.SteamOrGog:
                 versionText = digitalText;
