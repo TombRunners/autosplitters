@@ -32,7 +32,7 @@ public class TransitionSetting<TLevel>(
         }
     }
 
-    public bool Enabled { get; protected set; }
+    public bool Enabled { get; private set; } = true;
 
     public void UpdateEnabled() => Enabled = CheckBox.Checked;
 
