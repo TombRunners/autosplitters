@@ -194,10 +194,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         GlitchlessCheckbox.UseVisualStyleBackColor = true;
         GlitchlessCheckbox.CheckedChanged += GlitchlessCheckboxCheckedChanged;
 
-        // Level Transition Setting
+        // _levelTransitionSettings
         _levelTransitionSettings.Controls.Add(_levelTransitionSettingsPanel);
         _levelTransitionSettings.Controls.Add(_selectAllButton);
         _levelTransitionSettings.Controls.Add(_unselectAllButton);
+        _levelTransitionSettings.Visible = false;
         _levelTransitionSettings.Location = new Point(0, 150);
         _levelTransitionSettings.Name = "_levelTransitionSettings";
         _levelTransitionSettings.Size = new Size(476, 270);
@@ -275,7 +276,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    internal void RefreshLevelTransitions(Tr4Version version)
+    private void RefreshLevelTransitions(Tr4Version version)
     {
         // Suspend layouts.
         SuspendLayout();
