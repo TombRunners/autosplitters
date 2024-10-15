@@ -22,7 +22,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
-    private readonly List<TransitionSetting> _levelTransitions =
+    internal readonly List<TransitionSetting> LevelTransitions =
         [
             // Cambodia
             new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
@@ -89,6 +89,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     {
         InitializeComponent();
         AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
+        RefreshLevelTransitions();
     }
 
     private void InitializeComponent()
@@ -101,11 +102,16 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         EnableAutoResetCheckbox = new CheckBox();
         SplitSecretsCheckbox = new CheckBox();
         _levelTransitionSettings = new GroupBox();
+        _levelTransitionSettingsPanel = new Panel();
+        _selectAllButton = new Button();
+        _unselectAllButton = new Button();
         GameVersionLabel = new Label();
         AutosplitterVersionLabel = new Label();
         AslWarningLabel = new Label();
         _modeSelect.SuspendLayout();
         _levelTransitionSettings.SuspendLayout();
+        _levelTransitionSettingsPanel.SuspendLayout();
+
         SuspendLayout();
 
         // _modeSelect
@@ -182,10 +188,36 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         GlitchlessCheckbox.CheckedChanged += GlitchlessCheckboxCheckedChanged;
 
         // Level Transition Setting
+        _levelTransitionSettings.Controls.Add(_levelTransitionSettingsPanel);
+        _levelTransitionSettings.Controls.Add(_selectAllButton);
+        _levelTransitionSettings.Controls.Add(_unselectAllButton);
         _levelTransitionSettings.Location = new Point(0, 150);
         _levelTransitionSettings.Name = "_levelTransitionSettings";
         _levelTransitionSettings.Size = new Size(476, 270);
         _levelTransitionSettings.Text = "Level Transition Settings";
+
+        // _levelTransitionSettingsPanel
+        _levelTransitionSettingsPanel.Location = new Point(5, 20);
+        _levelTransitionSettingsPanel.Size = new Size(470, 220);
+        _levelTransitionSettingsPanel.Padding = _levelTransitionSettings.Padding with { Left = 0, Right = 0 };
+        _levelTransitionSettingsPanel.AutoScroll = false;
+        _levelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSettingsPanel.Height);
+        _levelTransitionSettingsPanel.VerticalScroll.Enabled = true;
+        _levelTransitionSettingsPanel.VerticalScroll.Visible = true;
+        _levelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
+        _levelTransitionSettingsPanel.HorizontalScroll.Visible = false;
+
+        // _selectAllButton
+        _selectAllButton.Location = new Point(10, 240);
+        _selectAllButton.Size = new Size(100, 20);
+        _selectAllButton.Text = "Select All";
+        _selectAllButton.Click += SelectAllButton_Click;
+
+        // _unselectAllButton
+        _unselectAllButton.Location = new Point(350, 240);
+        _unselectAllButton.Size = new Size(100, 20);
+        _unselectAllButton.Text = "Unselect All";
+        _unselectAllButton.Click += UnselectAllButton_Click;
 
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;
@@ -225,70 +257,54 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         Controls.Add(_levelTransitionSettings);
         Name = "ComponentSettings";
         Size = new Size(476, 500);
+
         _modeSelect.ResumeLayout(false);
         _modeSelect.PerformLayout();
-
+        _levelTransitionSettings.ResumeLayout(false);
+        _levelTransitionSettings.PerformLayout();
+        _levelTransitionSettingsPanel.ResumeLayout(false);
+        _levelTransitionSettingsPanel.PerformLayout();
         ResumeLayout(false);
         PerformLayout();
-
-        AddLevelTransitionsSettings();
     }
 
-    private void AddLevelTransitionsSettings()
+    internal void RefreshLevelTransitions()
     {
+        // Suspend layouts.
         SuspendLayout();
+        _modeSelect.SuspendLayout();
+        _levelTransitionSettingsPanel.SuspendLayout();
+        _levelTransitionSettings.SuspendLayout();
 
-        _levelTransitionSettingsPanel = new Panel();
-        _selectAllButton = new Button();
-        _unselectAllButton = new Button();
-
-        // _levelTransitionSettingsPanel
-        _levelTransitionSettingsPanel.Location = new Point(5, 20);
-        _levelTransitionSettingsPanel.Size = new Size(470, 220);
-        _levelTransitionSettingsPanel.Padding = _levelTransitionSettings.Padding with { Left = 0, Right = 0 };
-        _levelTransitionSettingsPanel.AutoScroll = false;
-        _levelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSettingsPanel.Height);
-        _levelTransitionSettingsPanel.VerticalScroll.Enabled = true;
-        _levelTransitionSettingsPanel.VerticalScroll.Visible = true;
-        _levelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
-        _levelTransitionSettingsPanel.HorizontalScroll.Visible = false;
-
-        _levelTransitionSettings.Controls.Add(_selectAllButton);
-        _levelTransitionSettings.Controls.Add(_unselectAllButton);
-        _levelTransitionSettings.Controls.Add(_levelTransitionSettingsPanel);
-
-        // _selectAllButton
-        _selectAllButton.Location = new Point(10, 240);
-        _selectAllButton.Size = new Size(100, 20);
-        _selectAllButton.Text = "Select All";
-        _selectAllButton.Click += SelectAllButton_Click;
-
-        // _unselectAllButton
-        _unselectAllButton.Location = new Point(350, 240);
-        _unselectAllButton.Size = new Size(100, 20);
-        _unselectAllButton.Text = "Unselect All";
-        _unselectAllButton.Click += UnselectAllButton_Click;
-
+        // Edit Controls in Panel.
+        _levelTransitionSettingsPanel.Controls.Clear();
         var yOffset = 0;
-        foreach (var transition in _levelTransitions)
+        var font = new Font(_levelTransitionSettings.Font, FontStyle.Regular);
+        foreach (var transition in LevelTransitions)
         {
+            // CheckBox
+            int widthNeeded = TextRenderer.MeasureText(transition.DisplayName, font).Width + 20;
             transition.CheckBox = new CheckBox
             {
                 Text = transition.DisplayName,
                 Location = new Point(0, yOffset),
-                AutoSize = true,
-                Height = 20,
+                Size = new Size(widthNeeded, 20),
                 Padding = Padding with { Left = 0, Right = 0 },
+                Checked = transition.Enabled,
+            };
+            transition.CheckBox.CheckedChanged += (_, _) =>
+            {
+                transition.UpdateEnabled();
             };
             _levelTransitionSettingsPanel.Controls.Add(transition.CheckBox);
 
+            // ComboBox
             if (transition.Directionality == TransitionDirection.TwoWay)
             {
                 const int maxWidth = 180;
                 int availableWidth = 452 - transition.CheckBox.Width;
                 int width = Math.Min(maxWidth, availableWidth);
 
-                var font = new Font(transition.CheckBox.Font, FontStyle.Regular);
                 var directionComboBox = new ComboBox
                 {
                     Location = new Point(452 - width, yOffset - 2),
@@ -298,7 +314,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Padding = Padding with { Left = 0, Right = 0 },
                 };
                 directionComboBox.Items.AddRange(["Two-Way", $"From {transition.Lower.Name()}", $"From {transition.Higher.Name()}"]);
-                directionComboBox.SelectedIndex = 0;
+                directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
                 directionComboBox.SelectedIndexChanged += (_, _) =>
                 {
                     transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex;
@@ -310,21 +326,26 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             yOffset += 22;
         }
 
+        // Resume layouts.
+        _modeSelect.ResumeLayout(false);
+        _modeSelect.PerformLayout();
         _levelTransitionSettings.ResumeLayout(false);
         _levelTransitionSettings.PerformLayout();
+        _levelTransitionSettingsPanel.ResumeLayout(false);
+        _levelTransitionSettingsPanel.PerformLayout();
         ResumeLayout(false);
         PerformLayout();
     }
 
     private void SelectAllButton_Click(object sender, EventArgs e)
     {
-        foreach (var transition in _levelTransitions)
+        foreach (var transition in LevelTransitions)
             transition.CheckBox.Checked = true;
     }
 
     private void UnselectAllButton_Click(object sender, EventArgs e)
     {
-        foreach (var transition in _levelTransitions)
+        foreach (var transition in LevelTransitions)
             transition.CheckBox.Checked = false;
     }
 

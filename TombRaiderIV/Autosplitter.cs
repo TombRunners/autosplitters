@@ -5,7 +5,7 @@ using TRUtil;
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData, TSettings}"/>.</summary>
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData,TSettings}"/>.</summary>
 internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels =

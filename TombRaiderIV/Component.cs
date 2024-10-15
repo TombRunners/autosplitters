@@ -5,7 +5,7 @@ using TRUtil;          // LaterClassicAutosplitter, LaterClassicComponent
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicComponent{TData, TSettings}" />.</summary>
+/// <summary>Implementation of <see cref="LaterClassicComponent{TData,TSettings}" />.</summary>
 /// <inheritdoc />
 internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSettings> autosplitter, LiveSplitState state)
     : LaterClassicComponent<GameData, ComponentSettings>(autosplitter, state)
@@ -29,6 +29,13 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.Glitchless), Splitter.Settings.Glitchless));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.EnableAutoReset), Splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.SplitSecrets), Splitter.Settings.SplitSecrets));
+
+        var transitionsNode = document.CreateElement("LevelTransitions");
+        foreach (var transition in Splitter.Settings.LevelTransitions)
+            transitionsNode.AppendChild(transition.ToXmlElement(document));
+
+        settingsNode.AppendChild(transitionsNode);
+
         return settingsNode;
     }
 
@@ -41,6 +48,14 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], Splitter.Settings.EnableAutoReset);
         Splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], Splitter.Settings.SplitSecrets);
 
+        var transitionsNode = settings["LevelTransitions"];
+        if (transitionsNode != null)
+        {
+            Splitter.Settings.LevelTransitions.Clear();
+            foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
+                Splitter.Settings.LevelTransitions.Add(TransitionSetting.FromXmlElement(transitionNode));
+        }
+
         // Assign values to Settings.
         if (Splitter.Settings.FullGame)
             Splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
@@ -52,5 +67,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.GlitchlessCheckbox.Checked = Splitter.Settings.Glitchless;           // CheckBox
         Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset; // CheckBox
         Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;       // CheckBox
+
+        Splitter.Settings.RefreshLevelTransitions();
     }
 }
