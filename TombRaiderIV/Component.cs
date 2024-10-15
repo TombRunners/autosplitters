@@ -79,10 +79,5 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.GlitchlessCheckbox.Checked = Splitter.Settings.Glitchless;           // CheckBox
         Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset; // CheckBox
         Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;       // CheckBox
-
-        var activeVersion = Splitter.Settings.ActiveVersion;
-        Splitter.Settings.RefreshLevelTransitions(Tr4Version.SteamOrGog);
-        Splitter.Settings.RefreshLevelTransitions(Tr4Version.TheTimesExclusive);
-        Splitter.Settings.RefreshLevelTransitions(activeVersion);
     }
 }
