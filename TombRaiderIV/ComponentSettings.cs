@@ -23,6 +23,10 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
+    private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
+
+    private bool _initialLayout = true;
+
     private Tr4Version ActiveVersion { get; set; } = Tr4Version.None;
 
     // ReSharper disable ArgumentsStyleLiteral
@@ -120,8 +124,6 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         AslWarningLabel = new Label();
         _modeSelect.SuspendLayout();
         _levelTransitionSettings.SuspendLayout();
-        _levelTransitionSettingsPanel.SuspendLayout();
-
         SuspendLayout();
 
         // _modeSelect
@@ -201,16 +203,14 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         _levelTransitionSettings.Controls.Add(_levelTransitionSettingsPanel);
         _levelTransitionSettings.Controls.Add(_selectAllButton);
         _levelTransitionSettings.Controls.Add(_unselectAllButton);
-        _levelTransitionSettings.Visible = false;
         _levelTransitionSettings.Location = new Point(0, 150);
         _levelTransitionSettings.Name = "_levelTransitionSettings";
         _levelTransitionSettings.Size = new Size(476, 270);
-        _levelTransitionSettings.Text = "Level Transition Settings";
+        _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
 
         // _levelTransitionSettingsPanel
         _levelTransitionSettingsPanel.Location = new Point(5, 20);
         _levelTransitionSettingsPanel.Size = new Size(470, 220);
-        _levelTransitionSettingsPanel.Padding = _levelTransitionSettings.Padding with { Left = 0, Right = 0 };
         _levelTransitionSettingsPanel.AutoScroll = false;
         _levelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSettingsPanel.Height);
         _levelTransitionSettingsPanel.VerticalScroll.Enabled = true;
@@ -270,47 +270,49 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         Size = new Size(476, 500);
 
         _modeSelect.ResumeLayout(false);
-        _modeSelect.PerformLayout();
+        RefreshLevelTransitions(ActiveVersion);
         _levelTransitionSettings.ResumeLayout(false);
-        _levelTransitionSettings.PerformLayout();
-        _levelTransitionSettingsPanel.ResumeLayout(false);
-        _levelTransitionSettingsPanel.PerformLayout();
         ResumeLayout(false);
+
         PerformLayout();
+
+        _initialLayout = false;
     }
 
     private void RefreshLevelTransitions(Tr4Version version)
     {
-        // Suspend layouts.
-        SuspendLayout();
-        _modeSelect.SuspendLayout();
-        _levelTransitionSettingsPanel.SuspendLayout();
-        _levelTransitionSettings.SuspendLayout();
+        // Suspend layouts, if needed.
+        if (!_initialLayout)
+        {
+            SuspendLayout();
+            _levelTransitionSettings.SuspendLayout();
+        }
 
-        // Edit Controls in Panel.
+        // Edit Controls.
         _levelTransitionSettingsPanel.Controls.Clear();
         if (version == Tr4Version.None)
         {
-            _levelTransitionSettings.Visible = false;
+            _selectAllButton.Enabled = _unselectAllButton.Enabled = false;
+            _levelTransitionSettings.Text = $"{LevelTransitionSettingsTextDefault} (Disabled, No Game Active)";
         }
         else
         {
+            _selectAllButton.Enabled = _unselectAllButton.Enabled = true;
+            _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
+
             if (ActiveVersion == Tr4Version.SteamOrGog)
                 PopulateControl(Tr4LevelTransitions);
             else
                 PopulateControl(TteLevelTransitions);
-            _levelTransitionSettings.Visible = true;
         }
 
-        // Resume layouts.
-        _modeSelect.ResumeLayout(false);
-        _modeSelect.PerformLayout();
-        _levelTransitionSettings.ResumeLayout(false);
-        _levelTransitionSettings.PerformLayout();
-        _levelTransitionSettingsPanel.ResumeLayout(false);
-        _levelTransitionSettingsPanel.PerformLayout();
-        ResumeLayout(false);
-        PerformLayout();
+        // Resume layouts, if needed.
+        if (!_initialLayout)
+        {
+            _levelTransitionSettings.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
+        }
     }
 
     private void PopulateControl<TLevel>(List<TransitionSetting<TLevel>> referenceList)
@@ -322,23 +324,23 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         {
             // CheckBox
             int widthNeeded = TextRenderer.MeasureText(transition.DisplayName(), font).Width + 20;
-            transition.CheckBox = new CheckBox
+            var checkBox = new CheckBox
             {
                 Text = transition.DisplayName(),
                 Location = new Point(0, yOffset),
                 Size = new Size(widthNeeded, 20),
                 Padding = Padding with { Left = 0, Right = 0 },
-                Checked = transition.UnusedLevelNumber is 39 || transition.Enabled,
+                Checked = transition.UnusedLevelNumber is 39 || transition.Active,
                 Enabled = transition.UnusedLevelNumber is not 39,
             };
-            transition.CheckBox.CheckedChanged += (_, _) => { transition.UpdateEnabled(); };
-            _levelTransitionSettingsPanel.Controls.Add(transition.CheckBox);
+            checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox)sender).Checked); };
+            _levelTransitionSettingsPanel.Controls.Add(checkBox);
 
             // ComboBox
             if (transition.Directionality == TransitionDirection.TwoWay)
             {
                 const int maxWidth = 180;
-                int availableWidth = 452 - transition.CheckBox.Width;
+                int availableWidth = 452 - checkBox.Width;
                 int width = Math.Min(maxWidth, availableWidth);
 
                 var directionComboBox = new ComboBox
@@ -386,8 +388,8 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private static void SetAllCheckBoxes<TLevel>(List<TransitionSetting<TLevel>> referenceList, bool check)
         where TLevel : Enum
     {
-        foreach (var transition in referenceList.Where(static transition => transition.CheckBox.Enabled))
-            transition.CheckBox.Checked = check;
+        foreach (var transition in referenceList.Where(static transition => transition.Enabled))
+            transition.UpdateActive(check);
     }
 
     private void GlitchlessCheckboxCheckedChanged(object sender, EventArgs e)

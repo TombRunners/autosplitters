@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
 using LiveSplit.UI;
 
@@ -31,13 +30,12 @@ public class TransitionSetting<TLevel>(
         }
     }
 
-    public bool Enabled { get; private set; } = true;
+    public bool Active { get; private set; } = true;
+    public bool Enabled => UnusedLevelNumber is not 39;
 
-    public void UpdateEnabled() => Enabled = CheckBox.Checked;
+    public void UpdateActive(bool active) => Active = active;
 
     public TransitionDirection SelectedDirectionality { get; set; } = directionality;
-
-    public CheckBox CheckBox { get; set; }
 
     public string DisplayName()
     {
@@ -70,7 +68,7 @@ public class TransitionSetting<TLevel>(
         element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(Higher)));
         element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int)Directionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int)SelectedDirectionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, "Enabled", Enabled));
+        element.AppendChild(SettingsHelper.ToElement(document, "Enabled", Active));
         if (UnusedLevelNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "UnusedLevelNumber", UnusedLevelNumber.Value.ToString()));
         if (LowerRoomNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "LowerRoomNumber", LowerRoomNumber.Value.ToString()));
         if (HigherRoomNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "HigherRoomNumber", HigherRoomNumber.Value.ToString()));
@@ -92,7 +90,7 @@ public class TransitionSetting<TLevel>(
         var setting = new TransitionSetting<Tr4Level>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
-            Enabled = enabled,
+            Active = enabled,
         };
 
         return setting;
@@ -113,7 +111,7 @@ public class TransitionSetting<TLevel>(
         var setting = new TransitionSetting<TteLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
-            Enabled = enabled,
+            Active = enabled,
         };
 
         return setting;
