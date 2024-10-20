@@ -23,9 +23,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
-    public Tr4Version ActiveVersion { get; private set; } = Tr4Version.None;
+    private Tr4Version ActiveVersion { get; set; } = Tr4Version.None;
 
-    internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions = [
+    // ReSharper disable ArgumentsStyleLiteral
+    internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions =
+    [
         // Cambodia
         new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
         new(Tr4Level.RaceForTheIris, Tr4Level.TheTombOfSeth, TransitionDirection.OneWayFromLower), // 02  -> 03
@@ -92,6 +94,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         new(TteLevel.Office, TteLevel.TheTimesExclusive, TransitionDirection.OneWayFromLower, note: "Cutscene"),                             // 01  -> 02
         new(TteLevel.TheTimesExclusive, TteLevel.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 02  -> End
     ];
+    // ReSharper restore ArgumentsStyleLiteral
 
     public ComponentSettings(Version version)
     {

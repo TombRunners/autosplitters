@@ -17,13 +17,12 @@ public class TransitionSetting<TLevel>(
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
     public readonly int? LowerRoomNumber = lowerRoomNumber;
     public readonly int? HigherRoomNumber = higherRoomNumber;
-    public readonly string Note = note;
 
     public ulong Id
     {
         get
         {
-            var sb = new StringBuilder($"{Lower:D2}{(int)Directionality:D1}{Higher:D2}");
+            var sb = new StringBuilder($"{Convert.ToInt32(Lower)}{(int)Directionality:D1}{Convert.ToInt32(Higher)}");
             sb.Append(UnusedLevelNumber is null ?  "000" : UnusedLevelNumber.Value.ToString("D3"));
             sb.Append(LowerRoomNumber is null ?  "000" : LowerRoomNumber.Value.ToString("D3"));
             sb.Append(HigherRoomNumber is null ?  "000" : HigherRoomNumber.Value.ToString("D3"));
@@ -44,12 +43,12 @@ public class TransitionSetting<TLevel>(
     {
         string lowerName = Lower.Description();
         string higherName = Higher.Description();
-        string noteText = !string.IsNullOrEmpty(Note) ? $" [{Note}]" : string.Empty;
+        string noteText = !string.IsNullOrEmpty(note) ? $" [{note}]" : string.Empty;
 
         if (LowerRoomNumber is null && HigherRoomNumber is null)
             return Directionality switch
             {
-                TransitionDirection.TwoWay => $"{lowerName} ↔️ {Higher.Description()}{noteText}",
+                TransitionDirection.TwoWay => $"{lowerName} ↔️ {higherName}{noteText}",
                 TransitionDirection.OneWayFromLower => $"{lowerName} → {higherName}{noteText}",
                 TransitionDirection.OneWayFromHigher => $"{higherName} → {lowerName}{noteText}",
                 _ => throw new ArgumentOutOfRangeException(nameof(Directionality), Directionality, "Unknown directionality"),
@@ -90,7 +89,7 @@ public class TransitionSetting<TLevel>(
         int? lowerRoomNumber = node["LowerRoomNumber"] != null ? int.Parse(node["LowerRoomNumber"].InnerText) : null;
         int? higherRoomNumber = node["HigherRoomNumber"] != null ? int.Parse(node["HigherRoomNumber"].InnerText) : null;
 
-        var setting = new TransitionSetting<Tr4Level>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber, null)
+        var setting = new TransitionSetting<Tr4Level>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
             Enabled = enabled,
@@ -111,7 +110,7 @@ public class TransitionSetting<TLevel>(
         int? lowerRoomNumber = node["LowerRoomNumber"] != null ? int.Parse(node["LowerRoomNumber"].InnerText) : null;
         int? higherRoomNumber = node["HigherRoomNumber"] != null ? int.Parse(node["HigherRoomNumber"].InnerText) : null;
 
-        var setting = new TransitionSetting<TteLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber, null)
+        var setting = new TransitionSetting<TteLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
             Enabled = enabled,

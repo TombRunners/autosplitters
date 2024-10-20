@@ -57,7 +57,7 @@ public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitCompone
     public override string ComponentName => "Later Classic Tomb Raider Component";
 
     /// <summary>
-    ///     Adds <see cref="LaterClassicGameData"/> and <see cref="LaterClassicAutosplitter{TData}"/> management to <see cref="AutoSplitComponent.Update"/>.
+    ///     Adds <see cref="LaterClassicGameData"/> and <see cref="LaterClassicAutosplitter{TData,TSettings}"/> management to <see cref="AutoSplitComponent.Update"/>.
     /// </summary>
     /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
     /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
@@ -65,7 +65,7 @@ public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitCompone
     /// <param name="height">Height passed by LiveSplit</param>
     /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
     /// <remarks>
-    ///     This override allows <see cref="LaterClassicAutosplitter{TData}"/> to use <see cref="ClassicGameData"/> in its logic.
+    ///     This override allows <see cref="LaterClassicAutosplitter{TData,TSettings}"/> to use <see cref="ClassicGameData"/> in its logic.
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {

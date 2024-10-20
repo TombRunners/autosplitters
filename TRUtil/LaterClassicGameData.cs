@@ -15,7 +15,7 @@ public abstract class LaterClassicGameData : BaseGameData
     /// </remarks>
     public MemoryWatcher<uint> GfLevelComplete => (MemoryWatcher<uint>)Watchers?["GfLevelComplete"];
 
-    /// <summary>Represents a "global" timer tracking ticks since New Game. It is saved/reloaded. </summary>
+    /// <summary>Represents a "global" timer tracking ticks since New Game. It is saved/reloaded.</summary>
     public MemoryWatcher<uint> GameTimer => (MemoryWatcher<uint>)Watchers?["GameTimer"];
 
     /// <summary>Indicates if a loading screen is active.</summary>
