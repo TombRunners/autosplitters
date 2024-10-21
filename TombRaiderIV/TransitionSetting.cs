@@ -31,7 +31,7 @@ public class TransitionSetting<TLevel>(
     }
 
     public bool Active { get; private set; } = true;
-    public bool Enabled => UnusedLevelNumber is not 39;
+    public bool CanBeConfigured => UnusedLevelNumber is not 39;
 
     public void UpdateActive(bool active) => Active = active;
 
@@ -68,10 +68,15 @@ public class TransitionSetting<TLevel>(
         element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(Higher)));
         element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int)Directionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int)SelectedDirectionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, "Enabled", Active));
-        if (UnusedLevelNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "UnusedLevelNumber", UnusedLevelNumber.Value.ToString()));
-        if (LowerRoomNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "LowerRoomNumber", LowerRoomNumber.Value.ToString()));
-        if (HigherRoomNumber.HasValue) element.AppendChild(SettingsHelper.ToElement(document, "HigherRoomNumber", HigherRoomNumber.Value.ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, "Active", Active));
+
+        if (UnusedLevelNumber.HasValue)
+            element.AppendChild(SettingsHelper.ToElement(document, "UnusedLevelNumber", UnusedLevelNumber.Value.ToString()));
+        if (LowerRoomNumber.HasValue)
+            element.AppendChild(SettingsHelper.ToElement(document, "LowerRoomNumber", LowerRoomNumber.Value.ToString()));
+        if (HigherRoomNumber.HasValue)
+            element.AppendChild(SettingsHelper.ToElement(document, "HigherRoomNumber", HigherRoomNumber.Value.ToString()));
+
         return element;
     }
 
@@ -81,7 +86,7 @@ public class TransitionSetting<TLevel>(
         var higher = (Tr4Level)int.Parse(node["Higher"].InnerText);
         var directionality = (TransitionDirection)int.Parse(node["Directionality"].InnerText);
         var selectedDirectionality = (TransitionDirection)int.Parse(node["SelectedDirectionality"].InnerText);
-        bool enabled = bool.Parse(node["Enabled"].InnerText);
+        bool active = bool.Parse(node["Active"].InnerText);
 
         int? unusedLevelNumber = node["UnusedLevelNumber"] != null ? int.Parse(node["UnusedLevelNumber"].InnerText) : null;
         int? lowerRoomNumber = node["LowerRoomNumber"] != null ? int.Parse(node["LowerRoomNumber"].InnerText) : null;
@@ -90,7 +95,7 @@ public class TransitionSetting<TLevel>(
         var setting = new TransitionSetting<Tr4Level>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
-            Active = enabled,
+            Active = active,
         };
 
         return setting;
@@ -102,7 +107,7 @@ public class TransitionSetting<TLevel>(
         var higher = (TteLevel)int.Parse(node["Higher"].InnerText);
         var directionality = (TransitionDirection)int.Parse(node["Directionality"].InnerText);
         var selectedDirectionality = (TransitionDirection)int.Parse(node["SelectedDirectionality"].InnerText);
-        bool enabled = bool.Parse(node["Enabled"].InnerText);
+        bool active = bool.Parse(node["Active"].InnerText);
 
         int? unusedLevelNumber = node["UnusedLevelNumber"] != null ? int.Parse(node["UnusedLevelNumber"].InnerText) : null;
         int? lowerRoomNumber = node["LowerRoomNumber"] != null ? int.Parse(node["LowerRoomNumber"].InnerText) : null;
@@ -111,7 +116,7 @@ public class TransitionSetting<TLevel>(
         var setting = new TransitionSetting<TteLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
-            Active = enabled,
+            Active = active,
         };
 
         return setting;

@@ -26,7 +26,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         var settingsNode = document.CreateElement("Settings");
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.FullGame), Splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.Deathrun), Splitter.Settings.Deathrun));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.Glitchless), Splitter.Settings.Glitchless));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.LegacyGlitchless), Splitter.Settings.LegacyGlitchless));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.EnableAutoReset), Splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.SplitSecrets), Splitter.Settings.SplitSecrets));
 
@@ -48,7 +48,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         // Read serialized values, or keep defaults if they are not yet serialized.
         Splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], Splitter.Settings.FullGame);
         Splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], Splitter.Settings.Deathrun);
-        Splitter.Settings.Glitchless = SettingsHelper.ParseBool(settings["Glitchless"], Splitter.Settings.Glitchless);
+        Splitter.Settings.LegacyGlitchless = SettingsHelper.ParseBool(settings["LegacyGlitchless"], Splitter.Settings.LegacyGlitchless);
         Splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], Splitter.Settings.EnableAutoReset);
         Splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], Splitter.Settings.SplitSecrets);
 
@@ -76,8 +76,8 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         else
             Splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
 
-        Splitter.Settings.GlitchlessCheckbox.Checked = Splitter.Settings.Glitchless;           // CheckBox
-        Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset; // CheckBox
-        Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;       // CheckBox
+        Splitter.Settings.LegacyGlitchlessCheckbox.Checked = Splitter.Settings.LegacyGlitchless; // CheckBox
+        Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset;   // CheckBox
+        Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;         // CheckBox
     }
 }

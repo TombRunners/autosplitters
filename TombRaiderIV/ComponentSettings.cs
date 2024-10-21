@@ -13,10 +13,10 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     public RadioButton ILModeButton;
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
-    public CheckBox GlitchlessCheckbox;
+    public CheckBox LegacyGlitchlessCheckbox;
     public CheckBox EnableAutoResetCheckbox;
     public CheckBox SplitSecretsCheckbox;
-    public bool Glitchless;
+    public bool LegacyGlitchless;
 
     private Panel _levelTransitionSettingsPanel;
     private GroupBox _levelTransitionSettings;
@@ -112,7 +112,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         FullGameModeButton = new RadioButton();
         ILModeButton = new RadioButton();
         DeathrunModeButton = new RadioButton();
-        GlitchlessCheckbox = new CheckBox();
+        LegacyGlitchlessCheckbox = new CheckBox();
         EnableAutoResetCheckbox = new CheckBox();
         SplitSecretsCheckbox = new CheckBox();
         _levelTransitionSettings = new GroupBox();
@@ -189,15 +189,15 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         SplitSecretsCheckbox.UseVisualStyleBackColor = true;
         SplitSecretsCheckbox.CheckedChanged += SplitSecretsCheckboxCheckedChanged;
 
-        // GlitchlessCheckbox
-        GlitchlessCheckbox.AutoSize = true;
-        GlitchlessCheckbox.Checked = false;
-        GlitchlessCheckbox.Location = new Point(12, 120);
-        GlitchlessCheckbox.Name = "GlitchlessCheckbox";
-        GlitchlessCheckbox.Text = "Glitchless";
-        GlitchlessCheckbox.TabIndex = 0;
-        GlitchlessCheckbox.UseVisualStyleBackColor = true;
-        GlitchlessCheckbox.CheckedChanged += GlitchlessCheckboxCheckedChanged;
+        // LegacyGlitchlessCheckbox
+        LegacyGlitchlessCheckbox.AutoSize = true;
+        LegacyGlitchlessCheckbox.Checked = false;
+        LegacyGlitchlessCheckbox.Location = new Point(12, 120);
+        LegacyGlitchlessCheckbox.Name = "LegacyGlitchlessCheckbox";
+        LegacyGlitchlessCheckbox.Text = "Legacy Glitchless (Obsolete)";
+        LegacyGlitchlessCheckbox.TabIndex = 0;
+        LegacyGlitchlessCheckbox.UseVisualStyleBackColor = true;
+        LegacyGlitchlessCheckbox.CheckedChanged += LegacyGlitchlessCheckboxCheckedChanged;
 
         // _levelTransitionSettings
         _levelTransitionSettings.Controls.Add(_levelTransitionSettingsPanel);
@@ -261,7 +261,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         Controls.Add(AslWarningLabel);
         Controls.Add(AutosplitterVersionLabel);
         Controls.Add(GameVersionLabel);
-        Controls.Add(GlitchlessCheckbox);
+        Controls.Add(LegacyGlitchlessCheckbox);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(SplitSecretsCheckbox);
         Controls.Add(_modeSelect);
@@ -301,10 +301,25 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
 
             if (ActiveVersion == Tr4Version.SteamOrGog)
+            {
                 PopulateControl(Tr4LevelTransitions);
+            }
             else
+            {
                 PopulateControl(TteLevelTransitions);
+
+                var settingsNotificationLabel = new Label
+                {
+                    Text = "Note: For TTE, the setting for \"Legacy Glitchless\" is ignored.",
+                    AutoEllipsis = false,
+                    AutoSize = true,
+                    Location = new Point(5, 200),
+                };
+                _levelTransitionSettingsPanel.Controls.Add(settingsNotificationLabel);
         }
+        }
+
+        AdjustTransitionsStatePerLegacyGlitchless();
 
         // Resume layouts, if needed.
         if (!_initialLayout)
@@ -331,7 +346,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                 Size = new Size(widthNeeded, 20),
                 Padding = Padding with { Left = 0, Right = 0 },
                 Checked = transition.UnusedLevelNumber is 39 || transition.Active,
-                Enabled = transition.UnusedLevelNumber is not 39,
+                Enabled = transition.CanBeConfigured,
             };
             checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox)sender).Checked); };
             _levelTransitionSettingsPanel.Controls.Add(checkBox);
@@ -369,6 +384,19 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         }
     }
 
+    private void AdjustTransitionsStatePerLegacyGlitchless()
+    {
+        if (LegacyGlitchless)
+        {
+            _levelTransitionSettings.Enabled = false;
+            _levelTransitionSettings.Text = $"{LevelTransitionSettingsTextDefault} (Disabled, Legacy Glitchless Active)";
+        }
+        else if (ActiveVersion != Tr4Version.None)
+        {
+            _levelTransitionSettings.Enabled = true;
+        }
+    }
+
     private void SelectAllButton_Click(object sender, EventArgs e)
     {
         if (ActiveVersion == Tr4Version.SteamOrGog)
@@ -392,10 +420,12 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             transition.UpdateActive(check);
     }
 
-    private void GlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
+    private void LegacyGlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
     {
         var checkbox = (CheckBox)sender;
-        Glitchless = checkbox.Checked;
+        LegacyGlitchless = checkbox.Checked;
+
+        AdjustTransitionsStatePerLegacyGlitchless();
     }
 
     public override void SetGameVersion(uint version, string hash)

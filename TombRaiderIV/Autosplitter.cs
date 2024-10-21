@@ -42,7 +42,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
             bool specialExceptionForGlitchlessPostLoadSplits =
                 Settings.FullGame && currentLevel is Tr4Level.Catacombs;
-            return specialExceptionForGlitchlessPostLoadSplits && GlitchlessShouldSplit();
+            return specialExceptionForGlitchlessPostLoadSplits && Settings.LegacyGlitchless && GlitchlessShouldSplit();
         }
 
         // In the case of The Times Exclusive, there is only one playable level with a value of 2;
@@ -77,6 +77,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits for both TR4 and TTE.
         return enteringUnusedLevelValue || enteringNextSplitLevel || finishedGame;
     }
+
+    #region Legacy Glitchless Logic
 
     private bool GlitchlessShouldSplit()
         => Data.Level.Current switch
@@ -329,4 +331,6 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         bool loadingBoss = currentGfLevelComplete == Tr4Level.HorusBoss;
         return loadingNextLevel && !loadingBoss;
     }
+
+    #endregion
 }
