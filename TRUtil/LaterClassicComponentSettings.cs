@@ -28,19 +28,19 @@ public class LaterClassicComponentSettings : UserControl
         };
     }
 
-    protected void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
+    protected virtual void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = true;
         Deathrun = false;
     }
 
-    protected void ILModeButtonCheckedChanged(object sender, EventArgs e)
+    protected virtual void ILModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = false;
         Deathrun = false;
     }
 
-    protected void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
+    protected virtual void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
     {
         FullGame = false;
         Deathrun = true;

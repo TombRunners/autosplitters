@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using TRUtil;
 
@@ -23,11 +24,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
-    private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
-
-    private bool _initialLayout = true;
-
     private Tr4Version ActiveVersion { get; set; } = Tr4Version.None;
+
+    private const string LegacyGlitchlessSettingTextDefault = "Legacy Glitchless (Obsolete)";
+    private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
+    private const string SplitsSecretsSettingTextDefault = "Split When Secret is Triggered";
 
     // ReSharper disable ArgumentsStyleLiteral
     internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions =
@@ -99,6 +100,13 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         new(TteLevel.TheTimesExclusive, TteLevel.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 02  -> End
     ];
     // ReSharper restore ArgumentsStyleLiteral
+
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+
+        RefreshLevelTransitions(ActiveVersion);
+    }
 
     public ComponentSettings(Version version)
     {
@@ -184,7 +192,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         SplitSecretsCheckbox.Checked = false;
         SplitSecretsCheckbox.Location = new Point(12, 100);
         SplitSecretsCheckbox.Name = "SplitSecretsCheckbox";
-        SplitSecretsCheckbox.Text = "Split When Secret is Triggered";
+        SplitSecretsCheckbox.Text = SplitsSecretsSettingTextDefault;
         SplitSecretsCheckbox.TabIndex = 0;
         SplitSecretsCheckbox.UseVisualStyleBackColor = true;
         SplitSecretsCheckbox.CheckedChanged += SplitSecretsCheckboxCheckedChanged;
@@ -194,7 +202,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         LegacyGlitchlessCheckbox.Checked = false;
         LegacyGlitchlessCheckbox.Location = new Point(12, 120);
         LegacyGlitchlessCheckbox.Name = "LegacyGlitchlessCheckbox";
-        LegacyGlitchlessCheckbox.Text = "Legacy Glitchless (Obsolete)";
+        LegacyGlitchlessCheckbox.Text = LegacyGlitchlessSettingTextDefault;
         LegacyGlitchlessCheckbox.TabIndex = 0;
         LegacyGlitchlessCheckbox.UseVisualStyleBackColor = true;
         LegacyGlitchlessCheckbox.CheckedChanged += LegacyGlitchlessCheckboxCheckedChanged;
@@ -270,23 +278,16 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         Size = new Size(476, 500);
 
         _modeSelect.ResumeLayout(false);
-        RefreshLevelTransitions(ActiveVersion);
         _levelTransitionSettings.ResumeLayout(false);
         ResumeLayout(false);
-
         PerformLayout();
-
-        _initialLayout = false;
     }
 
     private void RefreshLevelTransitions(Tr4Version version)
     {
-        // Suspend layouts, if needed.
-        if (!_initialLayout)
-        {
-            SuspendLayout();
-            _levelTransitionSettings.SuspendLayout();
-        }
+        // Suspend layouts.
+        SuspendLayout();
+        _levelTransitionSettings.SuspendLayout();
 
         // Edit Controls.
         _levelTransitionSettingsPanel.Controls.Clear();
@@ -316,18 +317,15 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Location = new Point(5, 200),
                 };
                 _levelTransitionSettingsPanel.Controls.Add(settingsNotificationLabel);
-        }
+            }
         }
 
-        AdjustTransitionsStatePerLegacyGlitchless();
+        EnableControlsPerState();
 
-        // Resume layouts, if needed.
-        if (!_initialLayout)
-        {
-            _levelTransitionSettings.ResumeLayout(false);
-            ResumeLayout(false);
-            PerformLayout();
-        }
+        // Resume layouts.
+        _levelTransitionSettings.ResumeLayout(false);
+        ResumeLayout(false);
+        PerformLayout();
     }
 
     private void PopulateControl<TLevel>(List<TransitionSetting<TLevel>> referenceList)
@@ -384,40 +382,22 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         }
     }
 
-    private void AdjustTransitionsStatePerLegacyGlitchless()
+    protected override void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        if (LegacyGlitchless)
-        {
-            _levelTransitionSettings.Enabled = false;
-            _levelTransitionSettings.Text = $"{LevelTransitionSettingsTextDefault} (Disabled, Legacy Glitchless Active)";
-        }
-        else if (ActiveVersion != Tr4Version.None)
-        {
-            _levelTransitionSettings.Enabled = true;
-        }
+        base.FullGameModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
     }
 
-    private void SelectAllButton_Click(object sender, EventArgs e)
+    protected override void ILModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        if (ActiveVersion == Tr4Version.SteamOrGog)
-            SetAllCheckBoxes(Tr4LevelTransitions, true);
-        else
-            SetAllCheckBoxes(TteLevelTransitions, true);
+        base.ILModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
     }
 
-    private void UnselectAllButton_Click(object sender, EventArgs e)
+    protected override void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        if (ActiveVersion == Tr4Version.SteamOrGog)
-            SetAllCheckBoxes(Tr4LevelTransitions, false);
-        else
-            SetAllCheckBoxes(TteLevelTransitions, false);
-    }
-
-    private static void SetAllCheckBoxes<TLevel>(List<TransitionSetting<TLevel>> referenceList, bool check)
-        where TLevel : Enum
-    {
-        foreach (var transition in referenceList.Where(static transition => transition.Enabled))
-            transition.UpdateActive(check);
+        base.DeathrunModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
     }
 
     private void LegacyGlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
@@ -425,7 +405,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         var checkbox = (CheckBox)sender;
         LegacyGlitchless = checkbox.Checked;
 
-        AdjustTransitionsStatePerLegacyGlitchless();
+        AdjustTransitionsGroupBoxState();
     }
 
     public override void SetGameVersion(uint version, string hash)
@@ -454,5 +434,72 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         }
 
         GameVersionLabel.Text = "Game Version: " + versionText;
+    }
+
+    private void SelectAllButton_Click(object sender, EventArgs e) => SetAllCheckBoxes(true);
+
+    private void UnselectAllButton_Click(object sender, EventArgs e) => SetAllCheckBoxes(false);
+
+    private void SetAllCheckBoxes(bool check)
+    {
+        foreach (var checkBox in _levelTransitionSettingsPanel.Controls.OfType<CheckBox>().Where(static cb => cb.Enabled))
+            checkBox.Checked = check; // This triggers checkBox.CheckedChanged.
+    }
+
+    private void EnableControlsPerState()
+    {
+        AdjustTransitionsGroupBoxState();
+        AdjustLegacyGlitchlessState();
+        AdjustSplitSecretsState();
+    }
+
+    private void AdjustTransitionsGroupBoxState()
+    {
+        // Enabled or disable.
+        if (LegacyGlitchless || !FullGame)
+            _levelTransitionSettings.Enabled = false;
+        else
+            _levelTransitionSettings.Enabled = true;
+
+        // Set the text to reflect the state.
+        var sb = new StringBuilder(LevelTransitionSettingsTextDefault);
+        if (Deathrun)
+            sb.Append(" [Disabled: Deathrun Mode overrides split logic]");
+        else if (!FullGame) // IL
+            sb.Append(" [Disabled: IL Mode overrides because all transitions are split]");
+        else if (LegacyGlitchless)
+            sb.Append(" [Disabled: Legacy Glitchless overrides with preset transitions]");
+
+        _levelTransitionSettings.Text = sb.ToString();
+    }
+
+    private void AdjustLegacyGlitchlessState()
+    {
+        if (FullGame)
+        {
+            LegacyGlitchlessCheckbox.Enabled = true;
+            LegacyGlitchlessCheckbox.Text = LegacyGlitchlessSettingTextDefault;
+            return;
+        }
+
+        // Disable for every Mode besides Full Game.
+        LegacyGlitchlessCheckbox.Checked = LegacyGlitchlessCheckbox.Enabled = false;
+        LegacyGlitchlessCheckbox.Text = Deathrun
+            ? $"{LegacyGlitchlessSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]"
+            : $"{LegacyGlitchlessSettingTextDefault} [Disabled: IL Mode overrides because all transitions are split]";
+    }
+
+    private void AdjustSplitSecretsState()
+    {
+        if (!Deathrun)
+        {
+            SplitSecretsCheckbox.Enabled = true;
+            SplitSecretsCheckbox.Text = SplitsSecretsSettingTextDefault;
+            return;
+        }
+
+        // Disable for Deathrun Mode.
+        SplitSecretsCheckbox.Checked = SplitSecretsCheckbox.Enabled = false;
+        SplitSecretsCheckbox.Text = $"{SplitsSecretsSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]";
     }
 }
