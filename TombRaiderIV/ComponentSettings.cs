@@ -26,7 +26,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private Tr4Version ActiveVersion { get; set; } = Tr4Version.None;
 
-    private const string LegacyGlitchlessSettingTextDefault = "Legacy Glitchless (Obsolete)";
+    private const string LegacyGlitchlessSettingTextDefault = "Legacy Glitchless Splits";
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
     private const string SplitsSecretsSettingTextDefault = "Split When Secret is Triggered";
 
