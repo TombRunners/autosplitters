@@ -1,4 +1,6 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
 using LiveSplit.Model; // LiveSplitState
 using LiveSplit.UI;
 using TRUtil;          // LaterClassicAutosplitter, LaterClassicComponent
@@ -55,17 +57,49 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         var tr4TransitionsNode = settings["Tr4LevelTransitions"];
         if (tr4TransitionsNode != null)
         {
-            Splitter.Settings.Tr4LevelTransitions.Clear();
+            var defaultOrExistingSettings = new TransitionSetting<Tr4Level>[Splitter.Settings.Tr4LevelTransitions.Count];
+            var encounteredSettingIds = new HashSet<ulong>(Splitter.Settings.Tr4LevelTransitions.Count);
+            Splitter.Settings.Tr4LevelTransitions.CopyTo(defaultOrExistingSettings);
+
             foreach (XmlNode transitionNode in tr4TransitionsNode.ChildNodes)
-                Splitter.Settings.Tr4LevelTransitions.Add(TransitionSetting<Tr4Level>.Tr4FromXmlElement(transitionNode));
+            {
+                var settingFromXml = TransitionSetting<Tr4Level>.Tr4FromXmlElement(transitionNode);
+                var existingSetting = Splitter.Settings.Tr4LevelTransitions.Where(t => t.Id == settingFromXml.Id).ToList();
+                if (existingSetting.Count != 1 || !encounteredSettingIds.Add(settingFromXml.Id))
+                {
+                    // Settings somehow invalid, revert to existing/default.
+                    Splitter.Settings.Tr4LevelTransitions.Clear();
+                    Splitter.Settings.Tr4LevelTransitions.AddRange(defaultOrExistingSettings);
+                    break;
+                }
+
+                existingSetting[0].UpdateActive(settingFromXml.Active);
+                existingSetting[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
+            }
         }
 
         var tteTransitionsNode = settings["TteLevelTransitions"];
         if (tteTransitionsNode != null)
         {
-            Splitter.Settings.TteLevelTransitions.Clear();
+            var defaultOrExistingSettings = new TransitionSetting<TteLevel>[Splitter.Settings.TteLevelTransitions.Count];
+            var encounteredSettingIds = new HashSet<ulong>(Splitter.Settings.TteLevelTransitions.Count);
+            Splitter.Settings.TteLevelTransitions.CopyTo(defaultOrExistingSettings);
+
             foreach (XmlNode transitionNode in tteTransitionsNode.ChildNodes)
-                Splitter.Settings.TteLevelTransitions.Add(TransitionSetting<TteLevel>.TteFromXmlElement(transitionNode));
+            {
+                var settingFromXml = TransitionSetting<TteLevel>.TteFromXmlElement(transitionNode);
+                var existingSetting = Splitter.Settings.TteLevelTransitions.Where(t => t.Id == settingFromXml.Id).ToList();
+                if (existingSetting.Count != 1 || !encounteredSettingIds.Add(settingFromXml.Id))
+                {
+                    // Settings somehow invalid, revert to existing/default.
+                    Splitter.Settings.TteLevelTransitions.Clear();
+                    Splitter.Settings.TteLevelTransitions.AddRange(defaultOrExistingSettings);
+                    break;
+                }
+
+                existingSetting[0].UpdateActive(settingFromXml.Active);
+                existingSetting[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
+            }
         }
 
         // Assign values to Settings.
