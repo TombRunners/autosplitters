@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -105,7 +106,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     {
         base.OnLoad(e);
 
-        RefreshLevelTransitions(ActiveVersion);
+        RefreshLevelTransitions();
     }
 
     public ComponentSettings(Version version)
@@ -283,7 +284,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         PerformLayout();
     }
 
-    private void RefreshLevelTransitions(Tr4Version version)
+    private void RefreshLevelTransitions()
     {
         // Suspend layouts.
         SuspendLayout();
@@ -291,7 +292,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
         // Edit Controls.
         _levelTransitionSettingsPanel.Controls.Clear();
-        if (version == Tr4Version.None)
+        if (ActiveVersion == Tr4Version.None)
         {
             _selectAllButton.Enabled = _unselectAllButton.Enabled = false;
             _levelTransitionSettings.Text = $"{LevelTransitionSettingsTextDefault} (Disabled, No Game Active)";
@@ -302,22 +303,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
 
             if (ActiveVersion == Tr4Version.SteamOrGog)
-            {
                 PopulateControl(Tr4LevelTransitions);
-            }
             else
-            {
                 PopulateControl(TteLevelTransitions);
-
-                var settingsNotificationLabel = new Label
-                {
-                    Text = "Note: For TTE, the setting for \"Legacy Glitchless\" is ignored.",
-                    AutoEllipsis = false,
-                    AutoSize = true,
-                    Location = new Point(5, 200),
-                };
-                _levelTransitionSettingsPanel.Controls.Add(settingsNotificationLabel);
-            }
         }
 
         EnableControlsPerState();
@@ -414,7 +402,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         const string tteText = "The Times Exclusive [TTE]";
 
         ActiveVersion = (Tr4Version)version;
-        RefreshLevelTransitions(ActiveVersion);
+        RefreshLevelTransitions();
 
         string versionText;
         switch (ActiveVersion)
@@ -448,11 +436,12 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void EnableControlsPerState()
     {
-        AdjustTransitionsGroupBoxState();
         AdjustLegacyGlitchlessState();
         AdjustSplitSecretsState();
+        AdjustTransitionsGroupBoxState();
     }
 
+    [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
     private void AdjustTransitionsGroupBoxState()
     {
         // Enabled or disable.
@@ -465,17 +454,19 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         var sb = new StringBuilder(LevelTransitionSettingsTextDefault);
         if (Deathrun)
             sb.Append(" [Disabled: Deathrun Mode overrides split logic]");
-        else if (!FullGame) // IL
-            sb.Append(" [Disabled: IL Mode overrides because all transitions are split]");
         else if (LegacyGlitchless)
             sb.Append(" [Disabled: Legacy Glitchless overrides with preset transitions]");
+        else if (!FullGame && ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
+            sb.Append(" [Disabled: IL Mode for TTE is the same as FG with all transitions active]");
+        else if (!FullGame) // TR4 IL
+            sb.Append(" [Disabled: IL Mode overrides because all transitions are split]");
 
         _levelTransitionSettings.Text = sb.ToString();
     }
 
     private void AdjustLegacyGlitchlessState()
     {
-        if (FullGame)
+        if (FullGame && ActiveVersion != Tr4Version.TheTimesExclusive)
         {
             LegacyGlitchlessCheckbox.Enabled = true;
             LegacyGlitchlessCheckbox.Text = LegacyGlitchlessSettingTextDefault;
@@ -484,9 +475,13 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
         // Disable for every Mode besides Full Game.
         LegacyGlitchlessCheckbox.Checked = LegacyGlitchlessCheckbox.Enabled = false;
-        LegacyGlitchlessCheckbox.Text = Deathrun
-            ? $"{LegacyGlitchlessSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]"
-            : $"{LegacyGlitchlessSettingTextDefault} [Disabled: IL Mode overrides because all transitions are split]";
+
+        if (ActiveVersion == Tr4Version.TheTimesExclusive)
+            LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Does not apply to The Times Exclusive]";
+        else if (Deathrun)
+            LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]";
+        else // IL
+            LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: IL Mode overrides because all transitions are split]";
     }
 
     private void AdjustSplitSecretsState()
