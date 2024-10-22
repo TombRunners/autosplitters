@@ -23,7 +23,10 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
     public override bool ShouldSplit(LiveSplitState state)
     {
-        if (base.ShouldSplit(state))
+        if (Settings.Deathrun)
+            return DeathrunShouldSplit();
+
+        if (Settings.SplitSecrets && SecretShouldSplit())
             return true;
 
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
