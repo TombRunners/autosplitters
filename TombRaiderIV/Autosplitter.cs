@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using LiveSplit.Model;
 using TRUtil;
 
@@ -8,19 +8,7 @@ namespace TR4;
 /// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData,TSettings}"/>.</summary>
 internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
-    private static readonly HashSet<Tr4Level> GlitchedNextSplitLevels =
-    [
-        Tr4Level.TheTombOfSeth,
-        Tr4Level.ValleyOfTheKings,
-        Tr4Level.TempleOfKarnak,
-        Tr4Level.TombOfSemerkhet,
-        Tr4Level.DesertRailroad,
-        Tr4Level.Alexandria,
-        Tr4Level.CityOfTheDead,
-        Tr4Level.Citadel,
-        Tr4Level.SphinxComplex,
-        Tr4Level.TempleOfHorus,
-    ];
+    private const uint HardcodedCreditsTrigger = 39;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter(Version version) : base(new GameData(), new ComponentSettings(version))
@@ -37,48 +25,104 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
         uint oldGfLevelComplete = Data.GfLevelComplete.Old;
 
-        // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
-        bool ignoringSubsequentFramesOfThisLoadState = currentGfLevelComplete == oldGfLevelComplete;
-        if (ignoringSubsequentFramesOfThisLoadState)
+        // Prevent double-splits.
+        bool sameLoadState = currentGfLevelComplete == oldGfLevelComplete;
+        if (sameLoadState)
         {
-            var currentLevel = (Tr4Level)Data.Level.Current;
+            if (!Settings.LegacyGlitchless || !Settings.FullGame)
+                return false;
+
             // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
-            bool specialExceptionForGlitchlessPostLoadSplits =
-                Settings.FullGame && currentLevel is Tr4Level.Catacombs;
-            return specialExceptionForGlitchlessPostLoadSplits && Settings.LegacyGlitchless && GlitchlessShouldSplit();
+            var currentLevel = (Tr4Level)Data.Level.Current;
+            bool possibleGlitchlessPostLoadSplitLevel = currentLevel is Tr4Level.Catacombs;
+            return possibleGlitchlessPostLoadSplitLevel && GlitchlessShouldSplit();
         }
 
-        // In the case of The Times Exclusive, there is only one playable level with a value of 2;
-        // the main menu is 0, and the opening cutscene has a level value of 1.
-        bool playingTheTimesExclusive = Data.GameVersion == (uint)Tr4Version.TheTimesExclusive;
-        if (playingTheTimesExclusive && Data.Level.Current != (uint)TteLevel.TheTimesExclusive)
-            return false;
-
-        // Handle all of TTE as well as TR4 ILs for both rulesets.
-        if (!Settings.FullGame || playingTheTimesExclusive)
+        // Handle IL / Section runs, which assumes all level transitions are desirable splits.
+        if (!Settings.FullGame)
         {
-            // This assumes all level transitions are desirable splits.
             bool loadingAnotherLevel = currentGfLevelComplete != 0;
             return loadingAnotherLevel;
         }
 
-        // Handle FG for each ruleset (TR4 only).
-        bool glitchless = Settings.Glitchless;
-        return glitchless ? GlitchlessShouldSplit() : GlitchedShouldSplit();
+        // Handle Legacy Glitchless runs.
+        if (Settings.LegacyGlitchless)
+            return GlitchlessShouldSplit();
+
+        // Handle Full Game, non-Glitchless runs.
+        bool playingTheTimesExclusive = (Tr4Version)Data.GameVersion == Tr4Version.TheTimesExclusive;
+        return playingTheTimesExclusive ? TteShouldSplit() : Tr4ShouldSplit();
     }
 
-    private bool GlitchedShouldSplit()
+    /// <remarks>This assumes double-splits have already been prevented.</remarks>
+    private bool Tr4ShouldSplit()
     {
-        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
-        bool leavingUnusedLevelValue = oldGfLevelComplete is 10 or 29;
-        if (leavingUnusedLevelValue)
+        uint nextLevel = Data.GfLevelComplete.Current;
+        uint currentLevel = Data.Level.Current;
+        if (nextLevel == currentLevel || nextLevel == 0)
             return false;
 
+        Tr4Level lower;
+        Tr4Level higher;
+        TransitionDirection direction;
+        bool currentRoomIsInLowerLevel;
+        if (nextLevel >= currentLevel)
+        {
+            direction = TransitionDirection.OneWayFromLower;
+            lower = (Tr4Level)currentLevel;
+            higher = (Tr4Level)nextLevel;
+            currentRoomIsInLowerLevel = true;
+        }
+        else
+        {
+            direction = TransitionDirection.OneWayFromHigher;
+            lower = (Tr4Level)nextLevel;
+            higher = (Tr4Level)currentLevel;
+            currentRoomIsInLowerLevel = false;
+        }
+
+        short room = Data.Room.Current;
+        var activeMatches = Settings
+            .Tr4LevelTransitions
+            .Where(t =>
+                t.Active &&
+                t.Lower == lower &&
+                t.Higher == higher &&
+                (t.Directionality == TransitionDirection.TwoWay || t.Directionality == direction) &&
+                t.RoomMatchedOrNotRequired(room, currentRoomIsInLowerLevel)
+            )
+            .ToList();
+
+        if (!activeMatches.Any())
+        {
+#if DEBUG
+            // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
+            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lower} | {direction} | {higher} | room: {room}\n");
+#endif
+            return false;
+        }
+
+        if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
+            LiveSplit.Options.Log.Error($"Level Transition Settings improperly coded, found multiple matches!\n"
+                                        + $"Transition: {lower} | {direction} | {higher} | room: {room}\n"
+                                        + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
+            );
+
+        return true;
+    }
+
+    /// <remarks>This assumes double-splits have already been prevented.</remarks>
+    private bool TteShouldSplit()
+    {
+        // There are only 2 non-menu levels; 1 is the cutscene and 2 is the playable level.
+        // The playable level is hardcoded to trigger credits, and this transition is always enabled.
+        // So, if the player also wants to split the cutscene (level 1), this is effectively the same as IL Mode.
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
-        bool enteringUnusedLevelValue = currentGfLevelComplete is 10 or 29;
-        bool enteringNextSplitLevel = GlitchedNextSplitLevels.Contains((Tr4Level) currentGfLevelComplete);
-        bool finishedGame = currentGfLevelComplete == 39; // 39 is hardcoded to trigger credits for both TR4 and TTE.
-        return enteringUnusedLevelValue || enteringNextSplitLevel || finishedGame;
+
+        var levelsToSplit = Settings.TteLevelTransitions.Where(static t => t.Active).ToHashSet();
+        return levelsToSplit.Count == 2
+            ? currentGfLevelComplete != 0
+            : currentGfLevelComplete == HardcodedCreditsTrigger;
     }
 
     #region Legacy Glitchless Logic

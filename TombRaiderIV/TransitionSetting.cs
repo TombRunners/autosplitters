@@ -60,6 +60,16 @@ public class TransitionSetting<TLevel>(
         };
     }
 
+    public bool RoomMatchedOrNotRequired(int currentRoom, bool roomIsInLowerLevel)
+    {
+        bool roomNotRequired = lowerRoomNumber is null && higherRoomNumber is null;
+        if (roomNotRequired)
+            return true;
+
+        int? roomNumber = roomIsInLowerLevel ? lowerRoomNumber : higherRoomNumber;
+        return roomNumber == currentRoom;
+    }
+
     public XmlNode ToXmlElement(XmlDocument document)
     {
         var element = document.CreateElement("TransitionSetting");
