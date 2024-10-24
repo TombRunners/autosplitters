@@ -11,6 +11,6 @@ public static class EnumExtensions
 
         var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
 
-        return attribute == null ? value.ToString() : attribute.Description;
+        return attribute?.Description ?? value.ToString();
     }
 }
