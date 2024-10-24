@@ -451,17 +451,17 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             _levelTransitionSettings.Enabled = true;
 
         // Set the text to reflect the state.
-        var sb = new StringBuilder(LevelTransitionSettingsTextDefault);
+        string text = LevelTransitionSettingsTextDefault;
         if (Deathrun)
-            sb.Append(" [Disabled: Deathrun Mode overrides split logic]");
+            text += " [Disabled: Deathrun Mode overrides split logic]";
         else if (LegacyGlitchless)
-            sb.Append(" [Disabled: Legacy Glitchless overrides with preset transitions]");
+            text += " [Disabled: Legacy Glitchless overrides with preset transitions]";
         else if (!FullGame && ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
-            sb.Append(" [Disabled: IL Mode for TTE is the same as FG with all transitions active]");
+            text += " [Disabled: IL Mode for TTE is the same as FG with all transitions active]";
         else if (!FullGame) // TR4 IL
-            sb.Append(" [Disabled: IL Mode overrides because all transitions are split]");
+            text += " [Disabled: IL Mode overrides because all transitions are split]";
 
-        _levelTransitionSettings.Text = sb.ToString();
+        _levelTransitionSettings.Text = text;
     }
 
     private void AdjustLegacyGlitchlessState()
