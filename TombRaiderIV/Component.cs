@@ -80,9 +80,16 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         where TLevel : Enum
     {
         var transitionsNode = settings[transitionsNodeName];
-        int transitionsCount = settingsList.Count;
-        if (transitionsNode == null || transitionsNode.ChildNodes.Count != transitionsCount)
+        if (transitionsNode == null)
             return;
+
+        int transitionsCount = settingsList.Count;
+        int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
+        if (xmlTransitionsCount != transitionsCount)
+        {
+            LiveSplit.Options.Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
+            return;
+        }
 
         var defaultOrExistingTransitions = new TransitionSetting<TLevel>[transitionsCount];
         var encounteredSettingIds = new HashSet<ulong>(transitionsCount);
