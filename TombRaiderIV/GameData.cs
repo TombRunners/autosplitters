@@ -77,26 +77,35 @@ internal class GameData : LaterClassicGameData
         switch ((Tr4Version)version)
         {
             case Tr4Version.SteamOrGog:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x18)) { Name = "Room"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health" });
+                // Later Classic
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xAF452)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0xBF3C8)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x18)) { Name = "Room" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F7864)) { Name = "Secrets" });
+                // Game
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
                 Watchers.Add(new MemoryWatcher<PuzzleItems>(new DeepPointer(0x040E101)) { Name = "PuzzleItemsArray" });
-                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo"});
-                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems"});
+                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo" });
+                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems" });
                 break;
 
             case Tr4Version.TheTimesExclusive:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x18)) { Name = "Room"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health" });
+                // Later Classic
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xAF452)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0xBF408)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x18)) { Name = "Room" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F78A4)) { Name = "Secrets" });
                 break;
 

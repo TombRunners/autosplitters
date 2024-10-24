@@ -53,16 +53,7 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
 
     protected bool SecretShouldSplit()
     {
-        if (!Data.Secrets.Changed)
-            return false;
-
-        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
-        uint oldGfLevelComplete = Data.GfLevelComplete.Old;
-
-        if (currentGfLevelComplete != oldGfLevelComplete)
-            return false;
-
-        if (currentGfLevelComplete != 0)
+        if (!Data.Secrets.Changed || Data.GfInitializeGame.Current || Data.InventoryActive.Current != 0)
             return false;
 
         bool secretWasTriggered = Data.Secrets.Current > Data.Secrets.Old;
