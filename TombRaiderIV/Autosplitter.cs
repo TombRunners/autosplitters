@@ -45,6 +45,10 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             return loadingAnotherLevel;
         }
 
+        // Handle when credits are triggered.
+        if (currentGfLevelComplete == HardcodedCreditsTrigger)
+            return true;
+
         // Handle Legacy Glitchless runs.
         if (Settings.LegacyGlitchless)
             return GlitchlessShouldSplit();
