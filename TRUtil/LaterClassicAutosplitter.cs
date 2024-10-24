@@ -3,11 +3,12 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
+public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSettings settings) : BaseAutosplitter
     where TData : LaterClassicGameData
+    where TSettings : LaterClassicComponentSettings
 {
-    protected internal LaterClassicComponentSettings Settings = new(version);
-    public readonly TData Data = data;
+    public readonly TSettings Settings = settings;
+    protected internal readonly TData Data = data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
     /// <remarks>
@@ -42,6 +43,21 @@ public abstract class LaterClassicAutosplitter<TData>(Version version, TData dat
         // This works because when loading non-test/demo versions of the games, the level variable initializes as 0 before the main menu load is called.
         bool comingFromALevel = Data.Level.Old != 0;
         return loadingIntoMainMenu && comingFromALevel;
+    }
+
+    protected bool DeathrunShouldSplit()
+    {
+        bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
+        return laraJustDied;
+    }
+
+    protected bool SecretShouldSplit()
+    {
+        if (!Data.Secrets.Changed || Data.GfInitializeGame.Current || Data.InventoryActive.Current != 0)
+            return false;
+
+        bool secretWasTriggered = Data.Secrets.Current > Data.Secrets.Old;
+        return secretWasTriggered;
     }
 
     public override bool ShouldStart(LiveSplitState state)

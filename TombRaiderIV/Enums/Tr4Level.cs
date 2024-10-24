@@ -1,59 +1,126 @@
-﻿namespace TR4;
+﻿using System.ComponentModel;
+
+namespace TR4;
 
 /// <summary>The game's level and demo values.</summary>
-internal enum Tr4Level
+public enum Tr4Level
 {
+    [Description("Main Menu / Credits")]
     MainMenu = 0,
 
     // Cambodia
-    AngkorWat      = 1,
+    [Description("Angkor Wat")]
+    AngkorWat = 1,
+
+    [Description("Race for the Iris")]
     RaceForTheIris = 2,
 
+    [Description("The Tomb of Seth")]
+    TheTombOfSeth = 3,
+
+    [Description("Burial Chambers")]
+    BurialChambers = 4,
+
     // Valley of the Kings
-    TheTombOfSeth    = 3,
-    BurialChambers   = 4,
+    [Description("Valley of the Kings")]
     ValleyOfTheKings = 5,
-    Kv5              = 6,
+
+    [Description("KV5")]
+    Kv5 = 6,
 
     // Karnak
-    TempleOfKarnak      = 7,
-    GreatHypostyleHall  = 8,
-    SacredLake          = 9,
-    TombOfSemerkhet     = 11, // 10 is unused.
+    [Description("Temple of Karnak")]
+    TempleOfKarnak = 7,
+
+    [Description("Great Hypostyle Hall")]
+    GreatHypostyleHall = 8,
+
+    [Description("Sacred Lake")]
+    SacredLake = 9,
+
+    [Description("Tomb of Semerkhet")]
+    TombOfSemerkhet = 11,
+
+    [Description("Guardian of Semerkhet")]
     GuardianOfSemerkhet = 12,
 
     // Eastern Desert
+    [Description("Desert Railroad")]
     DesertRailroad = 13,
 
     // Alexandria
-    Alexandria         = 14,
-    CoastalRuins       = 15,
+    [Description("Alexandria")]
+    Alexandria = 14,
+
+    [Description("Coastal Ruins")]
+    CoastalRuins = 15,
+
+    [Description("Pharos, Temple of Isis")]
     PharosTempleOfIsis = 16,
-    CleopatrasPalaces  = 17,
-    Catacombs          = 18,
-    TempleOfPoseidon   = 19,
-    TheLostLibrary     = 20,
-    HallOfDemetrius    = 21,
+
+    [Description("Cleopatra's Palaces")]
+    CleopatrasPalaces = 17,
+
+    [Description("Catacombs")]
+    Catacombs = 18,
+
+    [Description("Temple of Poseidon")]
+    TempleOfPoseidon = 19,
+
+    [Description("The Lost Library")]
+    TheLostLibrary = 20,
+
+    [Description("Hall of Demetrius")]
+    HallOfDemetrius = 21,
 
     // Cairo
-    CityOfTheDead   = 22,
-    Trenches        = 23,
+    [Description("City of the Dead")]
+    CityOfTheDead = 22,
+
+    [Description("Trenches")]
+    Trenches = 23,
+
+    [Description("Chambers of Tulun")]
     ChambersOfTulun = 24,
-    StreetBazaar    = 25,
-    CitadelGate     = 26,
-    Citadel         = 27,
+
+    [Description("Street Bazaar")]
+    StreetBazaar = 25,
+
+    [Description("Citadel Gate")]
+    CitadelGate = 26,
+
+    [Description("Citadel")]
+    Citadel = 27,
 
     // Giza
-    SphinxComplex           = 28,
-    UnderneathTheSphinx     = 30, // 29 is unused.
-    MenkauresPyramid        = 31,
-    InsideMenkauresPyramid  = 32,
-    TheMastabas             = 33,
-    TheGreatPyramid         = 34,
-    KhufusQueensPyramid     = 35,
-    InsideTheGreatPyramid   = 36,
+    [Description("Sphinx Complex")]
+    SphinxComplex = 28,
+
+    [Description("Underneath the Sphinx")]
+    UnderneathTheSphinx = 30,
+
+    [Description("Menkaure's Pyramid")]
+    MenkauresPyramid = 31,
+
+    [Description("Inside Menkaure's Pyramid")]
+    InsideMenkauresPyramid = 32,
+
+    [Description("The Mastabas")]
+    TheMastabas = 33,
+
+    [Description("The Great Pyramid")]
+    TheGreatPyramid = 34,
+
+    [Description("Khufu's Queen's Pyramids")]
+    KhufusQueensPyramid = 35,
+
+    [Description("Inside the Great Pyramid")]
+    InsideTheGreatPyramid = 36,
 
     // Temple of Horus
+    [Description("Temple of Horus")]
     TempleOfHorus = 37,
-    HorusBoss     = 38,
+
+    [Description("Horus Boss")]
+    HorusBoss = 38,
 }
