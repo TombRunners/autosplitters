@@ -37,11 +37,13 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         // Cambodia
         new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
         new(Tr4Level.RaceForTheIris, Tr4Level.TheTombOfSeth, TransitionDirection.OneWayFromLower), // 02  -> 03
+
         // Valley of the Kings
         new(Tr4Level.TheTombOfSeth, Tr4Level.BurialChambers, TransitionDirection.OneWayFromLower),    // 03  -> 04
         new(Tr4Level.BurialChambers, Tr4Level.ValleyOfTheKings, TransitionDirection.OneWayFromLower), // 04  -> 05
         new(Tr4Level.ValleyOfTheKings, Tr4Level.Kv5, TransitionDirection.OneWayFromLower),            // 05  -> 06
         new(Tr4Level.Kv5, Tr4Level.TempleOfKarnak, TransitionDirection.OneWayFromLower),              // 06  -> 07
+
         // Karnak
         new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower),                 // 07  -> 08
         new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower),                     // 08  -> 09
@@ -49,14 +51,19 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
         new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower),               // 11  -> 12
         new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
+
         // Eastern Desert
         new(Tr4Level.DesertRailroad, Tr4Level.Alexandria, TransitionDirection.OneWayFromLower), // 13  -> 14
+
         // Alexandria
         new(Tr4Level.Alexandria, Tr4Level.CoastalRuins, TransitionDirection.TwoWay), // 14 <-> 15
 
-        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay, lowerRoomNumber: 153, higherRoomNumber: 2, note: "Setup"), // 15 <-> 18
-        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay, lowerRoomNumber: 154, higherRoomNumber: 6, note: "Start"), // 15 <-> 18 (Catacombs start)
-        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay, lowerRoomNumber: 158, higherRoomNumber: 9, note: "End"),   // 15 <-> 18 (Catacombs end)
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 153, lowerTriggerTimer: 1, higherRoomNumber: 2, higherTriggerTimer: 1, note: "Setup"), // 15 <-> 18
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 154, lowerTriggerTimer: 0, higherRoomNumber: 6, higherTriggerTimer: 2, note: "Start"), // 15 <-> 18
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End"),   // 15 <-> 18
 
         new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),          // 15 <-> 19
         new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),             // 18 <-> 19
@@ -64,22 +71,29 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         new(Tr4Level.TheLostLibrary, Tr4Level.HallOfDemetrius, TransitionDirection.TwoWay),         // 20 <-> 21
         new(Tr4Level.CoastalRuins, Tr4Level.HallOfDemetrius, TransitionDirection.OneWayFromHigher), // 21  -> 15
 
-        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromLower, lowerRoomNumber: 104),  // 15  -> 16
-        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher, higherRoomNumber: 77), // 16  -> 15
-        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay),                            // 16 <-> 17
-        new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower),                        // 17  -> 22
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromLower,  // 15  -> 16
+            lowerRoomNumber: 104, lowerTriggerTimer: 0, note: "Underwater Current"),
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher, // 16  -> 15
+            higherRoomNumber: 77, higherTriggerTimer: 3, note: "Chute After Surfacing"),
+        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay),     // 16 <-> 17
+        new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower), // 17  -> 22
+
         // Cairo
         new(Tr4Level.CityOfTheDead, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay), // 22 <-> 24
         new(Tr4Level.Trenches, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay),      // 23 <-> 24
         new(Tr4Level.Trenches, Tr4Level.CitadelGate, TransitionDirection.TwoWay),          // 23 <-> 24
         new(Tr4Level.ChambersOfTulun, Tr4Level.CitadelGate, TransitionDirection.TwoWay),   // 24 <-> 26
 
-        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay, lowerRoomNumber: 23, higherRoomNumber: 26, note: "Minefield"), // 23 <-> 25
-        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay, lowerRoomNumber: 44, higherRoomNumber: 08, note: "Garage"),    // 23 <-> 25
-        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.OneWayFromHigher, higherRoomNumber: 71, note: "Chute After Guardian"), // 25  -> 23
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
+            lowerRoomNumber: 23, lowerTriggerTimer: 1, higherRoomNumber: 26, higherTriggerTimer: 2, note: "Minefield"), // 23 <-> 25
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
+            lowerRoomNumber: 44, lowerTriggerTimer: 0, higherRoomNumber: 08, higherTriggerTimer: 3, note: "Garage"),    // 23 <-> 25
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.OneWayFromHigher,
+            higherRoomNumber: 71, higherTriggerTimer: 4, note: "Chute After Guardian"),                                 // 25  -> 23
 
-        new(Tr4Level.CitadelGate, Tr4Level.Citadel, TransitionDirection.OneWayFromLower, note: "Dragon Cutscene"),   // 26  -> 27 (dragon cutscene)
-        new(Tr4Level.Citadel, Tr4Level.SphinxComplex, TransitionDirection.OneWayFromLower), // 27  -> 28
+        new(Tr4Level.CitadelGate, Tr4Level.Citadel, TransitionDirection.OneWayFromLower, note: "Dragon Cutscene"), // 26  -> 27
+        new(Tr4Level.Citadel, Tr4Level.SphinxComplex, TransitionDirection.OneWayFromLower),                        // 27  -> 28
+
         // Giza
         new(Tr4Level.SphinxComplex, Tr4Level.UnderneathTheSphinx, TransitionDirection.TwoWay),              // 28 <-> 30
         new(Tr4Level.UnderneathTheSphinx, Tr4Level.MenkauresPyramid, TransitionDirection.TwoWay),           // 30 <-> 31

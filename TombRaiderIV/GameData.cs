@@ -21,6 +21,10 @@ internal class GameData : LaterClassicGameData
         ProcessSearchNames.Add("tomb4");
     }
 
+    /// <summary>Used to disambiguate Lara's start position once loaded into a new level.</summary>
+    /// <remarks>0 for levels without multiple Lara start positions; non-zero when going to the non-default start position.</remarks>
+    public MemoryWatcher<byte> GfRequiredStartPosition => (MemoryWatcher<byte>)Watchers["GfRequiredStartPosition"];
+
     /// <summary>
     ///     A bitfield indicating the "progress" at which Lara has collected the parts for or has completed
     ///     the creation of the "Mechanical Scarab With Key", needed to progress through Cleopatra's Palaces.
@@ -89,6 +93,7 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x18)) { Name = "Room" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F7864)) { Name = "Secrets" });
                 // Game
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3FD270)) { Name = "GfRequiredStartPosition" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
                 Watchers.Add(new MemoryWatcher<PuzzleItems>(new DeepPointer(0x040E101)) { Name = "PuzzleItemsArray" });
                 Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo" });
@@ -107,6 +112,8 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x18)) { Name = "Room" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F78A4)) { Name = "Secrets" });
+                // Game
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3FD2B0)) { Name = "GfRequiredStartPosition" });
                 break;
 
             case Tr4Version.None:

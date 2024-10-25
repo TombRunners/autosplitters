@@ -8,7 +8,7 @@ namespace TR4;
 
 public class TransitionSetting<TLevel>(
     TLevel lowerLevel, TLevel higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
-    int? unusedLevelNumber = null, int? lowerRoomNumber = null, int? higherRoomNumber = null, string note = null)
+    int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null, string note = null)
     where TLevel : Enum
 {
     public readonly TLevel LowerLevel = lowerLevel;
@@ -60,14 +60,14 @@ public class TransitionSetting<TLevel>(
         };
     }
 
-    public bool RoomMatchedOrNotRequired(int currentRoom, bool roomIsInLowerLevel)
+    public bool TriggerMatchedOrNotRequired(byte triggerTimer, bool laraIsInLowerLevel)
     {
-        bool roomNotRequired = lowerRoomNumber is null && higherRoomNumber is null;
-        if (roomNotRequired)
+        bool triggerTimerNotRequired = lowerTriggerTimer is null && higherTriggerTimer is null;
+        if (triggerTimerNotRequired)
             return true;
 
-        int? roomNumber = roomIsInLowerLevel ? lowerRoomNumber : higherRoomNumber;
-        return roomNumber == currentRoom;
+        byte? triggerTimerToMatch = laraIsInLowerLevel ? lowerTriggerTimer : higherTriggerTimer;
+        return triggerTimer == triggerTimerToMatch;
     }
 
     public XmlNode ToXmlElement(XmlDocument document)

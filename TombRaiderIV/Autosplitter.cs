@@ -66,27 +66,12 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         if (nextLevel == currentLevel || nextLevel == 0)
             return false;
 
-        Tr4Level lower;
-        Tr4Level lowerLevel;
-        Tr4Level higherLevel;
-        TransitionDirection direction;
-        bool currentRoomIsInLowerLevel;
-        if (nextLevel >= currentLevel)
-        {
-            direction = TransitionDirection.OneWayFromLower;
-            lowerLevel = (Tr4Level)currentLevel;
-            higherLevel = (Tr4Level)nextLevel;
-            currentRoomIsInLowerLevel = true;
-        }
-        else
-        {
-            direction = TransitionDirection.OneWayFromHigher;
-            lowerLevel = (Tr4Level)nextLevel;
-            higherLevel = (Tr4Level)currentLevel;
-            currentRoomIsInLowerLevel = false;
-        }
+        byte triggerTimer = Data.GfRequiredStartPosition.Current;
+        bool laraIsInLowerLevel = nextLevel >= currentLevel;
+        var lowerLevel = laraIsInLowerLevel ? (Tr4Level)currentLevel : (Tr4Level)nextLevel;
+        var higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)currentLevel;
+        var direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
 
-        short room = Data.Room.Current;
         var activeMatches = Settings
             .Tr4LevelTransitions
             .Where(t =>
@@ -94,7 +79,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
                 t.LowerLevel == lowerLevel &&
                 t.HigherLevel == higherLevel &&
                 (t.Directionality == TransitionDirection.TwoWay || t.Directionality == direction) &&
-                t.RoomMatchedOrNotRequired(room, currentRoomIsInLowerLevel)
+                t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
             .ToList();
 
@@ -102,14 +87,14 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         {
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
-            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {room}\n");
+            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {Data.Room.Current} | tt: {triggerTimer}\n");
 #endif
             return false;
         }
 
         if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
             LiveSplit.Options.Log.Error($"Level Transition Settings improperly coded, found multiple matches!\n"
-                                        + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {room}\n"
+                                        + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {Data.Room.Current} | tt: {triggerTimer}\n"
                                         + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
 
