@@ -7,12 +7,12 @@ using LiveSplit.UI;
 namespace TR4;
 
 public class TransitionSetting<TLevel>(
-    TLevel lower, TLevel higher, TransitionDirection directionality,
+    TLevel lowerLevel, TLevel higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
     int? unusedLevelNumber = null, int? lowerRoomNumber = null, int? higherRoomNumber = null, string note = null)
     where TLevel : Enum
 {
-    public readonly TLevel Lower = lower;
-    public readonly TLevel Higher = higher;
+    public readonly TLevel LowerLevel = lowerLevel;
+    public readonly TLevel HigherLevel = higherLevel;
     public readonly TransitionDirection Directionality = directionality;
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
 
@@ -20,7 +20,7 @@ public class TransitionSetting<TLevel>(
     {
         get
         {
-            var sb = new StringBuilder($"{Convert.ToInt32(Lower)}{(int)Directionality:D1}{Convert.ToInt32(Higher)}");
+            var sb = new StringBuilder($"{Convert.ToInt32(LowerLevel)}{(int)Directionality:D1}{Convert.ToInt32(HigherLevel)}");
             sb.Append(UnusedLevelNumber is null ?  "000" : UnusedLevelNumber.Value.ToString("D3"));
             sb.Append(lowerRoomNumber is null ?  "000" : lowerRoomNumber.Value.ToString("D3"));
             sb.Append(higherRoomNumber is null ?  "000" : higherRoomNumber.Value.ToString("D3"));
@@ -38,8 +38,8 @@ public class TransitionSetting<TLevel>(
 
     public string DisplayName()
     {
-        string lowerName = Lower.Description();
-        string higherName = Higher.Description();
+        string lowerName = LowerLevel.Description();
+        string higherName = HigherLevel.Description();
         string noteText = !string.IsNullOrEmpty(note) ? $" [{note}]" : string.Empty;
 
         if (lowerRoomNumber is null && higherRoomNumber is null)
@@ -73,8 +73,8 @@ public class TransitionSetting<TLevel>(
     public XmlNode ToXmlElement(XmlDocument document)
     {
         var element = document.CreateElement("TransitionSetting");
-        element.AppendChild(SettingsHelper.ToElement(document, "Lower", Convert.ToInt32(Lower)));
-        element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(Higher)));
+        element.AppendChild(SettingsHelper.ToElement(document, "Lower", Convert.ToInt32(LowerLevel)));
+        element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(HigherLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int)Directionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int)SelectedDirectionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, "Active", Active));

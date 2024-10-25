@@ -353,8 +353,8 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Padding = Padding with { Left = 0, Right = 0 },
                 };
 
-                string lowerName = transition.Lower.Description();
-                string higherName = transition.Higher.Description();
+                string lowerName = transition.LowerLevel.Description();
+                string higherName = transition.HigherLevel.Description();
                 directionComboBox.Items.AddRange(["Two-Way", $"From {lowerName}", $"From {higherName}"]);
 
                 directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
