@@ -78,7 +78,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
                 t.Active &&
                 t.LowerLevel == lowerLevel &&
                 t.HigherLevel == higherLevel &&
-                (t.Directionality == TransitionDirection.TwoWay || t.Directionality == direction) &&
+                (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
                 t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
             .ToList();
