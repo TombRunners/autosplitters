@@ -323,6 +323,13 @@ internal class GameMemory
                     },
                 }
             },
+            {
+                GameVersion.PublicV101Patch4,
+                new Dictionary<Game, GameAddresses>
+                {
+                    // TODO: Implement.
+                }
+            },
         }.ToImmutableDictionary();
 
     #region MemoryWatcher Definitions
@@ -519,6 +526,10 @@ internal class GameMemory
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.PublicV101Patch3);
+                break;
+
+            case GameVersion.PublicV101Patch4:
+                // TODO: Implement.
                 break;
 
             case GameVersion.None:
