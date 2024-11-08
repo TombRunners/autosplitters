@@ -75,7 +75,17 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
 
     // ReSharper disable VirtualMemberNeverOverridden.Global
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
-    public virtual void OnStart() => _ticksAtStartOfRun = Data.Level.Current == 1 ? 0 : Data.GameTimer.Old;
+    public virtual void OnStart()
+    {
+        try
+        {
+            _ticksAtStartOfRun = Data.Level.Current == 1 ? 0 : Data.GameTimer.Old;
+        }
+        catch // Data is unpopulated when no game is running.
+        {
+            _ticksAtStartOfRun = 0;
+        }
+    }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
     public virtual void OnSplit() { }
