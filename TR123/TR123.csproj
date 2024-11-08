@@ -100,6 +100,7 @@
     <None Include="CheatEngine\tomb123_GOGv101Patch1.CT" />
     <None Include="CheatEngine\tomb123_GOGv101Patch2.CT" />
     <None Include="CheatEngine\tomb123_GOGv101Patch3.CT" />
+	<None Include="CheatEngine\tomb123_GOGv101Patch4.CT" />
     <None Include="Enums\.editorconfig" />
     <None Include="Hashes\egs_debug.csv" />
     <None Include="Hashes\gog_v1.0_hashes.csv" />
@@ -107,7 +108,7 @@
     <None Include="Hashes\gog_v1.01Patch1_hashes.csv" />
     <None Include="Hashes\gog_v1.01Patch2_hashes.csv" />
     <None Include="Hashes\gog_v1.01Patch3_hashes.csv" />
-	<None Include="Hashes\gog_v1.01Patch4_hashes.csv" />
+    <None Include="Hashes\gog_v1.01Patch4_hashes.csv" />
     <None Include="Hashes\steam_13430979_hashes.csv" />
     <None Include="Hashes\steam_13946608_hashes.csv" />
     <None Include="Hashes\steam_14397396_hashes.csv" />
