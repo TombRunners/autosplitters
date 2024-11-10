@@ -323,6 +323,66 @@ internal class GameMemory
                     },
                 }
             },
+            {
+                GameVersion.PublicV101Patch4,
+                new Dictionary<Game, GameAddresses>
+                {
+                    {
+                        Game.Tr1,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x4C124A, // LevelIgt + 0x1A
+                            Cine = 0x3EDC98,
+                            FirstLevelTime = 0x4C0C70,
+                            Health = 0xF9CC8,
+                            InventoryChosen = 0xE3F88,
+                            InventoryMode = 0xE4C58, // InventoryChosen + 0xCD0
+                            Level = 0x4C1248, // LevelIgt + 0x18
+                            LevelComplete = 0xF95A0, // TitleLoaded + 0x8
+                            LevelIgt = 0x4C1230,
+                            LoadFade = 0x2997E4,
+                            OverlayFlag = 0xDEA78,
+                            TitleLoaded = 0xF9598,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x4F7466, // LevelIgt + 0x1A
+                            Cine = 0x3F9E48,
+                            FirstLevelTime = 0x4F6E90,
+                            Health = 0x12D878,
+                            InventoryChosen = 0x110FD4,
+                            InventoryMode = 0x111034, // InventoryChosen + 0x60
+                            Level = 0x12F9E8,
+                            LevelComplete = 0x12FF40,
+                            LevelIgt = 0x4F744C,
+                            LoadFade = 0x2D0298,
+                            OverlayFlag = 0x110E9C,
+                            TitleLoaded = 0x12FAA4,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x55A4D4, // LevelIgt + 0x2C
+                            Cine = 0x456AA0,
+                            FirstLevelTime = 0x559CC4,
+                            Health = 0x187BE8,
+                            InventoryChosen = 0x1640B4,
+                            InventoryMode = 0x1640E4, // InventoryChosen + 0x30
+                            Level = 0x189FCC,
+                            LevelComplete = 0x18A4E8,
+                            LevelIgt = 0x55A4A8,
+                            LoadFade = 0x32B150,
+                            OverlayFlag = 0x16404C,
+                            TitleLoaded = 0x18A098,
+                        }
+                    },
+                }
+            },
         }.ToImmutableDictionary();
 
     #region MemoryWatcher Definitions
@@ -519,6 +579,16 @@ internal class GameMemory
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.PublicV101Patch3);
+                break;
+
+            case GameVersion.PublicV101Patch4:
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xE0B68)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2EF37C)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDEA54)) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
+                AddCommonDllWatchers(GameVersion.PublicV101Patch4);
                 break;
 
             case GameVersion.None:
