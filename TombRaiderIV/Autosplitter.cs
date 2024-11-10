@@ -77,7 +77,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             .Where(t =>
                 t.Active &&
                 t.LowerLevel == lowerLevel &&
-                t.HigherLevel == higherLevel &&
+                (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
                 (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
                 t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
