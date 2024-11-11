@@ -166,6 +166,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     public override void SetGameVersion(uint version, string hash)
     {
         const string digitalText = "Steam/GOG [TR5]";
+        const string digitalNoCutsceneText = "Steam/GOG [TR5] with Cutscene Skipper Mod";
         const string jpNoCdText = "Japanese No-CD [TR5]";
 
         string versionText;
@@ -173,6 +174,10 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         {
             case Tr5Version.SteamOrGog:
                 versionText = digitalText;
+                break;
+
+            case Tr5Version.SteamOrGogCutsceneless:
+                versionText = digitalNoCutsceneText;
                 break;
 
             case Tr5Version.JapaneseNoCd:
