@@ -60,6 +60,8 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="GameData.cs" />
+	<Compile Include="Enums\EnumExtensions.cs" />
+    <Compile Include="Enums\TransitionDirection.cs" />
     <Compile Include="Enums\Tr4Level.cs" />
     <Compile Include="Enums\Tr4LevelSection.cs" />
     <Compile Include="Enums\Tr4Version.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="ItemInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PuzzleItems.cs" />
+    <Compile Include="TransitionSetting.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">

@@ -3,11 +3,12 @@ using LiveSplit.Model;
 
 namespace TRUtil;
 
-public abstract class LaterClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
+public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSettings settings) : BaseAutosplitter
     where TData : LaterClassicGameData
+    where TSettings : LaterClassicComponentSettings
 {
-    protected internal LaterClassicComponentSettings Settings = new(version);
-    public readonly TData Data = data;
+    public readonly TSettings Settings = settings;
+    protected internal readonly TData Data = data;
 
     /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
     /// <remarks>
@@ -44,6 +45,21 @@ public abstract class LaterClassicAutosplitter<TData>(Version version, TData dat
         return loadingIntoMainMenu && comingFromALevel;
     }
 
+    protected bool DeathrunShouldSplit()
+    {
+        bool laraJustDied = Data.Health.Old > 0 && Data.Health.Current <= 0;
+        return laraJustDied;
+    }
+
+    protected bool SecretShouldSplit()
+    {
+        if (!Data.Secrets.Changed || Data.GfInitializeGame.Current || Data.InventoryActive.Current != 0)
+            return false;
+
+        bool secretWasTriggered = Data.Secrets.Current > Data.Secrets.Old;
+        return secretWasTriggered;
+    }
+
     public override bool ShouldStart(LiveSplitState state)
     {
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
@@ -59,7 +75,17 @@ public abstract class LaterClassicAutosplitter<TData>(Version version, TData dat
 
     // ReSharper disable VirtualMemberNeverOverridden.Global
     /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
-    public virtual void OnStart() => _ticksAtStartOfRun = Data.Level.Current == 1 ? 0 : Data.GameTimer.Old;
+    public virtual void OnStart()
+    {
+        try
+        {
+            _ticksAtStartOfRun = Data.Level.Current == 1 ? 0 : Data.GameTimer.Old;
+        }
+        catch // Data is unpopulated when no game is running.
+        {
+            _ticksAtStartOfRun = 0;
+        }
+    }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
     public virtual void OnSplit() { }

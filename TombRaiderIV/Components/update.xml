@@ -1,4 +1,16 @@
 <updates>
+  <update version="2024.2.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Improved routing support via Level Transition Settings, configurable by GUI.</change>
+	  <change>Added option to Split whenever a secret is triggered.</change>
+	  <change>Changed "Glitchless" checkbox to "Legacy Glitchless"; when checked, it deactivates Level Transition Settings.</change>
+	  <change>Selecting "IL" or "Deathrun" Modes will deactivate Level Transition Settings and Legacy Glitchless accordingly.</change>
+      <change>Resolved Legacy Glitchless's Split issues in Catacombs and Trenches.</change>
+    </changelog>
+  </update>
   <update version="2024.1.1.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>

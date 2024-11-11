@@ -23,12 +23,6 @@ internal sealed class GameData : LaterClassicGameData
 
     #region MemoryWatcherList Items
 
-    /// <summary>Used to determine when to reset many of the game's global variables.</summary>
-    /// <remarks>
-    ///     1 during the main menu and when loading/starting game from the main menu, and when loading/watching credits; otherwise, 0.
-    /// </remarks>
-    public MemoryWatcher<bool> GfInitializeGame => (MemoryWatcher<bool>)Watchers?["GfInitializeGame"];
-
     /// <summary>Used as a sort of enumeration to allow game flow and other global variables to act appropriately.</summary>
     /// <remarks>
     ///     0 during any gameplay, 1 while in the main menu, 4 while loading a save.
@@ -44,22 +38,32 @@ internal sealed class GameData : LaterClassicGameData
         switch ((Tr5Version)version)
         {
             case Tr5Version.SteamOrGog:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2F0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C27C)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5BF60)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5BF08, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2D0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5BF08, 0x22)) { Name = "Health" });
+                // Later Classic
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082C1)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C2F0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C27C)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0x11CF20)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5BF60)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0xA53040)) { Name = "Secrets" });
+                // Game
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082C0)) { Name = "GfGameMode" });
                 break;
 
             case Tr5Version.JapaneseNoCd:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3F0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C37C)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5C060)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5C008, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3D0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA5C008, 0x22)) { Name = "Health" });
+                // Later Classic
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1082D1)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C3F0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0xA5C37C)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0x11D030)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xA5C060)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0xA53140)) { Name = "Secrets" });
+                // Game
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082D0)) { Name = "GfGameMode" });
                 break;
 

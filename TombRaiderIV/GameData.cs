@@ -21,6 +21,10 @@ internal class GameData : LaterClassicGameData
         ProcessSearchNames.Add("tomb4");
     }
 
+    /// <summary>Used to disambiguate Lara's start position once loaded into a new level.</summary>
+    /// <remarks>0 for levels without multiple Lara start positions; non-zero when going to the non-default start position.</remarks>
+    public MemoryWatcher<byte> GfRequiredStartPosition => (MemoryWatcher<byte>)Watchers["GfRequiredStartPosition"];
+
     /// <summary>
     ///     A bitfield indicating the "progress" at which Lara has collected the parts for or has completed
     ///     the creation of the "Mechanical Scarab With Key", needed to progress through Cleopatra's Palaces.
@@ -67,6 +71,9 @@ internal class GameData : LaterClassicGameData
     /// </remarks>
     public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
 
+    /// <summary>Lara's current room.</summary>
+    public MemoryWatcher<short> Room => (MemoryWatcher<short>)Watchers?["Room"];
+
     /// <inheritdoc />
     protected override void SetMemoryAddresses(uint version)
     {
@@ -74,23 +81,39 @@ internal class GameData : LaterClassicGameData
         switch ((Tr4Version)version)
         {
             case Tr4Version.SteamOrGog:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health" });
+                // Later Classic
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xAF452)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2B0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD258)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0xBF3C8)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333A8)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x18)) { Name = "Room" });
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F7864)) { Name = "Secrets" });
+                // Game
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3FD270)) { Name = "GfRequiredStartPosition" });
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x40E0FB)) { Name = "MechanicalScarab" });
                 Watchers.Add(new MemoryWatcher<PuzzleItems>(new DeepPointer(0x040E101)) { Name = "PuzzleItemsArray" });
-                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo"});
-                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems"});
+                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10D)) { Name = "PuzzleItemsCombo" });
+                Watchers.Add(new MemoryWatcher<ushort>(new DeepPointer(0x040E10F)) { Name = "KeyItems" });
                 break;
 
             case Tr4Version.TheTimesExclusive:
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level"});
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer"});
-                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading"});
-                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health"});
+                // Base
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health" });
+                // Later Classic
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0xAF452)) { Name = "GfInitializeGame" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2F0)) { Name = "GfLevelComplete" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD298)) { Name = "GameTimer" });
+                Watchers.Add(new MemoryWatcher<long>(new DeepPointer(0xBF408)) { Name = "InventoryActive" });
+                Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x1333E8)) { Name = "Loading" });
+                Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x18)) { Name = "Room" });
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3F78A4)) { Name = "Secrets" });
+                // Game
+                Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3FD2B0)) { Name = "GfRequiredStartPosition" });
                 break;
 
             case Tr4Version.None:
