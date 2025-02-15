@@ -8,7 +8,7 @@ namespace TR456;
 internal static class VersionDetector
 {
     /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
-    private static readonly ImmutableList<string> ProcessSearchNames = ["tomb123"];
+    private static readonly ImmutableList<string> ProcessSearchNames = ["tomb456"];
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>The uint will be converted from <see cref="GameVersion" />.</remarks>

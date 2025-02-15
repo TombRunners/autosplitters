@@ -36,7 +36,7 @@ public static class GameData
     public static uint OldLevel() => throw new NotImplementedException();
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
-    private static bool GameIsInitialized => throw new NotImplementedException();
+    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
 
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
@@ -75,6 +75,9 @@ public static class GameData
             GameVersion = detectedVersion;
             OnGameVersionChanged.Invoke(GameVersion, hash);
         }
+
+        if (gameProcess is null)
+            return false;
 
         SetGameProcess(gameProcess);
         return true;

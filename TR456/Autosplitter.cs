@@ -16,7 +16,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// </summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> when "Game Time" should pause during the conditions, otherwise <see langword="false" /></returns>
-    public bool IsGameTimePaused(LiveSplitState state) => throw new NotImplementedException();
+    public bool IsGameTimePaused(LiveSplitState state) => false;
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
@@ -29,12 +29,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
-    private static TimeSpan? IgtGameTime(bool deathrun) => throw new NotImplementedException();
+    private static TimeSpan? IgtGameTime(bool deathrun) => null;
 
     /// <summary>Determines if the timer should split.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
-    public bool ShouldSplit(LiveSplitState state) => throw new NotImplementedException();
+    public bool ShouldSplit(LiveSplitState state) => false;
 
     /// <summary>Determines if <paramref name="level" /> is the first of the game or expansion.</summary>
     /// <param name="level">Level to check</param>
@@ -44,22 +44,28 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines if the timer should reset.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> if the timer should reset, <see langword="false" /> otherwise</returns>
-    public bool ShouldReset(LiveSplitState state) => throw new NotImplementedException();
+    public bool ShouldReset(LiveSplitState state) => false;
 
     /// <summary>Determines if the timer should start.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> if the timer should start, <see langword="false" /> otherwise</returns>
-    public bool ShouldStart(LiveSplitState state) => throw new NotImplementedException();
+    public bool ShouldStart(LiveSplitState state) => false;
 
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
-    public void OnStart(LiveSplitState state) => throw new NotImplementedException();
+    public void OnStart(LiveSplitState state)
+    {
+    }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
     /// <param name="completedLevel">Level completed for the split /></param>
-    public void OnSplit(uint completedLevel) => throw new NotImplementedException();
+    public void OnSplit(uint completedLevel)
+    {
+    }
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
-    public void OnUndoSplit() => throw new NotImplementedException();
+    public void OnUndoSplit()
+    {
+    }
 
     /// <inheritdoc />
     public void Dispose()
