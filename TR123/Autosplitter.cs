@@ -18,10 +18,10 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private static bool _loadingScreenFadedIn;
 
     /// <summary>
-    ///     Determines if IGT pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
+    ///     Determines if LiveSplit's "Game Time" pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
     /// </summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns><see langword="true" /> when IGT should be paused during the conditions, <see langword="false" /> otherwise</returns>
+    /// <returns><see langword="true" /> when "Game Time" should pause during the conditions, otherwise <see langword="false" /></returns>
     public bool IsGameTimePaused(LiveSplitState state)
     {
         if (Settings.GameTimeMethod == GameTimeMethod.Igt)
@@ -66,9 +66,9 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return !fadeDecreasing;
     }
 
-    /// <summary>Determines the IGT.</summary>
+    /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns>IGT as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
+    /// <returns>"Game Time" as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
     public TimeSpan? GetGameTime(LiveSplitState state) =>
         Settings.GameTimeMethod switch
         {
