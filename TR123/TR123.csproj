@@ -100,7 +100,7 @@
     <None Include="CheatEngine\tomb123_GOGv101Patch1.CT" />
     <None Include="CheatEngine\tomb123_GOGv101Patch2.CT" />
     <None Include="CheatEngine\tomb123_GOGv101Patch3.CT" />
-	<None Include="CheatEngine\tomb123_GOGv101Patch4.CT" />
+    <None Include="CheatEngine\tomb123_GOGv101Patch4.CT" />
     <None Include="Enums\.editorconfig" />
     <None Include="Hashes\egs_debug.csv" />
     <None Include="Hashes\gog_v1.0_hashes.csv" />
@@ -119,12 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>5.7.0</Version>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Fody">
-      <Version>6.8.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
+      <Version>6.0.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.Platforms">
@@ -137,7 +132,7 @@
       <Version>2.0.3</Version>
     </PackageReference>
     <PackageReference Include="PolySharp">
-      <Version>1.14.1</Version>
+      <Version>1.15.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -151,7 +146,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
-      <Version>8.0.0</Version>
+      <Version>9.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Console">
       <Version>4.3.1</Version>
@@ -160,7 +155,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.DiagnosticSource">
-      <Version>8.0.0</Version>
+      <Version>9.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.Tools">
       <Version>4.3.0</Version>
@@ -217,7 +212,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>6.0.0</Version>
+      <Version>6.1.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.Extensions">
       <Version>4.3.1</Version>
