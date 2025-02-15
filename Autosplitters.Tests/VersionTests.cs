@@ -12,6 +12,7 @@ public class VersionTests
 {
     [Theory]
     [InlineData("TR123", "TR123")]
+    [InlineData("TR456", "TR456")]
     [InlineData("TombRaider1996", "TR1996")]
     [InlineData("TombRaiderII", "TR2")]
     [InlineData("TombRaiderIII", "TR3")]
