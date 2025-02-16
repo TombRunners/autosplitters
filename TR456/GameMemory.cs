@@ -30,6 +30,19 @@ internal class GameMemory
             },
         }.ToImmutableDictionary();
 
+    internal static readonly ImmutableHashSet<AddressSignatureInfo> WatcherSignatureInfos =
+        new HashSet<AddressSignatureInfo>()
+        {
+            new()
+            {
+                Name = Constants.WatcherActiveGameName,
+                DataType = typeof(int),
+                Signature = [0x83, 0xE1, 0x03, 0x25, 0xFF, 0xFF, 0xE7, 0xFF],
+                OffsetToWriteInstruction = 0x8A,
+                WriteInstructionLength = 6,
+            },
+        }.ToImmutableHashSet();
+
     #region MemoryWatcher Definitions
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
@@ -37,7 +50,7 @@ internal class GameMemory
 
     /// <summary>Gives the value of the active game, where TR4 is 0, TR5 is 1, TR6 is 2.</summary>
     /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?[Constants.WatcherActiveGameName];
 
     #endregion
 
@@ -48,15 +61,18 @@ internal class GameMemory
     {
         Watchers.Clear();
 
-        var scanner = CreateSignatureScanner(gameProcess);
+        SignatureScanner scanner = CreateSignatureScanner(gameProcess);
 
         switch (version)
         {
             case GameVersion.PublicV10:
                 // Base game EXE (tomb456.exe)
-                var gameAddressBytes = new byte[] { 0x83, 0xE1, 0x03, 0x25, 0xFF, 0xFF, 0xE7, 0xFF };
-                var activeGameAddress = GetAddressFromSignatureWithOffsetToWriteInstruction(scanner, gameAddressBytes, 0x8A);
-                Watchers.Add(new MemoryWatcher<int>(activeGameAddress) { Name = "ActiveGame" });
+                foreach (AddressSignatureInfo info in WatcherSignatureInfos)
+                {
+                    IntPtr address = GetAddressFromSignature(scanner, info);
+                    CreateWatcher(info.Name, address);
+                }
+
                 // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.PublicV10);
                 break;
@@ -70,49 +86,62 @@ internal class GameMemory
         PreLoadWatchers(gameProcess);
     }
 
-    private SignatureScanner CreateSignatureScanner(Process gameProcess)
+    private static SignatureScanner CreateSignatureScanner(Process gameProcess)
     {
-        var module = gameProcess.MainModuleWow64Safe();
-        var address = module.BaseAddress;
+        ProcessModuleWow64Safe module = gameProcess.MainModuleWow64Safe();
+        IntPtr address = module.BaseAddress;
         int size = module.ModuleMemorySize;
 
         return new SignatureScanner(gameProcess, address, size);
     }
 
-    private static DeepPointer GetAddressFromSignatureWithOffsetToWriteInstruction(SignatureScanner scanner, byte[] signature, int offsetFromSignature = 0)
+    private static IntPtr GetAddressFromSignature(SignatureScanner scanner, AddressSignatureInfo sigInfo)
     {
-        LiveSplit.Options.Log.Warning($"Attempting scan for bytes {string.Join(" ", signature)}");
-        var target = new SigScanTarget(signature);
-        var signatureAddress = scanner.Scan(target);
+        // Find bytes signature.
+        var target = new SigScanTarget(sigInfo.Signature);
+        IntPtr signatureAddress = scanner.Scan(target);
         if (signatureAddress == IntPtr.Zero)
             throw new Exception("Signature not found.");
-        LiveSplit.Options.Log.Warning($"Found bytes at address {signatureAddress.ToString("X")}");
+        LiveSplit.Options.Log.Warning($"Found signature {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}");
 
-        var writeInstructionAddress = signatureAddress + offsetFromSignature;
-        const int instructionLength = 6;
-        byte[] instructionBytes = scanner.Process.ReadBytes(writeInstructionAddress, instructionLength);
-        if (instructionBytes is not { Length: instructionLength })
+        // Find the write instruction using the offset argument.
+        IntPtr writeInstructionAddress = signatureAddress + sigInfo.OffsetToWriteInstruction;
+        byte[] instructionBytes = scanner.Process.ReadBytes(writeInstructionAddress, sigInfo.WriteInstructionLength);
+        if (instructionBytes is null || instructionBytes.Length != sigInfo.WriteInstructionLength)
             throw new Exception("Failed to read process memory at the write instruction.");
-        LiveSplit.Options.Log.Warning($"At address {writeInstructionAddress.ToString("X")}, found bytes {string.Join(" ", instructionBytes)}");
+        LiveSplit.Options.Log.Warning($"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}");
 
-        var extractedOffset = BitConverter.ToInt32(instructionBytes, 2);
-        LiveSplit.Options.Log.Warning($"Extracted offset {extractedOffset:X}");
+        // Find the target address using the write instruction's offset.
+        var extractedOffset = BitConverter.ToInt32(instructionBytes, sigInfo.WriteInstructionLength - 4);
+        IntPtr addressAfterWriteInstruction = writeInstructionAddress + sigInfo.WriteInstructionLength;
+        IntPtr effectiveAddress = addressAfterWriteInstruction + extractedOffset;
+        LiveSplit.Options.Log.Warning($"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2}");
 
-        var addressAfterWriteInstruction = writeInstructionAddress + instructionLength;
-        var effectiveAddress = addressAfterWriteInstruction + extractedOffset;
-        LiveSplit.Options.Log.Warning($"Extracted address {effectiveAddress.ToString("X")}");
+        // Return the address.
+        return effectiveAddress;
+    }
 
-        return new DeepPointer(effectiveAddress);
+    private void CreateWatcher(string name, IntPtr address)
+    {
+        switch (name)
+        {
+            case Constants.WatcherActiveGameName:
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(address)) { Name = name });
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     /// <summary>Adds MemoryWatchers which are common across all games.</summary>
     /// <param name="version">Game version</param>
     private void AddCommonDllWatchers(GameVersion version)
     {
-        foreach (var game in BaseGames)
+        foreach (Game game in BaseGames)
         {
             string moduleName = GameModules[game];
-            var addresses = GameVersionAddresses[version][game];
+            GameAddresses addresses = GameVersionAddresses[version][game];
         }
     }
 
