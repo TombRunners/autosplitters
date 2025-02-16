@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TR5;
+namespace TR456;
 
 /// <summary>The game's level values.</summary>
 internal enum Tr5Level

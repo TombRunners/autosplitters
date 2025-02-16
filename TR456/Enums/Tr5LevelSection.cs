@@ -1,4 +1,4 @@
-﻿namespace TR5;
+﻿namespace TR456;
 
 /// <summary>The "areas" of the game.</summary>
 internal enum Tr5LevelSection

@@ -1,3 +1,4 @@
 [*]
+resharper_identifier_typo_highlighting = none
 resharper_markup_text_typo_highlighting = none
 resharper_grammar_mistake_in_markup_text_highlighting = none
