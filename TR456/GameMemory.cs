@@ -13,12 +13,14 @@ internal class GameMemory
     private static readonly ImmutableList<Game> BaseGames = [Game.Tr4, Game.Tr5, Game.Tr6];
 
     /// <summary>Contains the names of the modules (DLLs) for each <see cref="Game" />.</summary>
-    internal static readonly ImmutableDictionary<string, Game> GameModules = new Dictionary<string, Game>(3)
+    private static readonly ImmutableDictionary<string, Game> GameModules = new Dictionary<string, Game>(3)
     {
         { Constants.DllTomb4, Game.Tr4 },
         { Constants.DllTomb5, Game.Tr5 },
         { Constants.DllTomb6, Game.Tr6 },
     }.ToImmutableDictionary();
+
+    #region EXE Signatures and MemoryWatchers
 
     /// <summary>Address signature information for the game's EXE.</summary>
     private static readonly ImmutableHashSet<AddressSignatureInfo> WatcherExeSignatureInfos =
@@ -43,6 +45,24 @@ internal class GameMemory
                 EffectiveAddressOffset = 0x208,
             },
         }.ToImmutableHashSet();
+
+    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic related to the game's executable.</summary>
+    private readonly MemoryWatcherList _watchersExe = [];
+
+    /// <summary>Gives the value of the active game, where TR4 is 0, TR5 is 1, TR6 is 2.</summary>
+    /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherActiveGameName];
+
+    /// <summary>
+    ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
+    ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
+    ///     During actual loading time (asset loading, etc.), freezes.
+    /// </summary>
+    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherGFrameIndexName];
+
+    #endregion
+
+    #region DLL Signatures and MemoryWatchers
 
     /// <summary>Address signature information for the game's DLLs.</summary>
     private static readonly ImmutableDictionary<Game[], AddressSignatureInfo> WatcherDllSignatureInfos =
@@ -113,26 +133,6 @@ internal class GameMemory
             },
         }.ToImmutableDictionary();
 
-    #region EXE MemoryWatcher Definitions
-
-    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic related to the game's executable.</summary>
-    private readonly MemoryWatcherList _watchersExe = [];
-
-    /// <summary>Gives the value of the active game, where TR4 is 0, TR5 is 1, TR6 is 2.</summary>
-    /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherActiveGameName];
-
-    /// <summary>
-    ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
-    ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
-    ///     During actual loading time (asset loading, etc.), freezes.
-    /// </summary>
-    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherGFrameIndexName];
-
-    #endregion
-
-    #region DLL MemoryWatcher Definitions
-
     /// <summary>Contains memory addresses related to the TR4R game DLL, accessible as named members, used in auto-splitting logic.</summary>
     private readonly MemoryWatcherList _watchersTR4R = [];
 
@@ -164,6 +164,8 @@ internal class GameMemory
     internal MemoryWatcher<int> NextLevel(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherIsLoadingName, game);
 
     #endregion
+
+    #region MemoryWatcher Initialization
 
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
     /// <param name="version">Game version to base addresses on</param>
@@ -205,14 +207,6 @@ internal class GameMemory
         UpdateMemoryWatchers(gameProcess); // Moves Current to Old and loads new Current values.
     }
 
-    internal void UpdateMemoryWatchers(Process gameProcess)
-    {
-        _watchersExe.UpdateAll(gameProcess);
-        _watchersTR4R.UpdateAll(gameProcess);
-        _watchersTR5R.UpdateAll(gameProcess);
-        _watchersTR6R.UpdateAll(gameProcess);
-    }
-
     private static IntPtr GetAddressFromSignature(SignatureScanner scanner, AddressSignatureInfo sigInfo)
     {
         // Find bytes signature.
@@ -239,6 +233,7 @@ internal class GameMemory
         return effectiveAddress;
     }
 
+    /// <summary>Creates a <see cref="SignatureScanner" /> for the game's EXE.</summary>
     private static SignatureScanner CreateScannerForExe(Process gameProcess)
     {
         ProcessModuleWow64Safe module = gameProcess.MainModuleWow64Safe();
@@ -258,6 +253,7 @@ internal class GameMemory
         }
     }
 
+    /// <summary>Creates <see cref="SignatureScanner" />s for the game's DLLs.</summary>
     private static Dictionary<Game, SignatureScanner> CreateScannersForDlls(Process gameProcess)
     {
         var scanners = new Dictionary<Game, SignatureScanner>(3);
@@ -297,5 +293,15 @@ internal class GameMemory
                 list.Add(info.MemoryWatcherFactory(address));
             }
         }
+    }
+
+    #endregion
+
+    internal void UpdateMemoryWatchers(Process gameProcess)
+    {
+        _watchersExe.UpdateAll(gameProcess);
+        _watchersTR4R.UpdateAll(gameProcess);
+        _watchersTR5R.UpdateAll(gameProcess);
+        _watchersTR6R.UpdateAll(gameProcess);
     }
 }
