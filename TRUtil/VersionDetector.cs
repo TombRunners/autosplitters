@@ -28,7 +28,7 @@ public class VersionDetector
             return NoneOrUndetectedValue;
 
         // Try finding a match from known version hashes.
-        foreach (var p in processes)
+        foreach (Process p in processes)
         {
             string foundHash = p.GetMd5Hash();
             if (!VersionHashes.TryGetValue(foundHash, out uint version))

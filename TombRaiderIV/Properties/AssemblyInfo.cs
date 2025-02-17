@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TombRaider4")]
-[assembly: AssemblyCopyright("Copyright © 2022-2024")]
+[assembly: AssemblyCopyright("Copyright © 2022-2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -40,4 +40,4 @@ public readonly record struct AddressSignatureInfo
 
         return hash.ToHashCode();
     }
-};
+}

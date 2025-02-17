@@ -239,7 +239,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             Igt = GameData.LevelIgt.Current,
         };
 
-        var activeGame = CurrentActiveGame;
+        Game activeGame = CurrentActiveGame;
         RunStats.AddLevelStats(activeGame, stats);
     }
 

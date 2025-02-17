@@ -79,7 +79,7 @@ public static class GameData
     /// </returns>
     private static bool FindSupportedGame()
     {
-        var detectedVersion = VersionDetector.DetectVersion(out var gameProcess, out string hash);
+        GameVersion detectedVersion = VersionDetector.DetectVersion(out Process gameProcess, out string hash);
         if (GameVersion != detectedVersion)
         {
             GameVersion = detectedVersion;

@@ -56,7 +56,7 @@ public static class RunStats
             );
 
         // Sum IGT from current game.
-        var gameLevelStats = GameStats[currentActiveGame];
+        GameStats gameLevelStats = GameStats[currentActiveGame];
         if (gameLevelStats.GameComplete)
         {
             // Sum IGT from stored stats.
@@ -83,7 +83,7 @@ public static class RunStats
         // Handle Lara's Home.
         if (stats.LevelNumber == 0)
         {
-            var baseGame = GameData.CurrentActiveBaseGame;
+            Game baseGame = GameData.CurrentActiveBaseGame;
             if (LarasHomeComplete.Add(baseGame))
                 LevelsSplit.Push((baseGame, 0));
             return;
@@ -97,7 +97,7 @@ public static class RunStats
     /// <summary>Removes the most recently added <see cref="LevelStats" /> or Lara's Home entry.</summary>
     public static void UndoLevelStats()
     {
-        (var game, uint levelNumber) = LevelsSplit.Pop();
+        (Game game, uint levelNumber) = LevelsSplit.Pop();
 
         // Handle Lara's Home.
         if (levelNumber == 0)
@@ -113,7 +113,7 @@ public static class RunStats
     /// <summary>Clears all backing <see cref="TR123.GameStats" /> and Lara's Home entries.</summary>
     public static void Clear()
     {
-        foreach (var gameStats in GameStats.Values)
+        foreach (GameStats gameStats in GameStats.Values)
             gameStats.Clear();
 
         LarasHomeComplete.Clear();

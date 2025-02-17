@@ -20,7 +20,7 @@ public static class ProcessExtensions
             return null;
 
         using var md5 = MD5.Create();
-        using var stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+        using FileStream stream = File.Open(exePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         byte[] hash = md5.ComputeHash(stream);
         string md5Hash = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 

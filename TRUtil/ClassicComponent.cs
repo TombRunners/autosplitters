@@ -66,7 +66,7 @@ public abstract class ClassicComponent<TData> : AutoSplitComponent
     /// </remarks>
     public override XmlNode GetSettings(XmlDocument document)
     {
-        var settingsNode = document.CreateElement("Settings");
+        XmlElement settingsNode = document.CreateElement("Settings");
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
             _splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),

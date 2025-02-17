@@ -80,7 +80,6 @@
     <Compile Include="Enums\Tr5Level.cs" />
     <Compile Include="Enums\Tr5LevelSection.cs" />
     <Compile Include="Enums\Tr6Level.cs" />
-    <Compile Include="GameAddresses.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="GameMemory.cs" />
     <Compile Include="ProcessExtensions.cs" />
