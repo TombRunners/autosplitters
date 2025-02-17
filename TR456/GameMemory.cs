@@ -20,17 +20,8 @@ internal class GameMemory
         { Game.Tr6, "tomb6.dll" },
     }.ToImmutableDictionary();
 
-    /// <summary>For each released remastered game version, contains each game's address offsets.</summary>
-    internal static readonly ImmutableDictionary<GameVersion, Dictionary<Game, GameAddresses>> GameVersionAddresses =
-        new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
-        {
-            {
-                GameVersion.PublicV10,
-                new Dictionary<Game, GameAddresses>()
-            },
-        }.ToImmutableDictionary();
-
-    internal static readonly ImmutableHashSet<AddressSignatureInfo> WatcherSignatureInfos =
+    /// <summary>Address signature information for the game's EXE.</summary>
+    internal static readonly ImmutableHashSet<AddressSignatureInfo> WatcherExeSignatureInfos =
         new HashSet<AddressSignatureInfo>()
         {
             new()
@@ -40,17 +31,75 @@ internal class GameMemory
                 Signature = [0x83, 0xE1, 0x03, 0x25, 0xFF, 0xFF, 0xE7, 0xFF],
                 OffsetToWriteInstruction = 0x8A,
                 WriteInstructionLength = 6,
+                EffectiveAddressOffset = 0,
+            },
+            new()
+            {
+                Name = Constants.WatcherGFrameIndexName,
+                DataType = typeof(int),
+                Signature = [0x66, 0x66, 0x0F, 0x1F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8D, 0x84, 0x24, 0xB0, 0x00, 0x00, 0x00],
+                OffsetToWriteInstruction = 0x20,
+                WriteInstructionLength = 7,
+                EffectiveAddressOffset = 0x208,
             },
         }.ToImmutableHashSet();
 
-    #region MemoryWatcher Definitions
+    /// <summary>Address signature information for the game's DLLs.</summary>
+    internal static readonly ImmutableDictionary<Game[], AddressSignatureInfo> WatcherDllSignatureInfos =
+        new Dictionary<Game[], AddressSignatureInfo>
+        {
+            {
+                [Game.Tr4, Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherIsLoadingName,
+                    DataType = typeof(bool),
+                    Signature = [0x45, 0x33, 0xDB, 0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x45, 0x8B, 0xD3],
+                    OffsetToWriteInstruction = 0x10,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+        }.ToImmutableDictionary();
 
-    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
-    internal readonly MemoryWatcherList Watchers = [];
+    #region EXE MemoryWatcher Definitions
+
+    /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic related to the game's executable.</summary>
+    internal readonly MemoryWatcherList WatchersExe = [];
 
     /// <summary>Gives the value of the active game, where TR4 is 0, TR5 is 1, TR6 is 2.</summary>
     /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?[Constants.WatcherActiveGameName];
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)WatchersExe?[Constants.WatcherActiveGameName];
+
+    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)WatchersExe?[Constants.WatcherGFrameIndexName];
+
+    #endregion
+
+    #region DLL MemoryWatcher Definitions
+
+    /// <summary>Contains memory addresses related to the TR4R game DLL, accessible by named members, used in auto-splitting logic.</summary>
+    internal readonly MemoryWatcherList WatchersTR4R = [];
+
+    /// <summary>Contains memory addresses related to the TR5R game DLL, accessible by named members, used in auto-splitting logic.</summary>
+    internal readonly MemoryWatcherList WatchersTR5R = [];
+
+    /// <summary>Contains memory addresses related to the TR6R game DLL, accessible by named members, used in auto-splitting logic.</summary>
+    internal readonly MemoryWatcherList WatchersTR6R = [];
+
+    private MemoryWatcherList GetMemoryWatcherListForGame(Game game) =>
+        game switch
+        {
+            Game.Tr4 or Game.Tr4NgPlus or Game.Tr4TheTimesExclusive => WatchersTR4R,
+            Game.Tr5 or Game.Tr5NgPlus => WatchersTR5R,
+            Game.Tr6 or Game.Tr6NgPlus => WatchersTR6R,
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, "Invalid game")
+        };
+
+    internal MemoryWatcher<bool> IsLoading(Game game)
+    {
+        MemoryWatcherList list = GetMemoryWatcherListForGame(game);
+        return (MemoryWatcher<bool>)list?[Constants.WatcherIsLoadingName];
+    }
 
     #endregion
 
@@ -59,22 +108,19 @@ internal class GameMemory
     /// <param name="gameProcess"><see cref="Process" /> of the game</param>
     internal void InitializeMemoryWatchers(GameVersion version, Process gameProcess)
     {
-        Watchers.Clear();
+        WatchersExe.Clear();
+        WatchersTR4R.Clear();
+        WatchersTR5R.Clear();
+        WatchersTR6R.Clear();
 
-        SignatureScanner scanner = CreateSignatureScanner(gameProcess);
+        SignatureScanner scannerExe = CreateScannerForExe(gameProcess);
+        var scannersDlls = CreateScannersForDlls(gameProcess);
 
         switch (version)
         {
             case GameVersion.PublicV10:
-                // Base game EXE (tomb456.exe)
-                foreach (AddressSignatureInfo info in WatcherSignatureInfos)
-                {
-                    IntPtr address = GetAddressFromSignature(scanner, info);
-                    CreateWatcher(info.Name, address);
-                }
-
-                // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV10);
+                AddWatchersExe(scannerExe); // tomb456.exe
+                AddWatchersDlls(scannersDlls); // tomb4.dll, tomb5.dll, tomb6.dll
                 break;
 
             case GameVersion.None:
@@ -86,13 +132,23 @@ internal class GameMemory
         PreLoadWatchers(gameProcess);
     }
 
-    private static SignatureScanner CreateSignatureScanner(Process gameProcess)
+    /// <summary>
+    ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
+    ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
+    /// </summary>
+    /// <param name="gameProcess"><see cref="Process" /> of the game</param>
+    private void PreLoadWatchers(Process gameProcess)
     {
-        ProcessModuleWow64Safe module = gameProcess.MainModuleWow64Safe();
-        IntPtr address = module.BaseAddress;
-        int size = module.ModuleMemorySize;
+        UpdateMemoryWatchers(gameProcess); // Loads Current values.
+        UpdateMemoryWatchers(gameProcess); // Moves Current to Old and loads new Current values.
+    }
 
-        return new SignatureScanner(gameProcess, address, size);
+    internal void UpdateMemoryWatchers(Process gameProcess)
+    {
+        WatchersExe.UpdateAll(gameProcess);
+        WatchersTR4R.UpdateAll(gameProcess);
+        WatchersTR5R.UpdateAll(gameProcess);
+        WatchersTR6R.UpdateAll(gameProcess);
     }
 
     private static IntPtr GetAddressFromSignature(SignatureScanner scanner, AddressSignatureInfo sigInfo)
@@ -114,19 +170,38 @@ internal class GameMemory
         // Find the target address using the write instruction's offset.
         var extractedOffset = BitConverter.ToInt32(instructionBytes, sigInfo.WriteInstructionLength - 4);
         IntPtr addressAfterWriteInstruction = writeInstructionAddress + sigInfo.WriteInstructionLength;
-        IntPtr effectiveAddress = addressAfterWriteInstruction + extractedOffset;
-        LiveSplit.Options.Log.Warning($"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2}");
+        IntPtr effectiveAddress = addressAfterWriteInstruction + extractedOffset + sigInfo.EffectiveAddressOffset;
+        LiveSplit.Options.Log.Warning($"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}");
 
         // Return the address.
         return effectiveAddress;
     }
 
-    private void CreateWatcher(string name, IntPtr address)
+    private static SignatureScanner CreateScannerForExe(Process gameProcess)
+    {
+        ProcessModuleWow64Safe module = gameProcess.MainModuleWow64Safe();
+        IntPtr address = module.BaseAddress;
+        int size = module.ModuleMemorySize;
+
+        return new SignatureScanner(gameProcess, address, size);
+    }
+
+    private void AddWatchersExe(SignatureScanner scannerExe)
+    {
+        foreach (AddressSignatureInfo info in WatcherExeSignatureInfos)
+        {
+            IntPtr address = GetAddressFromSignature(scannerExe, info);
+            CreateWatcherExe(info.Name, address);
+        }
+    }
+
+    private void CreateWatcherExe(string name, IntPtr address)
     {
         switch (name)
         {
             case Constants.WatcherActiveGameName:
-                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(address)) { Name = name });
+            case Constants.WatcherGFrameIndexName:
+                WatchersExe.Add(new MemoryWatcher<int>(new DeepPointer(address)) { Name = name });
                 break;
 
             default:
@@ -134,25 +209,69 @@ internal class GameMemory
         }
     }
 
-    /// <summary>Adds MemoryWatchers which are common across all games.</summary>
-    /// <param name="version">Game version</param>
-    private void AddCommonDllWatchers(GameVersion version)
+    private static Dictionary<Game, SignatureScanner> CreateScannersForDlls(Process gameProcess)
     {
-        foreach (Game game in BaseGames)
+        var scanners = new Dictionary<Game, SignatureScanner>(3);
+
+        foreach (ProcessModuleWow64Safe module in gameProcess.ModulesWow64Safe())
         {
-            string moduleName = GameModules[game];
-            GameAddresses addresses = GameVersionAddresses[version][game];
+            Game game;
+            switch (module.ModuleName)
+            {
+                case "tomb4.dll":
+                    game = Game.Tr4;
+                    break;
+                case "tomb5.dll":
+                    game = Game.Tr5;
+                    break;
+                case "tomb6.dll":
+                    game = Game.Tr6;
+                    break;
+                default:
+                    continue;
+            }
+
+            IntPtr address = module.BaseAddress;
+            int size = module.ModuleMemorySize;
+            var scanner = new SignatureScanner(gameProcess, address, size);
+            scanners.Add(game, scanner);
+        }
+
+        if (scanners.Count != 3)
+            throw new Exception("Did not successfully scan all modules");
+
+        return scanners;
+    }
+
+    /// <summary>Adds MemoryWatchers which are common across all games.</summary>
+    private void AddWatchersDlls(Dictionary<Game, SignatureScanner> scanners)
+    {
+        var signatureInfos = WatcherDllSignatureInfos;
+        foreach (var gameSignatureInfo in signatureInfos)
+        {
+            foreach (Game game in gameSignatureInfo.Key)
+            {
+                if (!BaseGames.Contains(game))
+                    throw new ArgumentException("Base game required", nameof(game));
+
+                SignatureScanner scanner = scanners[game];
+                IntPtr address = GetAddressFromSignature(scanner, gameSignatureInfo.Value);
+                CreateWatchersForDlls(gameSignatureInfo.Value.Name, game, address);
+            }
         }
     }
 
-    /// <summary>
-    ///     This method should be called when initializing MemoryWatchers to ensure that they do not have
-    ///     default / zeroed values on initialization, which complicates or ruins autosplitter logic.
-    /// </summary>
-    /// <param name="gameProcess"><see cref="Process" /> of the game</param>
-    private void PreLoadWatchers(Process gameProcess)
+    private void CreateWatchersForDlls(string name, Game game, IntPtr address)
     {
-        Watchers.UpdateAll(gameProcess); // Loads Current values.
-        Watchers.UpdateAll(gameProcess); // Moves Current to Old and loads new Current values.
+        MemoryWatcherList targetList = GetMemoryWatcherListForGame(game);
+        switch (name)
+        {
+            case Constants.WatcherIsLoadingName:
+                targetList.Add(new MemoryWatcher<bool>(new DeepPointer(address)) { Name = name });
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 }

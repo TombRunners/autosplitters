@@ -49,11 +49,21 @@ public static class GameData
                 if (!FindSupportedGame())
                     return false;
 
-                GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
+                try
+                {
+                    GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
+                }
+                catch (Exception e)
+                {
+                    LiveSplit.Options.Log.Error(e);
+                    GameProcess = null;
+                    return false;
+                }
+
                 return GameIsInitialized;
             }
 
-            GameMemory.Watchers.UpdateAll(GameProcess);
+            GameMemory.UpdateMemoryWatchers(GameProcess);
             return GameIsInitialized;
         }
         catch
