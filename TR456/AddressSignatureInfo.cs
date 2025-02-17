@@ -1,11 +1,12 @@
 ﻿using System;
+using LiveSplit.ComponentUtil;
 
 namespace TR456;
 
 public readonly record struct AddressSignatureInfo
 {
     public string Name { get; init; }
-    public Type DataType { get; init; }
+    public Func<IntPtr, MemoryWatcher> MemoryWatcherFactory { get; init; }
     public byte[] Signature { get; init; }
     public int OffsetToWriteInstruction { get; init; }
     public int WriteInstructionLength { get; init; }
@@ -13,7 +14,7 @@ public readonly record struct AddressSignatureInfo
 
     public bool Equals(AddressSignatureInfo other) =>
         Name == other.Name &&
-        DataType == other.DataType &&
+        MemoryWatcherFactory == other.MemoryWatcherFactory &&
         OffsetToWriteInstruction == other.OffsetToWriteInstruction &&
         WriteInstructionLength == other.WriteInstructionLength &&
         EffectiveAddressOffset == other.EffectiveAddressOffset &&
@@ -26,7 +27,7 @@ public readonly record struct AddressSignatureInfo
     {
         var hash = new HashCode();
         hash.Add(Name);
-        hash.Add(DataType);
+        hash.Add(MemoryWatcherFactory);
         hash.Add(OffsetToWriteInstruction);
         hash.Add(WriteInstructionLength);
         hash.Add(EffectiveAddressOffset);
