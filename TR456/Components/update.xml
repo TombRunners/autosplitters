@@ -1,0 +1,10 @@
+<updates>
+  <update version="1.0.0.0">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Initial release. FG, IL / Area%, and Deathrun support with automatic Start, Split, and optional Reset. Supports LiveSplit's Undo Split.</change>
+    </changelog>
+  </update>
+</updates>
