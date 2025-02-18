@@ -133,6 +133,31 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // Health
+            {
+                [Game.Tr4],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherHealthName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherHealthName },
+                    Signature = [0xBA, 0x03, 0x00, 0x00, 0x00, 0x48, 0x03, 0xC8, 0x48, 0xC1, 0xF9, 0x08],
+                    OffsetToWriteInstruction = 0x37,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherHealthName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherHealthName },
+                    Signature = [0xB8, 0x28, 0x00, 0x00, 0x00, 0xEB, 0x0D],
+                    OffsetToWriteInstruction = -6,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
         }.ToImmutableDictionary();
 
     /// <summary>Contains memory addresses related to the TR4R game DLL, accessible as named members, used in auto-splitting logic.</summary>

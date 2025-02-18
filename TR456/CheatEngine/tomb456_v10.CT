@@ -128,6 +128,12 @@
               <VariableType>4 Bytes</VariableType>
               <Address>tomb4.dll + 0x644AE4</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>40</ID>
+              <Description>"Health"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+1ABCD4</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -141,7 +147,7 @@
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll+623C20</Address>
+              <Address>tomb4.dll+622620</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>33</ID>
@@ -156,6 +162,12 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb4.dll + 0x643584</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>39</ID>
+              <Description>"Health"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+1AACBC</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -194,6 +206,12 @@
               <VariableType>4 Bytes</VariableType>
               <Address>tomb5.dll + 0x63C1D0</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>42</ID>
+              <Description>"Health"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+1A4B3C</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -207,7 +225,7 @@
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb5.dll+5335D8</Address>
+              <Address>tomb5.dll+5334D8</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>37</ID>
@@ -222,6 +240,12 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb5.dll + 0x63C0D0</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>41</ID>
+              <Description>"Health"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+1A4A64</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
