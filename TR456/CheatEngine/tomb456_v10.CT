@@ -134,6 +134,18 @@
               <VariableType>4 Bytes</VariableType>
               <Address>tomb4.dll+1ABCD4</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>53</ID>
+              <Description>"Pickups (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+672E3C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>54</ID>
+              <Description>"Secrets (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+672E42</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -168,6 +180,18 @@
               <Description>"Health"</Description>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb4.dll+1AACBC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>51</ID>
+              <Description>"Pickups (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+6718DC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>52</ID>
+              <Description>"Secrets (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+6718E2</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -212,6 +236,30 @@
               <VariableType>4 Bytes</VariableType>
               <Address>tomb5.dll+1A4B3C</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>47</ID>
+              <Description>"Pickups (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6404BC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>48</ID>
+              <Description>"Secrets (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6404C2</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>49</ID>
+              <Description>"Secrets (Level)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6404DA</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>50</ID>
+              <Description>"Secrets? (Achievement???)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6405F4</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -246,6 +294,30 @@
               <Description>"Health"</Description>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb5.dll+1A4A64</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>45</ID>
+              <Description>"Pickups (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6403BC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>43</ID>
+              <Description>"Secrets (Playthrough)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6403C2</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>44</ID>
+              <Description>"Secrets (Level)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6403DA</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>46</ID>
+              <Description>"Secrets? (Achievement???)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+6404F4</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>

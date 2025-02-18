@@ -158,6 +158,56 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // Pickups
+            {
+                [Game.Tr4],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherPickupsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherPickupsName },
+                    Signature = [0x85, 0xC0, 0x74, 0x48, 0x41, 0x80, 0xFB, 0x1F, 0x75, 0x42],
+                    OffsetToWriteInstruction = -20,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherPickupsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherPickupsName },
+                    Signature = [0xB8, 0x00, 0x01, 0x00, 0x00, 0x66, 0x85, 0x43, 0x30],
+                    OffsetToWriteInstruction = -15,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            // Secrets
+            {
+                [Game.Tr4],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherSecretsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
+                    Signature = [0x45, 0x33, 0xDB, 0xBA, 0x00, 0x09, 0x00, 0x00, 0xEB, 0x1C],
+                    OffsetToWriteInstruction = -20,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherSecretsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
+                    Signature = [0x8D, 0x41, 0xFF, 0x3C, 0x02, 0x77, 0x09],
+                    OffsetToWriteInstruction = -12,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
         }.ToImmutableDictionary();
 
     /// <summary>Contains memory addresses related to the TR4R game DLL, accessible as named members, used in auto-splitting logic.</summary>
@@ -189,6 +239,12 @@ internal class GameMemory
     internal MemoryWatcher<int> CurrentLevel(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherCurrentLevelName, game);
 
     internal MemoryWatcher<int> NextLevel(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherIsLoadingName, game);
+
+    internal MemoryWatcher<int> Health(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
+
+    internal MemoryWatcher<int> Pickups(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherPickupsName, game);
+
+    internal MemoryWatcher<byte> Secrets(Game game) => GetMemoryWatcherForGame<byte>(Constants.WatcherSecretsName, game);
 
     #endregion
 
