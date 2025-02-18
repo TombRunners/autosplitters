@@ -155,7 +155,7 @@
               <Description>"Next Level"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x644AE4</Address>
+              <Address>tomb4.dll + 0x643584</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -214,14 +214,14 @@
               <Description>"Current Level"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x647450</Address>
+              <Address>tomb5.dll + 0x640160</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>38</ID>
               <Description>"Next Level"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x63C1D0</Address>
+              <Address>tomb5.dll + 0x63C0D0</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
