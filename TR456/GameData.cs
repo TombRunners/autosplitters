@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TR456;
 
 public static class GameData
 {
     private static readonly GameMemory GameMemory = new ();
+
+    private static bool _retryScanOnce = true;
 
     private static bool _signaturesScannedSuccessfully;
 
@@ -65,6 +68,9 @@ public static class GameData
         {
             if (GameProcess is null || GameProcess.HasExited)
             {
+                if (GameProcess is not null && GameProcess.HasExited)
+                    _retryScanOnce = true;
+
                 if (!FindSupportedGame())
                     return false;
 
@@ -77,6 +83,15 @@ public static class GameData
                 {
                     LiveSplit.Options.Log.Error(e);
                     SignaturesScannedSuccessfully = false;
+
+                    // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
+                    Thread.Sleep(4000);
+                    if (_retryScanOnce)
+                    {
+                        _retryScanOnce = false;
+                        GameProcess = null; // Set to null so Update can try again now that we've waited for game to fully initialize (hopefully).
+                        return false;
+                    }
                 }
 
                 return SignaturesScannedSuccessfully && GameIsInitialized;

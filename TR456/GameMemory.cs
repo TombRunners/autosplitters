@@ -313,8 +313,8 @@ internal class GameMemory
 
 #if DEBUG
         LiveSplit.Options.Log.Warning($"Found signature {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
-                                      $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}\n" +
-                                      $"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}");
+                                      $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
+                                      $"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
 #endif
 
         // Return the address.
