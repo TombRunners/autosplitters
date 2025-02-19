@@ -7,6 +7,18 @@ public static class GameData
 {
     private static readonly GameMemory GameMemory = new ();
 
+    private static bool _signaturesScannedSuccessfully;
+
+    private static bool SignaturesScannedSuccessfully
+    {
+        get => _signaturesScannedSuccessfully;
+        set
+        {
+            _signaturesScannedSuccessfully = value;
+            OnSignatureScanStatusChanged.Invoke(value);
+        }
+    }
+
     /// <summary>Sometimes directly read, especially for reading level times.</summary>
     internal static Process GameProcess;
 
@@ -20,6 +32,13 @@ public static class GameData
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public static GameVersionChangedDelegate OnGameVersionChanged;
+
+    /// <summary>Allows creation of an event regarding the success of scanning game addresses.</summary>
+    /// <param name="success"></param>
+    public delegate void SignatureScanStatusChangedDelegate(bool success);
+
+    /// <summary>Allows subscribers to know the success of scanning game addresses.</summary>
+    public static SignatureScanStatusChangedDelegate OnSignatureScanStatusChanged;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame => throw new NotImplementedException();
@@ -52,16 +71,19 @@ public static class GameData
                 try
                 {
                     GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
+                    SignaturesScannedSuccessfully = true;
                 }
                 catch (Exception e)
                 {
                     LiveSplit.Options.Log.Error(e);
-                    GameProcess = null;
-                    return false;
+                    SignaturesScannedSuccessfully = false;
                 }
 
-                return GameIsInitialized;
+                return SignaturesScannedSuccessfully && GameIsInitialized;
             }
+
+            if (!SignaturesScannedSuccessfully)
+                return false;
 
             GameMemory.UpdateMemoryWatchers(GameProcess);
             return GameIsInitialized;

@@ -260,21 +260,23 @@ internal class GameMemory
         _watchersTR5R.Clear();
         _watchersTR6R.Clear();
 
-        SignatureScanner scannerExe = CreateScannerForExe(gameProcess);
-        var scannersDlls = CreateScannersForDlls(gameProcess);
-
         switch (version)
         {
             case GameVersion.PublicV10:
-                AddWatchersExe(scannerExe); // tomb456.exe
-                AddWatchersDlls(scannersDlls); // tomb4.dll, tomb5.dll, tomb6.dll
                 break;
-
             case GameVersion.None:
             case GameVersion.Unknown:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }
+
+        // tomb456.exe
+        SignatureScanner scannerExe = CreateScannerForExe(gameProcess);
+        AddWatchersExe(scannerExe);
+
+        // tomb4.dll, tomb5.dll, tomb6.dll
+        var scannersDlls = CreateScannersForDlls(gameProcess);
+        AddWatchersDlls(scannersDlls);
 
         PreLoadWatchers(gameProcess);
     }
@@ -297,20 +299,23 @@ internal class GameMemory
         IntPtr signatureAddress = scanner.Scan(target);
         if (signatureAddress == IntPtr.Zero)
             throw new Exception($"Signature not found: {sigInfo.Signature.Select(static b => b.ToString("X2"))}");
-        LiveSplit.Options.Log.Warning($"Found signature {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}");
 
         // Find the write instruction using the offset argument.
         IntPtr writeInstructionAddress = signatureAddress + sigInfo.OffsetToWriteInstruction;
         byte[] instructionBytes = scanner.Process.ReadBytes(writeInstructionAddress, sigInfo.WriteInstructionLength);
         if (instructionBytes is null || instructionBytes.Length != sigInfo.WriteInstructionLength)
             throw new Exception($"Failed to read process memory at the write instruction at {writeInstructionAddress.ToString("X2")}.");
-        LiveSplit.Options.Log.Warning($"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}");
 
         // Find the target address using the write instruction's offset.
         var extractedOffset = BitConverter.ToInt32(instructionBytes, sigInfo.WriteInstructionLength - 4);
         IntPtr addressAfterWriteInstruction = writeInstructionAddress + sigInfo.WriteInstructionLength;
         IntPtr effectiveAddress = addressAfterWriteInstruction + extractedOffset + sigInfo.EffectiveAddressOffset;
-        LiveSplit.Options.Log.Warning($"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}");
+
+#if DEBUG
+        LiveSplit.Options.Log.Warning($"Found signature {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
+                                      $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}\n" +
+                                      $"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}");
+#endif
 
         // Return the address.
         return effectiveAddress;

@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -7,188 +10,66 @@ namespace TR456;
 
 public sealed class ComponentSettings : UserControl
 {
-    internal GroupBox ModeSelect;
+    private GroupBox _runTypeSelect;
     public RadioButton ILModeButton;
     public RadioButton FullGameModeButton;
     public RadioButton DeathrunModeButton;
     private Label _gameTimeMethodLabel;
     public CheckBox EnableAutoResetCheckbox;
+    private GroupBox _pickupSplitSelect;
+    public RadioButton SplitNoPickupsButton;
+    public RadioButton SplitAllPickupsButton;
+    public RadioButton SplitSecretsOnlyButton;
+    public CheckBox SplitSecurityBreachCheckbox;
+
+    private GroupBox _levelTransitionSelect;
+    private Button _tr4LevelSettingsButton;
+    private Button _tr6LevelSettingsButton;
+    private Panel _tr4LevelTransitionSettingsPanel;
+    private Button _tr4SelectAllButton;
+    private Button _tr4UnselectAllButton;
+    private Panel _tr6LevelTransitionSettingsPanel;
+    private Button _tr6SelectAllButton;
+    private Button _tr6UnselectAllButton;
+
     public Label GameVersionLabel;
     public Label AutosplitterVersionLabel;
     private LinkLabel _guideLabel;
     private Label _aslWarningLabel;
     private Label _timerWarningLabel;
-    public bool FullGame = true;
-    public bool Deathrun;
+    private Label _signatureScanStatusLabel;
+
+    private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
+    private const string PickupSplitSettingDefault = "Split Pickups [TR4, TR5]";
+
+    private Game? ActiveGame { get; set; } = null;
+
+    public RunType RunType;
     public GameTimeMethod GameTimeMethod;
     public bool EnableAutoReset;
+    public PickupSplitSetting PickupSplitSetting;
+    public bool SplitSecurityBreach;
+
+    public bool FullGame => RunType == RunType.FullGame;
+    public bool Deathrun => RunType == RunType.Deathrun;
 
     internal static bool GameVersionInitialized;
 
     public ComponentSettings()
     {
         InitializeComponent();
-        SetGameTimeMethod(Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
+        SetGameTimeMethod(RunType == RunType.Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
         GameVersionInitialized = false;
+        EnableControlsPerState();
     }
 
-    private void InitializeComponent()
-    {
-        ModeSelect = new GroupBox();
-        FullGameModeButton = new RadioButton();
-        ILModeButton = new RadioButton();
-        DeathrunModeButton = new RadioButton();
-        _gameTimeMethodLabel = new Label();
-        EnableAutoResetCheckbox = new CheckBox();
-        GameVersionLabel = new Label();
-        AutosplitterVersionLabel = new Label();
-        _guideLabel = new LinkLabel();
-        _aslWarningLabel = new Label();
-        _timerWarningLabel = new Label();
-        ModeSelect.SuspendLayout();
-        SuspendLayout();
-
-        // _modeSelect
-        ModeSelect.Controls.Add(FullGameModeButton);
-        ModeSelect.Controls.Add(ILModeButton);
-        ModeSelect.Controls.Add(DeathrunModeButton);
-        ModeSelect.Location = new Point(10, 10);
-        ModeSelect.Name = "ModeSelect";
-        ModeSelect.Size = new Size(275, 55);
-        ModeSelect.TabIndex = 0;
-        ModeSelect.TabStop = false;
-        ModeSelect.Text = "Mode Selection";
-
-        // FullGameModeButton
-        FullGameModeButton.AutoSize = true;
-        FullGameModeButton.Checked = true;
-        FullGameModeButton.Location = new Point(6, 20);
-        FullGameModeButton.Name = "FullGameModeButton";
-        FullGameModeButton.Size = new Size(72, 17);
-        FullGameModeButton.TabIndex = 0;
-        FullGameModeButton.TabStop = true;
-        FullGameModeButton.Text = "Full Game";
-        FullGameModeButton.UseVisualStyleBackColor = true;
-        FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
-
-        // ILModeButton
-        ILModeButton.AutoSize = true;
-        ILModeButton.Location = new Point(84, 20);
-        ILModeButton.Name = "ILModeButton";
-        ILModeButton.Size = new Size(100, 17);
-        ILModeButton.TabIndex = 1;
-        ILModeButton.Text = "IL or Section Run";
-        ILModeButton.UseVisualStyleBackColor = true;
-        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
-
-        // DeathrunModeButton
-        DeathrunModeButton.AutoSize = true;
-        DeathrunModeButton.Location = new Point(198, 20);
-        DeathrunModeButton.Name = "DeathrunModeButton";
-        DeathrunModeButton.Size = new Size(70, 17);
-        DeathrunModeButton.TabIndex = 2;
-        DeathrunModeButton.Text = "Deathrun";
-        DeathrunModeButton.UseVisualStyleBackColor = true;
-        DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
-
-        // GameTimeMethodLabel
-        _gameTimeMethodLabel.AutoSize = true;
-        _gameTimeMethodLabel.Location = new Point(328, 25);
-        _gameTimeMethodLabel.Name = "GameVersionLabel";
-        _gameTimeMethodLabel.Size = new Size(200, 30);
-        _gameTimeMethodLabel.TabIndex = 0;
-        _gameTimeMethodLabel.Text = "Game Time Method:\nNot Initialized!";
-        _gameTimeMethodLabel.TextAlign = ContentAlignment.MiddleCenter;
-
-        // EnableAutoResetCheckbox
-        EnableAutoResetCheckbox.AutoSize = true;
-        EnableAutoResetCheckbox.Checked = false;
-        EnableAutoResetCheckbox.Location = new Point(12, 80);
-        EnableAutoResetCheckbox.Size = new Size(72, 17);
-        EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
-        EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
-        EnableAutoResetCheckbox.TabIndex = 0;
-        EnableAutoResetCheckbox.UseVisualStyleBackColor = true;
-        EnableAutoResetCheckbox.CheckedChanged += EnableAutoResetCheckboxCheckedChanged;
-
-        // GameVersionLabel
-        GameVersionLabel.AutoSize = true;
-        GameVersionLabel.Location = new Point(10, 150);
-        GameVersionLabel.Name = "GameVersionLabel";
-        GameVersionLabel.Size = new Size(200, 15);
-        GameVersionLabel.TabIndex = 1;
-        GameVersionLabel.Text = "Game Version: None / Undetected";
-
-        // AutosplitterVersionLabel
-        AutosplitterVersionLabel.AutoSize = true;
-        AutosplitterVersionLabel.Location = new Point(10, 170);
-        AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
-        AutosplitterVersionLabel.Size = new Size(200, 15);
-        AutosplitterVersionLabel.TabIndex = 2;
-        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
-
-        // _aslWarningLabel
-        _aslWarningLabel.AutoSize = true;
-        _aslWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
-        _aslWarningLabel.ForeColor = Color.Crimson;
-        _aslWarningLabel.Location = new Point(24, 210);
-        _aslWarningLabel.Name = "_aslWarningLabel";
-        _aslWarningLabel.Size = new Size(476, 20);
-        _aslWarningLabel.TabStop = false;
-        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
-        _aslWarningLabel.Visible = false;
-
-        // _timerWarningLabel
-        _timerWarningLabel.AutoSize = true;
-        _timerWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
-        _timerWarningLabel.ForeColor = Color.Crimson;
-        _timerWarningLabel.Location = new Point(55, 240);
-        _timerWarningLabel.Name = "_timerWarningLabel";
-        _timerWarningLabel.Size = new Size(476, 20);
-        _timerWarningLabel.TabStop = false;
-        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
-        _timerWarningLabel.Visible = false;
-
-        // _guideLabel
-        _guideLabel.AutoSize = false;
-        _guideLabel.Font = new Font(FontFamily.GenericSansSerif, 8.25f);
-        _guideLabel.Location = new Point(10, 275);
-        _guideLabel.LinkClicked += GuideLinkClicked;
-        _guideLabel.Links.Add(11, 55, "https://www.speedrun.com/tr456_remastered/guides/h548a");
-        _guideLabel.Name = "_guideLabel";
-        _guideLabel.Size = new Size(476, 15);
-        _guideLabel.TabIndex = 3;
-        _guideLabel.Text = "Need help? https://www.speedrun.com/tr456_remastered/guides/h548a";
-
-        // ComponentSettings
-        Controls.Add(ModeSelect);
-        Controls.Add(_gameTimeMethodLabel);
-        Controls.Add(EnableAutoResetCheckbox);
-        Controls.Add(GameVersionLabel);
-        Controls.Add(AutosplitterVersionLabel);
-        Controls.Add(_aslWarningLabel);
-        Controls.Add(_timerWarningLabel);
-        Controls.Add(_guideLabel);
-        Name = "ComponentSettings";
-        Size = new Size(476, 290);
-        ModeSelect.ResumeLayout(false);
-        ModeSelect.PerformLayout();
-
-        ResumeLayout(false);
-        PerformLayout();
-    }
-
-    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        if (e.Link.LinkData is string target)
-            System.Diagnostics.Process.Start(target);
-    }
-
-    public void SetWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
+    public void SetLayoutWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
     {
         _aslWarningLabel.Visible = aslComponentIsPresent;
         _timerWarningLabel.Visible = !timerWithGameTimeIsPresent;
     }
+
+    public void SetSignatureScanStatusLabelVisibility(bool success) => _signatureScanStatusLabel.Visible = !success;
 
     public void SetGameVersion(GameVersion version, string hash)
     {
@@ -198,7 +79,7 @@ public sealed class ComponentSettings : UserControl
         string versionText = version switch
         {
             GameVersion.None       => noneUndetected,
-            GameVersion.Unknown    => $"Found unknown version, MD5 hash: {hash}",
+            GameVersion.Unknown    => $"Unknown version, MD5 hash: {hash}",
             GameVersion.PublicV10  => publicV10,
             _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
         };
@@ -215,30 +96,390 @@ public sealed class ComponentSettings : UserControl
             GameTimeMethod.RtaNoLoads => "RTA w/o Loads",
             _ => "Unknown",
         };
-        _gameTimeMethodLabel.Text = $"Game Time Method:\n{methodText}";
 
+        _gameTimeMethodLabel.Text = $"Game Time Method:{Environment.NewLine}{methodText}";
         GameTimeMethod = method;
     }
 
+    private void SetAllTr4CheckBoxes(bool check)
+    {
+        foreach (CheckBox checkBox in _tr4LevelTransitionSettingsPanel.Controls.OfType<CheckBox>().Where(static cb => cb.Enabled))
+            checkBox.Checked = check; // This triggers checkBox.CheckedChanged.
+    }
+
+    private void SetAllTr6CheckBoxes(bool check)
+    {
+        foreach (CheckBox checkBox in _tr6LevelTransitionSettingsPanel.Controls.OfType<CheckBox>().Where(static cb => cb.Enabled))
+            checkBox.Checked = check; // This triggers checkBox.CheckedChanged.
+    }
+
+    // ReSharper disable once FunctionComplexityOverflow
+    private void InitializeComponent()
+    {
+        _runTypeSelect = new GroupBox();
+        FullGameModeButton = new RadioButton();
+        ILModeButton = new RadioButton();
+        DeathrunModeButton = new RadioButton();
+        _gameTimeMethodLabel = new Label();
+        EnableAutoResetCheckbox = new CheckBox();
+        _pickupSplitSelect = new GroupBox();
+        SplitNoPickupsButton = new RadioButton();
+        SplitAllPickupsButton = new RadioButton();
+        SplitSecretsOnlyButton = new RadioButton();
+        SplitSecurityBreachCheckbox = new CheckBox();
+
+        _levelTransitionSelect = new GroupBox();
+        _tr4LevelSettingsButton = new Button();
+        _tr6LevelSettingsButton = new Button();
+        _tr4LevelTransitionSettingsPanel = new Panel();
+        _tr4SelectAllButton = new Button();
+        _tr4UnselectAllButton = new Button();
+        _tr6LevelTransitionSettingsPanel = new Panel();
+        _tr6SelectAllButton = new Button();
+        _tr6UnselectAllButton = new Button();
+
+        GameVersionLabel = new Label();
+        AutosplitterVersionLabel = new Label();
+        _guideLabel = new LinkLabel();
+        _aslWarningLabel = new Label();
+        _timerWarningLabel = new Label();
+        _signatureScanStatusLabel = new Label();
+        _runTypeSelect.SuspendLayout();
+        _pickupSplitSelect.SuspendLayout();
+        _levelTransitionSelect.SuspendLayout();
+        SuspendLayout();
+
+        #region _runTypeSelect and Radio Buttons
+
+        _runTypeSelect.Controls.Add(FullGameModeButton);
+        _runTypeSelect.Controls.Add(ILModeButton);
+        _runTypeSelect.Controls.Add(DeathrunModeButton);
+        _runTypeSelect.Location = new Point(10, 5);
+        _runTypeSelect.Name = "_runTypeSelect";
+        _runTypeSelect.Size = new Size(280, 45);
+        _runTypeSelect.TabIndex = 0;
+        _runTypeSelect.TabStop = false;
+        _runTypeSelect.Text = "Run Type";
+
+        // FullGameModeButton
+        FullGameModeButton.AutoSize = true;
+        FullGameModeButton.Checked = true;
+        FullGameModeButton.Location = new Point(6, 20);
+        FullGameModeButton.Name = "FullGameModeButton";
+        FullGameModeButton.Size = new Size(85, 17);
+        FullGameModeButton.TabIndex = 0;
+        FullGameModeButton.TabStop = true;
+        FullGameModeButton.Text = "Full Game";
+        FullGameModeButton.UseVisualStyleBackColor = true;
+        FullGameModeButton.CheckedChanged += FullGameModeButtonCheckedChanged;
+
+        // ILModeButton
+        ILModeButton.AutoSize = true;
+        ILModeButton.Location = new Point(96, 20);
+        ILModeButton.Name = "ILModeButton";
+        ILModeButton.Size = new Size(91, 17);
+        ILModeButton.TabIndex = 1;
+        ILModeButton.Text = "IL or Area%";
+        ILModeButton.UseVisualStyleBackColor = true;
+        ILModeButton.CheckedChanged += ILModeButtonCheckedChanged;
+
+        // DeathrunModeButton
+        DeathrunModeButton.AutoSize = true;
+        DeathrunModeButton.Location = new Point(192, 20);
+        DeathrunModeButton.Name = "DeathrunModeButton";
+        DeathrunModeButton.Size = new Size(79, 17);
+        DeathrunModeButton.TabIndex = 2;
+        DeathrunModeButton.Text = "Deathrun";
+        DeathrunModeButton.UseVisualStyleBackColor = true;
+        DeathrunModeButton.CheckedChanged += DeathrunModeButtonCheckedChanged;
+
+        #endregion
+
+        // GameTimeMethodLabel
+        _gameTimeMethodLabel.AutoSize = true;
+        _gameTimeMethodLabel.Location = new Point(335, 18);
+        _gameTimeMethodLabel.Name = "GameVersionLabel";
+        _gameTimeMethodLabel.Size = new Size(200, 30);
+        _gameTimeMethodLabel.TabIndex = 0;
+        _gameTimeMethodLabel.Text = "Game Time Method:" + Environment.NewLine + "Not Initialized!";
+        _gameTimeMethodLabel.TextAlign = ContentAlignment.MiddleCenter;
+
+        // EnableAutoResetCheckbox
+        EnableAutoResetCheckbox.AutoSize = true;
+        EnableAutoResetCheckbox.Checked = false;
+        EnableAutoResetCheckbox.Location = new Point(12, 65);
+        EnableAutoResetCheckbox.Size = new Size(72, 17);
+        EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
+        EnableAutoResetCheckbox.Text = "Enable Auto-Reset [TR4, TR5, TR6]";
+        EnableAutoResetCheckbox.TabIndex = 0;
+        EnableAutoResetCheckbox.UseVisualStyleBackColor = true;
+        EnableAutoResetCheckbox.CheckedChanged += EnableAutoResetCheckboxCheckedChanged;
+
+        #region _pickupSplitSelect and Radio Buttons
+
+        // PickupSplitSelect
+        _pickupSplitSelect.Controls.Add(SplitNoPickupsButton);
+        _pickupSplitSelect.Controls.Add(SplitAllPickupsButton);
+        _pickupSplitSelect.Controls.Add(SplitSecretsOnlyButton);
+        _pickupSplitSelect.Location = new Point(256, 55);
+        _pickupSplitSelect.Name = "_pickupSplitSelect";
+        _pickupSplitSelect.Size = new Size(220, 65);
+        _pickupSplitSelect.TabIndex = 0;
+        _pickupSplitSelect.TabStop = false;
+        _pickupSplitSelect.Text = "Split Pickups [TR4, TR5]";
+
+        // SplitNoPickupsButton
+        SplitNoPickupsButton.AutoSize = true;
+        SplitNoPickupsButton.Checked = true;
+        SplitNoPickupsButton.Location = new Point(6, 40);
+        SplitNoPickupsButton.Name = "SplitNoPickupsButton";
+        SplitNoPickupsButton.Size = new Size(58, 17);
+        SplitNoPickupsButton.TabIndex = 0;
+        SplitNoPickupsButton.TabStop = true;
+        SplitNoPickupsButton.Text = "None";
+        SplitNoPickupsButton.UseVisualStyleBackColor = true;
+        SplitNoPickupsButton.CheckedChanged += SplitNoPickupsButtonCheckedChanged;
+
+        // SplitAllPickupsButton
+        SplitAllPickupsButton.AutoSize = true;
+        SplitAllPickupsButton.Location = new Point(69, 40);
+        SplitAllPickupsButton.Name = "SplitAllPickupsButton";
+        SplitAllPickupsButton.Size = new Size(41, 17);
+        SplitAllPickupsButton.TabIndex = 1;
+        SplitAllPickupsButton.Text = "All";
+        SplitAllPickupsButton.UseVisualStyleBackColor = true;
+        SplitAllPickupsButton.CheckedChanged += SplitAllPickupsButtonCheckedChanged;
+
+        // SplitSecretsOnlyButton
+        SplitSecretsOnlyButton.AutoSize = true;
+        SplitSecretsOnlyButton.Location = new Point(115, 40);
+        SplitSecretsOnlyButton.Name = "SplitSecretsOnlyButton";
+        SplitSecretsOnlyButton.Size = new Size(96, 17);
+        SplitSecretsOnlyButton.TabIndex = 2;
+        SplitSecretsOnlyButton.Text = "Secrets Only";
+        SplitSecretsOnlyButton.UseVisualStyleBackColor = true;
+        SplitSecretsOnlyButton.CheckedChanged += SplitSecretsOnlyButtonCheckedChanged;
+
+        #endregion
+
+        // SplitSecurityBreachCheckbox
+        SplitSecurityBreachCheckbox.AutoSize = true;
+        SplitSecurityBreachCheckbox.Checked = false;
+        SplitSecurityBreachCheckbox.Location = new Point(12, 95);
+        SplitSecurityBreachCheckbox.Size = new Size(72, 17);
+        SplitSecurityBreachCheckbox.Name = "SplitSecurityBreachCheckbox";
+        SplitSecurityBreachCheckbox.Text = "Split Security Breach Cutscene [TR5]";
+        SplitSecurityBreachCheckbox.TabIndex = 0;
+        SplitSecurityBreachCheckbox.UseVisualStyleBackColor = true;
+        SplitSecurityBreachCheckbox.CheckedChanged += SplitSecurityBreachCheckboxCheckedChanged;
+
+        #region _levelTransitionSettings
+
+        // _levelTransitionSettings
+        _levelTransitionSelect.Controls.Add(_tr4LevelSettingsButton);
+        _levelTransitionSelect.Controls.Add(_tr6LevelSettingsButton);
+        _levelTransitionSelect.Controls.Add(_tr4LevelTransitionSettingsPanel);
+        _levelTransitionSelect.Controls.Add(_tr4SelectAllButton);
+        _levelTransitionSelect.Controls.Add(_tr4UnselectAllButton);
+        _levelTransitionSelect.Controls.Add(_tr6LevelTransitionSettingsPanel);
+        _levelTransitionSelect.Controls.Add(_tr6SelectAllButton);
+        _levelTransitionSelect.Controls.Add(_tr6UnselectAllButton);
+        _levelTransitionSelect.Location = new Point(0, 120);
+        _levelTransitionSelect.Name = "_levelTransitionSelect";
+        _levelTransitionSelect.Size = new Size(476, 310);
+        _levelTransitionSelect.Text = "Level Transition Settings";
+
+        // _tr4LevelSettingsButton
+        _tr4LevelSettingsButton.Location = new Point(360, 9);
+        _tr4LevelSettingsButton.Size = new Size(50, 25);
+        _tr4LevelSettingsButton.Text = "TR4";
+        _tr4LevelSettingsButton.Click += _tr4LevelSettingsButtonClicked;
+        _tr4LevelSettingsButton.Enabled = true;
+        _tr4LevelSettingsButton.Visible = true;
+
+        // _tr6LevelSettingsButton
+        _tr6LevelSettingsButton.Location = new Point(420, 9);
+        _tr6LevelSettingsButton.Size = new Size(50, 25);
+        _tr6LevelSettingsButton.Text = "TR6";
+        _tr6LevelSettingsButton.Click += _tr6LevelSettingsButtonClicked;
+        _tr6LevelSettingsButton.Enabled = true;
+        _tr6LevelSettingsButton.Visible = true;
+
+        // _tr4LevelTransitionSettingsPanel
+        _tr4LevelTransitionSettingsPanel.Location = new Point(5, 35);
+        _tr4LevelTransitionSettingsPanel.Size = new Size(466, 239);
+        _tr4LevelTransitionSettingsPanel.AutoScroll = false;
+        _tr4LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
+        _tr4LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
+        _tr4LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
+        _tr4LevelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
+        _tr4LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
+        _tr4LevelTransitionSettingsPanel.Enabled = true;
+        _tr4LevelTransitionSettingsPanel.Visible = true;
+
+        // _tr4SelectAllButton
+        _tr4SelectAllButton.Location = new Point(5, 279);
+        _tr4SelectAllButton.Size = new Size(100, 25);
+        _tr4SelectAllButton.Text = "Select All";
+        _tr4SelectAllButton.Click += _tr4SelectAllButtonClicked;
+        _tr4SelectAllButton.Enabled = true;
+        _tr4SelectAllButton.Visible = true;
+
+        // _tr4UnselectAllButton
+        _tr4UnselectAllButton.Location = new Point(371, 279);
+        _tr4UnselectAllButton.Size = new Size(100, 25);
+        _tr4UnselectAllButton.Text = "Unselect All";
+        _tr4UnselectAllButton.Click += _tr4UnselectAllButtonClicked;
+        _tr4UnselectAllButton.Enabled = true;
+        _tr4UnselectAllButton.Visible = true;
+
+        // _tr6LevelTransitionSettingsPanel
+        _tr6LevelTransitionSettingsPanel.Location = new Point(5, 35);
+        _tr6LevelTransitionSettingsPanel.Size = new Size(466, 239);
+        _tr6LevelTransitionSettingsPanel.AutoScroll = false;
+        _tr6LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
+        _tr6LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
+        _tr6LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
+        _tr6LevelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
+        _tr6LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
+        _tr6LevelTransitionSettingsPanel.Enabled = false;
+        _tr6LevelTransitionSettingsPanel.Visible = false;
+
+        // _tr6SelectAllButton
+        _tr6SelectAllButton.Location = new Point(5, 279);
+        _tr6SelectAllButton.Size = new Size(100, 20);
+        _tr6SelectAllButton.Text = "Select All";
+        _tr6SelectAllButton.Click += _tr6SelectAllButtonClicked;
+        _tr6SelectAllButton.Enabled = false;
+        _tr6SelectAllButton.Visible = false;
+
+        // _tr6UnselectAllButton
+        _tr6UnselectAllButton.Location = new Point(371, 279);
+        _tr6UnselectAllButton.Size = new Size(100, 20);
+        _tr6UnselectAllButton.Text = "Unselect All";
+        _tr6UnselectAllButton.Click += _tr6UnselectAllButtonClicked;
+        _tr6UnselectAllButton.Enabled = false;
+        _tr6UnselectAllButton.Visible = false;
+
+        #endregion
+
+        #region GameVersion and AutosplitterVersion Labels
+
+        // GameVersionLabel
+        GameVersionLabel.AutoSize = true;
+        GameVersionLabel.Location = new Point(10, 434);
+        GameVersionLabel.Name = "GameVersionLabel";
+        GameVersionLabel.Size = new Size(200, 15);
+        GameVersionLabel.TabIndex = 1;
+        GameVersionLabel.Text = "Game Version: None / Undetected";
+
+        // AutosplitterVersionLabel
+        AutosplitterVersionLabel.AutoSize = true;
+        AutosplitterVersionLabel.Location = new Point(10, 454);
+        AutosplitterVersionLabel.Name = "AutosplitterVersionLabel";
+        AutosplitterVersionLabel.Size = new Size(200, 15);
+        AutosplitterVersionLabel.TabIndex = 2;
+        AutosplitterVersionLabel.Text = "Autosplitter Version: " + Assembly.GetCallingAssembly().GetName().Version;
+
+        #endregion
+
+        #region Warning Labels
+
+        // _aslWarningLabel
+        _aslWarningLabel.AutoSize = false;
+        _aslWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+        _aslWarningLabel.ForeColor = Color.Crimson;
+        _aslWarningLabel.Location = new Point(0, 470);
+        _aslWarningLabel.TextAlign = ContentAlignment.MiddleCenter;
+        _aslWarningLabel.Name = "_aslWarningLabel";
+        _aslWarningLabel.Size = new Size(476, 20);
+        _aslWarningLabel.TabStop = false;
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.Visible = false;
+
+        // _timerWarningLabel
+        _timerWarningLabel.AutoSize = false;
+        _timerWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+        _timerWarningLabel.ForeColor = Color.Crimson;
+        _timerWarningLabel.Location = new Point(0, 490);
+        _timerWarningLabel.TextAlign = ContentAlignment.MiddleCenter;
+        _timerWarningLabel.Name = "_timerWarningLabel";
+        _timerWarningLabel.Size = new Size(476, 20);
+        _timerWarningLabel.TabStop = false;
+        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
+        _timerWarningLabel.Visible = false;
+
+        // _signatureScanStatusLabel
+        _signatureScanStatusLabel.AutoSize = false;
+        _signatureScanStatusLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+        _signatureScanStatusLabel.ForeColor = Color.Crimson;
+        _signatureScanStatusLabel.Location = new Point(0, 510);
+        _signatureScanStatusLabel.TextAlign = ContentAlignment.MiddleCenter;
+        _signatureScanStatusLabel.Name = "_signatureScanStatusLabel";
+        _signatureScanStatusLabel.Size = new Size(476, 20);
+        _signatureScanStatusLabel.TabStop = false;
+        _signatureScanStatusLabel.Text = "Address scan failed! Game Version not supported!";
+        _signatureScanStatusLabel.Visible = false;
+
+        #endregion
+
+        // _guideLabel
+        _guideLabel.AutoSize = false;
+        _guideLabel.Font = new Font(FontFamily.GenericSansSerif, 8.25f);
+        _guideLabel.Location = new Point(0, 532);
+        _guideLabel.TextAlign = ContentAlignment.MiddleCenter;
+        _guideLabel.LinkClicked += GuideLinkClicked;
+        _guideLabel.Links.Add(11, 55, "https://www.speedrun.com/tr456_remastered/guides/h548a");
+        _guideLabel.Name = "_guideLabel";
+        _guideLabel.Size = new Size(476, 15);
+        _guideLabel.TabIndex = 3;
+        _guideLabel.Text = "Need help? https://www.speedrun.com/tr456_remastered/guides/h548a";
+
+        // ComponentSettings
+        Controls.Add(_runTypeSelect);
+        Controls.Add(_gameTimeMethodLabel);
+        Controls.Add(EnableAutoResetCheckbox);
+        Controls.Add(_pickupSplitSelect);
+        Controls.Add(SplitSecurityBreachCheckbox);
+        Controls.Add(_levelTransitionSelect);
+        Controls.Add(GameVersionLabel);
+        Controls.Add(AutosplitterVersionLabel);
+        Controls.Add(_aslWarningLabel);
+        Controls.Add(_timerWarningLabel);
+        Controls.Add(_signatureScanStatusLabel);
+        Controls.Add(_guideLabel);
+        Name = "ComponentSettings";
+        Size = new Size(476, 550);
+
+        _runTypeSelect.ResumeLayout(false);
+        _pickupSplitSelect.ResumeLayout(false);
+        _levelTransitionSelect.ResumeLayout(false);
+
+        ResumeLayout(false);
+        PerformLayout();
+    }
+
+    #region Form Event Handlers
+
     private void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        FullGame = true;
-        Deathrun = false;
+        RunType = RunType.FullGame;
         SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
+        EnableControlsPerState();
     }
 
     private void ILModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        FullGame = false;
-        Deathrun = false;
+        RunType = RunType.IndividualLevelOrArea;
         SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
+        EnableControlsPerState();
     }
 
     private void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
     {
-        FullGame = false;
-        Deathrun = true;
+        RunType = RunType.Deathrun;
         SetGameTimeMethod(GameTimeMethod.Igt);
+        EnableControlsPerState();
     }
 
     private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
@@ -246,4 +487,156 @@ public sealed class ComponentSettings : UserControl
         var checkbox = (CheckBox)sender;
         EnableAutoReset = checkbox.Checked;
     }
+
+    private void SplitNoPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.None;
+
+    private void SplitAllPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.All;
+
+    private void SplitSecretsOnlyButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.SecretsOnly;
+
+    private void SplitSecurityBreachCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox)sender;
+        SplitSecurityBreach = checkbox.Checked;
+    }
+
+    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e)
+    {
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = true;
+        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = false;
+    }
+
+    private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e)
+    {
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = false;
+        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = true;
+    }
+
+    private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
+    private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
+
+    private void _tr6SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(true);
+    private void _tr6UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(false);
+
+    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        if (e.Link.LinkData is string target)
+            System.Diagnostics.Process.Start(target);
+    }
+
+    #endregion
+
+    private void EnableControlsPerState()
+    {
+        AdjustSplitPickupsState();
+        AdjustTransitionsGroupBoxState();
+    }
+
+    private void AdjustSplitPickupsState()
+    {
+        if (RunType != RunType.Deathrun)
+        {
+            _pickupSplitSelect.Enabled = true;
+            _pickupSplitSelect.Text = PickupSplitSettingDefault;
+            return;
+        }
+
+        // Disable for Deathrun Mode.
+        _pickupSplitSelect.Enabled = false;
+        _pickupSplitSelect.Text = $"{PickupSplitSettingDefault}{Environment.NewLine}[Disabled: Deathrun overrides Split logic]";
+    }
+
+    private void AdjustTransitionsGroupBoxState()
+    {
+        // Enabled or disable.
+        _levelTransitionSelect.Enabled = RunType == RunType.FullGame;
+
+        // Set the text to reflect the state.
+        string text = LevelTransitionSettingsTextDefault;
+        if (RunType == RunType.Deathrun)
+            text += " [Disabled: Deathrun overrides Split logic]";
+        else if (RunType == RunType.IndividualLevelOrArea) // TR4 IL
+            text += " [Disabled: All transitions split in IL Mode]";
+
+        _levelTransitionSelect.Text = text;
+    }
+
+    // ReSharper disable ArgumentsStyleLiteral
+    internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions =
+    [
+        // Cambodia
+        new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
+        new(Tr4Level.RaceForTheIris, Tr4Level.TheTombOfSeth, TransitionDirection.OneWayFromLower), // 02  -> 03
+
+        // Valley of the Kings
+        new(Tr4Level.TheTombOfSeth, Tr4Level.BurialChambers, TransitionDirection.OneWayFromLower),    // 03  -> 04
+        new(Tr4Level.BurialChambers, Tr4Level.ValleyOfTheKings, TransitionDirection.OneWayFromLower), // 04  -> 05
+        new(Tr4Level.ValleyOfTheKings, Tr4Level.Kv5, TransitionDirection.OneWayFromLower),            // 05  -> 06
+        new(Tr4Level.Kv5, Tr4Level.TempleOfKarnak, TransitionDirection.OneWayFromLower),              // 06  -> 07
+
+        // Karnak
+        new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower),                 // 07  -> 08
+        new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower),                     // 08  -> 09
+        new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                        // 09  -> 07
+        new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
+        new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower),               // 11  -> 12
+        new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
+
+        // Eastern Desert
+        new(Tr4Level.DesertRailroad, Tr4Level.Alexandria, TransitionDirection.OneWayFromLower), // 13  -> 14
+
+        // Alexandria
+        new(Tr4Level.Alexandria, Tr4Level.CoastalRuins, TransitionDirection.TwoWay), // 14 <-> 15
+
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 153, lowerTriggerTimer: 1, higherRoomNumber: 2, higherTriggerTimer: 1, note: "Setup"), // 15 <-> 18
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 154, lowerTriggerTimer: 0, higherRoomNumber: 6, higherTriggerTimer: 2, note: "Start"), // 15 <-> 18
+        new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
+            lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End"),   // 15 <-> 18
+
+        new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),          // 15 <-> 19
+        new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),             // 18 <-> 19
+        new(Tr4Level.TempleOfPoseidon, Tr4Level.TheLostLibrary, TransitionDirection.TwoWay),        // 19 <-> 20
+        new(Tr4Level.TheLostLibrary, Tr4Level.HallOfDemetrius, TransitionDirection.TwoWay),         // 20 <-> 21
+        new(Tr4Level.CoastalRuins, Tr4Level.HallOfDemetrius, TransitionDirection.OneWayFromHigher), // 21  -> 15
+
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromLower,  // 15  -> 16
+            lowerRoomNumber: 104, lowerTriggerTimer: 0, note: "Underwater Current"),
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher, // 16  -> 15
+            higherRoomNumber: 77, higherTriggerTimer: 3, note: "Chute After Surfacing"),
+        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay),     // 16 <-> 17
+        new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower), // 17  -> 22
+
+        // Cairo
+        new(Tr4Level.CityOfTheDead, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay), // 22 <-> 24
+        new(Tr4Level.Trenches, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay),      // 23 <-> 24
+        new(Tr4Level.Trenches, Tr4Level.CitadelGate, TransitionDirection.TwoWay),          // 23 <-> 24
+        new(Tr4Level.ChambersOfTulun, Tr4Level.CitadelGate, TransitionDirection.TwoWay),   // 24 <-> 26
+
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
+            lowerRoomNumber: 23, lowerTriggerTimer: 1, higherRoomNumber: 26, higherTriggerTimer: 2, note: "Minefield"), // 23 <-> 25
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
+            lowerRoomNumber: 44, lowerTriggerTimer: 0, higherRoomNumber: 08, higherTriggerTimer: 3, note: "Garage"),    // 23 <-> 25
+        new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.OneWayFromHigher,
+            higherRoomNumber: 71, higherTriggerTimer: 4, note: "Chute After Guardian"),                                 // 25  -> 23
+
+        new(Tr4Level.CitadelGate, Tr4Level.Citadel, TransitionDirection.OneWayFromLower, note: "Dragon Cutscene"), // 26  -> 27
+        new(Tr4Level.Citadel, Tr4Level.SphinxComplex, TransitionDirection.OneWayFromLower),                        // 27  -> 28
+
+        // Giza
+        new(Tr4Level.SphinxComplex, Tr4Level.UnderneathTheSphinx, TransitionDirection.TwoWay),              // 28 <-> 30
+        new(Tr4Level.UnderneathTheSphinx, Tr4Level.MenkauresPyramid, TransitionDirection.TwoWay),           // 30 <-> 31
+        new(Tr4Level.MenkauresPyramid, Tr4Level.InsideMenkauresPyramid, TransitionDirection.TwoWay),        // 31 <-> 32
+        new(Tr4Level.SphinxComplex, Tr4Level.InsideMenkauresPyramid, TransitionDirection.OneWayFromHigher), // 32  -> 28
+
+        new(Tr4Level.SphinxComplex, Tr4Level.TheMastabas, TransitionDirection.TwoWay),                                               // 28 <-> 33
+        new(Tr4Level.TheMastabas, Tr4Level.TheGreatPyramid, TransitionDirection.OneWayFromLower),                                    // 33  -> 34
+        new(Tr4Level.TheGreatPyramid, Tr4Level.KhufusQueensPyramid, TransitionDirection.OneWayFromLower),                            // 34  -> 35
+        new(Tr4Level.KhufusQueensPyramid, Tr4Level.InsideTheGreatPyramid, TransitionDirection.TwoWay),                               // 35 <-> 36
+        new(Tr4Level.InsideTheGreatPyramid, Tr4Level.TempleOfHorus, TransitionDirection.OneWayFromLower),                            // 36  -> 37
+        new(Tr4Level.TempleOfHorus, Tr4Level.HorusBoss, TransitionDirection.OneWayFromLower),                                        // 37  -> 38
+        new(Tr4Level.HorusBoss, Tr4Level.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 38  -> End
+    ];
+    // ReSharper restore ArgumentsStyleLiteral
 }

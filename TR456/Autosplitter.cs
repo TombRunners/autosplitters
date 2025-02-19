@@ -9,7 +9,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
     internal readonly ComponentSettings Settings = new();
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
-    public Autosplitter() => GameData.OnGameVersionChanged += Settings.SetGameVersion;
+    public Autosplitter()
+    {
+        GameData.OnGameVersionChanged += Settings.SetGameVersion;
+        GameData.OnSignatureScanStatusChanged += Settings.SetSignatureScanStatusLabelVisibility;
+    }
 
     /// <summary>
     ///     Determines if LiveSplit's "Game Time" pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />

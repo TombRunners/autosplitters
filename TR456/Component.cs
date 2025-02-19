@@ -27,7 +27,7 @@ public class Component : AutoSplitComponent
     public Component(Autosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
         _splitter = autosplitter;
-        _onImportantLayoutOrSettingChanged += _splitter.Settings.SetWarningLabelVisibilities;
+        _onImportantLayoutOrSettingChanged += _splitter.Settings.SetLayoutWarningLabelVisibilities;
 
         _state = state;
         _state.OnSplit += StateOnSplit;
@@ -74,13 +74,24 @@ public class Component : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         XmlElement settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
-            _splitter.Settings.EnableAutoReset));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
-            _splitter.Settings.FullGame));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
-            _splitter.Settings.Deathrun));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.RunType), _splitter.Settings.RunType));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.PickupSplitSetting), _splitter.Settings.PickupSplitSetting));
+
+        AppendTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
+
         return settingsNode;
+    }
+
+    private static void AppendTransitionSettings<TLevel>(
+        XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
+        where TLevel : Enum
+    {
+        XmlElement transitionsNode = document.CreateElement(elementName);
+        foreach (var transition in transitions)
+            transitionsNode.AppendChild(transition.ToXmlElement(document));
+
+        settingsNode.AppendChild(transitionsNode);
     }
 
     /// <inheritdoc />
@@ -95,8 +106,8 @@ public class Component : AutoSplitComponent
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
         _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
-        _splitter.Settings.FullGame = SettingsHelper.ParseBool(settings["FullGame"], _splitter.Settings.FullGame);
-        _splitter.Settings.Deathrun = SettingsHelper.ParseBool(settings["Deathrun"], _splitter.Settings.Deathrun);
+        _splitter.Settings.RunType = SettingsHelper.ParseEnum(settings["RunType"], _splitter.Settings.RunType);
+        _splitter.Settings.PickupSplitSetting = SettingsHelper.ParseEnum(settings["PickupSplitSetting"], _splitter.Settings.PickupSplitSetting);
 
         // Assign values to Settings.
         _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
@@ -108,6 +119,7 @@ public class Component : AutoSplitComponent
         else
             _splitter.Settings.ILModeButton.Checked = true; // Grouped RadioButton
     }
+
 
     /// <summary>
     ///     Adds <see cref="GameData" /> and <see cref="Autosplitter" /> management to <see cref="AutoSplitComponent.Update" />.
@@ -198,7 +210,7 @@ public class Component : AutoSplitComponent
         _state.OnSplit -= StateOnSplit;
         _state.OnStart -= StateOnStart;
         _state.OnUndoSplit -= StateOnUndoSplit;
-        _onImportantLayoutOrSettingChanged -= _splitter.Settings.SetWarningLabelVisibilities;
+        _onImportantLayoutOrSettingChanged -= _splitter.Settings.SetLayoutWarningLabelVisibilities;
         _splitter?.Dispose();
     }
 }
