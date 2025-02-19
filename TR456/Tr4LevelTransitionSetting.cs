@@ -6,13 +6,12 @@ using System;
 
 namespace TR456;
 
-public class TransitionSetting<TLevel>(
-    TLevel lowerLevel, TLevel higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
+public class Tr4LevelTransitionSetting(
+    Tr4Level lowerLevel, Tr4Level higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
     int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null, string note = null)
-    where TLevel : Enum
 {
-    public readonly TLevel LowerLevel = lowerLevel;
-    public readonly TLevel HigherLevel = higherLevel;
+    public readonly Tr4Level LowerLevel = lowerLevel;
+    public readonly Tr4Level HigherLevel = higherLevel;
     public readonly TransitionDirection Directionality = directionality;
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
 
@@ -89,20 +88,20 @@ public class TransitionSetting<TLevel>(
         return element;
     }
 
-    public static TransitionSetting<TLevel> FromXmlElement(XmlNode node)
+    public static Tr4LevelTransitionSetting FromXmlElement(XmlNode node)
     {
         if (node == null)
             throw new ArgumentNullException(nameof(node));
 
         int lowerValue = int.Parse(node["Lower"].InnerText);
-        if (!Enum.IsDefined(typeof(TLevel), lowerValue))
-            throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{typeof(TLevel).Name}'.");
-        var lower = (TLevel)Enum.ToObject(typeof(TLevel), lowerValue);
+        if (!Enum.IsDefined(typeof(Tr4Level), lowerValue))
+            throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{nameof(Tr4Level)}'.");
+        var lower = (Tr4Level)Enum.ToObject(typeof(Tr4Level), lowerValue);
 
         int higherValue = int.Parse(node["Higher"].InnerText);
-        if (!Enum.IsDefined(typeof(TLevel), higherValue))
-            throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{typeof(TLevel).Name}'.");
-        var higher = (TLevel)Enum.ToObject(typeof(TLevel), higherValue);
+        if (!Enum.IsDefined(typeof(Tr4Level), higherValue))
+            throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{nameof(Tr4Level)}'.");
+        var higher = (Tr4Level)Enum.ToObject(typeof(Tr4Level), higherValue);
 
         var directionality = (TransitionDirection)int.Parse(node["Directionality"].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), directionality))
@@ -118,7 +117,7 @@ public class TransitionSetting<TLevel>(
         int? lowerRoomNumber = ParseNullableInt("LowerRoomNumber");
         int? higherRoomNumber = ParseNullableInt("HigherRoomNumber");
 
-        var setting = new TransitionSetting<TLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
+        var setting = new Tr4LevelTransitionSetting(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
             SelectedDirectionality = selectedDirectionality,
             Active = active,

@@ -77,18 +77,18 @@ public class Component : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.RunType), _splitter.Settings.RunType));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.PickupSplitSetting), _splitter.Settings.PickupSplitSetting));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.SplitSecurityBreach), _splitter.Settings.SplitSecurityBreach));
 
-        AppendTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
+        AppendTr4LevelTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
 
         return settingsNode;
     }
 
-    private static void AppendTransitionSettings<TLevel>(
-        XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
-        where TLevel : Enum
+    private static void AppendTr4LevelTransitionSettings(XmlDocument document, XmlNode settingsNode, string elementName,
+        IEnumerable<Tr4LevelTransitionSetting> transitions)
     {
         XmlElement transitionsNode = document.CreateElement(elementName);
-        foreach (var transition in transitions)
+        foreach (Tr4LevelTransitionSetting transition in transitions)
             transitionsNode.AppendChild(transition.ToXmlElement(document));
 
         settingsNode.AppendChild(transitionsNode);
@@ -105,21 +105,103 @@ public class Component : AutoSplitComponent
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
-        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings["EnableAutoReset"], _splitter.Settings.EnableAutoReset);
-        _splitter.Settings.RunType = SettingsHelper.ParseEnum(settings["RunType"], _splitter.Settings.RunType);
-        _splitter.Settings.PickupSplitSetting = SettingsHelper.ParseEnum(settings["PickupSplitSetting"], _splitter.Settings.PickupSplitSetting);
+        _splitter.Settings.EnableAutoReset = SettingsHelper.ParseBool(settings[nameof(_splitter.Settings.EnableAutoReset)], _splitter.Settings.EnableAutoReset);
+        _splitter.Settings.RunType = SettingsHelper.ParseEnum(settings[nameof(_splitter.Settings.RunType)], _splitter.Settings.RunType);
+        _splitter.Settings.PickupSplitSetting = SettingsHelper.ParseEnum(settings[nameof(_splitter.Settings.PickupSplitSetting)], _splitter.Settings.PickupSplitSetting);
+        _splitter.Settings.SplitSecurityBreach = SettingsHelper.ParseBool(settings[nameof(_splitter.Settings.SplitSecurityBreach)]);
 
         // Assign values to Settings.
-        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
-
         if (_splitter.Settings.FullGame)
-            _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.FullGameButton.Checked = true; // Grouped RadioButton
         else if (_splitter.Settings.Deathrun)
-            _splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.DeathrunButton.Checked = true; // Grouped RadioButton
         else
-            _splitter.Settings.ILModeButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.IlOrAreaButton.Checked = true;       // Grouped RadioButton
+
+        switch (_splitter.Settings.PickupSplitSetting)
+        {
+            case PickupSplitSetting.None:
+                _splitter.Settings.SplitNoPickupsButton.Checked = true;   // Grouped RadioButton
+                break;
+            case PickupSplitSetting.All:
+                _splitter.Settings.SplitAllPickupsButton.Checked = true;  // Grouped RadioButton
+                break;
+            case PickupSplitSetting.SecretsOnly:
+                _splitter.Settings.SplitSecretsOnlyButton.Checked = true; // Grouped RadioButton
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
+        _splitter.Settings.SplitSecurityBreachCheckbox.Checked = _splitter.Settings.SplitSecurityBreach; // CheckBox
+
+        // Read and set level transition settings.
+        ProcessTr4LevelTransitionSettings(settings, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
     }
 
+    private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList)
+    {
+        XmlElement transitionsNode = settings[transitionsNodeName];
+        if (transitionsNode == null)
+            return;
+
+        int transitionsCount = settingsList.Count;
+        int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
+        if (xmlTransitionsCount != transitionsCount)
+        {
+            LiveSplit.Options.Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
+            return;
+        }
+
+        var defaultOrExistingTransitions = new Tr4LevelTransitionSetting[transitionsCount];
+        var encounteredSettingIds = new HashSet<ulong>(transitionsCount);
+        settingsList.CopyTo(defaultOrExistingTransitions);
+
+        foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
+        {
+            Tr4LevelTransitionSetting settingFromXml;
+            try
+            {
+                settingFromXml = Tr4LevelTransitionSetting.FromXmlElement(transitionNode);
+            }
+            catch (Exception ex)
+            {
+                LiveSplit.Options.Log.Error($"{nameof(Tr4Level)} deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
+                RevertLevelTransitionSettings(settingsList, defaultOrExistingTransitions);
+                break;
+            }
+
+            var settingsNeedReversion = false;
+            var existingSetting = settingsList.Where(t => t.Id == settingFromXml.Id).ToList();
+            if (existingSetting.Count != 1)
+            {
+                settingsNeedReversion = true;
+                LiveSplit.Options.Log.Error($"Found unexpected amount of matches ({existingSetting.Count}) for {nameof(Tr4Level)} from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+            }
+
+            if (!encounteredSettingIds.Add(settingFromXml.Id))
+            {
+                settingsNeedReversion = true;
+                LiveSplit.Options.Log.Error($"Encountered {nameof(Tr4Level)} setting more than once from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+            }
+
+            if (settingsNeedReversion)
+            {
+                RevertLevelTransitionSettings(settingsList, defaultOrExistingTransitions);
+                break;
+            }
+
+            existingSetting[0].UpdateActive(settingFromXml.Active);
+            existingSetting[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
+        }
+    }
+
+    private static void RevertLevelTransitionSettings(List<Tr4LevelTransitionSetting> settings, Tr4LevelTransitionSetting[] defaultOrExistingSettings)
+    {
+        settings.Clear();
+        settings.AddRange(defaultOrExistingSettings);
+    }
 
     /// <summary>
     ///     Adds <see cref="GameData" /> and <see cref="Autosplitter" /> management to <see cref="AutoSplitComponent.Update" />.
