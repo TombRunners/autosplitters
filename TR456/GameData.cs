@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace TR456;
 
@@ -131,7 +132,7 @@ public static class GameData
                     SignaturesScannedSuccessfully = false;
 
                     // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
-                    Thread.Sleep(4000);
+                    Task.Delay(4000).GetAwaiter().GetResult();
                     if (_retryScanOnce)
                     {
                         _retryScanOnce = false;
