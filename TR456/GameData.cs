@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiveSplit.ComponentUtil;
+using System;
 using System.Diagnostics;
 using System.Threading;
 
@@ -44,18 +45,63 @@ public static class GameData
     public static SignatureScanStatusChangedDelegate OnSignatureScanStatusChanged;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
-    public static Game CurrentActiveGame => throw new NotImplementedException();
+    public static Game CurrentActiveGame => CurrentActiveBaseGame switch
+    {
+        Game.Tr4 =>
+            (Tr4Level)CurrentLevel >= Tr4Level.Office
+                ? Game.Tr4TheTimesExclusive
+                : BonusFlag.Current
+                    ? Game.Tr4NgPlus : Game.Tr4,
+        Game.Tr5 => BonusFlag.Current ? Game.Tr5NgPlus : Game.Tr5,
+        Game.Tr6 => BonusFlag.Current ? Game.Tr6NgPlus : Game.Tr6,
+        _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveBaseGame), "Unknown Base Game"),
+    };
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    public static Game CurrentActiveBaseGame => throw new NotImplementedException();
+    public static Game CurrentActiveBaseGame => (Game)ActiveGame.Current;
+
+    #region EXE Watcher Accessors
+
+    /// <inheritdoc cref="GameMemory.ActiveGame" />
+    internal static MemoryWatcher<int> ActiveGame => GameMemory.ActiveGame;
+
+    /// <inheritdoc cref="GameMemory.GFrameIndex" />
+    internal static MemoryWatcher<int> GFrameIndex => GameMemory.GFrameIndex;
+
+    #endregion
+
+    #region DLL Watcher Accessors
+
+    /// <inheritdoc cref="GameMemory.IsLoading" />
+    internal static MemoryWatcher<bool> IsLoading => GameMemory.IsLoading(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.BonusFlag" />
+    internal static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlag(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Level" />
+    internal static MemoryWatcher<uint> Level => GameMemory.Level(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.NextLevel" />
+    internal static MemoryWatcher<uint> NextLevel => GameMemory.NextLevel(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Health" />
+    internal static MemoryWatcher<int> Health => GameMemory.Health(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Pickups" />
+    internal static MemoryWatcher<int> Pickups => GameMemory.Pickups(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Secrets" />
+    internal static MemoryWatcher<byte> Secrets => GameMemory.Secrets(CurrentActiveBaseGame);
+
+    #endregion
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Current level of the game</returns>
-    public static uint CurrentLevel() => throw new NotImplementedException();
+    public static uint CurrentLevel => Level.Current;
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
     /// <returns>Old level of the game</returns>
-    public static uint OldLevel() => throw new NotImplementedException();
+    public static uint OldLevel => Level.Old;
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
     private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;

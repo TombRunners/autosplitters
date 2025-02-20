@@ -13,6 +13,7 @@ public static class Constants
 
     // DLL MemoryWatcher names
     public const string WatcherIsLoadingName = "IsLoading";
+    public const string WatcherBonusFlagName = "BonusFlag";
     public const string WatcherCurrentLevelName = "CurrentLevel";
     public const string WatcherNextLevelName = "NextLevel";
     public const string WatcherHealthName = "Health";

@@ -8,10 +8,10 @@
 public enum Game
 {
     Tr4 = 0,
-    Tr4NgPlus = 1,
-    Tr4TheTimesExclusive = 2,
-    Tr5 = 3,
+    Tr5 = 1,
+    Tr6 = 2,
+    Tr4NgPlus = 3,
     Tr5NgPlus = 4,
-    Tr6 = 6,
-    Tr6NgPlus = 7,
+    Tr6NgPlus = 5,
+    Tr4TheTimesExclusive = 6,
 }

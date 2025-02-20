@@ -83,6 +83,19 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // BonusFlag
+            {
+                [Game.Tr4, Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherBonusFlagName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherBonusFlagName },
+                    Signature = [0x01, 0x00, 0x00, 0x00, 0x85, 0xC9, 0x78, 0x0A],
+                    OffsetToWriteInstruction = -54,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
             // CurrentLevel
             {
                 [Game.Tr4],
@@ -236,9 +249,11 @@ internal class GameMemory
 
     internal MemoryWatcher<bool> IsLoading(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
 
-    internal MemoryWatcher<int> CurrentLevel(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherCurrentLevelName, game);
+    internal MemoryWatcher<bool> BonusFlag(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherBonusFlagName, game);
 
-    internal MemoryWatcher<int> NextLevel(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherIsLoadingName, game);
+    internal MemoryWatcher<uint> Level(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherCurrentLevelName, game);
+
+    internal MemoryWatcher<uint> NextLevel(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherIsLoadingName, game);
 
     internal MemoryWatcher<int> Health(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
 

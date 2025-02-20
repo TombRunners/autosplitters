@@ -146,6 +146,12 @@
               <VariableType>Byte</VariableType>
               <Address>tomb4.dll+672E42</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>57</ID>
+              <Description>"Bonus Flag (NG+)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+672C18</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -192,6 +198,13 @@
               <Description>"Secrets (Playthrough)"</Description>
               <VariableType>Byte</VariableType>
               <Address>tomb4.dll+6718E2</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>56</ID>
+              <Description>"Bonus Flag (NG+)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+6716B8</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -260,6 +273,13 @@
               <VariableType>Byte</VariableType>
               <Address>tomb5.dll+6405F4</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>58</ID>
+              <Description>"Bonus Flag (NG+)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+640298</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -318,6 +338,13 @@
               <Description>"Secrets? (Achievement???)"</Description>
               <VariableType>Byte</VariableType>
               <Address>tomb5.dll+6404F4</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>59</ID>
+              <Description>"Bonus Flag (NG+)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+640198</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
