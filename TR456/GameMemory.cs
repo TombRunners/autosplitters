@@ -141,7 +141,7 @@ internal class GameMemory
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherCurrentLevelName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherCurrentLevelName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherCurrentLevelName },
                     Signature = [0x3C, 0x29, 0x44, 0x8B, 0xC8, 0x44, 0x0F, 0x47, 0xCE],
                     OffsetToWriteInstruction = 0x26,
                     WriteInstructionLength = 7,
@@ -153,7 +153,7 @@ internal class GameMemory
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherCurrentLevelName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherCurrentLevelName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherCurrentLevelName },
                     Signature = [0x40, 0x80, 0xFF, 0x0F, 0x44, 0x0F, 0xB6, 0xCF, 0x44, 0x0F, 0x47, 0xCD],
                     OffsetToWriteInstruction = 0x29,
                     WriteInstructionLength = 7,
@@ -166,7 +166,7 @@ internal class GameMemory
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherNextLevelName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherNextLevelName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherNextLevelName },
                     Signature = [0x60, 0x04, 0x00, 0x00, 0x39, 0x30, 0x0F, 0x84],
                     OffsetToWriteInstruction = -23,
                     WriteInstructionLength = 7,
@@ -178,7 +178,7 @@ internal class GameMemory
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherNextLevelName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherNextLevelName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherNextLevelName },
                     Signature = [0x2B, 0xC8, 0x0F, 0x48, 0xCF],
                     OffsetToWriteInstruction = 0x2B,
                     WriteInstructionLength = 7,
@@ -298,7 +298,7 @@ internal class GameMemory
 
     internal MemoryWatcher<uint> Level(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherCurrentLevelName, game);
 
-    internal MemoryWatcher<uint> NextLevel(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherIsLoadingName, game);
+    internal MemoryWatcher<uint> NextLevel(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherNextLevelName, game);
 
     internal MemoryWatcher<int> Health(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
 
