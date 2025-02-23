@@ -57,7 +57,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        if (setting is PickupSplitSetting.None || GameData.GfInitializeGame.Current) // TODO: Is this necessary?? : GameData.InventoryActive.Current != 0)
+        if (setting is PickupSplitSetting.None || GameData.GfInitializeGame.Current) // TODO: Need alternative : GameData.InventoryActive.Current != 0). Currently getting false positives when loaded savegame stats > cvurrent stats.
             return false;
 
         if (setting == PickupSplitSetting.All)
@@ -71,8 +71,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
-        bool ignoringSubsequentFramesOfThisLoadState = !GameData.NextLevel.Changed;
-        if (ignoringSubsequentFramesOfThisLoadState)
+        if (!GameData.NextLevel.Changed)
             return false;
 
         return GameData.CurrentActiveBaseGame == Game.Tr4 ? ShouldSplitTr4() : ShouldSplitTr5();
@@ -80,10 +79,20 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr4()
     {
+        const uint hardcodedCreditsTrigger = 39;
+
         uint nextLevel = GameData.NextLevel.Current;
         uint currentLevel = GameData.Level.Current;
         if (nextLevel == currentLevel || nextLevel == 0)
             return false;
+
+        // Handle IL / Area% runs, where all level transitions are desirable splits.
+        if (Settings.IlOrArea)
+            return true;
+
+        // Handle when credits are triggered.
+        if (nextLevel == hardcodedCreditsTrigger)
+            return true;
 
         byte triggerTimer = GameData.GfRequiredStartPosition.Current;
         bool laraIsInLowerLevel = nextLevel >= currentLevel;
@@ -150,13 +159,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static bool ShouldResetTr4Tr5()
     {
-        bool loadingIntoMainMenu = GameData.NextLevel.Current == 0 && GameData.CurrentLevel == 0 && GameData.IsLoading.Current;
+        bool enteringCreditsOrMainMenu = GameData.GfInitializeGame.Current && !GameData.GfInitializeGame.Old;
+        if (!enteringCreditsOrMainMenu)
+            return false;
 
-        // Checking the old level number ensures that someone re-opening the game (perhaps after a crash or Alt+F4) does not Reset.
-        // This works because the level variable initializes as 0 before the main menu load is called.
-        bool comingFromALevel = GameData.OldLevel != 0;
-
-        return loadingIntoMainMenu && comingFromALevel;
+        bool comingFromEndOfGame = GameData.NextLevel.Current != 0;
+        return !comingFromEndOfGame;
     }
 
     private bool ShouldResetTr6() => false;
