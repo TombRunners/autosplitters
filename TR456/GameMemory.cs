@@ -46,6 +46,26 @@ internal class GameMemory
                 WriteInstructionLength = 7,
                 EffectiveAddressOffset = 0x208,
             },
+            // IsLoading
+            new()
+            {
+                Name = Constants.WatcherIsLoadingName,
+                MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherIsLoadingName },
+                Signature = [0x48, 0x69, 0xC0, 0xE8, 0x03, 0x00, 0x00, 0xC7, 0x05],
+                OffsetToWriteInstruction = 0x7,
+                WriteInstructionLength = 6,
+                EffectiveAddressOffset = 0,
+            },
+            // FMV
+            new()
+            {
+                Name = Constants.WatcherFmvName,
+                MemoryWatcherFactory = static address => new StringWatcher(address, 5) { Name = Constants.WatcherFmvName },
+                Signature = [0x0F, 0x57, 0xC9, 0x48, 0x89, 0x05],
+                OffsetToWriteInstruction = 0xA,
+                WriteInstructionLength = 7,
+                EffectiveAddressOffset = 0,
+            },
         }.ToImmutableHashSet();
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic related to the game's executable.</summary>
@@ -61,6 +81,12 @@ internal class GameMemory
     ///     During actual loading time (asset loading, etc.), freezes.
     /// </summary>
     internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherGFrameIndexName];
+
+    /// <summary>Found to be more reliable than the corresponding IsLoading in the tomb6.dll for TR6R.</summary>
+    private MemoryWatcher<bool> IsLoadingExe => (MemoryWatcher<bool>)_watchersExe?[Constants.WatcherIsLoadingName];
+
+    /// <summary>Gives the value of the active FMV, especially reliable for TR6R.</summary>
+    internal StringWatcher Fmv => (StringWatcher)_watchersExe?[Constants.WatcherFmvName];
 
     #endregion
 
@@ -135,6 +161,8 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // LevelName (TR6R)
+            // TODO: IMPLEMENT
             // CurrentLevel
             {
                 [Game.Tr4],
@@ -286,7 +314,10 @@ internal class GameMemory
         return (MemoryWatcher<T>)list?[name];
     }
 
-    internal MemoryWatcher<bool> IsLoading(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
+    internal MemoryWatcher<bool> IsLoading(Game game)
+        => game is Game.Tr6 or Game.Tr6NgPlus
+            ? IsLoadingExe
+            : GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
 
     internal MemoryWatcher<bool> BonusFlag(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherBonusFlagName, game);
 

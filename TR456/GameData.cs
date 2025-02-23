@@ -69,6 +69,9 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.GFrameIndex" />
     internal static MemoryWatcher<int> GFrameIndex => GameMemory.GFrameIndex;
 
+    /// <inheritdoc cref="GameMemory.Fmv" />
+    internal static StringWatcher Fmv => GameMemory.Fmv;
+
     #endregion
 
     #region DLL Watcher Accessors
