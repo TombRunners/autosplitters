@@ -152,6 +152,24 @@
               <VariableType>Byte</VariableType>
               <Address>tomb4.dll+672C18</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>60</ID>
+              <Description>"Trigger Timer (Entrance disambiguation)"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+647E91</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>62</ID>
+              <Description>"GfInitializeGame"</Description>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+1ABC8C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>66</ID>
+              <Description>"Room"</Description>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb4.dll+64883C</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -205,6 +223,27 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>tomb4.dll+6716B8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>61</ID>
+              <Description>"Trigger Timer (Entrance disambiguation)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+646931</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>64</ID>
+              <Description>"GfInitializeGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll+1AAC74</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>67</ID>
+              <Description>"Room"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb4.dll+6472DC</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>
@@ -280,6 +319,20 @@
               <VariableType>Byte</VariableType>
               <Address>tomb5.dll+640298</Address>
             </CheatEntry>
+            <CheatEntry>
+              <ID>63</ID>
+              <Description>"GfInitializeGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+19FA92</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>68</ID>
+              <Description>"Room"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb5.dll+64E75C</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -345,6 +398,20 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>tomb5.dll+640198</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>65</ID>
+              <Description>"GfInitializeGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll+19FA92</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>69</ID>
+              <Description>"Room"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb5.dll+64E65C</Address>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>

@@ -96,6 +96,45 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // GfInitializeGame
+            {
+                [Game.Tr4, Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherGfInitializeGameName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherGfInitializeGameName },
+                    Signature = [0xEB, 0x0A, 0x45, 0x32, 0xC9],
+                    OffsetToWriteInstruction = 0x5,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            // GfRequiredStartPosition
+            {
+                [Game.Tr4],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherGfRequiredStartPositionName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherGfRequiredStartPositionName },
+                    Signature = [0x44, 0x0F, 0xB6, 0x5C, 0x24, 0x28],
+                    OffsetToWriteInstruction = 0x6,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            // Room
+            {
+                [Game.Tr4, Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherRoomName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherRoomName },
+                    Signature = [0x0F, 0xBF, 0x48, 0x06, 0x0F, 0xBF, 0x40, 0x04, 0x03, 0xC8, 0x89, 0x15],
+                    OffsetToWriteInstruction = 0x29,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                }
+            },
             // CurrentLevel
             {
                 [Game.Tr4],
@@ -250,6 +289,12 @@ internal class GameMemory
     internal MemoryWatcher<bool> IsLoading(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
 
     internal MemoryWatcher<bool> BonusFlag(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherBonusFlagName, game);
+
+    internal MemoryWatcher<bool> GfInitializeGame(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherGfInitializeGameName, game);
+
+    internal MemoryWatcher<byte> GfRequiredStartPosition(Game game) => GetMemoryWatcherForGame<byte>(Constants.WatcherGfRequiredStartPositionName, game);
+
+    internal MemoryWatcher<short> Room(Game game) => GetMemoryWatcherForGame<short>(Constants.WatcherRoomName, game);
 
     internal MemoryWatcher<uint> Level(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherCurrentLevelName, game);
 

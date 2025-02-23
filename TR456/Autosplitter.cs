@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
@@ -40,9 +41,95 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines if the timer should split.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
-    public bool ShouldSplit(LiveSplitState state) => GameData.CurrentActiveBaseGame == Game.Tr6 ? ShouldSplitTr6() : ShouldSplitTr4Tr5();
+    public bool ShouldSplit(LiveSplitState state)
+    {
+        if (Settings.Deathrun)
+            return DeathrunShouldSplit();
 
-    private bool ShouldSplitTr4Tr5() => false;
+        return GameData.CurrentActiveBaseGame == Game.Tr6 ? ShouldSplitTr6() : ShouldSplitTr4Tr5();
+    }
+
+    private static bool DeathrunShouldSplit()
+    {
+        bool laraJustDied = GameData.Health.Old > 0 && GameData.Health.Current <= 0;
+        return laraJustDied;
+    }
+
+    private static bool PickupShouldSplit(PickupSplitSetting setting)
+    {
+        if (setting is PickupSplitSetting.None || GameData.GfInitializeGame.Current) // TODO: Is this necessary?? : GameData.InventoryActive.Current != 0)
+            return false;
+
+        if (setting == PickupSplitSetting.All)
+            return GameData.Pickups.Current > GameData.Pickups.Old;
+        return GameData.Secrets.Current > GameData.Secrets.Old;
+    }
+
+    private bool ShouldSplitTr4Tr5()
+    {
+        if (PickupShouldSplit(Settings.PickupSplitSetting))
+            return true;
+
+        // Prevent double-splits; applies to ILs and FG for both glitched and glitchless.
+        bool ignoringSubsequentFramesOfThisLoadState = !GameData.NextLevel.Changed;
+        if (ignoringSubsequentFramesOfThisLoadState)
+            return false;
+
+        return GameData.CurrentActiveBaseGame == Game.Tr4 ? ShouldSplitTr4() : ShouldSplitTr5();
+    }
+
+    private bool ShouldSplitTr4()
+    {
+        uint nextLevel = GameData.NextLevel.Current;
+        uint currentLevel = GameData.Level.Current;
+        if (nextLevel == currentLevel || nextLevel == 0)
+            return false;
+
+        byte triggerTimer = GameData.GfRequiredStartPosition.Current;
+        bool laraIsInLowerLevel = nextLevel >= currentLevel;
+        Tr4Level lowerLevel = laraIsInLowerLevel ? (Tr4Level)currentLevel : (Tr4Level)nextLevel;
+        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)currentLevel;
+        TransitionDirection direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
+
+        var activeMatches = Settings
+            .Tr4LevelTransitions
+            .Where(t =>
+                t.Active &&
+                t.LowerLevel == lowerLevel &&
+                (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
+                (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
+                t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
+            )
+            .ToList();
+
+        if (!activeMatches.Any())
+        {
+#if DEBUG
+            // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
+            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n");
+#endif
+            return false;
+        }
+
+        if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
+            LiveSplit.Options.Log.Error($"Level Transition Settings improperly coded, found multiple matches!\n"
+                                        + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n"
+                                        + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
+            );
+
+        return true;
+    }
+
+    private bool ShouldSplitTr5()
+    {
+        uint currentNextLevel = GameData.NextLevel.Current;
+
+        // Handle ILs and FG for both rulesets.
+        bool loadingAnotherLevel = currentNextLevel != 0;
+        if (!Settings.SplitSecurityBreach)
+            loadingAnotherLevel &= currentNextLevel != (uint)Tr5Level.CutsceneSecurityBreach;
+        return loadingAnotherLevel;
+    }
 
     private bool ShouldSplitTr6() => false;
 

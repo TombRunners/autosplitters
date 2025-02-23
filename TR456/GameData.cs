@@ -79,6 +79,15 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.BonusFlag" />
     internal static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlag(CurrentActiveBaseGame);
 
+    /// <inheritdoc cref="GameMemory.GfInitializeGame" />
+    internal static MemoryWatcher<bool> GfInitializeGame => GameMemory.GfInitializeGame(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.GfRequiredStartPosition" />
+    internal static MemoryWatcher<byte> GfRequiredStartPosition => GameMemory.GfRequiredStartPosition(CurrentActiveBaseGame); 
+
+    /// <inheritdoc cref="GameMemory.Room" />
+    internal static MemoryWatcher<short> Room => GameMemory.Room(CurrentActiveBaseGame);
+
     /// <inheritdoc cref="GameMemory.Level" />
     internal static MemoryWatcher<uint> Level => GameMemory.Level(CurrentActiveBaseGame);
 

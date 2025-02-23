@@ -9,6 +9,8 @@ namespace TR456;
 
 public sealed class ComponentSettings : UserControl
 {
+    #region UI Declarations
+
     private GroupBox _runTypeSelect;
     public RadioButton IlOrAreaButton;
     public RadioButton FullGameButton;
@@ -38,6 +40,8 @@ public sealed class ComponentSettings : UserControl
     private Label _aslWarningLabel;
     private Label _timerWarningLabel;
     private Label _signatureScanStatusLabel;
+
+    #endregion
 
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
     private const string PickupSplitSettingDefault = "Split Pickups [TR4+TTE, TR5]";
