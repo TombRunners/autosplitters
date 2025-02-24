@@ -89,7 +89,7 @@ public sealed class ComponentSettings : UserControl
 
     public void SetGameVersion(GameVersion version, string hash)
     {
-        const string noneUndetected = "No tomb456 process found.";
+        const string noneUndetected = "No tomb456 process found";
         const string publicV10 = "GOG v1.0 / Steam 17156603 / EGS TRX2_250128_19221_WIN";
 
         string versionText = version switch

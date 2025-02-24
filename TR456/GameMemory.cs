@@ -161,8 +161,21 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
-            // LevelName (TR6R)
-            // TODO: IMPLEMENT
+            // LevelName
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherLevelNameName,
+                    MemoryWatcherFactory = static address => new StringWatcher(new DeepPointer(address, 0x572), 21) { Name = Constants.WatcherLevelNameName },
+                    Signature = [0x48, 0x81, 0xC1, 0xA0, 0x00, 0x00, 0x00, 0x4D, 0x8B, 0xCE, 0x4D, 0x8B, 0xC7],
+                    OffsetToWriteInstruction = 0x25,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                    IsPointer = true,
+                    OffsetAfterPointerResolution = 0x572,
+                }
+            },
             // CurrentLevel
             {
                 [Game.Tr4],
@@ -331,6 +344,8 @@ internal class GameMemory
 
     internal MemoryWatcher<uint> NextLevel(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherNextLevelName, game);
 
+    internal StringWatcher Tr6LevelName => _watchersTR6R?[Constants.WatcherLevelNameName] as StringWatcher;
+
     internal MemoryWatcher<int> Health(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
 
     internal MemoryWatcher<int> Pickups(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherPickupsName, game);
@@ -469,6 +484,7 @@ internal class GameMemory
                 SignatureScanner scanner = scanners[game];
                 IntPtr address = GetAddressFromSignature(scanner, gameSignatureInfo.Value);
                 MemoryWatcherList list = GetMemoryWatcherListForGame(game);
+
                 list.Add(info.MemoryWatcherFactory(address));
             }
         }

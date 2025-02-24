@@ -22,6 +22,7 @@ public static class Constants
     public const string WatcherRoomName = "Room";
     public const string WatcherCurrentLevelName = "CurrentLevel";
     public const string WatcherNextLevelName = "NextLevel";
+    public const string WatcherLevelNameName = "LevelName";
     public const string WatcherHealthName = "Health";
     public const string WatcherPickupsName = "Pickups";
     public const string WatcherSecretsName = "Secrets";

@@ -474,37 +474,81 @@
             </CheatEntry>
             <CheatEntry>
               <ID>18</ID>
-              <Description>"Current Level Name?"</Description>
+              <Description>"LevelName"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
-              <Length>22</Length>
+              <Length>21</Length>
               <Unicode>0</Unicode>
               <CodePage>0</CodePage>
               <ZeroTerminate>1</ZeroTerminate>
-              <Address>tomb6.dll+405248</Address>
+              <Address>tomb6.dll+405252</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>79</ID>
+                  <Description>"Pointer to LevelName Area to then offset"</Description>
+                  <ShowAsHex>1</ShowAsHex>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll+C2CA68</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>75</ID>
+                  <Description>"JUST LevelName"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>17</Length>
+                  <Unicode>0</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>tomb6.dll+3BDBB0</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>74</ID>
+                  <Description>"Inconsistent Pointer, changes during cutscenes"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>21</Length>
+                  <Unicode>0</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>tomb6.dll+27DE10</Address>
+                  <Offsets>
+                    <Offset>76902</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
             </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>80</ID>
+          <Description>"GOG"</Description>
+          <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
             <CheatEntry>
-              <ID>17</ID>
-              <Description>"Current Level Name?"</Description>
+              <ID>81</ID>
+              <Description>"LevelName"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
-              <Length>22</Length>
+              <Length>21</Length>
               <Unicode>0</Unicode>
               <CodePage>0</CodePage>
               <ZeroTerminate>1</ZeroTerminate>
-              <Address>tomb6.dll+C82360</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>21</ID>
-              <Description>"Level Related But Not Directly"</Description>
-              <VariableType>Byte</VariableType>
-              <Address>tomb6.dll+FC71C6</Address>
-            </CheatEntry>
-            <CheatEntry>
-              <ID>22</ID>
-              <Description>"Level Related But Not Directly"</Description>
-              <VariableType>Byte</VariableType>
-              <Address>tomb6.dll+10EBB65</Address>
+              <Address>tomb6.dll+C2BB00</Address>
+              <Offsets>
+                <Offset>0x572</Offset>
+              </Offsets>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>82</ID>
+                  <Description>"Pointer to LevelName Area to then offset"</Description>
+                  <ShowAsHex>1</ShowAsHex>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll+C2BB00</Address>
+                </CheatEntry>
+              </CheatEntries>
             </CheatEntry>
           </CheatEntries>
         </CheatEntry>

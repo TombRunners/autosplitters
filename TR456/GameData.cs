@@ -94,6 +94,9 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.Level" />
     internal static MemoryWatcher<uint> Level => GameMemory.Level(CurrentActiveBaseGame);
 
+    /// <inheritdoc cref="GameMemory.Tr6LevelName" />
+    internal static StringWatcher Tr6LevelName => GameMemory.Tr6LevelName;
+
     /// <inheritdoc cref="GameMemory.NextLevel" />
     internal static MemoryWatcher<uint> NextLevel => GameMemory.NextLevel(CurrentActiveBaseGame);
 
