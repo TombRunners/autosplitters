@@ -52,9 +52,9 @@ internal class GameMemory
                 Name = Constants.WatcherIsLoadingName,
                 MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherIsLoadingName },
                 Signature = [0x48, 0x69, 0xC0, 0xE8, 0x03, 0x00, 0x00, 0xC7, 0x05],
-                OffsetToWriteInstruction = 0x7,
+                OffsetToWriteInstruction = 7,
                 WriteInstructionLength = 6,
-                EffectiveAddressOffset = 0,
+                EffectiveAddressOffset = 4,
             },
             // FMV
             new()
@@ -132,7 +132,7 @@ internal class GameMemory
                     Signature = [0xEB, 0x0A, 0x45, 0x32, 0xC9],
                     OffsetToWriteInstruction = 0x5,
                     WriteInstructionLength = 6,
-                    EffectiveAddressOffset = 0,
+                    EffectiveAddressOffset = 1,
                 }
             },
             // GfRequiredStartPosition

@@ -1,7 +1,7 @@
 ﻿namespace TR456;
 
 /// <summary>The "areas" of the game.</summary>
-internal enum Tr4LevelSection
+public enum Tr4LevelSection
 {
     Cambodia         = Tr4Level.AngkorWat,
     ValleyOfTheKings = Tr4Level.TheTombOfSeth,

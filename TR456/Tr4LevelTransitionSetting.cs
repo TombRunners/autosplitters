@@ -15,7 +15,7 @@ public class Tr4LevelTransitionSetting(
     public readonly TransitionDirection Directionality = directionality;
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
 
-    public ulong Id
+    public string Id
     {
         get
         {
@@ -24,7 +24,7 @@ public class Tr4LevelTransitionSetting(
             sb.Append(lowerRoomNumber is null ?  "000" : lowerRoomNumber.Value.ToString("D3"));
             sb.Append(higherRoomNumber is null ?  "000" : higherRoomNumber.Value.ToString("D3"));
 
-            return ulong.Parse(sb.ToString());
+            return sb.ToString();
         }
     }
 

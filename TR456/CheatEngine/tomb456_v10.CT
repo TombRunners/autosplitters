@@ -114,7 +114,7 @@
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb456.exe+541C60</Address>
+              <Address>tomb456.exe+54BC60</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>73</ID>
@@ -219,7 +219,7 @@
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll+622620</Address>
+              <Address>tomb4.dll+6226C0</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>33</ID>

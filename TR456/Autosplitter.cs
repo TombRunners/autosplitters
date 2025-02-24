@@ -9,6 +9,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 {
     internal readonly ComponentSettings Settings = new();
 
+    private bool _tr6NewGameStartedFromMenu;
+
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
     {
@@ -115,13 +117,13 @@ public class Autosplitter : IAutoSplitter, IDisposable
         {
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
-            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n");
+            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}");
 #endif
             return false;
         }
 
         if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
-            LiveSplit.Options.Log.Error($"Level Transition Settings improperly coded, found multiple matches!\n"
+            LiveSplit.Options.Log.Error($"TR4R Level Transition Settings improperly coded, found multiple matches!\n"
                                         + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n"
                                         + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
@@ -140,7 +142,52 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return loadingAnotherLevel;
     }
 
-    private bool ShouldSplitTr6() => false;
+    private bool ShouldSplitTr6()
+    {
+        // End of game split, based on FMV.
+        if (GameData.Fmv.Changed && GameData.Fmv.Current.Trim().Equals("END"))
+            return true;
+
+        if (!GameData.Tr6LevelName.Changed)
+            return false;
+
+        string oldLevel = GameData.Tr6LevelName.Old.Trim();
+        string nextLevel = GameData.Tr6LevelName.Current.Trim();
+
+        var activeMatches = Settings
+            .Tr6LevelTransitions
+            .Where(t =>
+                t.Active &&
+                t.OldLevel == oldLevel &&
+                t.NextLevel == nextLevel
+            )
+            .ToList();
+
+        if (!activeMatches.Any())
+        {
+#if DEBUG
+            // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
+            LiveSplit.Options.Log.Warning($"No active transition match found!\n" +
+                                          $"{oldLevel} -> {nextLevel}");
+#endif
+            return false;
+        }
+
+        if (activeMatches.Count > 1)
+        {
+            // Should be impossible if hardcoded default transitions are set up correctly.
+            LiveSplit.Options.Log.Error($"TR6R Level Transition Settings improperly coded, found multiple matches!\n"
+                                        + $"Transition: {oldLevel} -> {nextLevel} \n"
+                                        + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
+            );
+
+            return false;
+        }
+
+        Tr6LevelTransitionSetting match = activeMatches[0];
+        // TODO: reference game stats split count instead of 0.
+        return 0 < match.SelectedCount;
+    }
 
     #endregion
 
@@ -167,7 +214,14 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return !comingFromEndOfGame;
     }
 
-    private bool ShouldResetTr6() => false;
+    private static bool ShouldResetTr6()
+    {
+        if (!GameData.Tr6LevelName.Changed)
+            return false;
+
+        string nextLevel = GameData.Tr6LevelName.Current.Trim();
+        return nextLevel.Equals("FRONTEND.GMX");
+    }
 
     #endregion
 
@@ -196,24 +250,46 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return Settings.FullGame ? oldNextLevelTargetedFirstLevel : oldNextLevel != 0;
     }
 
-    private bool ShouldStartTr6() => false;
+    private bool ShouldStartTr6()
+    {
+        // ReSharper disable once StringLiteralTypo
+        if (GameData.Fmv.Old.Trim().Equals("CRDIT")) // This is the second FMV that plays after "New Game" has been confirmed. This is a unique condition.
+            _tr6NewGameStartedFromMenu = true;
+
+        // The timer starts after the first loading screen.
+        bool oldLoading = GameData.IsLoading.Old;
+        bool currentLoading = GameData.IsLoading.Current;
+        if (!_tr6NewGameStartedFromMenu || !oldLoading || currentLoading)
+            return false;
+
+        _tr6NewGameStartedFromMenu = false;
+        return true;
+    }
 
     #endregion
 
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart(LiveSplitState state)
     {
+        // TODO: Game + level stats tracking
+
+        // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
+        if (!state.IsGameTimeInitialized)
+            state.SetGameTime(state.CurrentTime.RealTime ?? TimeSpan.Zero);
+        state.IsGameTimePaused = false;
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
-    /// <param name="completedLevel">Level completed for the split /></param>
+    /// <param name="completedLevel">Level completed for the split</param>
     public void OnSplit(uint completedLevel)
     {
+        // TODO: Game + level stats tracking
     }
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public void OnUndoSplit()
     {
+        // TODO: Game + level stats tracking
     }
 
     /// <inheritdoc />

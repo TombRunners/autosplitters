@@ -3,7 +3,7 @@
 namespace TR456;
 
 /// <summary>The game's level values.</summary>
-internal enum Tr5Level
+public enum Tr5Level
 {
     [Description("Main Menu / Credits")]
     MainMenu = 00,

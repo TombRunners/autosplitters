@@ -29,6 +29,8 @@ public class Component : AutoSplitComponent
         _splitter = autosplitter;
         _onImportantLayoutOrSettingChanged += _splitter.Settings.SetLayoutWarningLabelVisibilities;
 
+        state.Settings.RefreshRate = 60;
+
         _state = state;
         _state.OnSplit += StateOnSplit;
         _state.OnStart += StateOnStart;
@@ -79,17 +81,18 @@ public class Component : AutoSplitComponent
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.PickupSplitSetting), _splitter.Settings.PickupSplitSetting));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.SplitSecurityBreach), _splitter.Settings.SplitSecurityBreach));
 
-        AppendTr4LevelTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
+        AppendTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions, t => t.ToXmlElement(document));
+        AppendTransitionSettings(document, settingsNode, nameof(_splitter.Settings.Tr6LevelTransitions), _splitter.Settings.Tr6LevelTransitions, t => t.ToXmlElement(document));
 
         return settingsNode;
     }
 
-    private static void AppendTr4LevelTransitionSettings(XmlDocument document, XmlNode settingsNode, string elementName,
-        IEnumerable<Tr4LevelTransitionSetting> transitions)
+    private static void AppendTransitionSettings<T>(XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<T> transitions,
+        Func<T, XmlNode> toXmlElement)
     {
         XmlElement transitionsNode = document.CreateElement(elementName);
-        foreach (Tr4LevelTransitionSetting transition in transitions)
-            transitionsNode.AppendChild(transition.ToXmlElement(document));
+        foreach (T transition in transitions)
+            transitionsNode.AppendChild(toXmlElement(transition));
 
         settingsNode.AppendChild(transitionsNode);
     }
@@ -138,9 +141,11 @@ public class Component : AutoSplitComponent
 
         // Read and set level transition settings.
         ProcessTr4LevelTransitionSettings(settings, nameof(_splitter.Settings.Tr4LevelTransitions), _splitter.Settings.Tr4LevelTransitions);
+        ProcessTr6LevelTransitionSettings(settings, nameof(_splitter.Settings.Tr6LevelTransitions), _splitter.Settings.Tr6LevelTransitions);
     }
 
-    private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList)
+    private static void ProcessTransitionSettings<T>(XmlNode settings, string transitionsNodeName, List<T> settingsList, string settingsPrefix,
+        Func<XmlNode, T> fromXml, Action<T, T> updateSettings, Func<T, string> getId)
     {
         XmlElement transitionsNode = settings[transitionsNodeName];
         if (transitionsNode == null)
@@ -150,57 +155,86 @@ public class Component : AutoSplitComponent
         int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
         if (xmlTransitionsCount != transitionsCount)
         {
-            LiveSplit.Options.Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
+            LiveSplit.Options.Log.Error($"Refusing to apply {settingsPrefix} level transition settings due to a mismatched count. " +
+                                        $"{xmlTransitionsCount} found in XML, expected {transitionsCount}. Reverting to default/existing.");
             return;
         }
 
-        var defaultOrExistingTransitions = new Tr4LevelTransitionSetting[transitionsCount];
-        var encounteredSettingIds = new HashSet<ulong>(transitionsCount);
-        settingsList.CopyTo(defaultOrExistingTransitions);
+        // Create a copy of the existing settings for potential reversion.
+        var defaultOrExistingTransitions = settingsList.ToArray();
+        var encounteredSettingIds = new HashSet<string>(transitionsCount);
 
         foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
         {
-            Tr4LevelTransitionSetting settingFromXml;
+            T settingFromXml;
             try
             {
-                settingFromXml = Tr4LevelTransitionSetting.FromXmlElement(transitionNode);
+                settingFromXml = fromXml(transitionNode);
             }
             catch (Exception ex)
             {
-                LiveSplit.Options.Log.Error($"{nameof(Tr4Level)} deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
-                RevertLevelTransitionSettings(settingsList, defaultOrExistingTransitions);
+                LiveSplit.Options.Log.Error($"{settingsPrefix} level transition deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
+                RevertSettings(settingsList, defaultOrExistingTransitions);
                 break;
             }
 
             var settingsNeedReversion = false;
-            var existingSetting = settingsList.Where(t => t.Id == settingFromXml.Id).ToList();
-            if (existingSetting.Count != 1)
+            var existingSettings = settingsList.Where(t => getId(t) == getId(settingFromXml)).ToList();
+            if (existingSettings.Count != 1)
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Found unexpected amount of matches ({existingSetting.Count}) for {nameof(Tr4Level)} from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                LiveSplit.Options.Log.Error($"Found unexpected amount of matches ({existingSettings.Count}) for {settingsPrefix} level transition " +
+                                            $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing.");
             }
 
-            if (!encounteredSettingIds.Add(settingFromXml.Id))
+            if (!encounteredSettingIds.Add(getId(settingFromXml)))
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Encountered {nameof(Tr4Level)} setting more than once from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                LiveSplit.Options.Log.Error($"Encountered {settingsPrefix} level transition setting more than once " +
+                                            $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing.");
             }
 
             if (settingsNeedReversion)
             {
-                RevertLevelTransitionSettings(settingsList, defaultOrExistingTransitions);
+                RevertSettings(settingsList, defaultOrExistingTransitions);
                 break;
             }
 
-            existingSetting[0].UpdateActive(settingFromXml.Active);
-            existingSetting[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
+            // Update the existing setting with properties from the XML-parsed setting.
+            updateSettings(existingSettings[0], settingFromXml);
         }
     }
 
-    private static void RevertLevelTransitionSettings(List<Tr4LevelTransitionSetting> settings, Tr4LevelTransitionSetting[] defaultOrExistingSettings)
+    private static void RevertSettings<T>(List<T> settings, T[] defaultOrExistingSettings)
     {
         settings.Clear();
         settings.AddRange(defaultOrExistingSettings);
+    }
+
+    // The TR4-specific wrapper simply calls the generic method with the appropriate delegates.
+    private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList)
+    {
+        ProcessTransitionSettings(settings, transitionsNodeName, settingsList, "TR4R",
+            Tr4LevelTransitionSetting.FromXmlElement, 
+            static (existing, xml) =>
+            {
+                existing.UpdateActive(xml.Active);
+                existing.SelectedDirectionality = xml.SelectedDirectionality;
+            }, static t => t.Id
+        );
+    }
+
+    // The TR6-specific wrapper also calls the generic method with its own delegates.
+    private static void ProcessTr6LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr6LevelTransitionSetting> settingsList)
+    {
+        ProcessTransitionSettings(settings, transitionsNodeName, settingsList, "TR6R",
+            Tr6LevelTransitionSetting.FromXmlElement,
+            static (existing, xml) =>
+            {
+                existing.UpdateActive(xml.Active);
+                existing.SelectedCount = Math.Min(Math.Max(xml.SelectedCount, 1), existing.MaxCount);
+            }, static t => t.Id
+        );
     }
 
     /// <summary>
