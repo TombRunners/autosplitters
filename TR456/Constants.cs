@@ -26,4 +26,5 @@ public static class Constants
     public const string WatcherHealthName = "Health";
     public const string WatcherPickupsName = "Pickups";
     public const string WatcherSecretsName = "Secrets";
+    public const string WatcherMenuTickerName = "MenuTicker";
 }

@@ -46,6 +46,7 @@ public static class GameData
     public static SignatureScanStatusChangedDelegate OnSignatureScanStatusChanged;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
+    // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
     public static Game CurrentActiveGame => CurrentActiveBaseGame switch
     {
         Game.Tr4 =>
@@ -100,14 +101,20 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.NextLevel" />
     internal static MemoryWatcher<uint> NextLevel => GameMemory.NextLevel(CurrentActiveBaseGame);
 
-    /// <inheritdoc cref="GameMemory.Health" />
-    internal static MemoryWatcher<int> Health => GameMemory.Health(CurrentActiveBaseGame);
+    /// <inheritdoc cref="GameMemory.Tr45Health" />
+    internal static MemoryWatcher<int> Tr45Health => GameMemory.Tr45Health(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Tr6Health" />
+    internal static MemoryWatcher<float> Tr6Health => GameMemory.Tr6Health;
 
     /// <inheritdoc cref="GameMemory.Pickups" />
-    internal static MemoryWatcher<int> Pickups => GameMemory.Pickups(CurrentActiveBaseGame);
+    internal static MemoryWatcher<short> Pickups => GameMemory.Pickups(CurrentActiveBaseGame);
 
     /// <inheritdoc cref="GameMemory.Secrets" />
     internal static MemoryWatcher<byte> Secrets => GameMemory.Secrets(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.Tr6MenuTicker" />
+    internal static MemoryWatcher<int> Tr6MenuTicker => GameMemory.Tr6MenuTicker;
 
     #endregion
 

@@ -122,6 +122,18 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherBonusFlagName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherBonusFlagName },
+                    Signature = [0x48, 0x98, 0x48, 0x89, 0xBC, 0x24, 0x68, 0x01, 0x00, 0x00],
+                    OffsetToWriteInstruction = 0x3A,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                }
+            },
             // GfInitializeGame
             {
                 [Game.Tr4, Game.Tr5],
@@ -251,13 +263,25 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherHealthName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<float>(new DeepPointer(address, 0x1F0, 0xD64)) { Name = Constants.WatcherHealthName },
+                    Signature = [0x79, 0x06, 0x33, 0xC0, 0x89, 0x44, 0x24, 0x70],
+                    OffsetToWriteInstruction = 8,
+                    WriteInstructionLength = 7,
+                    EffectiveAddressOffset = 0,
+                }
+            },
             // Pickups
             {
                 [Game.Tr4],
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherPickupsName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherPickupsName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
                     Signature = [0x85, 0xC0, 0x74, 0x48, 0x41, 0x80, 0xFB, 0x1F, 0x75, 0x42],
                     OffsetToWriteInstruction = -20,
                     WriteInstructionLength = 6,
@@ -269,10 +293,22 @@ internal class GameMemory
                 new AddressSignatureInfo
                 {
                     Name = Constants.WatcherPickupsName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherPickupsName },
+                    MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
                     Signature = [0xB8, 0x00, 0x01, 0x00, 0x00, 0x66, 0x85, 0x43, 0x30],
                     OffsetToWriteInstruction = -15,
                     WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherPickupsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
+                    Signature = [0x74, 0x34, 0x66, 0x83, 0xF9, 0x51, 0x74, 0x2E],
+                    OffsetToWriteInstruction = 0xF,
+                    WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
             },
@@ -298,6 +334,31 @@ internal class GameMemory
                     Signature = [0x8D, 0x41, 0xFF, 0x3C, 0x02, 0x77, 0x09],
                     OffsetToWriteInstruction = -12,
                     WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherSecretsName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
+                    Signature = [0x74, 0x34, 0x66, 0x83, 0xF9, 0x51, 0x74, 0x2E],
+                    OffsetToWriteInstruction = 0x1B,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            // Menu Ticker
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherMenuTickerName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherMenuTickerName },
+                    Signature = [0xC7, 0x40, 0x08, 0x01, 0x00, 0x03, 0x00],
+                    OffsetToWriteInstruction = 7,
+                    WriteInstructionLength = 8,
                     EffectiveAddressOffset = 0,
                 }
             },
@@ -346,11 +407,18 @@ internal class GameMemory
 
     internal StringWatcher Tr6LevelName => _watchersTR6R?[Constants.WatcherLevelNameName] as StringWatcher;
 
-    internal MemoryWatcher<int> Health(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
+    internal MemoryWatcher<int> Tr45Health(Game game)
+        => game is Game.Tr6 or Game.Tr6NgPlus
+            ? throw new ArgumentOutOfRangeException(nameof(game), "TR6 not accepted")
+            : GetMemoryWatcherForGame<int>(Constants.WatcherHealthName, game);
 
-    internal MemoryWatcher<int> Pickups(Game game) => GetMemoryWatcherForGame<int>(Constants.WatcherPickupsName, game);
+    internal MemoryWatcher<float> Tr6Health => _watchersTR6R?[Constants.WatcherHealthName] as MemoryWatcher<float>;
+
+    internal MemoryWatcher<short> Pickups(Game game) => GetMemoryWatcherForGame<short>(Constants.WatcherPickupsName, game);
 
     internal MemoryWatcher<byte> Secrets(Game game) => GetMemoryWatcherForGame<byte>(Constants.WatcherSecretsName, game);
+
+    internal MemoryWatcher<int> Tr6MenuTicker => _watchersTR6R?[Constants.WatcherMenuTickerName] as MemoryWatcher<int>;
 
     #endregion
 

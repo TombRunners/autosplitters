@@ -473,8 +473,32 @@
               <Address>tomb6.dll+2C2857</Address>
             </CheatEntry>
             <CheatEntry>
+              <ID>105</ID>
+              <Description>"IGT (Frames, 60 FPS)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll+55DEFA0</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>106</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll+55DEFC0</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>103</ID>
+              <Description>"MenuTicker"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll+408E00</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>18</ID>
               <Description>"LevelName"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
               <Length>21</Length>
@@ -484,12 +508,52 @@
               <Address>tomb6.dll+405252</Address>
               <CheatEntries>
                 <CheatEntry>
-                  <ID>79</ID>
-                  <Description>"Pointer to LevelName Area to then offset"</Description>
+                  <ID>104</ID>
+                  <Description>"inv/"cut" but not death load menu or cut level"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll+408DE4</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>102</ID>
+                  <Description>"Bytes of ?? String Heap Freer ??"</Description>
+                  <ShowAsHex>1</ShowAsHex>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll+38E950</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>101</ID>
+                  <Description>"Bytes of LevelName Pointer"</Description>
                   <ShowAsHex>1</ShowAsHex>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>tomb6.dll+C2CA68</Address>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>99</ID>
+                  <Description>"Pointer to LevelName Area to then offset"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>21</Length>
+                  <Unicode>0</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>tomb6.dll+C2CA68</Address>
+                  <Offsets>
+                    <Offset>0x572</Offset>
+                  </Offsets>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>100</ID>
+                  <Description>"Pointer to INVENT"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>String</VariableType>
+                  <Length>6</Length>
+                  <Unicode>0</Unicode>
+                  <CodePage>0</CodePage>
+                  <ZeroTerminate>1</ZeroTerminate>
+                  <Address>tomb6.dll+246F70</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>75</ID>
@@ -518,6 +582,75 @@
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
+            <CheatEntry>
+              <ID>83</ID>
+              <Description>"BonusFlag"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb6.dll+55DEF9C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>91</ID>
+              <Description>"Pickups"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll+55DEFB0</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>90</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll+55DEFD0</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>93</ID>
+              <Description>"Chocobars"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll+55DEFB4</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>94</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll+55DEFD4</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>85</ID>
+              <Description>"Health"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>tomb6.dll+2851A4</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>86</ID>
+                  <Description>"Pointers to Health"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>tomb6.dll+C80458</Address>
+                  <Offsets>
+                    <Offset>D64</Offset>
+                    <Offset>1F0</Offset>
+                  </Offsets>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>92</ID>
+              <Description>"Distance Travelled (Level)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll+55DEFC4</Address>
+            </CheatEntry>
           </CheatEntries>
         </CheatEntry>
         <CheatEntry>
@@ -527,8 +660,16 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
+              <ID>107</ID>
+              <Description>"MenuTicker"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll+407E78</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>81</ID>
               <Description>"LevelName"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
               <Length>21</Length>
@@ -547,6 +688,68 @@
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>tomb6.dll+C2BB00</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>84</ID>
+              <Description>"BonusFlag"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb6.dll+55DDE5C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>95</ID>
+              <Description>"Pickups"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll+55DE010</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>96</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll+55DE030</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>97</ID>
+              <Description>"Chocobars"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll+55DE014</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>98</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll+55DE034</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>88</ID>
+              <Description>"Health"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>tomb6.dll+284274</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>89</ID>
+                  <Description>"Pointers to Health"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>Float</VariableType>
+                  <Address>tomb6.dll+C7F4F0</Address>
+                  <Offsets>
+                    <Offset>D64</Offset>
+                    <Offset>1F0</Offset>
+                  </Offsets>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>

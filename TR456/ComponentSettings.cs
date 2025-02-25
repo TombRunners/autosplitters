@@ -44,7 +44,7 @@ public sealed class ComponentSettings : UserControl
     #endregion
 
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
-    private const string PickupSplitSettingDefault = "Split Pickups [TR4+TTE, TR5]";
+    private const string PickupSplitSettingDefault = "Split Pickups [TR6 Secrets = Chocobars]";
 
     public RunType RunType;
     public GameTimeMethod GameTimeMethod;
@@ -244,7 +244,7 @@ public sealed class ComponentSettings : UserControl
         _pickupSplitSelect.Size = new Size(220, 55);
         _pickupSplitSelect.TabIndex = 0;
         _pickupSplitSelect.TabStop = false;
-        _pickupSplitSelect.Text = "Split Pickups [TR4+TTE, TR5]";
+        _pickupSplitSelect.Text = "Split Pickups [TR6 = Chocobars]";
 
         // SplitNoPickupsButton
         SplitNoPickupsButton.AutoSize = true;

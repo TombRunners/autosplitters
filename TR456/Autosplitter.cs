@@ -53,18 +53,26 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static bool DeathrunShouldSplit()
     {
-        bool laraJustDied = GameData.Health.Old > 0 && GameData.Health.Current <= 0;
+        bool laraJustDied;
+        if (GameData.CurrentActiveBaseGame is Game.Tr6)
+            laraJustDied = GameData.Tr6Health.Old > 0 && GameData.Tr6Health.Current <= 0;
+        else
+            laraJustDied = GameData.Tr45Health.Old > 0 && GameData.Tr45Health.Current <= 0;
+
         return laraJustDied;
     }
 
     private static bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        if (setting is PickupSplitSetting.None || GameData.GfInitializeGame.Current) // TODO: Need alternative : GameData.InventoryActive.Current != 0). Currently getting false positives when loaded savegame stats > cvurrent stats.
+        if (GameData.IsLoading.Current)
             return false;
 
-        if (setting == PickupSplitSetting.All)
-            return GameData.Pickups.Current > GameData.Pickups.Old;
-        return GameData.Secrets.Current > GameData.Secrets.Old;
+        return setting switch
+        {
+            PickupSplitSetting.None => false,
+            PickupSplitSetting.All => GameData.Pickups.Current > GameData.Pickups.Old,
+            _ => GameData.Secrets.Current > GameData.Secrets.Old,
+        };
     }
 
     private bool ShouldSplitTr4Tr5()
@@ -144,15 +152,24 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr6()
     {
+        if (GameData.Tr6MenuTicker.Changed)
+            return false;
+
+        const string inventory = "INVENT.GMX";
+        string oldLevel = GameData.Tr6LevelName.Old.Trim();
+        string nextLevel = GameData.Tr6LevelName.Current.Trim();
+        if (oldLevel.Equals(inventory) || nextLevel.Equals(inventory))
+            return false;
+
+        if (PickupShouldSplit(Settings.PickupSplitSetting))
+            return true;
+
         // End of game split, based on FMV.
         if (GameData.Fmv.Changed && GameData.Fmv.Current.Trim().Equals("END"))
             return true;
 
         if (!GameData.Tr6LevelName.Changed)
             return false;
-
-        string oldLevel = GameData.Tr6LevelName.Old.Trim();
-        string nextLevel = GameData.Tr6LevelName.Current.Trim();
 
         var activeMatches = Settings
             .Tr6LevelTransitions
@@ -280,8 +297,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
-    /// <param name="completedLevel">Level completed for the split</param>
-    public void OnSplit(uint completedLevel)
+    /// <param name="activeGame">Game whose split was completed</param>
+    public void OnSplit(Game activeGame)
     {
         // TODO: Game + level stats tracking
     }

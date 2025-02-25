@@ -52,7 +52,7 @@ public class Component : AutoSplitComponent
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart(_state);
 
-    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentLevel);
+    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentActiveGame);
 
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
 
