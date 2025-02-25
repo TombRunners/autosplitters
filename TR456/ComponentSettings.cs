@@ -702,8 +702,14 @@ public sealed class ComponentSettings : UserControl
 
     private void EnableControlsPerState()
     {
+        AdjustSecurityBreachState();
         AdjustSplitPickupsState();
         AdjustTransitionsGroupBoxState();
+    }
+
+    private void AdjustSecurityBreachState()
+    {
+        SplitSecurityBreachCheckbox.Enabled = RunType != RunType.Deathrun;
     }
 
     private void AdjustSplitPickupsState()
