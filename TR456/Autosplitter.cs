@@ -11,6 +11,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool _tr6NewGameStartedFromMenu;
 
+    private string _latestSplitId;
+
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
     {
@@ -36,8 +38,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns>"Game Time" as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
-    public TimeSpan? GetGameTime(LiveSplitState state) =>
-        Settings.GameTimeMethod switch
+    public TimeSpan? GetGameTime(LiveSplitState state)
+        => Settings.GameTimeMethod switch
         {
             GameTimeMethod.Igt => IgtGameTime(Settings.Deathrun),
             GameTimeMethod.RtaNoLoads => null,
@@ -46,14 +48,14 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static TimeSpan? IgtGameTime(bool deathrun)
     {
-        Game currentBaseGame = GameData.CurrentActiveBaseGame;
+        Game baseGame = GameData.CurrentActiveBaseGame;
 
         // Stop IGT when a deathrun is complete.
         if (deathrun)
         {
-            if (currentBaseGame is Game.Tr6 && GameData.Tr6Health.Current <= 0)
+            if (baseGame is Game.Tr6 && GameData.Tr6Health.Current <= 0)
                 return null;
-            if (currentBaseGame is not Game.Tr6 && GameData.Tr45Health.Current <= 0)
+            if (baseGame is not Game.Tr6 && GameData.Tr45Health.Current <= 0)
                 return null;
         }
 
@@ -61,16 +63,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (!GameData.Igt.Changed)
             return null;
 
-        if (currentBaseGame is not Game.Tr6)
-        {
-            // Check that the title screen is not active, TR45R because TR45R IGT keeps ticking in the title screen.
-            // TODO: Confirm and implement for TR45R, if needed.
-        }
-
-        // TODO: If needed, store level times and sum all completed level's IGTs in addition to current IGT.
-        // TODO: Ensure ticks are 60 FPS in TR45R as well, otherwise split calculations to convert IGTs to seconds properly.
-
-        uint totalTicks = GameData.Igt.Current;
+        long totalTicks = RunStats.GetCompletedLevelIgtIn60FpsTicks(GameData.CurrentActiveGame);
         double totalSeconds = (double)totalTicks / 60;
         return TimeSpan.FromSeconds(totalSeconds);
     }
@@ -126,6 +119,22 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr4()
     {
+        if (GameData.CurrentActiveGame == Game.Tr4TheTimesExclusive)
+        {
+            // There are only 2 non-menu levels; 39 is the cutscene and 40 is the playable level.
+            // The playable level is hardcoded to trigger credits.
+            string oldLevelId = GameData.OldLevelId;
+            if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
+                return false;
+
+            uint tteNextLevel = GameData.NextLevel.Current;
+            if (tteNextLevel == 0 || GameData.Level.Current is 0 or (uint)Tr4Level.Office)
+                return false;
+
+            _latestSplitId = oldLevelId;
+            return true;
+        }
+
         const uint hardcodedCreditsTrigger = 39;
 
         uint nextLevel = GameData.NextLevel.Current;
@@ -138,7 +147,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // Handle when credits are triggered.
-        if (nextLevel == hardcodedCreditsTrigger)
+        if (nextLevel == hardcodedCreditsTrigger && currentLevel != 0)
             return true;
 
         byte triggerTimer = GameData.GfRequiredStartPosition.Current;
@@ -173,18 +182,30 @@ public class Autosplitter : IAutoSplitter, IDisposable
                                         + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
 
+        Tr4LevelTransitionSetting match = activeMatches[0];
+        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, match.Id))
+            return false;
+
+        _latestSplitId = match.Id;
         return true;
     }
 
     private bool ShouldSplitTr5()
     {
-        uint currentNextLevel = GameData.NextLevel.Current;
+        string oldLevelId = GameData.OldLevelId;
+        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
+            return false;
 
-        // Handle ILs and FG for both rulesets.
-        bool loadingAnotherLevel = currentNextLevel != 0;
-        if (!Settings.SplitSecurityBreach)
-            loadingAnotherLevel &= currentNextLevel != (uint)Tr5Level.CutsceneSecurityBreach;
-        return loadingAnotherLevel;
+        uint nextLevel = GameData.NextLevel.Current;
+        if (nextLevel <= 1) // Use 1 to prevent a main menu or first level split, helpful for multi-game runs.
+            return false;
+
+        bool loadingDesiredLevel = Settings.SplitSecurityBreach || nextLevel != (uint)Tr5Level.CutsceneSecurityBreach;
+        if (!loadingDesiredLevel)
+            return false;
+
+        _latestSplitId = oldLevelId;
+        return true;
     }
 
     private bool ShouldSplitTr6()
@@ -201,10 +222,10 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (GameData.Fmv.Changed && GameData.Fmv.Current.Trim().Equals("END"))
             return true;
 
-        // No settings checks needed for IL / Area%.
+        // Handle IL / Area% transitions.
         if (Settings.RunType is RunType.IndividualLevelOrArea)
         {
-            // LevelIgt is only set to 0 when the beginning of end level triggers.
+            // LevelIgt is only set to 0 after end-level triggers leading to a loading screen.
             bool levelIgtWasReset = GameData.LevelIgt.Changed && GameData.LevelIgt.Current == 0;
             return levelIgtWasReset;
         }
@@ -223,7 +244,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             currentLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
             currentLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase))
         {
-            // Guard against unnecessary checks when inventory or main menu is accessed.
+            // Guard against unnecessary checks when the inventory or main menu is accessed.
             return false;
         }
 
@@ -258,8 +279,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
         }
 
         Tr6LevelTransitionSetting match = activeMatches[0];
-        int alreadySplitCount = 0; // TODO: reference game / run / level stats split count instead of 0.
-        return alreadySplitCount < match.SelectedCount;
+        if (RunStats.LevelSplitCount(GameData.CurrentActiveGame, match.Id) >= match.SelectedCount)
+            return false;
+
+        _latestSplitId = match.Id;
+        return true;
     }
 
     #endregion
@@ -346,7 +370,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public void OnStart(LiveSplitState state)
     {
-        // TODO: Game + level stats tracking
+        RunStats.Clear();
 
         // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
         if (!state.IsGameTimeInitialized)
@@ -355,16 +379,39 @@ public class Autosplitter : IAutoSplitter, IDisposable
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
-    /// <param name="activeGame">Game whose split was completed</param>
-    public void OnSplit(Game activeGame)
+    /// <param name="game">Game whose split was completed</param>
+    public void OnSplit(Game game)
     {
-        // TODO: Game + level stats tracking
+        if (Settings.RunType is not RunType.FullGame)
+            return;
+
+        // Compose and store level stats.
+        uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus ? GameData.LevelIgt.Current : GameData.Igt.Current;
+
+        uint maxCompletions = game switch
+        {
+            Game.Tr4 or Game.Tr4NgPlus or Game.Tr4TheTimesExclusive or Game.Tr5 or Game.Tr5NgPlus => 1,
+            Game.Tr6 or Game.Tr6NgPlus => (uint)Settings.Tr6LevelTransitions.Single(t => t.Id == _latestSplitId).SelectedCount,
+            _ => throw new ArgumentOutOfRangeException(nameof(game), game, "Unknown game"),
+        };
+
+        var stats = new LevelStats
+        {
+            LevelId = _latestSplitId,
+            Igt = igtTicks,
+            MaxCompletions = maxCompletions,
+        };
+
+        RunStats.AddLevelStats(game, stats);
     }
 
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public void OnUndoSplit()
     {
-        // TODO: Game + level stats tracking
+        if (Settings.RunType is not RunType.FullGame)
+            return;
+
+        RunStats.UndoLevelStats();
     }
 
     /// <inheritdoc />

@@ -126,11 +126,13 @@ public static class GameData
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Current level of the game</returns>
-    public static uint CurrentLevel => Level.Current;
+    private static uint CurrentLevel => Level.Current;
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
     /// <returns>Old level of the game</returns>
-    public static uint OldLevel => Level.Old;
+    private static uint OldLevel => Level.Old;
+
+    public static string OldLevelId => OldLevel.ToString("D2");
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
     private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;

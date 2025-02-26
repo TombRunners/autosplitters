@@ -144,6 +144,13 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
+              <ID>108</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+644AEC</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>19</ID>
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
@@ -214,6 +221,13 @@
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
+            <CheatEntry>
+              <ID>109</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+64358C</Address>
+            </CheatEntry>
             <CheatEntry>
               <ID>32</ID>
               <Description>"IsLoading"</Description>
@@ -298,6 +312,13 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
+              <ID>110</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+63C218</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>20</ID>
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
@@ -377,6 +398,13 @@
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
+            <CheatEntry>
+              <ID>111</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+63C118</Address>
+            </CheatEntry>
             <CheatEntry>
               <ID>36</ID>
               <Description>"IsLoading"</Description>

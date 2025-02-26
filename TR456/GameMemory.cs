@@ -111,6 +111,30 @@ internal class GameMemory
             },
             // IGT (global)
             {
+                [Game.Tr4],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherIgtName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
+                    Signature = [0x85, 0xC0, 0x74, 0x62, 0xC1, 0xE0, 0x09],
+                    OffsetToWriteInstruction = -0x3D,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
+                [Game.Tr5],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherIgtName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
+                    Signature = [0x85, 0xC0, 0x74, 0x62, 0xC1, 0xE0, 0x09],
+                    OffsetToWriteInstruction = -0x37,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            {
                 [Game.Tr6],
                 new AddressSignatureInfo
                 {
@@ -122,7 +146,7 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
-            // IGT (level)
+            // LevelIgt (TR6R)
             {
                 [Game.Tr6],
                 new AddressSignatureInfo
