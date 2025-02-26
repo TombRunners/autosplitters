@@ -29,7 +29,7 @@ public enum Tr5Level
     DeepseaDive    = 06,
 
     [Description("Sinking Sub")]
-    SinkingSub = 07,
+    SinkingSub     = 07,
 
     // Ireland
     [Description("Gallows Tree")]
