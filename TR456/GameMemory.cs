@@ -109,6 +109,32 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
+            // IGT (global)
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherIgtName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
+                    Signature = [0xA9, 0xF7, 0xFF, 0xFF, 0xFF, 0x74, 0x25],
+                    OffsetToWriteInstruction = 0x20,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
+            // IGT (level)
+            {
+                [Game.Tr6],
+                new AddressSignatureInfo
+                {
+                    Name = Constants.WatcherLevelIgtName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherLevelIgtName },
+                    Signature = [0xA9, 0xF7, 0xFF, 0xFF, 0xFF, 0x74, 0x25],
+                    OffsetToWriteInstruction = 0x26,
+                    WriteInstructionLength = 6,
+                    EffectiveAddressOffset = 0,
+                }
+            },
             // BonusFlag
             {
                 [Game.Tr4, Game.Tr5],
@@ -349,7 +375,7 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
-            // Menu Ticker
+            // Menu Ticker (TR6R)
             {
                 [Game.Tr6],
                 new AddressSignatureInfo
@@ -392,6 +418,10 @@ internal class GameMemory
         => game is Game.Tr6 or Game.Tr6NgPlus
             ? IsLoadingExe
             : GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
+
+    internal MemoryWatcher<uint> Igt(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherIgtName, game);
+
+    internal MemoryWatcher<uint> LevelIgt(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherLevelIgtName, game);
 
     internal MemoryWatcher<bool> BonusFlag(Game game) => GetMemoryWatcherForGame<bool>(Constants.WatcherBonusFlagName, game);
 

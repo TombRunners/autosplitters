@@ -16,6 +16,8 @@ public static class Constants
     public const string WatcherFmvName = "FMV";
 
     // DLL MemoryWatcher names
+    public const string WatcherIgtName = "IGT";
+    public const string WatcherLevelIgtName = "LevelIGT";
     public const string WatcherBonusFlagName = "BonusFlag";
     public const string WatcherGfInitializeGameName = "GfInitializeGame";
     public const string WatcherGfRequiredStartPositionName = "GfRequiredStartPosition";

@@ -228,7 +228,7 @@ public sealed class ComponentSettings : UserControl
         EnableAutoResetCheckbox.Location = new Point(12, 65);
         EnableAutoResetCheckbox.Size = new Size(72, 17);
         EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
-        EnableAutoResetCheckbox.Text = "Enable Auto-Reset [TR4+TTE, TR5, TR6]";
+        EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
         EnableAutoResetCheckbox.TabIndex = 0;
         EnableAutoResetCheckbox.UseVisualStyleBackColor = true;
         EnableAutoResetCheckbox.CheckedChanged += EnableAutoResetCheckboxCheckedChanged;

@@ -80,6 +80,12 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.IsLoading" />
     internal static MemoryWatcher<bool> IsLoading => GameMemory.IsLoading(CurrentActiveBaseGame);
 
+    /// <inheritdoc cref="GameMemory.Igt" />
+    internal static MemoryWatcher<uint> Igt => GameMemory.Igt(CurrentActiveBaseGame);
+
+    /// <inheritdoc cref="GameMemory.LevelIgt" />
+    internal static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgt(CurrentActiveBaseGame);
+
     /// <inheritdoc cref="GameMemory.BonusFlag" />
     internal static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlag(CurrentActiveBaseGame);
 

@@ -475,14 +475,14 @@
             <CheatEntry>
               <ID>105</ID>
               <Description>"IGT (Frames, 60 FPS)"</Description>
-              <ShowAsSigned>1</ShowAsSigned>
+              <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb6.dll+55DEFA0</Address>
               <CheatEntries>
                 <CheatEntry>
                   <ID>106</ID>
                   <Description>"Level"</Description>
-                  <ShowAsSigned>1</ShowAsSigned>
+                  <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
                   <Address>tomb6.dll+55DEFC0</Address>
                 </CheatEntry>

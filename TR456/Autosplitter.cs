@@ -23,7 +23,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// </summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <returns><see langword="true" /> when "Game Time" should pause during the conditions, otherwise <see langword="false" /></returns>
-    public bool IsGameTimePaused(LiveSplitState state) => false;
+    public bool IsGameTimePaused(LiveSplitState state)
+    {
+        // Whenever using actual IGT for LiveSplit's Game Time, we want game pauses / crashes to pause the timer.
+        if (Settings.GameTimeMethod == GameTimeMethod.Igt)
+            return true;
+
+        // This is the load removal logic for RTA without Loads.
+        return GameData.IsLoading.Current;
+    }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
     /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
@@ -36,7 +44,36 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
-    private static TimeSpan? IgtGameTime(bool deathrun) => null;
+    private static TimeSpan? IgtGameTime(bool deathrun)
+    {
+        Game currentBaseGame = GameData.CurrentActiveBaseGame;
+
+        // Stop IGT when a deathrun is complete.
+        if (deathrun)
+        {
+            if (currentBaseGame is Game.Tr6 && GameData.Tr6Health.Current <= 0)
+                return null;
+            if (currentBaseGame is not Game.Tr6 && GameData.Tr45Health.Current <= 0)
+                return null;
+        }
+
+        // Check IGT is ticking.
+        if (!GameData.Igt.Changed)
+            return null;
+
+        if (currentBaseGame is not Game.Tr6)
+        {
+            // Check that the title screen is not active, TR45R because TR45R IGT keeps ticking in the title screen.
+            // TODO: Confirm and implement for TR45R, if needed.
+        }
+
+        // TODO: If needed, store level times and sum all completed level's IGTs in addition to current IGT.
+        // TODO: Ensure ticks are 60 FPS in TR45R as well, otherwise split calculations to convert IGTs to seconds properly.
+
+        uint totalTicks = GameData.Igt.Current;
+        double totalSeconds = (double)totalTicks / 60;
+        return TimeSpan.FromSeconds(totalSeconds);
+    }
 
     #region ShouldSplit
 
@@ -64,7 +101,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        if (GameData.IsLoading.Current)
+        if (GameData.IsLoading.Current || !GameData.Igt.Changed)
             return false;
 
         return setting switch
@@ -152,31 +189,50 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr6()
     {
+        // Ignore when a menu is open.
         if (GameData.Tr6MenuTicker.Changed)
             return false;
 
-        const string inventory = "INVENT.GMX";
-        string oldLevel = GameData.Tr6LevelName.Old.Trim();
-        string nextLevel = GameData.Tr6LevelName.Current.Trim();
-        if (oldLevel.Equals(inventory) || nextLevel.Equals(inventory))
-            return false;
-
+        // Handle Pickups + Secrets splits.
         if (PickupShouldSplit(Settings.PickupSplitSetting))
             return true;
 
-        // End of game split, based on FMV.
+        // End of game split based on FMV, used in all non-deathrun run types.
         if (GameData.Fmv.Changed && GameData.Fmv.Current.Trim().Equals("END"))
             return true;
 
+        // No settings checks needed for IL / Area%.
+        if (Settings.RunType is RunType.IndividualLevelOrArea)
+        {
+            // LevelIgt is only set to 0 when the beginning of end level triggers.
+            bool levelIgtWasReset = GameData.LevelIgt.Changed && GameData.LevelIgt.Current == 0;
+            return levelIgtWasReset;
+        }
+
+        // Handle FG level transitions.
         if (!GameData.Tr6LevelName.Changed)
             return false;
+
+        string oldLevel = GameData.Tr6LevelName.Old.Trim();
+        string currentLevel = GameData.Tr6LevelName.Current.Trim();
+
+        const string inventory = "INVENT";
+        const string frontend = "FRONTEND";
+        if (oldLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
+            oldLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase) ||
+            currentLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
+            currentLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase))
+        {
+            // Guard against unnecessary checks when inventory or main menu is accessed.
+            return false;
+        }
 
         var activeMatches = Settings
             .Tr6LevelTransitions
             .Where(t =>
                 t.Active &&
                 t.OldLevel == oldLevel &&
-                t.NextLevel == nextLevel
+                t.NextLevel == currentLevel
             )
             .ToList();
 
@@ -185,7 +241,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
             LiveSplit.Options.Log.Warning($"No active transition match found!\n" +
-                                          $"{oldLevel} -> {nextLevel}");
+                                          $"{oldLevel} -> {currentLevel}");
 #endif
             return false;
         }
@@ -194,7 +250,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         {
             // Should be impossible if hardcoded default transitions are set up correctly.
             LiveSplit.Options.Log.Error($"TR6R Level Transition Settings improperly coded, found multiple matches!\n"
-                                        + $"Transition: {oldLevel} -> {nextLevel} \n"
+                                        + $"Transition: {oldLevel} -> {currentLevel} \n"
                                         + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
             );
 
@@ -202,8 +258,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
         }
 
         Tr6LevelTransitionSetting match = activeMatches[0];
-        // TODO: reference game stats split count instead of 0.
-        return 0 < match.SelectedCount;
+        int alreadySplitCount = 0; // TODO: reference game / run / level stats split count instead of 0.
+        return alreadySplitCount < match.SelectedCount;
     }
 
     #endregion
@@ -270,13 +326,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private bool ShouldStartTr6()
     {
         // ReSharper disable once StringLiteralTypo
-        if (GameData.Fmv.Old.Trim().Equals("CRDIT")) // This is the second FMV that plays after "New Game" has been confirmed. This is a unique condition.
+        if (GameData.Fmv.Old.Trim().Equals("CRDIT")) // This is the second FMV that plays after "New Game" has been confirmed.
             _tr6NewGameStartedFromMenu = true;
 
-        // The timer starts after the first loading screen.
-        bool oldLoading = GameData.IsLoading.Old;
-        bool currentLoading = GameData.IsLoading.Current;
-        if (!_tr6NewGameStartedFromMenu || !oldLoading || currentLoading)
+        if (Settings.RunType is RunType.FullGame && !_tr6NewGameStartedFromMenu)
+            return false;
+
+        // The timer starts when IGT first ticks.
+        bool igtJustStarted = GameData.LevelIgt.Old == 0 && GameData.LevelIgt.Changed;
+        if (!igtJustStarted)
             return false;
 
         _tr6NewGameStartedFromMenu = false;
