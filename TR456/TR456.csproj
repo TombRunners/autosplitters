@@ -105,6 +105,7 @@
     <None Include="Enums\.editorconfig" />
     <None Include="Hashes\egs_TRX2_250128_19221_WIN.csv" />
     <None Include="Hashes\gog_v1.0.csv" />
+    <None Include="Hashes\gog_v1.0.0.csv" />
     <None Include="Hashes\steam_17156603.csv" />
   </ItemGroup>
   <ItemGroup>
