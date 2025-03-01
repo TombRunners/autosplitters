@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using static System.Collections.Specialized.BitVector32;
 
 namespace TR456;
 
@@ -27,10 +28,12 @@ public sealed class ComponentSettings : UserControl
     private ToolTip _toolTip;
     private Label _levelTransitionActiveTabLabel;
     private Button _tr4LevelSettingsButton;
+    private Button _tr5LevelSettingsButton;
     private Button _tr6LevelSettingsButton;
     private Panel _tr4LevelTransitionSettingsPanel;
     private Button _tr4SelectAllButton;
     private Button _tr4UnselectAllButton;
+    private Panel _tr5LevelTransitionSettingsPanel;
     private Panel _tr6LevelTransitionSettingsPanel;
     private Button _tr6SelectAllButton;
     private Button _tr6UnselectAllButton;
@@ -45,7 +48,7 @@ public sealed class ComponentSettings : UserControl
     #endregion
 
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
-    private const string PickupSplitSettingDefault = "Split Pickups [TR6 Secrets = Chocobars]";
+    private const string PickupSplitSettingDefault = "Split Pickups";
 
     public RunType RunType;
     public GameTimeMethod GameTimeMethod;
@@ -151,10 +154,12 @@ public sealed class ComponentSettings : UserControl
         _toolTip = new ToolTip();
         _levelTransitionActiveTabLabel = new Label();
         _tr4LevelSettingsButton = new Button();
+        _tr5LevelSettingsButton = new Button();
         _tr6LevelSettingsButton = new Button();
         _tr4LevelTransitionSettingsPanel = new Panel();
         _tr4SelectAllButton = new Button();
         _tr4UnselectAllButton = new Button();
+        _tr5LevelTransitionSettingsPanel = new Panel();
         _tr6LevelTransitionSettingsPanel = new Panel();
         _tr6SelectAllButton = new Button();
         _tr6UnselectAllButton = new Button();
@@ -228,7 +233,7 @@ public sealed class ComponentSettings : UserControl
         // EnableAutoResetCheckbox
         EnableAutoResetCheckbox.AutoSize = true;
         EnableAutoResetCheckbox.Checked = false;
-        EnableAutoResetCheckbox.Location = new Point(12, 65);
+        EnableAutoResetCheckbox.Location = new Point(12, 69);
         EnableAutoResetCheckbox.Size = new Size(72, 17);
         EnableAutoResetCheckbox.Name = "EnableAutoResetCheckbox";
         EnableAutoResetCheckbox.Text = "Enable Auto-Reset";
@@ -242,17 +247,17 @@ public sealed class ComponentSettings : UserControl
         _pickupSplitSelect.Controls.Add(SplitNoPickupsButton);
         _pickupSplitSelect.Controls.Add(SplitAllPickupsButton);
         _pickupSplitSelect.Controls.Add(SplitSecretsOnlyButton);
-        _pickupSplitSelect.Location = new Point(256, 60);
+        _pickupSplitSelect.Location = new Point(140, 55);
         _pickupSplitSelect.Name = "_pickupSplitSelect";
-        _pickupSplitSelect.Size = new Size(220, 55);
+        _pickupSplitSelect.Size = new Size(336, 45);
         _pickupSplitSelect.TabIndex = 0;
         _pickupSplitSelect.TabStop = false;
-        _pickupSplitSelect.Text = "Split Pickups [TR6 = Chocobars]";
+        _pickupSplitSelect.Text = "Split Pickups";
 
         // SplitNoPickupsButton
         SplitNoPickupsButton.AutoSize = true;
         SplitNoPickupsButton.Checked = true;
-        SplitNoPickupsButton.Location = new Point(6, 30);
+        SplitNoPickupsButton.Location = new Point(6, 20);
         SplitNoPickupsButton.Name = "SplitNoPickupsButton";
         SplitNoPickupsButton.Size = new Size(58, 17);
         SplitNoPickupsButton.TabIndex = 0;
@@ -263,7 +268,7 @@ public sealed class ComponentSettings : UserControl
 
         // SplitAllPickupsButton
         SplitAllPickupsButton.AutoSize = true;
-        SplitAllPickupsButton.Location = new Point(69, 30);
+        SplitAllPickupsButton.Location = new Point(69, 20);
         SplitAllPickupsButton.Name = "SplitAllPickupsButton";
         SplitAllPickupsButton.Size = new Size(41, 17);
         SplitAllPickupsButton.TabIndex = 1;
@@ -273,64 +278,72 @@ public sealed class ComponentSettings : UserControl
 
         // SplitSecretsOnlyButton
         SplitSecretsOnlyButton.AutoSize = true;
-        SplitSecretsOnlyButton.Location = new Point(115, 30);
+        SplitSecretsOnlyButton.Location = new Point(115, 20);
         SplitSecretsOnlyButton.Name = "SplitSecretsOnlyButton";
-        SplitSecretsOnlyButton.Size = new Size(96, 17);
+        SplitSecretsOnlyButton.Size = new Size(220, 17);
         SplitSecretsOnlyButton.TabIndex = 2;
-        SplitSecretsOnlyButton.Text = "Secrets Only";
+        SplitSecretsOnlyButton.Text = "Secrets Only [TR6 Secrets = Chocobars]";
         SplitSecretsOnlyButton.UseVisualStyleBackColor = true;
         SplitSecretsOnlyButton.CheckedChanged += SplitSecretsOnlyButtonCheckedChanged;
 
         #endregion
-
-        // SplitSecurityBreachCheckbox
-        SplitSecurityBreachCheckbox.AutoSize = true;
-        SplitSecurityBreachCheckbox.Checked = false;
-        SplitSecurityBreachCheckbox.Location = new Point(12, 95);
-        SplitSecurityBreachCheckbox.Size = new Size(72, 17);
-        SplitSecurityBreachCheckbox.Name = "SplitSecurityBreachCheckbox";
-        SplitSecurityBreachCheckbox.Text = "Split Security Breach Cutscene [TR5, FG+IL]";
-        SplitSecurityBreachCheckbox.TabIndex = 0;
-        SplitSecurityBreachCheckbox.UseVisualStyleBackColor = true;
-        SplitSecurityBreachCheckbox.CheckedChanged += SplitSecurityBreachCheckboxCheckedChanged;
 
         #region _levelTransitionSettings
 
         // _levelTransitionSettings
         _levelTransitionSelect.Controls.Add(_levelTransitionActiveTabLabel);
         _levelTransitionSelect.Controls.Add(_tr4LevelSettingsButton);
+        _levelTransitionSelect.Controls.Add(_tr5LevelSettingsButton);
         _levelTransitionSelect.Controls.Add(_tr6LevelSettingsButton);
         _levelTransitionSelect.Controls.Add(_tr4LevelTransitionSettingsPanel);
         _levelTransitionSelect.Controls.Add(_tr4SelectAllButton);
         _levelTransitionSelect.Controls.Add(_tr4UnselectAllButton);
+        _levelTransitionSelect.Controls.Add(_tr5LevelTransitionSettingsPanel);
         _levelTransitionSelect.Controls.Add(_tr6LevelTransitionSettingsPanel);
         _levelTransitionSelect.Controls.Add(_tr6SelectAllButton);
         _levelTransitionSelect.Controls.Add(_tr6UnselectAllButton);
-        _levelTransitionSelect.Location = new Point(0, 120);
+        _levelTransitionSelect.Location = new Point(0, 105);
         _levelTransitionSelect.Name = "_levelTransitionSelect";
-        _levelTransitionSelect.Size = new Size(476, 310);
+        _levelTransitionSelect.Size = new Size(476, 325);
         _levelTransitionSelect.Text = "Level Transition Settings";
 
         // _levelTransitionActiveTabLabel
         _levelTransitionActiveTabLabel.AutoSize = true;
-        _levelTransitionActiveTabLabel.Location = new Point(180, 15);
+        _levelTransitionActiveTabLabel.Location = new Point(180, 17);
         _levelTransitionActiveTabLabel.Name = "_levelTransitionActiveTabLabel";
         _levelTransitionActiveTabLabel.Size = new Size(150, 30);
         _levelTransitionActiveTabLabel.TabIndex = 0;
-        _levelTransitionActiveTabLabel.Text = "Currently editing: TR4";
+        _levelTransitionActiveTabLabel.Text = "Currently showing: TR4";
         _levelTransitionActiveTabLabel.TextAlign = ContentAlignment.MiddleCenter;
 
         // _tr4LevelSettingsButton
-        _tr4LevelSettingsButton.Location = new Point(360, 9);
-        _tr4LevelSettingsButton.Size = new Size(50, 25);
+        _tr4LevelSettingsButton.Location = new Point(320, 13);
+        _tr4LevelSettingsButton.Size = new Size(45, 21);
+        _tr4LevelSettingsButton.Margin = Padding.Empty;
+        _tr4LevelSettingsButton.Padding = Padding.Empty;
+        _tr4LevelSettingsButton.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Regular);
         _tr4LevelSettingsButton.Text = "TR4";
         _tr4LevelSettingsButton.Click += _tr4LevelSettingsButtonClicked;
         _tr4LevelSettingsButton.Enabled = true;
         _tr4LevelSettingsButton.Visible = true;
 
+        // _tr5LevelSettingsButton
+        _tr5LevelSettingsButton.Location = new Point(370, 13);
+        _tr5LevelSettingsButton.Size = new Size(45, 21);
+        _tr5LevelSettingsButton.Margin = Padding.Empty;
+        _tr5LevelSettingsButton.Padding = Padding.Empty;
+        _tr5LevelSettingsButton.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Regular);
+        _tr5LevelSettingsButton.Text = "TR5";
+        _tr5LevelSettingsButton.Click += _tr5LevelSettingsButtonClicked;
+        _tr5LevelSettingsButton.Enabled = true;
+        _tr5LevelSettingsButton.Visible = true;
+
         // _tr6LevelSettingsButton
-        _tr6LevelSettingsButton.Location = new Point(420, 9);
-        _tr6LevelSettingsButton.Size = new Size(50, 25);
+        _tr6LevelSettingsButton.Location = new Point(420, 13);
+        _tr6LevelSettingsButton.Size = new Size(45, 21);
+        _tr6LevelSettingsButton.Margin = Padding.Empty;
+        _tr6LevelSettingsButton.Padding = Padding.Empty;
+        _tr6LevelSettingsButton.Font = new Font(FontFamily.GenericSansSerif, 8, FontStyle.Regular);
         _tr6LevelSettingsButton.Text = "TR6";
         _tr6LevelSettingsButton.Click += _tr6LevelSettingsButtonClicked;
         _tr6LevelSettingsButton.Enabled = true;
@@ -338,7 +351,7 @@ public sealed class ComponentSettings : UserControl
 
         // _tr4LevelTransitionSettingsPanel
         _tr4LevelTransitionSettingsPanel.Location = new Point(5, 35);
-        _tr4LevelTransitionSettingsPanel.Size = new Size(466, 239);
+        _tr4LevelTransitionSettingsPanel.Size = new Size(466, 254);
         _tr4LevelTransitionSettingsPanel.AutoScroll = false;
         _tr4LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
         _tr4LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
@@ -349,7 +362,7 @@ public sealed class ComponentSettings : UserControl
         _tr4LevelTransitionSettingsPanel.Visible = true;
 
         // _tr4SelectAllButton
-        _tr4SelectAllButton.Location = new Point(5, 279);
+        _tr4SelectAllButton.Location = new Point(5, 294);
         _tr4SelectAllButton.Size = new Size(120, 25);
         _tr4SelectAllButton.Text = "Select All (TR4)";
         _tr4SelectAllButton.Click += _tr4SelectAllButtonClicked;
@@ -357,16 +370,41 @@ public sealed class ComponentSettings : UserControl
         _tr4SelectAllButton.Visible = true;
 
         // _tr4UnselectAllButton
-        _tr4UnselectAllButton.Location = new Point(331, 279);
+        _tr4UnselectAllButton.Location = new Point(331, 294);
         _tr4UnselectAllButton.Size = new Size(120, 25);
         _tr4UnselectAllButton.Text = "Unselect All (TR4)";
         _tr4UnselectAllButton.Click += _tr4UnselectAllButtonClicked;
         _tr4UnselectAllButton.Enabled = true;
         _tr4UnselectAllButton.Visible = true;
 
+        // _tr5LevelTransitionSettingsPanel
+        _tr5LevelTransitionSettingsPanel.Location = new Point(5, 35);
+        _tr5LevelTransitionSettingsPanel.Size = new Size(466, 254);
+        _tr5LevelTransitionSettingsPanel.AutoScroll = false;
+        _tr5LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
+        _tr5LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
+        _tr5LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
+        _tr5LevelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
+        _tr5LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
+        _tr5LevelTransitionSettingsPanel.Enabled = false;
+        _tr5LevelTransitionSettingsPanel.Visible = false;
+
+        // SplitSecurityBreachCheckbox
+        SplitSecurityBreachCheckbox.AutoSize = true;
+        SplitSecurityBreachCheckbox.Checked = false;
+        SplitSecurityBreachCheckbox.Location = new Point(0, 5);
+        SplitSecurityBreachCheckbox.Size = new Size(72, 17);
+        SplitSecurityBreachCheckbox.Name = "SplitSecurityBreachCheckbox";
+        SplitSecurityBreachCheckbox.Text = "Split Security Breach Cutscene\nThis applies to FG, IL, and Area% runs";
+        SplitSecurityBreachCheckbox.TabIndex = 0;
+        SplitSecurityBreachCheckbox.UseVisualStyleBackColor = true;
+        SplitSecurityBreachCheckbox.CheckedChanged += SplitSecurityBreachCheckboxCheckedChanged;
+
+        _tr5LevelTransitionSettingsPanel.Controls.Add(SplitSecurityBreachCheckbox);
+
         // _tr6LevelTransitionSettingsPanel
         _tr6LevelTransitionSettingsPanel.Location = new Point(5, 35);
-        _tr6LevelTransitionSettingsPanel.Size = new Size(466, 239);
+        _tr6LevelTransitionSettingsPanel.Size = new Size(466, 254);
         _tr6LevelTransitionSettingsPanel.AutoScroll = false;
         _tr6LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
         _tr6LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
@@ -377,7 +415,7 @@ public sealed class ComponentSettings : UserControl
         _tr6LevelTransitionSettingsPanel.Visible = false;
 
         // _tr6SelectAllButton
-        _tr6SelectAllButton.Location = new Point(5, 279);
+        _tr6SelectAllButton.Location = new Point(5, 294);
         _tr6SelectAllButton.Size = new Size(120, 25);
         _tr6SelectAllButton.Text = "Select All (TR6)";
         _tr6SelectAllButton.Click += _tr6SelectAllButtonClicked;
@@ -385,7 +423,7 @@ public sealed class ComponentSettings : UserControl
         _tr6SelectAllButton.Visible = false;
 
         // _tr6UnselectAllButton
-        _tr6UnselectAllButton.Location = new Point(331, 279);
+        _tr6UnselectAllButton.Location = new Point(331, 294);
         _tr6UnselectAllButton.Size = new Size(120, 25);
         _tr6UnselectAllButton.Text = "Unselect All (TR6)";
         _tr6UnselectAllButton.Click += _tr6UnselectAllButtonClicked;
@@ -476,7 +514,6 @@ public sealed class ComponentSettings : UserControl
         Controls.Add(_gameTimeMethodLabel);
         Controls.Add(EnableAutoResetCheckbox);
         Controls.Add(_pickupSplitSelect);
-        Controls.Add(SplitSecurityBreachCheckbox);
         Controls.Add(_levelTransitionSelect);
         Controls.Add(GameVersionLabel);
         Controls.Add(AutosplitterVersionLabel);
@@ -514,6 +551,8 @@ public sealed class ComponentSettings : UserControl
             // Section
             if (!string.IsNullOrEmpty(transition.Section))
             {
+                yOffset += 3; // Magic number that makes it look even on the top and bottom.
+
                 var label = new Label
                 {
                     Text = transition.Section,
@@ -637,6 +676,8 @@ public sealed class ComponentSettings : UserControl
                     yOffset += rowHeight;
                 }
 
+                yOffset += 3; // Magic number that makes it look even on the top and bottom.
+
                 var label = new Label
                 {
                     Text = transition.Section,
@@ -725,25 +766,21 @@ public sealed class ComponentSettings : UserControl
         SplitSecurityBreach = checkbox.Checked;
     }
 
-    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e)
-    {
-        _levelTransitionActiveTabLabel.Text = "Currently editing: TR4";
-        ShowCorrectTab(true);
-    }
+    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr4);
+    private void _tr5LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr5);
+    private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr6);
 
-    private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e)
+    private void ShowCorrectTab(Game game)
     {
-        _levelTransitionActiveTabLabel.Text = "Currently editing: TR6";
-        ShowCorrectTab(false);
-    }
+        _levelTransitionActiveTabLabel.Text = $"Currently showing: {game.Description()}";
 
-    private void ShowCorrectTab(bool showTr4)
-    {
-        _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = showTr4;
-        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = showTr4;
+        _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = game is Game.Tr4;
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = game is Game.Tr4;
 
-        _tr6SelectAllButton.Enabled = _tr6SelectAllButton.Visible = _tr6UnselectAllButton.Enabled = _tr6UnselectAllButton.Visible = !showTr4;
-        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = !showTr4;
+        _tr5LevelTransitionSettingsPanel.Enabled = _tr5LevelTransitionSettingsPanel.Visible = game is Game.Tr5;
+
+        _tr6SelectAllButton.Enabled = _tr6SelectAllButton.Visible = _tr6UnselectAllButton.Enabled = _tr6UnselectAllButton.Visible = game is Game.Tr6;
+        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = game is Game.Tr6;
     }
 
     private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
@@ -762,14 +799,8 @@ public sealed class ComponentSettings : UserControl
 
     private void EnableControlsPerState()
     {
-        AdjustSecurityBreachState();
         AdjustSplitPickupsState();
         AdjustTransitionsGroupBoxState();
-    }
-
-    private void AdjustSecurityBreachState()
-    {
-        SplitSecurityBreachCheckbox.Enabled = RunType != RunType.Deathrun;
     }
 
     private void AdjustSplitPickupsState()
@@ -783,21 +814,27 @@ public sealed class ComponentSettings : UserControl
 
         // Disable for Deathrun Mode.
         _pickupSplitSelect.Enabled = false;
-        _pickupSplitSelect.Text = $"{PickupSplitSettingDefault}{Environment.NewLine}[Disabled: Deathrun overrides Split logic]";
+        _pickupSplitSelect.Text = $"{PickupSplitSettingDefault} [Disabled: Deathrun overrides Split logic]";
     }
 
     private void AdjustTransitionsGroupBoxState()
     {
         // Enabled or disable.
-        _levelTransitionSelect.Enabled = RunType == RunType.FullGame;
+        bool tr4Tr6Enable = RunType is RunType.FullGame;
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Enabled = tr4Tr6Enable;
+        _tr4LevelSettingsButton.Enabled = _tr6LevelSettingsButton.Enabled = tr4Tr6Enable;
+
+        bool tr5Enable = RunType is not RunType.Deathrun;
+        _tr5LevelSettingsButton.Enabled = SplitSecurityBreachCheckbox.Enabled = tr5Enable;
 
         // Set the text to reflect the state.
         string text = LevelTransitionSettingsTextDefault;
-        if (RunType == RunType.Deathrun)
+        if (RunType is RunType.Deathrun)
             text += " [Disabled: Deathrun overrides Split logic]";
-        else if (RunType == RunType.IndividualLevelOrArea) // TR4 IL
-            text += " [Disabled: All transitions split in IL / Area%]";
+        else if (RunType is RunType.IndividualLevelOrArea) // TR4 IL
+            text += " [TR4 + TR6 Disabled: All transitions split in IL / Area%]";
 
+        _levelTransitionActiveTabLabel.Enabled = RunType is not RunType.Deathrun;
         _levelTransitionSelect.Text = text;
     }
 
@@ -825,7 +862,10 @@ public sealed class ComponentSettings : UserControl
             toolTip: "Glitchless runs probably want to split twice; Glitched runs may only visit the level once."),
         new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                        // 09  -> 07
         new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
-        new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower),               // 11  -> 12
+
+        // Semerkhet1
+        new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower,                // 11  -> 12
+            section: "Semerkhet"),
         new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
 
         // Eastern Desert
