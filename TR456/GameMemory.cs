@@ -488,8 +488,10 @@ internal class GameMemory
         _watchersTR5R.Clear();
         _watchersTR6R.Clear();
 
+        // Guard against an improper call.
         switch (version)
         {
+            case GameVersion.GogV10:
             case GameVersion.PublicV10:
                 break;
             case GameVersion.None:

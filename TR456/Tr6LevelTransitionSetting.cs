@@ -22,7 +22,7 @@ public class Tr6LevelTransitionSetting(string name, string oldLevel, string next
     public bool Active { get; private set; } = true;
     public void UpdateActive(bool active) => Active = active;
 
-    private static readonly ImmutableDictionary<string, Tr6Level> LevelNameMap = new Dictionary<string, Tr6Level>()
+    private static readonly ImmutableDictionary<string, Tr6Level> LevelNameMap = new Dictionary<string, Tr6Level>
     {
         {"FRONTEND.GMX", Tr6Level.MainMenu},
 

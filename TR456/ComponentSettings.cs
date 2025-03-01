@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using static System.Collections.Specialized.BitVector32;
 
 namespace TR456;
 
@@ -828,7 +827,7 @@ public sealed class ComponentSettings : UserControl
         _tr5LevelSettingsButton.Enabled = SplitSecurityBreachCheckbox.Enabled = tr5Enable;
 
         // Set the text to reflect the state.
-        string text = LevelTransitionSettingsTextDefault;
+        string text = LevelTransitionSettingsTextDefault; // ReSharper disable once ConvertIfStatementToSwitchStatement
         if (RunType is RunType.Deathrun)
             text += " [Disabled: Deathrun overrides Split logic]";
         else if (RunType is RunType.IndividualLevelOrArea) // TR4 IL

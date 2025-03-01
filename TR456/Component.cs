@@ -119,7 +119,7 @@ public class Component : AutoSplitComponent
         else if (_splitter.Settings.Deathrun)
             _splitter.Settings.DeathrunButton.Checked = true; // Grouped RadioButton
         else
-            _splitter.Settings.IlOrAreaButton.Checked = true;       // Grouped RadioButton
+            _splitter.Settings.IlOrAreaButton.Checked = true; // Grouped RadioButton
 
         switch (_splitter.Settings.PickupSplitSetting)
         {

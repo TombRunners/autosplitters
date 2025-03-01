@@ -1,8 +1,8 @@
-﻿using LiveSplit.UI;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System;
+using LiveSplit.UI;
 
 namespace TR456;
 

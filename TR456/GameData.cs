@@ -1,8 +1,7 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
+﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
+using LiveSplit.ComponentUtil;
 
 namespace TR456;
 
@@ -93,7 +92,7 @@ public static class GameData
     internal static MemoryWatcher<bool> GfInitializeGame => GameMemory.GfInitializeGame(CurrentActiveBaseGame);
 
     /// <inheritdoc cref="GameMemory.GfRequiredStartPosition" />
-    internal static MemoryWatcher<byte> GfRequiredStartPosition => GameMemory.GfRequiredStartPosition(CurrentActiveBaseGame); 
+    internal static MemoryWatcher<byte> GfRequiredStartPosition => GameMemory.GfRequiredStartPosition(CurrentActiveBaseGame);
 
     /// <inheritdoc cref="GameMemory.Room" />
     internal static MemoryWatcher<short> Room => GameMemory.Room(CurrentActiveBaseGame);

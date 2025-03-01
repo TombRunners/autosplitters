@@ -249,10 +249,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             oldLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase) ||
             currentLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
             currentLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase))
-        {
-            // Guard against unnecessary checks when the inventory or main menu is accessed.
-            return false;
-        }
+            return false; // Guard against unnecessary checks when the inventory or main menu is accessed.
 
         var activeMatches = Settings
             .Tr6LevelTransitions
