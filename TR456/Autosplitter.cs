@@ -10,8 +10,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
     internal readonly ComponentSettings Settings = new();
 
     private bool _tr6NewGameStartedFromMenu;
-
-    private string _latestSplitId;
+    private long _ticksAtStartOfRun;
+    private ulong _latestSplitId;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
@@ -32,7 +32,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // This is the load removal logic for RTA without Loads.
-        return GameData.IsLoading.Current;
+        return GameData.GameIsInitialized && GameData.IsLoading.Current;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
@@ -46,7 +46,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
-    private static TimeSpan? IgtGameTime(bool deathrun)
+    private TimeSpan? IgtGameTime(bool deathrun)
     {
         Game baseGame = GameData.CurrentActiveBaseGame;
 
@@ -63,7 +63,13 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (!GameData.Igt.Changed)
             return null;
 
-        long totalTicks = RunStats.GetCompletedLevelIgtIn60FpsTicks(GameData.CurrentActiveGame);
+        // Prevent underflow issues after loading into a different "ticks" timeline.
+        if (_ticksAtStartOfRun > GameData.Igt.Current)
+            return null;
+
+        long totalTicks = RunStats.GetTotalIgtIn60FpsTicks(GameData.CurrentActiveGame);
+        totalTicks -= _ticksAtStartOfRun;
+
         double totalSeconds = (double)totalTicks / 60;
         return TimeSpan.FromSeconds(totalSeconds);
     }
@@ -123,7 +129,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         {
             // There are only 2 non-menu levels; 39 is the cutscene and 40 is the playable level.
             // The playable level is hardcoded to trigger credits.
-            string oldLevelId = GameData.OldLevelId;
+            ulong oldLevelId = GameData.OldLevelId;
             if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
                 return false;
 
@@ -183,7 +189,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             );
 
         Tr4LevelTransitionSetting match = activeMatches[0];
-        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, match.Id))
+        if (RunStats.LevelSplitCount(GameData.CurrentActiveGame, match.Id) >= match.SelectedCount)
             return false;
 
         _latestSplitId = match.Id;
@@ -192,7 +198,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr5()
     {
-        string oldLevelId = GameData.OldLevelId;
+        ulong oldLevelId = GameData.OldLevelId;
         if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
             return false;
 
@@ -279,7 +285,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         }
 
         Tr6LevelTransitionSetting match = activeMatches[0];
-        if (RunStats.LevelSplitCount(GameData.CurrentActiveGame, match.Id) >= match.SelectedCount)
+        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, match.Id))
             return false;
 
         _latestSplitId = match.Id;
@@ -376,6 +382,17 @@ public class Autosplitter : IAutoSplitter, IDisposable
         if (!state.IsGameTimeInitialized)
             state.SetGameTime(state.CurrentTime.RealTime ?? TimeSpan.Zero);
         state.IsGameTimePaused = false;
+
+        try
+        {
+            _ticksAtStartOfRun = GameData.CurrentActiveBaseGame is Game.Tr6
+                ? GameData.Igt.Old
+                : GameData.Level.Current is 1 or 39 ? 0 : GameData.Igt.Old * 2;
+        }
+        catch // GameData is unpopulated when no game is running.
+        {
+            _ticksAtStartOfRun = 0;
+        }
     }
 
     /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
@@ -390,8 +407,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         uint maxCompletions = game switch
         {
-            Game.Tr4 or Game.Tr4NgPlus or Game.Tr4TheTimesExclusive or Game.Tr5 or Game.Tr5NgPlus => 1,
-            Game.Tr6 or Game.Tr6NgPlus => (uint)Settings.Tr6LevelTransitions.Single(t => t.Id == _latestSplitId).SelectedCount,
+            Game.Tr4TheTimesExclusive or Game.Tr5 or Game.Tr5NgPlus or Game.Tr6 or Game.Tr6NgPlus => 1,
+            Game.Tr4 or Game.Tr4NgPlus => (uint?)Settings.Tr4LevelTransitions.Single(t => t.Id == _latestSplitId).SelectedCount ?? 1,
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, "Unknown game"),
         };
 

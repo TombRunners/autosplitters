@@ -6,94 +6,166 @@ namespace TR456;
 public enum Tr6Level
 {
     [Description("Main Menu / Credits")]
-    MainMenu = 00,
+    MainMenu,
 
     // Paris
     [Description("Parisian Back Streets")]
-    ParisianBackStreets = 01,
+    ParisianBackStreets,
 
     [Description("Derelict Apartment Block")]
-    DerelictApartmentBlock = 02,
+    DerelictApartmentBlock,
 
     [Description("Industrial Rooftops")]
-    IndustrialRooftops = 03,
+    IndustrialRooftops,
 
     [Description("Margot Carvier's Apartment")]
-    MargotCarviersApartment = 04,
+    MargotCarviersApartment,
 
-    [Description("Parisian Ghetto")]
-    ParisianGhetto = 05,
+    [Description("Parisian Ghetto, Lower")]
+    ParisianGhetto1,
+
+    [Description("Parisian Ghetto, Upper Cafe")]
+    ParisianGhetto2,
+
+    [Description("Parisian Ghetto, Willowtree and Church")]
+    ParisianGhetto3,
 
     [Description("The Serpent Rouge")]
-    TheSerpentRouge = 06,
+    TheSerpentRouge,
+
+    [Description("Rennes' Pawnshop")]
+    RennesPawnshop,
+
+    [Description("Willowtree Herbalist")]
+    WillowtreeHerbalist,
+
+    [Description("St. Aicard's Church")]
+    StAicardsChurch,
+
+    [Description("Cafe Metro")]
+    CafeMetro,
 
     [Description("St. Aicard's Graveyard")]
-    StAicardsGraveyard = 07,
+    StAicardsGraveyard,
 
     [Description("Bouchard's Hideout")]
-    BouchardsHideout = 08,
+    BouchardsHideout,
+
+    [Description("Cutscene after Rennes' Pawnshop")]
+    RennesPawnshopCutscene,
 
     [Description("Louvre Storm Drains")]
-    LouvreStormDrains = 09,
+    LouvreStormDrains,
 
     [Description("Louvre Galleries")]
-    LouvreGalleries = 10,
+    LouvreGalleries,
 
     [Description("Archaeological Dig")]
-    ArchaeologicalDig = 11,
+    ArchaeologicalDig,
 
     [Description("Tomb of the Ancients")]
-    TombOfTheAncients = 12,
+    TombOfTheAncients,
 
     [Description("The Hall of Seasons")]
-    TheHallOfSeasons = 13,
-
-    [Description("The Breath of Hades")]
-    TheBreathOfHades = 14,
+    TheHallOfSeasons,
 
     [Description("Neptune's Hall")]
-    NeptunesHall = 15,
-
-    [Description("The Sanctuary of Flame")]
-    TheSanctuaryOfFlame = 16,
+    NeptunesHall,
 
     [Description("Wrath of the Beast")]
-    WrathOfTheBeast = 17,
+    WrathOfTheBeast,
+
+    [Description("The Sanctuary of Flame")]
+    TheSanctuaryOfFlame,
+
+    [Description("The Breath of Hades")]
+    TheBreathOfHades,
 
     [Description("Galleries Under Siege")]
-    GalleriesUnderSiege = 18,
+    GalleriesUnderSiege,
+
+    [Description("Galleries Under Siege Cutscene, Staircase")]
+    GalleriesUnderSiegeCutscene1,
+
+    [Description("Galleries Under Siege Cutscene, Confiscation")]
+    GalleriesUnderSiegeCutscene2,
+
+    [Description("Galleries Under Siege Cutscene, Louvre Escape")]
+    GalleriesUnderSiegeCutscene3,
+
+    [Description("Galleries Under Siege Cutscene, Drive to Apartment")]
+    GalleriesUnderSiegeCutscene4,
 
     [Description("Von Croy's Apartment")]
-    VonCroysApartment = 19,
+    VonCroysApartment,
+
+    [Description("Von Croy's Apartment Cutscene, Janitor")]
+    VonCroysApartmentCutscene,
 
     // Prague
     [Description("The Monstrum Crime Scene")]
-    TheMonstrumCrimeScene = 20,
+    TheMonstrumCrimeScene,
+
+    [Description("The Monstrum Crime Scene Cutscene")]
+    TheMonstrumCrimeSceneCutscene,
 
     [Description("The Strahov Fortress")]
-    TheStrahovFortress = 21,
+    TheStrahovFortress,
+
+    [Description("The Strahov Fortress Cutscene, Luddick")]
+    TheStrahovFortressCutscene1,
+
+    [Description("The Strahov Fortress Cutscene, Control Room Power")]
+    TheStrahovFortressCutscene2,
 
     [Description("Bio-Research Facility")]
-    BioResearchFacility = 22,
+    BioResearchFacility,
+
+    [Description("Bio-Research Facility Cutscene, Boaz")]
+    BioResearchFacilityCutscene1,
+
+    [Description("Bio-Research Facility, Kurtis Meeting")]
+    BioResearchFacilityCutscene2,
 
     [Description("The Sanitarium")]
-    TheSanitarium = 23,
+    TheSanitarium,
 
     [Description("Maximum Containment Area")]
-    MaximumContainmentArea = 24,
+    MaximumContainmentArea,
+
+    [Description("Maximum Containment Area Cutscene")]
+    MaximumContainmentAreaCutscene,
 
     [Description("Aquatic Research Area")]
-    AquaticResearchArea = 25,
+    AquaticResearchArea,
 
     [Description("The Vault of Trophies")]
-    TheVaultOfTrophies = 26,
+    TheVaultOfTrophies,
+
+    [Description("The Vault of Trophies Cutscene")]
+    TheVaultOfTrophiesCutscene,
 
     [Description("Boaz Returns")]
-    BoazReturns = 27,
+    BoazReturns,
+
+    [Description("Boaz Returns Cutscene, Transformation")]
+    BoazReturnsCutscene1,
+
+    [Description("Boaz Returns Cutscene, End")]
+    BoazReturnsCutscene2,
 
     [Description("The Lost Domain")]
-    TheLostDomain = 28,
+    TheLostDomain,
 
     [Description("Eckhardt's Lab")]
-    EckhardtsLab = 29,
+    EckhardtsLab,
+
+    [Description("Eckhardt's Lab Cutscene, Eckhardt Start")]
+    EckhardtsLabCutscene1,
+
+    [Description("Eckhardt's Lab Cutscene, Eckhardt End")]
+    EckhardtsLabCutscene2,
+
+    [Description("Eckhardt's Lab Cutscene, After Flashblack")]
+    EckhardtsLabCutscene3,
 }

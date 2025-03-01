@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -24,6 +24,7 @@ public sealed class ComponentSettings : UserControl
     public CheckBox SplitSecurityBreachCheckbox;
 
     private GroupBox _levelTransitionSelect;
+    private ToolTip _toolTip;
     private Label _levelTransitionActiveTabLabel;
     private Button _tr4LevelSettingsButton;
     private Button _tr6LevelSettingsButton;
@@ -64,8 +65,7 @@ public sealed class ComponentSettings : UserControl
 
         SuspendLayout();
 
-        PopulateTr4LevelControls(Tr4LevelTransitions);
-        PopulateTr6LevelControls(Tr6LevelTransitions);
+        PopulateLevelControls();
         EnableControlsPerState();
 
         ResumeLayout(false);
@@ -148,6 +148,7 @@ public sealed class ComponentSettings : UserControl
         SplitSecurityBreachCheckbox = new CheckBox();
 
         _levelTransitionSelect = new GroupBox();
+        _toolTip = new ToolTip();
         _levelTransitionActiveTabLabel = new Label();
         _tr4LevelSettingsButton = new Button();
         _tr6LevelSettingsButton = new Button();
@@ -393,8 +394,10 @@ public sealed class ComponentSettings : UserControl
 
         #endregion
 
-        PopulateTr4LevelControls(Tr4LevelTransitions);
-        PopulateTr6LevelControls(Tr6LevelTransitions);
+        _toolTip.AutoPopDelay = 7500;
+        _toolTip.InitialDelay = 500;
+        _toolTip.ReshowDelay = 250;
+        PopulateLevelControls();
 
         #region GameVersion and AutosplitterVersion Labels
 
@@ -427,7 +430,7 @@ public sealed class ComponentSettings : UserControl
         _aslWarningLabel.Name = "_aslWarningLabel";
         _aslWarningLabel.Size = new Size(476, 20);
         _aslWarningLabel.TabStop = false;
-        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout � Please Remove!";
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
         _aslWarningLabel.Visible = false;
 
         // _timerWarningLabel
@@ -439,7 +442,7 @@ public sealed class ComponentSettings : UserControl
         _timerWarningLabel.Name = "_timerWarningLabel";
         _timerWarningLabel.Size = new Size(476, 20);
         _timerWarningLabel.TabStop = false;
-        _timerWarningLabel.Text = "No Game Time Timer in Layout � Please Fix!";
+        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
         _timerWarningLabel.Visible = false;
 
         // _signatureScanStatusLabel
@@ -492,14 +495,38 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
+    private void PopulateLevelControls()
+    {
+        _toolTip.RemoveAll();
+        PopulateTr4LevelControls(Tr4LevelTransitions);
+        PopulateTr6LevelControls(Tr6LevelTransitions);
+    }
+
     private void PopulateTr4LevelControls(List<Tr4LevelTransitionSetting> referenceList)
     {
+        const int rowHeight = 22;
         _tr4LevelTransitionSettingsPanel.Controls.Clear();
 
         var yOffset = 0;
         var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);
         foreach (Tr4LevelTransitionSetting transition in referenceList)
         {
+            // Section
+            if (!string.IsNullOrEmpty(transition.Section))
+            {
+                var label = new Label
+                {
+                    Text = transition.Section,
+                    Font = new Font(font, FontStyle.Bold),
+                    Location = new Point(0, yOffset),
+                    Size = new Size(400, 20),
+                    Padding = Padding with { Left = 0, Right = 0 },
+                };
+                _tr4LevelTransitionSettingsPanel.Controls.Add(label);
+
+                yOffset += rowHeight;
+            }
+
             // CheckBox
             int widthNeeded = TextRenderer.MeasureText(transition.DisplayName(), font).Width + 20;
             var checkBox = new CheckBox
@@ -512,7 +539,14 @@ public sealed class ComponentSettings : UserControl
                 Enabled = transition.CanBeConfigured,
             };
             checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox)sender).Checked); };
-            _tr4LevelTransitionSettingsPanel.Controls.Add(checkBox);
+
+            // ToolTip
+            if (!string.IsNullOrEmpty(transition.ToolTip))
+            {
+                checkBox.Text += " ℹ️";
+                checkBox.Width += 20;
+                _toolTip.SetToolTip(checkBox, transition.ToolTip);
+            }
 
             // ComboBox
             if (transition.Directionality == TransitionDirection.TwoWay)
@@ -535,61 +569,18 @@ public sealed class ComponentSettings : UserControl
                 directionComboBox.Items.AddRange(["Two-Way", $"From {lowerName}", $"From {higherName}"]);
 
                 directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
-                directionComboBox.SelectedIndexChanged += (_, _) =>
+                directionComboBox.SelectedIndexChanged += (_, _) => { transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex; };
+
+                checkBox.CheckedChanged += (sender, _) =>
                 {
-                    transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex;
+                    transition.UpdateActive(((CheckBox)sender).Checked);
+                    directionComboBox.Enabled = ((CheckBox)sender).Checked;
                 };
 
                 _tr4LevelTransitionSettingsPanel.Controls.Add(directionComboBox);
             }
-
-            yOffset += 22;
-        }
-    }
-
-    private void PopulateTr6LevelControls(List<Tr6LevelTransitionSetting> referenceList)
-    {
-        _tr6LevelTransitionSettingsPanel.Controls.Clear();
-
-        var rowCount = 0;
-        var yOffset = 0;
-        var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);
-        foreach (Tr6LevelTransitionSetting transition in referenceList)
-        {
-            // CheckBox
-            int widthNeeded = TextRenderer.MeasureText(transition.Name, font).Width + 20;
-            var checkBox = new CheckBox
+            else if (transition.MaxCount is > 1)
             {
-                Text = transition.Name,
-                Location = new Point(rowCount * 224, yOffset),
-                Size = new Size(widthNeeded, 20),
-                Padding = Padding with { Left = 0, Right = 0 },
-                Checked = transition.Active,
-                Enabled = true,
-            };
-
-            // ComboBox
-            if (transition.MaxCount <= 1)
-            {
-                rowCount += 1;
-                checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
-
-                // Reset row count and adjust y for next row.
-                if (rowCount >= 2)
-                {
-                    rowCount = 0;
-                    yOffset += 22;
-                }
-            }
-            else
-            {
-                // Move from existing to new row, if needed.
-                if (rowCount > 0)
-                {
-                    yOffset += 22;
-                    checkBox.Location = new Point(0, yOffset); // Re-position to be at the beginning of the new row.
-                }
-
                 const int maxWidth = 100;
                 int availableWidth = 448 - checkBox.Width;
                 int width = Math.Min(maxWidth, availableWidth);
@@ -606,7 +597,7 @@ public sealed class ComponentSettings : UserControl
                 for (var i = 1; i <= transition.MaxCount; i++)
                     splitCountComboBox.Items.Add($"Split {i} {(i == 1 ? "time" : "times")}");
 
-                splitCountComboBox.SelectedIndex = transition.SelectedCount - 1;
+                splitCountComboBox.SelectedIndex = transition.SelectedCount!.Value - 1;
                 splitCountComboBox.SelectedIndexChanged += (_, _) => { transition.SelectedCount = splitCountComboBox.SelectedIndex + 1; };
 
                 checkBox.CheckedChanged += (sender, _) =>
@@ -615,13 +606,80 @@ public sealed class ComponentSettings : UserControl
                     splitCountComboBox.Enabled = ((CheckBox)sender).Checked;
                 };
 
-                _tr6LevelTransitionSettingsPanel.Controls.Add(splitCountComboBox);
-
-                // Ensure next entry is on a new row.
-                rowCount = 0;
-                yOffset += 22;
+                _tr4LevelTransitionSettingsPanel.Controls.Add(splitCountComboBox);
+            }
+            else
+            {
+                checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
             }
 
+            yOffset += rowHeight;
+            _tr4LevelTransitionSettingsPanel.Controls.Add(checkBox);
+        }
+    }
+
+    private void PopulateTr6LevelControls(List<Tr6LevelTransitionSetting> referenceList)
+    {
+        const int rowHeight = 22;
+        _tr6LevelTransitionSettingsPanel.Controls.Clear();
+
+        var rowCount = 0;
+        var yOffset = 0;
+        var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);
+        foreach (Tr6LevelTransitionSetting transition in referenceList)
+        {
+            // Section
+            if (!string.IsNullOrEmpty(transition.Section))
+            {
+                if (rowCount != 0)
+                {
+                    rowCount = 0;
+                    yOffset += rowHeight;
+                }
+
+                var label = new Label
+                {
+                    Text = transition.Section,
+                    Font = new Font(font, FontStyle.Bold),
+                    Location = new Point(0, yOffset),
+                    Size = new Size(400, 20),
+                    Padding = Padding with { Left = 0, Right = 0 },
+                };
+                _tr6LevelTransitionSettingsPanel.Controls.Add(label);
+
+                yOffset += rowHeight;
+            }
+
+            // Reset row count and adjust y for next row.
+            if (rowCount >= 2)
+            {
+                rowCount = 0;
+                yOffset += rowHeight;
+            }
+
+            // CheckBox
+            int widthNeeded = TextRenderer.MeasureText(transition.Name, font).Width + 20;
+            var checkBox = new CheckBox
+            {
+                Text = transition.Name,
+                Location = new Point(rowCount * 224, yOffset),
+                Size = new Size(widthNeeded, 20),
+                Padding = Padding with { Left = 0, Right = 0 },
+                Checked = transition.Active,
+                Enabled = true,
+            };
+
+            // ToolTip
+            if (!string.IsNullOrEmpty(transition.ToolTip))
+            {
+                checkBox.Text += " ℹ️";
+                checkBox.Width += 20;
+                _toolTip.SetToolTip(checkBox, transition.ToolTip);
+            }
+
+            checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
+
+            rowCount += 1;
             _tr6LevelTransitionSettingsPanel.Controls.Add(checkBox);
         }
     }
@@ -748,35 +806,45 @@ public sealed class ComponentSettings : UserControl
     internal readonly List<Tr4LevelTransitionSetting> Tr4LevelTransitions =
     [
         // Cambodia
-        new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower),     // 01  -> 02
+        new(Tr4Level.AngkorWat, Tr4Level.RaceForTheIris, TransitionDirection.OneWayFromLower,      // 01  -> 02
+            section: "Cambodia"),
         new(Tr4Level.RaceForTheIris, Tr4Level.TheTombOfSeth, TransitionDirection.OneWayFromLower), // 02  -> 03
 
         // Valley of the Kings
-        new(Tr4Level.TheTombOfSeth, Tr4Level.BurialChambers, TransitionDirection.OneWayFromLower),    // 03  -> 04
+        new(Tr4Level.TheTombOfSeth, Tr4Level.BurialChambers, TransitionDirection.OneWayFromLower,     // 03  -> 04
+            section: "Valley of the Kings"),
         new(Tr4Level.BurialChambers, Tr4Level.ValleyOfTheKings, TransitionDirection.OneWayFromLower), // 04  -> 05
         new(Tr4Level.ValleyOfTheKings, Tr4Level.Kv5, TransitionDirection.OneWayFromLower),            // 05  -> 06
         new(Tr4Level.Kv5, Tr4Level.TempleOfKarnak, TransitionDirection.OneWayFromLower),              // 06  -> 07
 
         // Karnak
-        new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower),                 // 07  -> 08
-        new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower),                     // 08  -> 09
+        new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower, maxCount: 2,     // 07  -> 08
+            toolTip: "Glitchless runs probably want to split twice; Glitched runs may only visit the level once.",
+            section: "Karnak Temple Complex"),
+        new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower, maxCount: 2,         // 08  -> 09
+            toolTip: "Glitchless runs probably want to split twice; Glitched runs may only visit the level once."),
         new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                        // 09  -> 07
         new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
         new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower),               // 11  -> 12
         new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
 
         // Eastern Desert
-        new(Tr4Level.DesertRailroad, Tr4Level.Alexandria, TransitionDirection.OneWayFromLower), // 13  -> 14
+        new(Tr4Level.DesertRailroad, Tr4Level.Alexandria, TransitionDirection.OneWayFromLower, // 13  -> 14
+            section: "Eastern Desert"),
 
         // Alexandria
-        new(Tr4Level.Alexandria, Tr4Level.CoastalRuins, TransitionDirection.TwoWay), // 14 <-> 15
+        new(Tr4Level.Alexandria, Tr4Level.CoastalRuins, TransitionDirection.TwoWay, // 14 <-> 15
+            section: "Alexandria"),
 
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
-            lowerRoomNumber: 153, lowerTriggerTimer: 1, higherRoomNumber: 2, higherTriggerTimer: 1, note: "Setup"), // 15 <-> 18
+            lowerRoomNumber: 153, lowerTriggerTimer: 1, higherRoomNumber: 2, higherTriggerTimer: 1, note: "Setup",  // 15 <-> 18
+            toolTip: "To/from the isolated Catacombs room with the pillar that must be pulled to progress Catacombs."),
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
-            lowerRoomNumber: 154, lowerTriggerTimer: 0, higherRoomNumber: 6, higherTriggerTimer: 2, note: "Start"), // 15 <-> 18
+            lowerRoomNumber: 154, lowerTriggerTimer: 0, higherRoomNumber: 6, higherTriggerTimer: 2, note: "Start",  // 15 <-> 18
+            toolTip: "To/from the starting Catacombs area with the door locked by the mechanism in the Setup room."),
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
-            lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End"),   // 15 <-> 18
+            lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End",    // 15 <-> 18
+            toolTip: "To/from the Catabombs exit which allows an alternate backtracking route to Coastal Ruins."),
 
         new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),          // 15 <-> 19
         new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),             // 18 <-> 19
@@ -792,7 +860,8 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower), // 17  -> 22
 
         // Cairo
-        new(Tr4Level.CityOfTheDead, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay), // 22 <-> 24
+        new(Tr4Level.CityOfTheDead, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay,  // 22 <-> 24
+            section: "Cairo"),
         new(Tr4Level.Trenches, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay),      // 23 <-> 24
         new(Tr4Level.Trenches, Tr4Level.CitadelGate, TransitionDirection.TwoWay),          // 23 <-> 24
         new(Tr4Level.ChambersOfTulun, Tr4Level.CitadelGate, TransitionDirection.TwoWay),   // 24 <-> 26
@@ -808,7 +877,8 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.Citadel, Tr4Level.SphinxComplex, TransitionDirection.OneWayFromLower),                        // 27  -> 28
 
         // Giza
-        new(Tr4Level.SphinxComplex, Tr4Level.UnderneathTheSphinx, TransitionDirection.TwoWay),              // 28 <-> 30
+        new(Tr4Level.SphinxComplex, Tr4Level.UnderneathTheSphinx, TransitionDirection.TwoWay,               // 28 <-> 30
+            section: "Giza"),
         new(Tr4Level.UnderneathTheSphinx, Tr4Level.MenkauresPyramid, TransitionDirection.TwoWay),           // 30 <-> 31
         new(Tr4Level.MenkauresPyramid, Tr4Level.InsideMenkauresPyramid, TransitionDirection.TwoWay),        // 31 <-> 32
         new(Tr4Level.SphinxComplex, Tr4Level.InsideMenkauresPyramid, TransitionDirection.OneWayFromHigher), // 32  -> 28
@@ -824,30 +894,39 @@ public sealed class ComponentSettings : UserControl
 
     internal readonly List<Tr6LevelTransitionSetting> Tr6LevelTransitions =
     [
-        new("Parisian Back Streets", "PARIS1.GMX", "PARIS1A.GMX"),
+        new("Parisian Back Streets", "PARIS1.GMX", "PARIS1A.GMX", section: "Paris"),
         new("Derelict Apartment Block", "PARIS1A.GMX", "PARIS1C.GMX"),
         new("Industrial Roof Tops", "PARIS1C.GMX", "PARIS1B.GMX"),
         new("Margot Carvier's Apartment", "PARIS1B.GMX", "PARIS2_1.GMX"),
-        new("The Serpent Rouge (Entrance)", "PARIS2_1.GMX", "PARIS2B.GMX"),
-        new("The Serpent Rouge (Exit)", "PARIS2B.GMX", "PARIS2_1.GMX"),
-        new("Pierre's questline", "PARIS2_2.GMX", "PARIS2G.GMX"),
-        new("Bernard's questline", "PARIS2_3.GMX", "PARIS2G.GMX"),
+        new("The Serpent Rouge (Start)", "PARIS2_1.GMX", "PARIS2B.GMX",
+            "Splits when you enter The Serpent Rouge from Parisian Ghetto."),
+        new("The Serpent Rouge (End)", "PARIS2B.GMX", "PARIS2_1.GMX",
+            "Splits when you exit The Serpent Rouge to Parisian Ghetto."),
+        new("Parisian Ghetto: Pierre's Questline", "PARIS2_2.GMX", "PARIS2G.GMX",
+            "Splits when you enter St. Aicard's Garveyard by entering through the apartment area."),
+        new("Parisian Ghetto: Bernard's Questline", "PARIS2_3.GMX", "PARIS2G.GMX",
+            "Splits when you enter St. Aicard's Garveyard by talking to the bodyguard in the church area."),
         new("St. Aicard's Graveyard", "PARIS2G.GMX", "PARIS2H.GMX"),
         new("Bouchard's Hideout", "PARIS2H.GMX", "PARIS2E.GMX"),
         new("Rennes' Pawnshop", "CUTSCENE\\CS_2_51A.GMX", "PARIS3.GMX"),
         new("Louvre Storm Drains", "PARIS3.GMX", "PARIS4.GMX"),
         new("Louvre Galleries", "PARIS4.GMX", "PARIS5A.GMX"),
-        new("The Archaeological Dig [Up to 2 times in Glitchless]", "PARIS5A.GMX", "PARIS5.GMX", 2),
-        new("Tomb of Ancients", "PARIS5.GMX", "PARIS5_1.GMX"),
+        new("The Archaeological Dig, Part 1", "PARIS5A.GMX", "PARIS5.GMX",
+            "Splits when you enter Tomb of Ancients."),
+        new("Tomb of Ancients", "PARIS5.GMX", "PARIS5_1.GMX",
+            "Splits when you enter The Hall of Seasons."),
         new("Neptune's Hall", "PARIS5_2.GMX", "PARIS5_1.GMX"),
         new("Wrath of the Beast", "PARIS5_3.GMX", "PARIS5_1.GMX"),
         new("The Sanctuary of Flame", "PARIS5_4.GMX", "PARIS5_1.GMX"),
         new("The Breath of Hades", "PARIS5_5.GMX", "PARIS5_1.GMX"),
         new("The Hall of Seasons", "PARIS5_1.GMX", "PARIS5.GMX"),
-        new("Tomb of Ancients (flooded)", "PARIS5.GMX", "PARIS5A.GMX"),
+        new("Tomb of Ancients (flooded)", "PARIS5.GMX", "PARIS5A.GMX",
+            "Splits when you return to The Archaeological Dig after completing The Hall of Seasons."),
+        new("The Archaeological Dig, Part 2", "PARIS5A.GMX", "PARIS5.GMX",
+            "Splits when you enter Galleries Under Siege."),
         new("Galleries Under Siege", "CUTSCENE\\CS_6_21B.GMX", "PARIS6.GMX"),
         new("Von Croy's Apartment", "CUTSCENE\\CS_7_19.GMX", "PRAGUE1.GMX"),
-        new("The Monstrum Crimescene", "CUTSCENE\\CS_9_1.GMX", "PRAGUE2.GMX"),
+        new("The Monstrum Crimescene", "CUTSCENE\\CS_9_1.GMX", "PRAGUE2.GMX", section: "Prague"),
         new("The Strahov Fortress", "PRAGUE2.GMX", "PRAGUE3.GMX"),
         new("The Bio-Research Facility", "CUTSCENE\\CS_10_14.GMX", "PRAGUE4.GMX"),
         new("The Sanitarium", "PRAGUE4.GMX", "PRAGUE4A.GMX"),

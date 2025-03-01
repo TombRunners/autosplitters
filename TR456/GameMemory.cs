@@ -223,7 +223,7 @@ internal class GameMemory
                     EffectiveAddressOffset = 0,
                 }
             },
-            // LevelName
+            // LevelName (TR6R)
             {
                 [Game.Tr6],
                 new AddressSignatureInfo

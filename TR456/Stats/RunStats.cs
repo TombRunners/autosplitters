@@ -24,7 +24,7 @@ public static class RunStats
 
     /// <summary>Sums IGT from completed levels.</summary>
     /// <returns>Total ticks from completed levels</returns>
-    public static long GetCompletedLevelIgtIn60FpsTicks(Game currentActiveGame)
+    public static long GetTotalIgtIn60FpsTicks(Game currentActiveGame)
     {
         Game[] thirtyFpsGames = [Game.Tr4, Game.Tr4NgPlus, Game.Tr4TheTimesExclusive, Game.Tr5, Game.Tr5NgPlus];
         long thirtyFpsTicks = thirtyFpsGames
@@ -82,11 +82,11 @@ public static class RunStats
     /// <param name="game"><see cref="Game" /> to check</param>
     /// <param name="levelId">Level ID to check</param>
     /// <returns>The number of times the game's level was split</returns>
-    public static uint LevelSplitCount(Game game, string levelId) => GameStats[game].LevelCompletionCount(levelId);
+    public static uint LevelSplitCount(Game game, ulong levelId) => GameStats[game].LevelCompletionCount(levelId);
 
     /// <summary>Checks if the given <paramref name="game" />'s level with <paramref name="levelId" /> was split.</summary>
     /// <param name="game"><see cref="Game" /> to check</param>
     /// <param name="levelId">Level ID to check</param>
     /// <returns></returns>
-    public static bool LevelHasBeenSplit(Game game, string levelId) => GameStats[game].LevelCompleted(levelId);
+    public static bool LevelHasBeenSplit(Game game, ulong levelId) => GameStats[game].LevelCompleted(levelId);
 }

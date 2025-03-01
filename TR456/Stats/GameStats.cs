@@ -43,10 +43,10 @@ public record GameStats()
     /// <summary>Determines if the stats for <paramref name="levelId" /> are already present.</summary>
     /// <param name="levelId">Level ID</param>
     /// <returns><see langword="true" /> if the level is present in the backing stack; <see langword="false" /> otherwise</returns>
-    public bool LevelCompleted(string levelId) => LevelStats.Any(stats => stats.LevelId == levelId);
+    public bool LevelCompleted(ulong levelId) => LevelStats.Any(stats => stats.LevelId == levelId);
 
     /// <summary>Determines if the stats for <paramref name="levelId" /> are already present.</summary>
     /// <param name="levelId">Level ID</param>
     /// <returns>The number of times the level was completed</returns>
-    public uint LevelCompletionCount(string levelId) => (uint)LevelStats.Count(stats => stats.LevelId == levelId);
+    public uint LevelCompletionCount(ulong levelId) => (uint)LevelStats.Count(stats => stats.LevelId == levelId);
 }

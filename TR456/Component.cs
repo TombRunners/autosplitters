@@ -145,7 +145,7 @@ public class Component : AutoSplitComponent
     }
 
     private static void ProcessTransitionSettings<T>(XmlNode settings, string transitionsNodeName, List<T> settingsList, string settingsPrefix,
-        Func<XmlNode, T> fromXml, Action<T, T> updateSettings, Func<T, string> getId)
+        Func<XmlNode, T> fromXml, Action<T, T> updateSettings, Func<T, ulong> getId)
     {
         XmlElement transitionsNode = settings[transitionsNodeName];
         if (transitionsNode == null)
@@ -162,7 +162,7 @@ public class Component : AutoSplitComponent
 
         // Create a copy of the existing settings for potential reversion.
         var defaultOrExistingTransitions = settingsList.ToArray();
-        var encounteredSettingIds = new HashSet<string>(transitionsCount);
+        var encounteredSettingIds = new HashSet<ulong>(transitionsCount);
 
         foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
         {
@@ -215,11 +215,12 @@ public class Component : AutoSplitComponent
     private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList)
     {
         ProcessTransitionSettings(settings, transitionsNodeName, settingsList, "TR4R",
-            Tr4LevelTransitionSetting.FromXmlElement, 
+            Tr4LevelTransitionSetting.FromXmlElement,
             static (existing, xml) =>
             {
                 existing.UpdateActive(xml.Active);
                 existing.SelectedDirectionality = xml.SelectedDirectionality;
+                existing.SelectedCount = Math.Min(Math.Max(xml.SelectedCount ?? 0, 1), existing.MaxCount ?? 1);
             }, static t => t.Id
         );
     }
@@ -232,7 +233,6 @@ public class Component : AutoSplitComponent
             static (existing, xml) =>
             {
                 existing.UpdateActive(xml.Active);
-                existing.SelectedCount = Math.Min(Math.Max(xml.SelectedCount, 1), existing.MaxCount);
             }, static t => t.Id
         );
     }

@@ -132,10 +132,10 @@ public static class GameData
     /// <returns>Old level of the game</returns>
     private static uint OldLevel => Level.Old;
 
-    public static string OldLevelId => OldLevel.ToString("D2");
+    public static ulong OldLevelId => OldLevel;
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
-    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
+    internal static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
 
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
