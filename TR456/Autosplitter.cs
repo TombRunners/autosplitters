@@ -12,6 +12,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private bool _tr6NewGameStartedFromMenu;
     private long _ticksAtStartOfRun;
     private ulong _latestSplitId;
+    private TransitionDirection _latestSplitDirection;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
@@ -130,7 +131,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             // There are only 2 non-menu levels; 39 is the cutscene and 40 is the playable level.
             // The playable level is hardcoded to trigger credits.
             ulong oldLevelId = GameData.OldLevelId;
-            if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
+            if (RunStats.LevelWasSplit(GameData.CurrentActiveGame, oldLevelId))
                 return false;
 
             uint tteNextLevel = GameData.NextLevel.Current;
@@ -138,6 +139,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
                 return false;
 
             _latestSplitId = oldLevelId;
+            _latestSplitDirection = TransitionDirection.OneWayFromLower;
             return true;
         }
 
@@ -165,7 +167,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         var activeMatches = Settings
             .Tr4LevelTransitions
             .Where(t =>
-                t.Active &&
+                t.Active is not ActiveSetting.IgnoreAll &&
                 t.LowerLevel == lowerLevel &&
                 (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
                 (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
@@ -189,17 +191,71 @@ public class Autosplitter : IAutoSplitter, IDisposable
             );
 
         Tr4LevelTransitionSetting match = activeMatches[0];
-        if (RunStats.LevelSplitCount(GameData.CurrentActiveGame, match.Id) >= match.SelectedCount)
-            return false;
+        Game game = GameData.CurrentActiveGame;
+        if (!match.ComplexIgnore)
+        {
+            if (RunStats.LevelWasSplit(game, match.Id, direction))
+                return false;
+        }
+        else
+        {
+            bool levelHasBeenSplit = RunStats.LevelWasSplit(game, match.Id, direction);
+            bool levelHasBeenIgnored = RunStats.LevelWasIgnored(game, match.Id, direction);
+            switch (match.Active)
+            {
+                case ActiveSetting.Active:
+                {
+                    if (RunStats.LevelSplitCount(game, match.Id, direction) > 1)
+                        return false;
+
+                    break;
+                }
+                case ActiveSetting.IgnoreSecond:
+                {
+                    if (levelHasBeenSplit)
+                        return false;
+
+                    break;
+                }
+                case ActiveSetting.IgnoreFirst:
+                {
+                    if (levelHasBeenSplit)
+                        return false;
+
+                    if (levelHasBeenIgnored)
+                            break;
+
+                    // Compose and store level stats.
+                    uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus
+                        ? GameData.LevelIgt.Current
+                        : GameData.Igt.Current;
+
+                    var stats = new LevelStats
+                    {
+                        LevelId = match.Id,
+                        Igt = igtTicks,
+                        Ignored = true,
+                        Direction = direction,
+                    };
+                    RunStats.AddLevelStats(game, stats);
+
+                    return false;
+                }
+                case ActiveSetting.IgnoreAll:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(match.Active), match.Active, "Improper ActiveSetting");
+            }
+        }
 
         _latestSplitId = match.Id;
+        _latestSplitDirection = direction;
         return true;
     }
 
     private bool ShouldSplitTr5()
     {
         ulong oldLevelId = GameData.OldLevelId;
-        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, oldLevelId))
+        if (RunStats.LevelWasSplit(GameData.CurrentActiveGame, oldLevelId))
             return false;
 
         uint nextLevel = GameData.NextLevel.Current;
@@ -211,6 +267,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return false;
 
         _latestSplitId = oldLevelId;
+        _latestSplitDirection = TransitionDirection.OneWayFromLower;
         return true;
     }
 
@@ -282,10 +339,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
         }
 
         Tr6LevelTransitionSetting match = activeMatches[0];
-        if (RunStats.LevelHasBeenSplit(GameData.CurrentActiveGame, match.Id))
+        if (RunStats.LevelWasSplit(GameData.CurrentActiveGame, match.Id))
             return false;
 
         _latestSplitId = match.Id;
+        _latestSplitDirection = TransitionDirection.OneWayFromLower; // This is wrong, but it doesn't matter with current logic and features.
         return true;
     }
 
@@ -402,18 +460,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
         // Compose and store level stats.
         uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus ? GameData.LevelIgt.Current : GameData.Igt.Current;
 
-        uint maxCompletions = game switch
-        {
-            Game.Tr4TheTimesExclusive or Game.Tr5 or Game.Tr5NgPlus or Game.Tr6 or Game.Tr6NgPlus => 1,
-            Game.Tr4 or Game.Tr4NgPlus => (uint?)Settings.Tr4LevelTransitions.Single(t => t.Id == _latestSplitId).SelectedCount ?? 1,
-            _ => throw new ArgumentOutOfRangeException(nameof(game), game, "Unknown game"),
-        };
-
         var stats = new LevelStats
         {
             LevelId = _latestSplitId,
             Igt = igtTicks,
-            MaxCompletions = maxCompletions,
+            Direction = _latestSplitDirection,
         };
 
         RunStats.AddLevelStats(game, stats);

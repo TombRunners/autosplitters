@@ -9,14 +9,12 @@ namespace TR456;
 public class Tr4LevelTransitionSetting(
     Tr4Level lowerLevel, Tr4Level higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
     int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null,
-    string note = null, string toolTip = null, string section = null, int? maxCount = null)
+    string note = null, string toolTip = null, string section = null, bool complexIgnore = false)
 {
     private const string LowerSettingName = "Lower";
     private const string HigherSettingName = "Higher";
     private const string DirectionalitySettingName = "Directionality";
     private const string SelectedDirectionalitySettingName = "SelectedDirectionality";
-    private const string MaxCountSettingName = "MaxCount";
-    private const string SelectedCountSettingName = "SelectedCount";
     private const string UnusedLevelNumberSettingName = "UnusedLevelNumber";
     private const string LowerRoomNumberSettingName = "LowerRoomNumber";
     private const string HigherRoomNumberSettingName = "HigherRoomNumber";
@@ -25,12 +23,10 @@ public class Tr4LevelTransitionSetting(
     public readonly Tr4Level LowerLevel = lowerLevel;
     public readonly Tr4Level HigherLevel = higherLevel;
     public readonly TransitionDirection Directionality = directionality;
-    public readonly int? MaxCount = maxCount;
+    public readonly bool ComplexIgnore = complexIgnore;
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
     public readonly string ToolTip = toolTip;
     public readonly string Section = section;
-
-    public int? SelectedCount { get; set; } = maxCount;
 
     public ulong Id
     {
@@ -46,10 +42,15 @@ public class Tr4LevelTransitionSetting(
         }
     }
 
-    public bool Active { get; private set; } = true;
+    public ActiveSetting Active { get; private set; } = ActiveSetting.Active;
+
     public bool CanBeConfigured => UnusedLevelNumber is not 39;
 
-    public void UpdateActive(bool active) => Active = CanBeConfigured && active;
+    public void UpdateActive(ActiveSetting active)
+    {
+        if (CanBeConfigured)
+            Active = active;
+    }
 
     public TransitionDirection SelectedDirectionality { get; set; } = directionality;
 
@@ -94,7 +95,7 @@ public class Tr4LevelTransitionSetting(
         element.AppendChild(SettingsHelper.ToElement(document, HigherSettingName, Convert.ToInt32(HigherLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, DirectionalitySettingName, ((int)Directionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, SelectedDirectionalitySettingName, ((int)SelectedDirectionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, ActiveSettingName, Active));
+        element.AppendChild(SettingsHelper.ToElement(document, ActiveSettingName, Convert.ToInt32(Active)));
 
         if (UnusedLevelNumber.HasValue)
             element.AppendChild(SettingsHelper.ToElement(document, UnusedLevelNumberSettingName, UnusedLevelNumber.Value.ToString()));
@@ -102,11 +103,6 @@ public class Tr4LevelTransitionSetting(
             element.AppendChild(SettingsHelper.ToElement(document, LowerRoomNumberSettingName, lowerRoomNumber.Value.ToString()));
         if (higherRoomNumber.HasValue)
             element.AppendChild(SettingsHelper.ToElement(document, HigherRoomNumberSettingName, higherRoomNumber.Value.ToString()));
-
-        if (MaxCount.HasValue)
-            element.AppendChild(SettingsHelper.ToElement(document, MaxCountSettingName, MaxCount.Value.ToString()));
-        if (SelectedCount.HasValue)
-            element.AppendChild(SettingsHelper.ToElement(document, SelectedCountSettingName, SelectedCount.Value.ToString()));
 
         return element;
     }
@@ -134,20 +130,18 @@ public class Tr4LevelTransitionSetting(
         if (!Enum.IsDefined(typeof(TransitionDirection), selectedDirectionality))
             throw new InvalidDataException($"Invalid value '{selectedDirectionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        bool active = bool.Parse(node["Active"].InnerText);
+        var active = (ActiveSetting)int.Parse(node[ActiveSettingName].InnerText);
+        if (!Enum.IsDefined(typeof(ActiveSetting), active))
+            throw new InvalidDataException($"Invalid value '{active}' for enum type '{nameof(ActiveSetting)}'.");
 
         int? unusedLevelNumber = ParseNullableInt(UnusedLevelNumberSettingName);
         int? lowerRoomNumber = ParseNullableInt(LowerRoomNumberSettingName);
         int? higherRoomNumber = ParseNullableInt(HigherRoomNumberSettingName);
 
-        int? maxCount = ParseNullableInt(MaxCountSettingName);
-        int? selectedCount = ParseNullableInt(SelectedCountSettingName);
-
-        var setting = new Tr4LevelTransitionSetting(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber, maxCount: maxCount)
+        var setting = new Tr4LevelTransitionSetting(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
-            SelectedCount = selectedCount,
-            SelectedDirectionality = selectedDirectionality,
             Active = active,
+            SelectedDirectionality = selectedDirectionality,
         };
 
         return setting;

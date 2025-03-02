@@ -6,5 +6,6 @@ public readonly record struct LevelStats()
 {
     public ulong LevelId { get; init; } = 0;
     public uint Igt { get; init; } = 0;
-    public uint MaxCompletions { get; init; } = 1;
+    public bool Ignored { get; init; } = false;
+    public TransitionDirection Direction { get; init; } = TransitionDirection.OneWayFromLower;
 }

@@ -351,7 +351,7 @@ public sealed class ComponentSettings : UserControl
         // _tr4LevelTransitionSettingsPanel
         _tr4LevelTransitionSettingsPanel.Location = new Point(5, 35);
         _tr4LevelTransitionSettingsPanel.Size = new Size(466, 254);
-        _tr4LevelTransitionSettingsPanel.AutoScroll = false;
+        _tr4LevelTransitionSettingsPanel.AutoScroll = true;
         _tr4LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
         _tr4LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
         _tr4LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
@@ -359,6 +359,7 @@ public sealed class ComponentSettings : UserControl
         _tr4LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
         _tr4LevelTransitionSettingsPanel.Enabled = true;
         _tr4LevelTransitionSettingsPanel.Visible = true;
+        _tr4LevelTransitionSettingsPanel.TabStop = true;
 
         // _tr4SelectAllButton
         _tr4SelectAllButton.Location = new Point(5, 294);
@@ -378,15 +379,15 @@ public sealed class ComponentSettings : UserControl
 
         // _tr5LevelTransitionSettingsPanel
         _tr5LevelTransitionSettingsPanel.Location = new Point(5, 35);
-        _tr5LevelTransitionSettingsPanel.Size = new Size(466, 254);
-        _tr5LevelTransitionSettingsPanel.AutoScroll = false;
-        _tr5LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
-        _tr5LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
-        _tr5LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
+        _tr5LevelTransitionSettingsPanel.Size = new Size(466, 100);
+        _tr5LevelTransitionSettingsPanel.AutoScroll = true;
+        _tr5LevelTransitionSettingsPanel.VerticalScroll.Enabled = false;
+        _tr5LevelTransitionSettingsPanel.VerticalScroll.Visible = false;
         _tr5LevelTransitionSettingsPanel.HorizontalScroll.Enabled = false;
         _tr5LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
         _tr5LevelTransitionSettingsPanel.Enabled = false;
         _tr5LevelTransitionSettingsPanel.Visible = false;
+        _tr5LevelTransitionSettingsPanel.TabStop = false;
 
         // SplitSecurityBreachCheckbox
         SplitSecurityBreachCheckbox.AutoSize = true;
@@ -404,7 +405,7 @@ public sealed class ComponentSettings : UserControl
         // _tr6LevelTransitionSettingsPanel
         _tr6LevelTransitionSettingsPanel.Location = new Point(5, 35);
         _tr6LevelTransitionSettingsPanel.Size = new Size(466, 254);
-        _tr6LevelTransitionSettingsPanel.AutoScroll = false;
+        _tr6LevelTransitionSettingsPanel.AutoScroll = true;
         _tr6LevelTransitionSettingsPanel.AutoScrollMinSize = new Size(0, _levelTransitionSelect.Height);
         _tr6LevelTransitionSettingsPanel.VerticalScroll.Enabled = true;
         _tr6LevelTransitionSettingsPanel.VerticalScroll.Visible = true;
@@ -412,6 +413,7 @@ public sealed class ComponentSettings : UserControl
         _tr6LevelTransitionSettingsPanel.HorizontalScroll.Visible = false;
         _tr6LevelTransitionSettingsPanel.Enabled = false;
         _tr6LevelTransitionSettingsPanel.Visible = false;
+        _tr6LevelTransitionSettingsPanel.TabStop = false;
 
         // _tr6SelectAllButton
         _tr6SelectAllButton.Location = new Point(5, 294);
@@ -431,7 +433,7 @@ public sealed class ComponentSettings : UserControl
 
         #endregion
 
-        _toolTip.AutoPopDelay = 7500;
+        _toolTip.AutoPopDelay = 60000;
         _toolTip.InitialDelay = 500;
         _toolTip.ReshowDelay = 250;
         PopulateLevelControls();
@@ -543,6 +545,7 @@ public sealed class ComponentSettings : UserControl
         const int rowHeight = 22;
         _tr4LevelTransitionSettingsPanel.Controls.Clear();
 
+        var firstEntry = true;
         var yOffset = 0;
         var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);
         foreach (Tr4LevelTransitionSetting transition in referenceList)
@@ -551,6 +554,9 @@ public sealed class ComponentSettings : UserControl
             if (!string.IsNullOrEmpty(transition.Section))
             {
                 yOffset += 3; // Magic number that makes it look even on the top and bottom.
+
+                if (!firstEntry)
+                    yOffset += 3; // Magic number that makes it look even on the top and bottom.
 
                 var label = new Label
                 {
@@ -567,30 +573,63 @@ public sealed class ComponentSettings : UserControl
 
             // CheckBox
             int widthNeeded = TextRenderer.MeasureText(transition.DisplayName(), font).Width + 20;
-            var checkBox = new CheckBox
+            const int checkBoxPadding = 1;
+            CheckBox firstSplitCheckBox = null;
+            CheckBox secondSplitCheckBox;
+            if (transition.ComplexIgnore)
             {
-                Text = transition.DisplayName(),
-                Location = new Point(0, yOffset),
-                Size = new Size(widthNeeded, 20),
-                Padding = Padding with { Left = 0, Right = 0 },
-                Checked = transition.UnusedLevelNumber is 39 || transition.Active,
-                Enabled = transition.CanBeConfigured,
-            };
-            checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox)sender).Checked); };
+                firstSplitCheckBox = new CheckBox
+                {
+                    Location = new Point(0, yOffset),
+                    Size = new Size(20, 20),
+                    Padding = Padding with { Left = 0, Right = 0 },
+                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreSecond,
+                    Enabled = transition.CanBeConfigured,
+                };
+                _tr4LevelTransitionSettingsPanel.Controls.Add(firstSplitCheckBox);
+
+                secondSplitCheckBox = new CheckBox
+                {
+                    Text = transition.DisplayName(),
+                    Location = new Point(firstSplitCheckBox.Width + checkBoxPadding, yOffset),
+                    Size = new Size(widthNeeded, 20),
+                    Padding = Padding with { Left = 0, Right = 0 },
+                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreFirst,
+                    Enabled = transition.CanBeConfigured,
+                };
+            }
+            else
+            {
+                secondSplitCheckBox = new CheckBox
+                {
+                    Text = transition.DisplayName(),
+                    Location = new Point(0, yOffset),
+                    Size = new Size(widthNeeded, 20),
+                    Padding = Padding with { Left = 0, Right = 0 },
+                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active,
+                    Enabled = transition.CanBeConfigured,
+                };
+            }
+
+            _tr4LevelTransitionSettingsPanel.Controls.Add(secondSplitCheckBox);
 
             // ToolTip
             if (!string.IsNullOrEmpty(transition.ToolTip))
             {
-                checkBox.Text += " ℹ️";
-                checkBox.Width += 20;
-                _toolTip.SetToolTip(checkBox, transition.ToolTip);
+                if (firstSplitCheckBox is not null)
+                    _toolTip.SetToolTip(firstSplitCheckBox, transition.ToolTip);
+
+                secondSplitCheckBox.Text += " ℹ️";
+                secondSplitCheckBox.Width += 20;
+                _toolTip.SetToolTip(secondSplitCheckBox, transition.ToolTip);
             }
 
             // ComboBox
             if (transition.Directionality == TransitionDirection.TwoWay)
             {
                 const int maxWidth = 180;
-                int availableWidth = 448 - checkBox.Width;
+                int firstCheckWidthAndPadding = firstSplitCheckBox?.Width + checkBoxPadding ?? 0;
+                int availableWidth = 448 - secondSplitCheckBox.Width - firstCheckWidthAndPadding;
                 int width = Math.Min(maxWidth, availableWidth);
 
                 var directionComboBox = new ComboBox
@@ -609,50 +648,72 @@ public sealed class ComponentSettings : UserControl
                 directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
                 directionComboBox.SelectedIndexChanged += (_, _) => { transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex; };
 
-                checkBox.CheckedChanged += (sender, _) =>
+                EventHandler handler = (_, _) =>
                 {
-                    transition.UpdateActive(((CheckBox)sender).Checked);
-                    directionComboBox.Enabled = ((CheckBox)sender).Checked;
+                    ActiveSetting activeSetting;
+                    if (firstSplitCheckBox is null)
+                    {
+                        activeSetting = secondSplitCheckBox.Checked
+                            ? ActiveSetting.Active
+                            : ActiveSetting.IgnoreAll;
+                    }
+                    else
+                    {
+                        bool firstEnabled = firstSplitCheckBox is not null && firstSplitCheckBox.Checked;
+                        bool secondEnabled = secondSplitCheckBox.Checked;
+                        activeSetting = (firstEnabled, secondEnabled) switch
+                        {
+                            (true, true) => ActiveSetting.Active,
+                            (false, true) => ActiveSetting.IgnoreFirst,
+                            (true, false) => ActiveSetting.IgnoreSecond,
+                            (false, false) => ActiveSetting.IgnoreAll,
+                        };
+                    }
+
+                    transition.UpdateActive(activeSetting);
+                    directionComboBox.Enabled = activeSetting is not ActiveSetting.IgnoreAll;
                 };
+
+                if (firstSplitCheckBox is not null)
+                    firstSplitCheckBox.CheckedChanged += handler;
+                secondSplitCheckBox.CheckedChanged += handler;
 
                 _tr4LevelTransitionSettingsPanel.Controls.Add(directionComboBox);
             }
-            else if (transition.MaxCount is > 1)
-            {
-                const int maxWidth = 100;
-                int availableWidth = 448 - checkBox.Width;
-                int width = Math.Min(maxWidth, availableWidth);
-
-                var splitCountComboBox = new ComboBox
-                {
-                    Location = new Point(448 - width, yOffset - 2),
-                    Size = new Size(width, 20),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    Font = font,
-                    Padding = Padding with { Left = 0, Right = 0 },
-                };
-
-                for (var i = 1; i <= transition.MaxCount; i++)
-                    splitCountComboBox.Items.Add($"Split {i} {(i == 1 ? "time" : "times")}");
-
-                splitCountComboBox.SelectedIndex = transition.SelectedCount!.Value - 1;
-                splitCountComboBox.SelectedIndexChanged += (_, _) => { transition.SelectedCount = splitCountComboBox.SelectedIndex + 1; };
-
-                checkBox.CheckedChanged += (sender, _) =>
-                {
-                    transition.UpdateActive(((CheckBox)sender).Checked);
-                    splitCountComboBox.Enabled = ((CheckBox)sender).Checked;
-                };
-
-                _tr4LevelTransitionSettingsPanel.Controls.Add(splitCountComboBox);
-            }
             else
             {
-                checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
+                EventHandler handler = (_, _) =>
+                {
+                    ActiveSetting activeSetting;
+                    if (firstSplitCheckBox is null)
+                    {
+                        activeSetting = secondSplitCheckBox.Checked
+                            ? ActiveSetting.Active
+                            : ActiveSetting.IgnoreAll;
+                    }
+                    else
+                    {
+                        bool firstEnabled = firstSplitCheckBox is not null && firstSplitCheckBox.Checked;
+                        bool secondEnabled = secondSplitCheckBox.Checked;
+                        activeSetting = (firstEnabled, secondEnabled) switch
+                        {
+                            (true, true) => ActiveSetting.Active,
+                            (false, true) => ActiveSetting.IgnoreFirst,
+                            (true, false) => ActiveSetting.IgnoreSecond,
+                            (false, false) => ActiveSetting.IgnoreAll,
+                        };
+                    }
+
+                    transition.UpdateActive(activeSetting);
+                };
+
+                if (firstSplitCheckBox is not null)
+                    firstSplitCheckBox.CheckedChanged += handler;
+                secondSplitCheckBox.CheckedChanged += handler;
             }
 
             yOffset += rowHeight;
-            _tr4LevelTransitionSettingsPanel.Controls.Add(checkBox);
+            firstEntry = false;
         }
     }
 
@@ -661,6 +722,7 @@ public sealed class ComponentSettings : UserControl
         const int rowHeight = 22;
         _tr6LevelTransitionSettingsPanel.Controls.Clear();
 
+        bool firstEntry = true;
         var rowCount = 0;
         var yOffset = 0;
         var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);
@@ -675,7 +737,8 @@ public sealed class ComponentSettings : UserControl
                     yOffset += rowHeight;
                 }
 
-                yOffset += 3; // Magic number that makes it look even on the top and bottom.
+                if (!firstEntry)
+                    yOffset += 3; // Magic number that makes it look even on the top and bottom.
 
                 var label = new Label
                 {
@@ -719,6 +782,7 @@ public sealed class ComponentSettings : UserControl
 
             checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
 
+            firstEntry = false;
             rowCount += 1;
             _tr6LevelTransitionSettingsPanel.Controls.Add(checkBox);
         }
@@ -772,6 +836,7 @@ public sealed class ComponentSettings : UserControl
     private void ShowCorrectTab(Game game)
     {
         _levelTransitionActiveTabLabel.Text = $"Currently showing: {game.Description()}";
+        _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
 
         _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = game is Game.Tr4;
         _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = game is Game.Tr4;
@@ -818,6 +883,9 @@ public sealed class ComponentSettings : UserControl
 
     private void AdjustTransitionsGroupBoxState()
     {
+        // Reset scrolling.
+        _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
+
         // Enabled or disable.
         bool tr4Tr6Enable = RunType is RunType.FullGame;
         _tr4LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Enabled = tr4Tr6Enable;
@@ -854,15 +922,17 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.Kv5, Tr4Level.TempleOfKarnak, TransitionDirection.OneWayFromLower),              // 06  -> 07
 
         // Karnak
-        new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower, maxCount: 2,     // 07  -> 08
-            toolTip: "Glitchless runs probably want to split twice; Glitched runs may only visit the level once.",
+        new(Tr4Level.TempleOfKarnak, Tr4Level.GreatHypostyleHall, TransitionDirection.OneWayFromLower, complexIgnore: true, // 07  -> 08
+            toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
+                     "The left checkbox is for the first visit split; the right checkbox is for the second visit split.",
             section: "Karnak Temple Complex"),
-        new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower, maxCount: 2,         // 08  -> 09
-            toolTip: "Glitchless runs probably want to split twice; Glitched runs may only visit the level once."),
+        new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower, complexIgnore: true,     // 08  -> 09
+            toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
+                     "The left checkbox is for the first visit split; the right checkbox is for the second visit split."),
         new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                        // 09  -> 07
         new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
 
-        // Semerkhet1
+        // Semerkhet
         new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower,                // 11  -> 12
             section: "Semerkhet"),
         new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
@@ -880,7 +950,11 @@ public sealed class ComponentSettings : UserControl
             toolTip: "To/from the isolated Catacombs room with the pillar that must be pulled to progress Catacombs."),
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
             lowerRoomNumber: 154, lowerTriggerTimer: 0, higherRoomNumber: 6, higherTriggerTimer: 2, note: "Start",  // 15 <-> 18
-            toolTip: "To/from the starting Catacombs area with the door locked by the mechanism in the Setup room."),
+            complexIgnore: true,
+            toolTip: $"To/from the starting Catacombs area with the door locked by the mechanism in the Setup room.{Environment.NewLine}" +
+                     $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
+                     $"The left checkbox is for the first visit split; the right checkbox is for the second visit split.{Environment.NewLine}" +
+                     "If Two-Way is selected, the checkboxes apply to both directions. If one way is selected, only that direction will be split accordingly."),
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
             lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End",    // 15 <-> 18
             toolTip: "To/from the Catabombs exit which allows an alternate backtracking route to Coastal Ruins."),
@@ -895,7 +969,10 @@ public sealed class ComponentSettings : UserControl
             lowerRoomNumber: 104, lowerTriggerTimer: 0, note: "Underwater Current"),
         new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher, // 16  -> 15
             higherRoomNumber: 77, higherTriggerTimer: 3, note: "Chute After Surfacing"),
-        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay),     // 16 <-> 17
+        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay, complexIgnore: true, // 16 <-> 17
+            toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
+                     $"The left checkbox is for the first visit split; the right checkbox is for the second visit split.{Environment.NewLine}" +
+                     "If Two-Way is selected, the checkboxes apply to both directions. If one way is selected, only that direction will be split accordingly."),
         new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower), // 17  -> 22
 
         // Cairo

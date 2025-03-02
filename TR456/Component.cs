@@ -220,7 +220,6 @@ public class Component : AutoSplitComponent
             {
                 existing.UpdateActive(xml.Active);
                 existing.SelectedDirectionality = xml.SelectedDirectionality;
-                existing.SelectedCount = Math.Min(Math.Max(xml.SelectedCount ?? 0, 1), existing.MaxCount ?? 1);
             }, static t => t.Id
         );
     }

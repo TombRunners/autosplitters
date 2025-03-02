@@ -17,9 +17,6 @@ public record GameStats
     /// <param name="stats">Stats to add</param>
     public bool AddLevelStats(LevelStats stats)
     {
-        if (LevelCompletionCount(stats.LevelId) >= stats.MaxCompletions)
-            return false;
-
         _levelStatistics.Push(stats);
         IgtTicks += stats.Igt;
         return true;
@@ -33,6 +30,8 @@ public record GameStats
         return stats;
     }
 
+    public int Count => _levelStatistics.Count;
+
     /// <summary>Clears the backing stack of all <see cref="LevelStats" />.</summary>
     public void Clear()
     {
@@ -42,11 +41,22 @@ public record GameStats
 
     /// <summary>Determines if the stats for <paramref name="levelId" /> are already present.</summary>
     /// <param name="levelId">Level ID</param>
+    /// <param name="direction">Direction of level transition</param>
     /// <returns><see langword="true" /> if the level is present in the backing stack; <see langword="false" /> otherwise</returns>
-    public bool LevelCompleted(ulong levelId) => LevelStats.Any(stats => stats.LevelId == levelId);
+    public bool LevelWasSplit(ulong levelId, TransitionDirection direction)
+        => LevelStats.Any(stats => stats.LevelId == levelId && stats.Direction == direction && !stats.Ignored);
 
     /// <summary>Determines if the stats for <paramref name="levelId" /> are already present.</summary>
     /// <param name="levelId">Level ID</param>
+    /// <param name="direction">Direction of level transition</param>
     /// <returns>The number of times the level was completed</returns>
-    public uint LevelCompletionCount(ulong levelId) => (uint)LevelStats.Count(stats => stats.LevelId == levelId);
+    public int LevelSplitCount(ulong levelId, TransitionDirection direction)
+        => LevelStats.Count(stats => stats.LevelId == levelId && stats.Direction == direction && !stats.Ignored);
+
+    /// <summary>Determines if the stats for <paramref name="levelId" /> are already present.</summary>
+    /// <param name="levelId">Level ID</param>
+    /// <param name="direction">Direction of level transition</param>
+    /// <returns><see langword="true" /> if the level is present in the backing stack; <see langword="false" /> otherwise</returns>
+    public bool LevelWasIgnored(ulong levelId, TransitionDirection direction)
+        => LevelStats.Any(stats => stats.LevelId == levelId && stats.Direction == direction && stats.Ignored);
 }
