@@ -843,20 +843,6 @@ public sealed class ComponentSettings : UserControl
     private void _tr5LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr5);
     private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr6);
 
-    private void ShowCorrectTab(Game game)
-    {
-        _levelTransitionActiveTabLabel.Text = $"Currently showing: {game.Description()}";
-        ResetScrolling();
-
-        _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = game is Game.Tr4;
-        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = game is Game.Tr4;
-
-        _tr5LevelTransitionSettingsPanel.Enabled = _tr5LevelTransitionSettingsPanel.Visible = game is Game.Tr5;
-
-        _tr6SelectAllButton.Enabled = _tr6SelectAllButton.Visible = _tr6UnselectAllButton.Enabled = _tr6UnselectAllButton.Visible = game is Game.Tr6;
-        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = game is Game.Tr6;
-    }
-
     private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
     private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
 
@@ -912,6 +898,20 @@ public sealed class ComponentSettings : UserControl
 
         _levelTransitionActiveTabLabel.Enabled = RunType is not RunType.Deathrun;
         _levelTransitionSelect.Text = text;
+    }
+
+    private void ShowCorrectTab(Game game)
+    {
+        _levelTransitionActiveTabLabel.Text = $"Currently showing: {game.Description()}";
+        ResetScrolling();
+
+        _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = game is Game.Tr4;
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = game is Game.Tr4;
+
+        _tr5LevelTransitionSettingsPanel.Enabled = _tr5LevelTransitionSettingsPanel.Visible = game is Game.Tr5;
+
+        _tr6SelectAllButton.Enabled = _tr6SelectAllButton.Visible = _tr6UnselectAllButton.Enabled = _tr6UnselectAllButton.Visible = game is Game.Tr6;
+        _tr6LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Visible = game is Game.Tr6;
     }
 
     private void ResetScrolling()
