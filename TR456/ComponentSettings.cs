@@ -961,7 +961,7 @@ public sealed class ComponentSettings : UserControl
         new("The Hall of Seasons", "PARIS5_1.GMX", "PARIS5.GMX"),
         new("Tomb of Ancients (flooded)", "PARIS5.GMX", "PARIS5A.GMX",
             "Splits when you return to The Archaeological Dig after completing The Hall of Seasons."),
-        new("The Archaeological Dig, Part 2", "PARIS5A.GMX", "PARIS5.GMX",
+        new("The Archaeological Dig, Part 2", "PARIS5A.GMX", "PARIS4A.GMX",
             "Splits when you enter Galleries Under Siege."),
         new("Galleries Under Siege", "CUTSCENE\\CS_6_21B.GMX", "PARIS6.GMX"),
         new("Von Croy's Apartment", "CUTSCENE\\CS_7_19.GMX", "PRAGUE1.GMX"),
