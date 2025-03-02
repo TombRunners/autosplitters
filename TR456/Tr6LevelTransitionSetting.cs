@@ -93,7 +93,7 @@ public class Tr6LevelTransitionSetting(string name, string oldLevel, string next
                 oldLevelNumber = (uint)oldLevel;
 
             uint nextLevelNumber = 111;
-            if (LevelNameMap.TryGetValue(OldLevel, out Tr6Level nextLevel))
+            if (LevelNameMap.TryGetValue(NextLevel, out Tr6Level nextLevel))
                 nextLevelNumber = (uint)nextLevel;
 
             return ulong.Parse($"{oldLevelNumber:D3}{nextLevelNumber:D3}");
