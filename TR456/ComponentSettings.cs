@@ -70,8 +70,17 @@ public sealed class ComponentSettings : UserControl
         PopulateLevelControls();
         EnableControlsPerState();
 
+        if (GameData.GameProcess is not null && GameData.GameIsInitialized)
+            ShowCorrectTab(GameData.CurrentActiveBaseGame);
+
         ResumeLayout(false);
         PerformLayout();
+    }
+
+    protected override void OnHandleDestroyed(EventArgs e)
+    {
+        ResetScrolling();
+        base.OnHandleDestroyed(e);
     }
 
     public ComponentSettings()
@@ -538,6 +547,7 @@ public sealed class ComponentSettings : UserControl
         _toolTip.RemoveAll();
         PopulateTr4LevelControls(Tr4LevelTransitions);
         PopulateTr6LevelControls(Tr6LevelTransitions);
+        ResetScrolling();
     }
 
     private void PopulateTr4LevelControls(List<Tr4LevelTransitionSetting> referenceList)
@@ -836,7 +846,7 @@ public sealed class ComponentSettings : UserControl
     private void ShowCorrectTab(Game game)
     {
         _levelTransitionActiveTabLabel.Text = $"Currently showing: {game.Description()}";
-        _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
+        ResetScrolling();
 
         _tr4SelectAllButton.Enabled = _tr4SelectAllButton.Visible = _tr4UnselectAllButton.Enabled = _tr4UnselectAllButton.Visible = game is Game.Tr4;
         _tr4LevelTransitionSettingsPanel.Enabled = _tr4LevelTransitionSettingsPanel.Visible = game is Game.Tr4;
@@ -883,8 +893,7 @@ public sealed class ComponentSettings : UserControl
 
     private void AdjustTransitionsGroupBoxState()
     {
-        // Reset scrolling.
-        _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
+        ResetScrolling();
 
         // Enabled or disable.
         bool tr4Tr6Enable = RunType is RunType.FullGame;
@@ -904,6 +913,9 @@ public sealed class ComponentSettings : UserControl
         _levelTransitionActiveTabLabel.Enabled = RunType is not RunType.Deathrun;
         _levelTransitionSelect.Text = text;
     }
+
+    private void ResetScrolling()
+        => _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
 
     // ReSharper disable ArgumentsStyleLiteral
     // ReSharper disable StringLiteralTypo
