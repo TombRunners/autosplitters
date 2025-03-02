@@ -9,7 +9,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>3</ID>
-          <Description>"EGS/Steam"</Description>
+          <Description>"GOGv1.0.0/EGS/Steam"</Description>
           <Options moHideChildren="1" moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -77,7 +77,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>4</ID>
-          <Description>"GOG"</Description>
+          <Description>"GOGv1.0"</Description>
           <Options moHideChildren="1" moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -139,7 +139,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>28</ID>
-          <Description>"EGS/Steam"</Description>
+          <Description>"GOGv1.0.0/EGS/Steam"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -217,7 +217,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>31</ID>
-          <Description>"GOG"</Description>
+          <Description>"GOGv1.0"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -307,7 +307,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>29</ID>
-          <Description>"EGS/Steam"</Description>
+          <Description>"GOGv1.0.0/EGS/Steam"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -394,7 +394,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>35</ID>
-          <Description>"GOG"</Description>
+          <Description>"GOGv1.0"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -489,7 +489,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>30</ID>
-          <Description>"EGS/Steam"</Description>
+          <Description>"GOGv1.0.0/EGS/Steam"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -683,7 +683,7 @@
         </CheatEntry>
         <CheatEntry>
           <ID>80</ID>
-          <Description>"GOG"</Description>
+          <Description>"GOGv1.0"</Description>
           <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
