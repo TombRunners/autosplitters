@@ -605,10 +605,10 @@ internal class GameMemory
     /// <param name="version">Game version</param>
     private void AddCommonDllWatchers(GameVersion version)
     {
-        foreach (var game in BaseGames)
+        foreach (Game game in BaseGames)
         {
             string moduleName = GameModules[game];
-            var addresses = GameVersionAddresses[version][game];
+            GameAddresses addresses = GameVersionAddresses[version][game];
 
             int bonusFlagOffset = addresses.BonusFlag;
             Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(moduleName, bonusFlagOffset)) { Name = $"{game}BonusFlag" });

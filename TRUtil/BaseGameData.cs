@@ -104,7 +104,7 @@ public abstract class BaseGameData
     /// </returns>
     private bool FindSupportedGame()
     {
-        uint detectedVersion = _versionDetector.DetectVersion(out var gameProcess, out string hash);
+        uint detectedVersion = _versionDetector.DetectVersion(out Process gameProcess, out string hash);
         if (GameVersion != detectedVersion)
         {
             GameVersion = detectedVersion;

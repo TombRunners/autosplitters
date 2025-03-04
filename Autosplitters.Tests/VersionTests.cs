@@ -12,6 +12,7 @@ public class VersionTests
 {
     [Theory]
     [InlineData("TR123", "TR123")]
+    [InlineData("TR456", "TR456")]
     [InlineData("TombRaider1996", "TR1996")]
     [InlineData("TombRaiderII", "TR2")]
     [InlineData("TombRaiderIII", "TR3")]
@@ -19,27 +20,27 @@ public class VersionTests
     [InlineData("TombRaiderV", "TR5")]
     public void Version_Strings_Should_Be_Equal(string project, string dll)
     {
-        var currentDirectory = Directory.GetCurrentDirectory(); // autosplitters\Autosplitters.Tests\bin\[Debug/Release]
+        string currentDirectory = Directory.GetCurrentDirectory(); // autosplitters\Autosplitters.Tests\bin\[Debug/Release]
 
-        var assemblyInfoPath = Path.Combine(currentDirectory, $"../../../{project}/Properties/AssemblyInfo.cs");
-        var assemblyInfoContents = File.ReadAllText(assemblyInfoPath);
-        var assemblyInfoVersionString = Regex.Matches(assemblyInfoContents, """\[assembly: AssemblyVersion\("(?<VersionString>.+)"\)]""")
+        string assemblyInfoPath = Path.Combine(currentDirectory, $"../../../{project}/Properties/AssemblyInfo.cs");
+        string assemblyInfoContents = File.ReadAllText(assemblyInfoPath);
+        string assemblyInfoVersionString = Regex.Matches(assemblyInfoContents, """\[assembly: AssemblyVersion\("(?<VersionString>.+)"\)]""")
                                              .Cast<Match>()
                                              .Last()
                                              .Groups["VersionString"]
                                              .Value;
-        var assemblyInfoVersion = ParseVersion(assemblyInfoVersionString);
+        Version assemblyInfoVersion = ParseVersion(assemblyInfoVersionString);
 
-        var updateXmlPath = Path.Combine(currentDirectory, $"../../../{project}/Components/update.xml");
-        var updateXmlContents = File.ReadAllText(updateXmlPath);
-        var updateXmlVersionString = Regex.Match(updateXmlContents, """<update version="(?<VersionString>.+)">""")
+        string updateXmlPath = Path.Combine(currentDirectory, $"../../../{project}/Components/update.xml");
+        string updateXmlContents = File.ReadAllText(updateXmlPath);
+        string updateXmlVersionString = Regex.Match(updateXmlContents, """<update version="(?<VersionString>.+)">""")
                                           .Groups["VersionString"]
                                           .Value;
-        var updateXmlVersion = ParseVersion(updateXmlVersionString);
+        Version updateXmlVersion = ParseVersion(updateXmlVersionString);
 
-        var dllPath = Path.Combine(currentDirectory, $"../../../{project}/Components/{dll}.dll");
-        var dllVersionInfo = FileVersionInfo.GetVersionInfo(dllPath).FileVersion;
-        var dllVersion = ParseVersion(dllVersionInfo);
+        string dllPath = Path.Combine(currentDirectory, $"../../../{project}/Components/{dll}.dll");
+        string dllVersionInfo = FileVersionInfo.GetVersionInfo(dllPath).FileVersion;
+        Version dllVersion = ParseVersion(dllVersionInfo);
 
         assemblyInfoVersion.Should().Be(dllVersion, $"Assembly Info version {assemblyInfoVersionString} must match DLL version {dllVersionInfo}");
         updateXmlVersion.Should().Be(dllVersion, $"Update XML version {updateXmlVersionString} must match DLL version {dllVersionInfo}");

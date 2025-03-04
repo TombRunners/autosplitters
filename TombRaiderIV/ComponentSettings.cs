@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TRUtil;
 
@@ -444,7 +443,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void SetAllCheckBoxes(bool check)
     {
-        foreach (var checkBox in _levelTransitionSettingsPanel.Controls.OfType<CheckBox>().Where(static cb => cb.Enabled))
+        foreach (CheckBox checkBox in _levelTransitionSettingsPanel.Controls.OfType<CheckBox>().Where(static cb => cb.Enabled))
             checkBox.Checked = check; // This triggers checkBox.CheckedChanged.
     }
 

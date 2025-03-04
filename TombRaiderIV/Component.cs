@@ -26,7 +26,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
     /// </remarks>
     public override XmlNode GetSettings(XmlDocument document)
     {
-        var settingsNode = document.CreateElement("Settings");
+        XmlElement settingsNode = document.CreateElement("Settings");
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.FullGame), Splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.Deathrun), Splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.LegacyGlitchless), Splitter.Settings.LegacyGlitchless));
@@ -43,7 +43,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
         where TLevel : Enum
     {
-        var transitionsNode = document.CreateElement(elementName);
+        XmlElement transitionsNode = document.CreateElement(elementName);
         foreach (var transition in transitions)
             transitionsNode.AppendChild(transition.ToXmlElement(document));
 
@@ -79,7 +79,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
     private static void ProcessTransitionSettings<TLevel>(XmlNode settings, string transitionsNodeName, List<TransitionSetting<TLevel>> settingsList)
         where TLevel : Enum
     {
-        var transitionsNode = settings[transitionsNodeName];
+        XmlElement transitionsNode = settings[transitionsNodeName];
         if (transitionsNode == null)
             return;
 

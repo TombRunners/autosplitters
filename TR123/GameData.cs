@@ -27,7 +27,7 @@ public static class GameData
         get
         {
             uint currentLevel = CurrentLevel();
-            var baseGame = CurrentActiveBaseGame;
+            Game baseGame = CurrentActiveBaseGame;
             // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (baseGame)
             {
@@ -197,7 +197,7 @@ public static class GameData
     /// </returns>
     private static bool FindSupportedGame()
     {
-        var detectedVersion = VersionDetector.DetectVersion(out var gameProcess, out string hash);
+        GameVersion detectedVersion = VersionDetector.DetectVersion(out Process gameProcess, out string hash);
         if (GameVersion != detectedVersion)
         {
             GameVersion = detectedVersion;
@@ -230,16 +230,16 @@ public static class GameData
     /// <returns>The sum of completed levels' times</returns>
     public static ulong SumCompletedLevelTimesInMemory(IEnumerable<uint> completedLevels, uint currentLevel)
     {
-        var activeBaseGame = CurrentActiveBaseGame;
+        Game activeBaseGame = CurrentActiveBaseGame;
         string activeModuleName = GameMemory.GameModules[activeBaseGame];
-        var activeModule = GameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
+        ProcessModuleWow64Safe activeModule = GameProcess.ModulesWow64Safe().FirstOrDefault(module => module.ModuleName == activeModuleName);
         if (activeModule is null)
             return 0;
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
         int firstLevelTimeAddress = GameMemory.GameVersionAddresses[GameVersion][activeBaseGame].FirstLevelTime;
-        var moduleBaseAddress = activeModule.BaseAddress;
+        IntPtr moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * levelSaveStructSize)

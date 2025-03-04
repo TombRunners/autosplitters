@@ -72,7 +72,7 @@ public class TransitionSetting<TLevel>(
 
     public XmlNode ToXmlElement(XmlDocument document)
     {
-        var element = document.CreateElement("TransitionSetting");
+        XmlElement element = document.CreateElement("TransitionSetting");
         element.AppendChild(SettingsHelper.ToElement(document, "Lower", Convert.ToInt32(LowerLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(HigherLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int)Directionality).ToString()));
@@ -128,7 +128,7 @@ public class TransitionSetting<TLevel>(
 
         int? ParseNullableInt(string elementName)
         {
-            var element = node[elementName];
+            XmlElement element = node[elementName];
             return element != null ? int.Parse(element.InnerText) : null;
         }
     }

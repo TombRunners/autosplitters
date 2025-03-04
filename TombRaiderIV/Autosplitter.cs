@@ -68,9 +68,9 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
         byte triggerTimer = Data.GfRequiredStartPosition.Current;
         bool laraIsInLowerLevel = nextLevel >= currentLevel;
-        var lowerLevel = laraIsInLowerLevel ? (Tr4Level)currentLevel : (Tr4Level)nextLevel;
-        var higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)currentLevel;
-        var direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
+        Tr4Level lowerLevel = laraIsInLowerLevel ? (Tr4Level)currentLevel : (Tr4Level)nextLevel;
+        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)currentLevel;
+        TransitionDirection direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
 
         var activeMatches = Settings
             .Tr4LevelTransitions
@@ -249,7 +249,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
                 return false;
 
             // The level must finish loading before its ITEM_INFO array can be checked reliably.
-            var platform = Data.GetItemInfoAtIndex(79);
+            ItemInfo platform = Data.GetItemInfoAtIndex(79);
             bool platformTriggerUndone = (platform.flags & 0x3E00) == 0;
             return platformTriggerUndone;
         }

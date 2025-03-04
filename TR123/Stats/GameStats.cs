@@ -3,17 +3,15 @@ using System.Linq;
 
 namespace TR123;
 
-/// <summary>Stats for a game with <paramref name="levelCount" /> levels.</summary>
-/// <param name="levelCount">Number of levels in the game</param>
-public readonly struct GameStats(int levelCount)
+/// <inheritdoc />
+/// <summary>Stats for a game with <paramref name="LevelCount" /> levels.</summary>
+/// <param name="LevelCount">Number of levels in the game</param>
+public readonly record struct GameStats(int LevelCount)
 {
-    private readonly Stack<LevelStats> _levelStatistics = new(levelCount);
-
-    /// <summary>The number of levels in the game.</summary>
-    private readonly int _levelCount = levelCount;
+    private readonly Stack<LevelStats> _levelStatistics = new(LevelCount);
 
     /// <summary><see langword="true" /> if all levels have been added into the backing stack; <see langword="false" /> otherwise.</summary>
-    public bool GameComplete => _levelStatistics.Count == _levelCount;
+    public bool GameComplete => _levelStatistics.Count == LevelCount;
 
     /// <summary>Accessor for the backing stack.</summary>
     public IEnumerable<LevelStats> LevelStats => _levelStatistics;

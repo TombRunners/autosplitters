@@ -73,7 +73,7 @@ public class Component : AutoSplitComponent
     /// </remarks>
     public override XmlNode GetSettings(XmlDocument document)
     {
-        var settingsNode = document.CreateElement("Settings");
+        XmlElement settingsNode = document.CreateElement("Settings");
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
             _splitter.Settings.EnableAutoReset));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
@@ -124,7 +124,7 @@ public class Component : AutoSplitComponent
     {
         bool valuesNotInitialized = _aslComponentPresent is null;
 
-        var currentTimingMethod = state.CurrentTimingMethod;
+        TimingMethod currentTimingMethod = state.CurrentTimingMethod;
         var layoutAndTimingMethods = state
             .Layout
             .LayoutComponents
@@ -163,7 +163,7 @@ public class Component : AutoSplitComponent
     {
         bool lsTimingMethodIsGameTime = _lsCurrentTimingMethod == TimingMethod.GameTime;
         var timerWithGameTimeInLayout = false;
-        foreach (var timerComponent in state.Layout.LayoutComponents.Where(static comp => comp.Component is Timer or DetailedTimer))
+        foreach (ILayoutComponent timerComponent in state.Layout.LayoutComponents.Where(static comp => comp.Component is Timer or DetailedTimer))
         {
             timerWithGameTimeInLayout = timerComponent.Component switch
             {

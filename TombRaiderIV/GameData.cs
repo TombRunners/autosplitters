@@ -128,7 +128,7 @@ internal class GameData : LaterClassicGameData
     internal ItemInfo GetItemInfoAtIndex(uint itemNumber)
     {
         uint offset = SizeOfItemInfo * itemNumber;
-        var firstItemInfoAddress = GameProcess.ReadPointer(FirstItemInfoPointer);
+        IntPtr firstItemInfoAddress = GameProcess.ReadPointer(FirstItemInfoPointer);
         var finalAddress = new IntPtr(firstItemInfoAddress.ToInt64() + offset);
         return GameProcess.ReadValue<ItemInfo>(finalAddress);
     }

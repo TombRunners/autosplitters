@@ -23,7 +23,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
     /// </remarks>
     public override XmlNode GetSettings(XmlDocument document)
     {
-        var settingsNode = document.CreateElement("Settings");
+        XmlElement settingsNode = document.CreateElement("Settings");
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.FullGame), Splitter.Settings.FullGame));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.Deathrun), Splitter.Settings.Deathrun));
         _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(Splitter.Settings.SplitSecurityBreach), Splitter.Settings.SplitSecurityBreach));
