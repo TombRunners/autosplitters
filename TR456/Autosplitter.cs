@@ -33,7 +33,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // This is the load removal logic for RTA without Loads.
-        return GameData.GameIsInitialized && GameData.IsLoading.Current;
+        return GameData.GameIsInitialized && GameData.IsLoading.Current && !GameData.Igt.Changed;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
