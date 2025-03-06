@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.0.1">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
+    </files>
+    <changelog>
+      <change>Hotfix for TR5R LRT breaking during Deepsea Dive and Security Breach.</change>
+    </changelog>
+  </update>
   <update version="2025.1.0.0">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
