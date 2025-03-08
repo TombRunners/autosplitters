@@ -135,7 +135,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
                 return false;
 
             uint tteNextLevel = GameData.NextLevel.Current;
-            if (tteNextLevel == 0 || GameData.Level.Current is 0 or (uint)Tr4Level.Office)
+            if (tteNextLevel == 0 || GameData.Level.Old is 0 or (uint)Tr4Level.Office)
                 return false;
 
             _latestSplitId = oldLevelId;
