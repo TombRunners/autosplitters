@@ -1,7 +1,15 @@
 <updates>
+  <update version="2025.1.0.2">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Hotfix for TTE inconsistent splits; Office cutscene should now always be skipped and playable level should always split at the end.</change>
+    </changelog>
+  </update>
   <update version="2025.1.0.1">
     <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
     </files>
     <changelog>
       <change>Hotfix for TR5R LRT breaking during Deepsea Dive and Security Breach.</change>
