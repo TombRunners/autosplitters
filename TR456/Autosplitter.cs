@@ -126,6 +126,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldSplitTr4()
     {
+        const uint hardcodedCreditsTrigger = 39;
+
         if (GameData.CurrentActiveGame == Game.Tr4TheTimesExclusive)
         {
             // There are only 2 non-menu levels; 39 is the cutscene and 40 is the playable level.
@@ -135,15 +137,13 @@ public class Autosplitter : IAutoSplitter, IDisposable
                 return false;
 
             uint tteNextLevel = GameData.NextLevel.Current;
-            if (tteNextLevel == 0 || GameData.Level.Old is 0 or (uint)Tr4Level.Office)
+            if (tteNextLevel != hardcodedCreditsTrigger || GameData.Level.Old is 0 or (uint)Tr4Level.Office)
                 return false;
 
             _latestSplitId = oldLevelId;
             _latestSplitDirection = TransitionDirection.OneWayFromLower;
             return true;
         }
-
-        const uint hardcodedCreditsTrigger = 39;
 
         uint nextLevel = GameData.NextLevel.Current;
         uint currentLevel = GameData.Level.Current;
@@ -152,11 +152,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         // Handle IL / Area% runs, where all level transitions are desirable splits.
         if (Settings.IlOrArea)
-            return true;
+            return GameData.Level.Old is 0 or (uint)Tr4Level.Office; // Except the opening cutscene of TTE.
 
         // Handle when credits are triggered.
         if (nextLevel == hardcodedCreditsTrigger && currentLevel != 0)
+        {
+            _latestSplitId = GameData.OldLevelId;
+            _latestSplitDirection = TransitionDirection.OneWayFromLower;
             return true;
+        }
 
         byte triggerTimer = GameData.GfRequiredStartPosition.Current;
         bool laraIsInLowerLevel = nextLevel >= currentLevel;
@@ -362,23 +366,23 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return GameData.CurrentActiveBaseGame == Game.Tr6 ? ShouldResetTr6() : ShouldResetTr4Tr5();
     }
 
-    private static bool ShouldResetTr4Tr5()
+    private bool ShouldResetTr4Tr5()
     {
         bool enteringCreditsOrMainMenu = GameData.GfInitializeGame.Current && !GameData.GfInitializeGame.Old;
         if (!enteringCreditsOrMainMenu)
             return false;
 
         bool comingFromEndOfGame = GameData.NextLevel.Current != 0;
-        return !comingFromEndOfGame;
+        return Settings.EnableAutoReset && !comingFromEndOfGame;
     }
 
-    private static bool ShouldResetTr6()
+    private bool ShouldResetTr6()
     {
         if (!GameData.Tr6LevelName.Changed)
             return false;
 
         string nextLevel = GameData.Tr6LevelName.Current.Trim();
-        return nextLevel.Equals("FRONTEND.GMX");
+        return Settings.EnableAutoReset && nextLevel.Equals("FRONTEND.GMX");
     }
 
     #endregion
