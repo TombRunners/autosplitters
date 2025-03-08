@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.0.3">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed TR4 and TTE double-split prevention for last level. Fixed edge case undesired Reset when setting was not enabled.</change>
+    </changelog>
+  </update>
   <update version="2025.1.0.2">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
