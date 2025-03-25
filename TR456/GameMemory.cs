@@ -83,7 +83,7 @@ internal class GameMemory
     internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherGFrameIndexName];
 
     /// <summary>Found to be more reliable than the corresponding IsLoading in the tomb6.dll for TR6R.</summary>
-    private MemoryWatcher<bool> IsLoadingExe => (MemoryWatcher<bool>)_watchersExe?[Constants.WatcherIsLoadingName];
+    internal MemoryWatcher<bool> IsLoading => (MemoryWatcher<bool>)_watchersExe?[Constants.WatcherIsLoadingName];
 
     /// <summary>Gives the value of the active FMV, especially reliable for TR6R.</summary>
     internal StringWatcher Fmv => (StringWatcher)_watchersExe?[Constants.WatcherFmvName];
@@ -96,16 +96,16 @@ internal class GameMemory
     private static readonly ImmutableDictionary<Game[], AddressSignatureInfo> WatcherDllSignatureInfos =
         new Dictionary<Game[], AddressSignatureInfo>
         {
-            // IsLoading
+            // LoadFade
             {
                 [Game.Tr4, Game.Tr5],
                 new AddressSignatureInfo
                 {
-                    Name = Constants.WatcherIsLoadingName,
-                    MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherIsLoadingName },
-                    Signature = [0x48, 0xB8, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00],
-                    OffsetToWriteInstruction = 0xD,
-                    WriteInstructionLength = 7,
+                    Name = Constants.WatcherLoadFadeName,
+                    MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherLoadFadeName },
+                    Signature = [0x3B, 0xD5, 0x0F, 0x4F, 0xD5],
+                    OffsetToWriteInstruction = 5,
+                    WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
             },
@@ -438,10 +438,7 @@ internal class GameMemory
         return (MemoryWatcher<T>)list?[name];
     }
 
-    internal MemoryWatcher<bool> IsLoading(Game game)
-        => game is Game.Tr6 or Game.Tr6NgPlus
-            ? IsLoadingExe
-            : GetMemoryWatcherForGame<bool>(Constants.WatcherIsLoadingName, game);
+    internal MemoryWatcher<uint> LoadFade(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherLoadFadeName, game);
 
     internal MemoryWatcher<uint> Igt(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherIgtName, game);
 

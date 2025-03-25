@@ -158,6 +158,13 @@
               <Address>tomb4.dll+623C20</Address>
             </CheatEntry>
             <CheatEntry>
+              <ID>113</ID>
+              <Description>"LoadFade"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+54AC60</Address>
+            </CheatEntry>
+            <CheatEntry>
               <ID>7</ID>
               <Description>"Current Level"</Description>
               <ShowAsSigned>1</ShowAsSigned>
@@ -234,6 +241,13 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>tomb4.dll+6226C0</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>114</ID>
+              <Description>"LoadFade"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll+549700</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>33</ID>
@@ -317,6 +331,12 @@
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>tomb5.dll+63C218</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>112</ID>
+              <Description>"LoadFade"</Description>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+547078</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>20</ID>
@@ -411,6 +431,13 @@
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>tomb5.dll+5334D8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>115</ID>
+              <Description>"LoadFade"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll+546F78</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>37</ID>

@@ -12,6 +12,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private bool _tr6NewGameStartedFromMenu;
     private long _ticksAtStartOfRun;
     private ulong _latestSplitId;
+    private bool _loadingScreenFadedIn;
     private TransitionDirection _latestSplitDirection;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
@@ -33,7 +34,31 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // This is the load removal logic for RTA without Loads.
-        return GameData.GameIsInitialized && GameData.IsLoading.Current && !GameData.Igt.Changed;
+        if (!GameData.GameIsInitialized)
+            return false;
+
+        if (GameData.CurrentActiveBaseGame is Game.Tr6)
+            return GameData.IsLoading.Current;
+
+        // RTA w/o Loads should tick whenever a loading screen is not active.
+        var loadFadeWatcher = GameData.LoadFade;
+        if (loadFadeWatcher.Current <= 0)
+        {
+            _loadingScreenFadedIn = false;
+            return false;
+        }
+
+        // A loading screen is active; check if loadFade is decreasing.
+        const int loadFadeFullAmount = 255;
+        if (!_loadingScreenFadedIn)
+        {
+            _loadingScreenFadedIn = loadFadeWatcher.Current == loadFadeFullAmount;
+            return true;
+        }
+
+        // Decreasing ⇒ loading screen is fading out, and the level has started.
+        bool fadeDecreasing = loadFadeWatcher.Current < loadFadeFullAmount;
+        return !fadeDecreasing;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
@@ -99,9 +124,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return laraJustDied;
     }
 
-    private static bool PickupShouldSplit(PickupSplitSetting setting)
+    private bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        if (GameData.IsLoading.Current || !GameData.Igt.Changed)
+        bool loading = GameData.CurrentActiveBaseGame is Game.Tr6
+            ? GameData.IsLoading.Current
+            : _loadingScreenFadedIn;
+        if (loading || !GameData.Igt.Changed)
             return false;
 
         return setting switch

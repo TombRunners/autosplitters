@@ -7,15 +7,14 @@ public static class Constants
     public const string DllTomb5 = "tomb5.dll";
     public const string DllTomb6 = "tomb6.dll";
 
-    // Shared MemoryWatcher names
-    public const string WatcherIsLoadingName = "IsLoading";
-
     // EXE MemoryWatcher names
+    public const string WatcherIsLoadingName = "IsLoading";
     public const string WatcherActiveGameName = "ActiveGame";
     public const string WatcherGFrameIndexName = "GFrameIndex";
     public const string WatcherFmvName = "FMV";
 
     // DLL MemoryWatcher names
+    public const string WatcherLoadFadeName = "LoadFade";
     public const string WatcherIgtName = "IGT";
     public const string WatcherLevelIgtName = "LevelIGT";
     public const string WatcherBonusFlagName = "BonusFlag";

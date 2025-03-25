@@ -61,7 +61,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
         }
 
-        // Decreasing => loading screen is fading out, and the level has started.
+        // Decreasing ⇒ loading screen is fading out, and the level has started.
         bool fadeDecreasing = loadFade.Current < loadFadeFullAmount;
         return !fadeDecreasing;
     }
