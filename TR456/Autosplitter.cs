@@ -12,7 +12,6 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private bool _tr6NewGameStartedFromMenu;
     private long _ticksAtStartOfRun;
     private ulong _latestSplitId;
-    private bool _loadingScreenFadedIn;
     private TransitionDirection _latestSplitDirection;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
