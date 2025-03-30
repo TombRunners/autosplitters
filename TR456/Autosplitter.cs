@@ -41,24 +41,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return GameData.IsLoading.Current;
 
         // RTA w/o Loads should tick whenever a loading screen is not active.
-        var loadFadeWatcher = GameData.LoadFade;
-        if (loadFadeWatcher.Current <= 0)
-        {
-            _loadingScreenFadedIn = false;
-            return false;
-        }
-
-        // A loading screen is active; check if loadFade is decreasing.
         const int loadFadeFullAmount = 255;
-        if (!_loadingScreenFadedIn)
-        {
-            _loadingScreenFadedIn = loadFadeWatcher.Current == loadFadeFullAmount;
-            return true;
-        }
-
-        // Decreasing ⇒ loading screen is fading out, and the level has started.
-        bool fadeDecreasing = loadFadeWatcher.Current < loadFadeFullAmount;
-        return !fadeDecreasing;
+        return loadFadeWatcher.Current == loadFadeFullAmount;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
