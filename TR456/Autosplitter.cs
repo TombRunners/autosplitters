@@ -41,7 +41,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         // RTA w/o Loads should tick whenever a loading screen is not active.
         const int loadFadeFullAmount = 255;
-        return loadFadeWatcher.Current == loadFadeFullAmount;
+        return GameData.LoadFade.Current == loadFadeFullAmount;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
@@ -107,11 +107,12 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return laraJustDied;
     }
 
-    private bool PickupShouldSplit(PickupSplitSetting setting)
+    private static bool PickupShouldSplit(PickupSplitSetting setting)
     {
+        const int loadFadeFullAmount = 255;
         bool loading = GameData.CurrentActiveBaseGame is Game.Tr6
             ? GameData.IsLoading.Current
-            : _loadingScreenFadedIn;
+            : GameData.LoadFade.Current == loadFadeFullAmount;
         if (loading || !GameData.Igt.Changed)
             return false;
 
