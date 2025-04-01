@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.1.1">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Fixed TR6 false start when loading after launch.</change>
+    </changelog>
+  </update>
   <update version="2025.1.1.0">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
