@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.0.4">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Improved TR4 and TR5 LRT.</change>
+    </changelog>
+  </update>
   <update version="2025.1.0.3">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>

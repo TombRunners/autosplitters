@@ -63,6 +63,9 @@ public static class GameData
 
     #region EXE Watcher Accessors
 
+    /// <inheritdoc cref="GameMemory.IsLoading" />
+    internal static MemoryWatcher<bool> IsLoading => GameMemory.IsLoading;
+
     /// <inheritdoc cref="GameMemory.ActiveGame" />
     internal static MemoryWatcher<int> ActiveGame => GameMemory.ActiveGame;
 
@@ -76,8 +79,8 @@ public static class GameData
 
     #region DLL Watcher Accessors
 
-    /// <inheritdoc cref="GameMemory.IsLoading" />
-    internal static MemoryWatcher<bool> IsLoading => GameMemory.IsLoading(CurrentActiveBaseGame);
+    /// <inheritdoc cref="GameMemory.LoadFade" />
+    internal static MemoryWatcher<uint> LoadFade => GameMemory.LoadFade(CurrentActiveBaseGame);
 
     /// <inheritdoc cref="GameMemory.Igt" />
     internal static MemoryWatcher<uint> Igt => GameMemory.Igt(CurrentActiveBaseGame);

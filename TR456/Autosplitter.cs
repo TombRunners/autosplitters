@@ -33,7 +33,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
 
         // This is the load removal logic for RTA without Loads.
-        return GameData.GameIsInitialized && GameData.IsLoading.Current && !GameData.Igt.Changed;
+        if (!GameData.GameIsInitialized)
+            return false;
+
+        if (GameData.CurrentActiveBaseGame is Game.Tr6)
+            return GameData.IsLoading.Current;
+
+        // RTA w/o Loads should tick whenever a loading screen is not active.
+        const int loadFadeFullAmount = 255;
+        return GameData.LoadFade.Current == loadFadeFullAmount;
     }
 
     /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
@@ -101,7 +109,11 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private static bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        if (GameData.IsLoading.Current || !GameData.Igt.Changed)
+        const int loadFadeFullAmount = 255;
+        bool loading = GameData.CurrentActiveBaseGame is Game.Tr6
+            ? GameData.IsLoading.Current
+            : GameData.LoadFade.Current == loadFadeFullAmount;
+        if (loading || !GameData.Igt.Changed)
             return false;
 
         return setting switch
