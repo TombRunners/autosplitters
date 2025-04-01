@@ -435,7 +435,8 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         // The timer starts when IGT first ticks.
         bool igtJustStarted = GameData.LevelIgt.Old == 0 && GameData.LevelIgt.Changed;
-        if (!igtJustStarted)
+        bool loadedAfterLaunchingGame = GameData.Tr6LevelName.Old.Contains("FRONTEND");
+        if (!igtJustStarted || loadedAfterLaunchingGame)
             return false;
 
         _tr6NewGameStartedFromMenu = false;
