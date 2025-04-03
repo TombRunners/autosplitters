@@ -68,21 +68,18 @@ public sealed class ComponentSettings : UserControl
         SuspendLayout();
 
         Control parent = Parent;
-        if (parent != null)
+        Control parentParent = parent?.Parent;
+        Control componentSettingsDialog = parentParent?.Parent;
+        if (componentSettingsDialog is not null)
         {
-            Control parentParent = parent.Parent;
-            if (parentParent != null)
-            {
-                parentParent.SuspendLayout();
-                parentParent.ClientSize = new Size(Width + 10, Height + 100);
-                parentParent.ResumeLayout(false);
-                parentParent.PerformLayout();
-            }
+            componentSettingsDialog.SuspendLayout();
 
-            parent.SuspendLayout();
-            parent.ClientSize = new Size(Width + 10, Height + 100);
-            parent.ResumeLayout(false);
-            parent.PerformLayout();
+            componentSettingsDialog.Size = new Size(Width + 20, Height + 100);
+            parentParent.Size = new Size(Width + 10, Height + 50);
+            parent.Size = new Size(Width + 10, Height + 50);
+
+            componentSettingsDialog.ResumeLayout(false);
+            componentSettingsDialog.PerformLayout();
         }
 
         PopulateLevelControls();
