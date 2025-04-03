@@ -1,4 +1,14 @@
 <updates>
+  <update version="2025.1.2.0">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+	  <change>TR4R: Fixed IL / Area% logic which may also resolve TTE inconsistencies.</change>
+      <change>Settings menu: fixed bug where controls were not disabling correctly while a game was found.</change>
+	  <change>Settings menu: forced LiveSplit to render setting in bigger window, which should remove scroll bars and improve UX.</change>
+    </changelog>
+  </update>
   <update version="2025.1.1.1">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
