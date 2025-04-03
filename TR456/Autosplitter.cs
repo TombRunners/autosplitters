@@ -164,7 +164,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         // Handle IL / Area% runs, where all level transitions are desirable splits.
         if (Settings.IlOrArea)
-            return GameData.Level.Old is 0 or (uint)Tr4Level.Office; // Except the opening cutscene of TTE.
+            return GameData.Level.Old is not 0 and not (uint)Tr4Level.Office; // Except the menu and opening cutscene of TTE.
 
         // Handle when credits are triggered.
         if (nextLevel == hardcodedCreditsTrigger && currentLevel != 0)
