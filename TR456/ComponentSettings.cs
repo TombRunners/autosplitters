@@ -67,6 +67,24 @@ public sealed class ComponentSettings : UserControl
 
         SuspendLayout();
 
+        Control parent = Parent;
+        if (parent != null)
+        {
+            Control parentParent = parent.Parent;
+            if (parentParent != null)
+            {
+                parentParent.SuspendLayout();
+                parentParent.ClientSize = new Size(Width + 10, Height + 100);
+                parentParent.ResumeLayout(false);
+                parentParent.PerformLayout();
+            }
+
+            parent.SuspendLayout();
+            parent.ClientSize = new Size(Width + 10, Height + 100);
+            parent.ResumeLayout(false);
+            parent.PerformLayout();
+        }
+
         PopulateLevelControls();
         EnableControlsPerState();
 
