@@ -86,10 +86,11 @@ public sealed class ComponentSettings : UserControl
         }
 
         PopulateLevelControls();
-        EnableControlsPerState();
 
         if (GameData.GameProcess is not null && GameData.GameIsInitialized)
             ShowCorrectTab(GameData.CurrentActiveBaseGame);
+
+        EnableControlsPerState();
 
         ResumeLayout(false);
         PerformLayout();
