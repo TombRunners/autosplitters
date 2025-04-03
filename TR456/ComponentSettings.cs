@@ -67,11 +67,27 @@ public sealed class ComponentSettings : UserControl
 
         SuspendLayout();
 
+        Control parent = Parent;
+        Control parentParent = parent?.Parent;
+        Control componentSettingsDialog = parentParent?.Parent;
+        if (componentSettingsDialog is not null)
+        {
+            componentSettingsDialog.SuspendLayout();
+
+            componentSettingsDialog.Size = new Size(Width + 20, Height + 100);
+            parentParent.Size = new Size(Width + 10, Height + 50);
+            parent.Size = new Size(Width + 10, Height + 50);
+
+            componentSettingsDialog.ResumeLayout(false);
+            componentSettingsDialog.PerformLayout();
+        }
+
         PopulateLevelControls();
-        EnableControlsPerState();
 
         if (GameData.GameProcess is not null && GameData.GameIsInitialized)
             ShowCorrectTab(GameData.CurrentActiveBaseGame);
+
+        EnableControlsPerState();
 
         ResumeLayout(false);
         PerformLayout();
