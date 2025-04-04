@@ -140,16 +140,16 @@ public class Autosplitter : IAutoSplitter, IDisposable
     {
         const uint hardcodedCreditsTrigger = 39;
 
-        if (GameData.CurrentActiveGame == Game.Tr4TheTimesExclusive)
-        {
-            // There are only 2 non-menu levels; 39 is the cutscene and 40 is the playable level.
-            // The playable level is hardcoded to trigger credits.
-            ulong oldLevelId = GameData.OldLevelId;
-            if (RunStats.LevelWasSplit(GameData.CurrentActiveGame, oldLevelId))
-                return false;
+        uint nextLevel = GameData.NextLevel.Current;
+        uint oldLevel = GameData.Level.Old;
+        if (nextLevel == oldLevel || nextLevel == 0 || oldLevel is 0 or (uint)Tr4Level.Office) // Ignore the menu and opening cutscene of TTE.
+            return false;
 
-            uint tteNextLevel = GameData.NextLevel.Current;
-            if (tteNextLevel != hardcodedCreditsTrigger || GameData.Level.Old is 0 or (uint)Tr4Level.Office)
+        // Handle when credits are triggered.
+        if (nextLevel == hardcodedCreditsTrigger)
+        {
+            ulong oldLevelId = GameData.OldLevelId;
+            if (Settings.FullGame && RunStats.LevelWasSplit(GameData.CurrentActiveGame, oldLevelId))
                 return false;
 
             _latestSplitId = oldLevelId;
@@ -157,27 +157,15 @@ public class Autosplitter : IAutoSplitter, IDisposable
             return true;
         }
 
-        uint nextLevel = GameData.NextLevel.Current;
-        uint currentLevel = GameData.Level.Current;
-        if (nextLevel == currentLevel || nextLevel == 0)
-            return false;
-
         // Handle IL / Area% runs, where all level transitions are desirable splits.
         if (Settings.IlOrArea)
-            return GameData.Level.Old is not 0 and not (uint)Tr4Level.Office; // Except from the menu and opening cutscene of TTE.
-
-        // Handle when credits are triggered.
-        if (nextLevel == hardcodedCreditsTrigger && currentLevel != 0)
-        {
-            _latestSplitId = GameData.OldLevelId;
-            _latestSplitDirection = TransitionDirection.OneWayFromLower;
             return true;
-        }
 
+        // Handle FG.
         byte triggerTimer = GameData.GfRequiredStartPosition.Current;
-        bool laraIsInLowerLevel = nextLevel >= currentLevel;
-        Tr4Level lowerLevel = laraIsInLowerLevel ? (Tr4Level)currentLevel : (Tr4Level)nextLevel;
-        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)currentLevel;
+        bool laraIsInLowerLevel = nextLevel >= oldLevel;
+        Tr4Level lowerLevel = laraIsInLowerLevel ? (Tr4Level)oldLevel : (Tr4Level)nextLevel;
+        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)oldLevel;
         TransitionDirection direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
 
         var activeMatches = Settings
