@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.2.1">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>TR4R: Improved Split consistency.</change>
+    </changelog>
+  </update>
   <update version="2025.1.2.0">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
