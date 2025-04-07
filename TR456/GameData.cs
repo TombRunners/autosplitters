@@ -42,7 +42,7 @@ public static class GameData
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-    public static Game CurrentActiveGame => CurrentActiveBaseGame switch
+    public static Game CurrentActiveGame => (Game)ActiveGame.Current switch
     {
         Game.Tr4 =>
             (Tr4Level)CurrentLevel >= Tr4Level.Office
