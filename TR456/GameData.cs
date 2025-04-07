@@ -9,17 +9,14 @@ public static class GameData
 {
     private static readonly GameMemory GameMemory = new ();
 
-    private static bool _retryScanOnce = true;
+    private static readonly SignatureScanInfo SignatureScanInfo = new();
 
-    private static bool _signaturesScannedSuccessfully;
-
-    private static bool SignaturesScannedSuccessfully
+    private static SignatureScanStatus SignatureScanStatus
     {
-        get => _signaturesScannedSuccessfully;
         set
         {
-            _signaturesScannedSuccessfully = value;
-            OnSignatureScanStatusChanged.Invoke(value);
+            SignatureScanInfo.SetStatus(value);
+            OnSignatureScanStatusChanged.Invoke(SignatureScanInfo);
         }
     }
 
@@ -38,15 +35,14 @@ public static class GameData
     public static GameVersionChangedDelegate OnGameVersionChanged;
 
     /// <summary>Allows creation of an event regarding the success of scanning game addresses.</summary>
-    /// <param name="success"></param>
-    public delegate void SignatureScanStatusChangedDelegate(bool success);
+    public delegate void SignatureScanStatusChangedDelegate(SignatureScanInfo info);
 
     /// <summary>Allows subscribers to know the success of scanning game addresses.</summary>
     public static SignatureScanStatusChangedDelegate OnSignatureScanStatusChanged;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
-    public static Game CurrentActiveGame => CurrentActiveBaseGame switch
+    public static Game CurrentActiveGame => (Game)ActiveGame.Current switch
     {
         Game.Tr4 =>
             (Tr4Level)CurrentLevel >= Tr4Level.Office
@@ -148,7 +144,10 @@ public static class GameData
             if (GameProcess is null || GameProcess.HasExited)
             {
                 if (GameProcess is not null && GameProcess.HasExited)
-                    _retryScanOnce = true;
+                {
+                    SignatureScanInfo.ResetCount(); // Reset so searches can continue.
+                    SignatureScanStatus = SignatureScanStatus.NotTriedYet;
+                }
 
                 if (!FindSupportedGame())
                     return false;
@@ -156,27 +155,31 @@ public static class GameData
                 try
                 {
                     GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
-                    SignaturesScannedSuccessfully = true;
+                    SignatureScanStatus = SignatureScanStatus.Success;
                 }
                 catch (Exception e)
                 {
                     LiveSplit.Options.Log.Error(e);
-                    SignaturesScannedSuccessfully = false;
 
                     // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
-                    Task.Delay(4000).GetAwaiter().GetResult();
-                    if (_retryScanOnce)
+                    Task.Delay(3000).GetAwaiter().GetResult();
+                    if (SignatureScanInfo.MaxRetriesReached)
                     {
-                        _retryScanOnce = false;
-                        GameProcess = null; // Set to null so Update can try again now that we've waited for game to fully initialize (hopefully).
+                        SignatureScanStatus = SignatureScanStatus.Failure; // Update will not try again (unless GameProcess.HasExited).
+                    }
+                    else
+                    {
+                        GameProcess = null; // Set to null so Update will try again now that we've waited for the game to fully initialize (hopefully).
+                        SignatureScanInfo.AddRetry();
+                        SignatureScanStatus = SignatureScanStatus.Retrying;
                         return false;
                     }
                 }
 
-                return SignaturesScannedSuccessfully && GameIsInitialized;
+                return SignatureScanInfo.IsSuccess && GameIsInitialized;
             }
 
-            if (!SignaturesScannedSuccessfully)
+            if (!SignatureScanInfo.IsSuccess)
                 return false;
 
             GameMemory.UpdateMemoryWatchers(GameProcess);

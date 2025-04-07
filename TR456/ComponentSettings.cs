@@ -113,7 +113,35 @@ public sealed class ComponentSettings : UserControl
         _timerWarningLabel.Visible = !timerWithGameTimeIsPresent;
     }
 
-    public void SetSignatureScanStatusLabelVisibility(bool success) => _signatureScanStatusLabel.Visible = !success;
+    public void SetSignatureScanStatusLabel(SignatureScanInfo info)
+    {
+        SuspendLayout();
+
+        switch (info.Status)
+        {
+            case SignatureScanStatus.Success:
+                _signatureScanStatusLabel.Visible = false;
+                break;
+            case SignatureScanStatus.Retrying:
+                _signatureScanStatusLabel.Text = $"Address scan failed! Retrying... ({info.RetryCount} of {info.MaxRetries})";
+                _signatureScanStatusLabel.ForeColor = Color.DarkGoldenrod;
+                _signatureScanStatusLabel.Visible = true;
+                break;
+            case SignatureScanStatus.Failure:
+                _signatureScanStatusLabel.Text = $"Address scan failed! Max retries reached. ({info.MaxRetries} of {info.MaxRetries})";
+                _signatureScanStatusLabel.ForeColor = Color.Crimson;
+                _signatureScanStatusLabel.Visible = true;
+                break;
+            case SignatureScanStatus.NotTriedYet:
+                _signatureScanStatusLabel.Visible = false;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(info.Status), info.Status, "Unknown signature scan status");
+        }
+
+        ResumeLayout();
+        PerformLayout();
+    }
 
     public void SetGameVersion(GameVersion version, string hash)
     {
@@ -518,7 +546,7 @@ public sealed class ComponentSettings : UserControl
         _signatureScanStatusLabel.Name = "_signatureScanStatusLabel";
         _signatureScanStatusLabel.Size = new Size(476, 20);
         _signatureScanStatusLabel.TabStop = false;
-        _signatureScanStatusLabel.Text = "Address scan failed! Game Version not supported!";
+        _signatureScanStatusLabel.Text = "Address scan failed!";
         _signatureScanStatusLabel.Visible = false;
 
         #endregion

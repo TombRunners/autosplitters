@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
@@ -14,11 +16,33 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private ulong _latestSplitId;
     private TransitionDirection _latestSplitDirection;
 
+    private readonly Dictionary<Game, short> _pickups = new(6)
+    {
+        {Game.Tr4, 0},
+        {Game.Tr4NgPlus, 0},
+        {Game.Tr4TheTimesExclusive, 0},
+        {Game.Tr5, 0},
+        {Game.Tr5NgPlus, 0},
+        {Game.Tr6, 0},
+        {Game.Tr6NgPlus, 0},
+    };
+
+    private readonly Dictionary<Game, short> _secrets = new(6)
+    {
+        {Game.Tr4, 0},
+        {Game.Tr4NgPlus, 0},
+        {Game.Tr4TheTimesExclusive, 0},
+        {Game.Tr5, 0},
+        {Game.Tr5NgPlus, 0},
+        {Game.Tr6, 0},
+        {Game.Tr6NgPlus, 0},
+    };
+
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
     {
         GameData.OnGameVersionChanged += Settings.SetGameVersion;
-        GameData.OnSignatureScanStatusChanged += Settings.SetSignatureScanStatusLabelVisibility;
+        GameData.OnSignatureScanStatusChanged += Settings.SetSignatureScanStatusLabel;
     }
 
     /// <summary>
@@ -107,21 +131,30 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return laraJustDied;
     }
 
-    private static bool PickupShouldSplit(PickupSplitSetting setting)
+    [SuppressMessage("ReSharper", "InvertIf")]
+    private bool PickupShouldSplit(PickupSplitSetting setting)
     {
-        const int loadFadeFullAmount = 255;
-        bool loading = GameData.CurrentActiveBaseGame is Game.Tr6
-            ? GameData.IsLoading.Current
-            : GameData.LoadFade.Current == loadFadeFullAmount;
-        if (loading || !GameData.Igt.Changed)
+        if (setting is PickupSplitSetting.None)
             return false;
 
-        return setting switch
+        Game currentGame = GameData.CurrentActiveGame;
+        var shouldSplit = false;
+
+        if (GameData.Pickups.Current > _pickups[currentGame])
         {
-            PickupSplitSetting.None => false,
-            PickupSplitSetting.All => GameData.Pickups.Current > GameData.Pickups.Old,
-            _ => GameData.Secrets.Current > GameData.Secrets.Old,
-        };
+            _pickups[currentGame] = GameData.Pickups.Current;
+            if (setting is PickupSplitSetting.All)
+                shouldSplit = true;
+        }
+
+        if (GameData.Secrets.Current > _secrets[currentGame])
+        {
+            _secrets[currentGame] = GameData.Secrets.Current;
+            if (setting is PickupSplitSetting.SecretsOnly)
+                shouldSplit = true;
+        }
+
+        return shouldSplit;
     }
 
     private bool ShouldSplitTr4Tr5()
@@ -437,6 +470,10 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public void OnStart(LiveSplitState state)
     {
         RunStats.Clear();
+        foreach (Game game in _pickups.Keys.ToList())
+            _pickups[game] = 0;
+        foreach (Game game in _secrets.Keys.ToList())
+            _secrets[game] = 0;
 
         // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
         if (!state.IsGameTimeInitialized)
@@ -445,9 +482,14 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
         try
         {
-            _ticksAtStartOfRun = GameData.CurrentActiveBaseGame is Game.Tr6
+            Game currentGame = GameData.CurrentActiveGame;
+
+            _ticksAtStartOfRun = currentGame is Game.Tr6 or Game.Tr6NgPlus
                 ? GameData.Igt.Old
                 : GameData.Level.Current is 1 or 39 ? 0 : GameData.Igt.Old * 2;
+
+            _pickups[currentGame] = GameData.Pickups.Current;
+            _secrets[currentGame] = GameData.Secrets.Current;
         }
         catch // GameData is unpopulated when no game is running.
         {
