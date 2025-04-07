@@ -18,7 +18,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     public Autosplitter()
     {
         GameData.OnGameVersionChanged += Settings.SetGameVersion;
-        GameData.OnSignatureScanStatusChanged += Settings.SetSignatureScanStatusLabelVisibility;
+        GameData.OnSignatureScanStatusChanged += Settings.SetSignatureScanStatusLabel;
     }
 
     /// <summary>
