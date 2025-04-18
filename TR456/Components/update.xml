@@ -1,4 +1,14 @@
 <updates>
+  <update version="2025.2.0.0">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>General: Correct version detection bug to now show the unknown game's MD5 hash.</change>
+	  <change>General: Improved scan retry logic and made the timer non-blocking to LiveSplit process.</change>
+      <change>Autosplitter: Updated TR4 Pickups signature to work with Patch 1 changes.</change>
+    </changelog>
+  </update>
   <update version="2025.1.3.0">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
