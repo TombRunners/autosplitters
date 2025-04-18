@@ -135,12 +135,17 @@ public static class GameData
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
     internal static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
 
+    private static DateTime? _retryTime;
+
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
     public static bool Update()
     {
         try
         {
+            if (_retryTime.HasValue && DateTime.UtcNow < _retryTime.Value)
+                return false; // Waiting to retry
+
             if (GameProcess is null || GameProcess.HasExited)
             {
                 if (GameProcess is not null && GameProcess.HasExited)
@@ -156,22 +161,24 @@ public static class GameData
                 {
                     GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
                     SignatureScanStatus = SignatureScanStatus.Success;
+                    _retryTime = null;
                 }
                 catch (Exception e)
                 {
                     LiveSplit.Options.Log.Error(e);
 
                     // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
-                    Task.Delay(3000).GetAwaiter().GetResult();
                     if (SignatureScanInfo.MaxRetriesReached)
                     {
                         SignatureScanStatus = SignatureScanStatus.Failure; // Update will not try again (unless GameProcess.HasExited).
                     }
                     else
                     {
-                        GameProcess = null; // Set to null so Update will try again now that we've waited for the game to fully initialize (hopefully).
+                        // Set retry state.
+                        GameProcess = null;
                         SignatureScanInfo.AddRetry();
                         SignatureScanStatus = SignatureScanStatus.Retrying;
+                        _retryTime = DateTime.UtcNow.AddSeconds(3);
                         return false;
                     }
                 }
