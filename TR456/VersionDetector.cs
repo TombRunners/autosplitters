@@ -32,12 +32,11 @@ internal static class VersionDetector
         // Try finding a match from known version hashes.
         foreach (Process p in processes)
         {
-            string foundHash = p.GetMd5Hash();
-            if (!VersionHashes.TryGetValue(foundHash, out GameVersion version))
+            hash = p.GetMd5Hash();
+            gameProcess = p;
+            if (!VersionHashes.TryGetValue(hash, out GameVersion version))
                 continue;
 
-            hash = foundHash;
-            gameProcess = p;
             return version;
         }
 

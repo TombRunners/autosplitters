@@ -332,8 +332,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherPickupsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
-                    Signature = [0x85, 0xC0, 0x74, 0x48, 0x41, 0x80, 0xFB, 0x1F, 0x75, 0x42],
-                    OffsetToWriteInstruction = -20,
+                    Signature = [0x75, 0x0C, 0x66, 0x42, 0x89, 0x6C],
+                    OffsetToWriteInstruction = 8,
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -486,16 +486,8 @@ internal class GameMemory
         _watchersTR6R.Clear();
 
         // Guard against an improper call.
-        switch (version)
-        {
-            case GameVersion.GogV10:
-            case GameVersion.PublicV10:
-                break;
-            case GameVersion.None:
-            case GameVersion.Unknown:
-            default:
-                throw new ArgumentOutOfRangeException(nameof(version), version, null);
-        }
+        if (version is GameVersion.None)
+            throw new ArgumentOutOfRangeException(nameof(version), version, null);
 
         // tomb456.exe
         SignatureScanner scannerExe = CreateScannerForExe(gameProcess);
@@ -525,13 +517,13 @@ internal class GameMemory
         var target = new SigScanTarget(sigInfo.Signature);
         IntPtr signatureAddress = scanner.Scan(target);
         if (signatureAddress == IntPtr.Zero)
-            throw new Exception($"Signature not found: {sigInfo.Signature.Select(static b => b.ToString("X2"))}");
+            throw new Exception($"Signature not found for {sigInfo.Name}: {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))}");
 
         // Find the write instruction using the offset argument.
         IntPtr writeInstructionAddress = signatureAddress + sigInfo.OffsetToWriteInstruction;
         byte[] instructionBytes = scanner.Process.ReadBytes(writeInstructionAddress, sigInfo.WriteInstructionLength);
         if (instructionBytes is null || instructionBytes.Length != sigInfo.WriteInstructionLength)
-            throw new Exception($"Failed to read process memory at the write instruction at {writeInstructionAddress.ToString("X2")}.");
+            throw new Exception($"Failed to read process memory at the write instruction at {writeInstructionAddress.ToString("X2")} for {sigInfo.Name}.");
 
         // Find the target address using the write instruction's offset.
         var extractedOffset = BitConverter.ToInt32(instructionBytes, sigInfo.WriteInstructionLength - 4);
@@ -539,9 +531,11 @@ internal class GameMemory
         IntPtr effectiveAddress = addressAfterWriteInstruction + extractedOffset + sigInfo.EffectiveAddressOffset;
 
 #if DEBUG
-        LiveSplit.Options.Log.Warning($"Found signature {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
+        long moduleOffset = effectiveAddress.ToInt64() - scanner.Address.ToInt64();
+        LiveSplit.Options.Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
                                       $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
-                                      $"Extracted address {effectiveAddress.ToString("X2")} using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
+                                      $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
+                                      $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
 #endif
 
         // Return the address.
