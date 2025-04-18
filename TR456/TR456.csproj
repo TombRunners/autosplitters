@@ -106,10 +106,13 @@
     <None Include="CheatEngine\.editorconfig" />
     <None Include="CheatEngine\tomb456_v10.CT" />
     <None Include="Enums\.editorconfig" />
+    <None Include="Hashes\gog_v1.0.0_Patch_1.csv" />
+    <None Include="Hashes\egs_TRX2_250404_20819_WIN.csv" />
     <None Include="Hashes\egs_TRX2_250128_19221_WIN.csv" />
     <None Include="Hashes\gog_v1.0.csv" />
     <None Include="Hashes\gog_v1.0.0.csv" />
     <None Include="Hashes\steam_17156603.csv" />
+    <None Include="Hashes\steam_17983102.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
