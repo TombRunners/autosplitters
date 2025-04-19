@@ -17,6 +17,8 @@ internal static class VersionDetector
         { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), GameVersion.PublicV10 }, // EGS
         { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), GameVersion.PublicV10 }, // GOG
         { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), GameVersion.PublicV10 }, // Steam
+        { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), GameVersion.PublicV10Patch1 }, // EGS
+        { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), GameVersion.PublicV10Patch1 }, // GOG / Steam
     }.ToImmutableDictionary();
 
     public static GameVersion DetectVersion(out Process gameProcess, out string hash)

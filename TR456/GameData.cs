@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using LiveSplit.ComponentUtil;
 
 namespace TR456;

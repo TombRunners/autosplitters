@@ -8,7 +8,8 @@ public readonly record struct AddressSignatureInfo
     public string Name { get; init; }
     public Func<IntPtr, MemoryWatcher> MemoryWatcherFactory { get; init; }
     public byte[] Signature { get; init; }
-    public int OffsetToWriteInstruction { get; init; }
+    public string[] SignatureWithMasks { get; init; }
+    public (GameVersion? version, int offset)[] OffsetsToWriteInstruction { get; init; }
     public int WriteInstructionLength { get; init; }
     public int EffectiveAddressOffset { get; init; }
     public bool IsPointer { get; init; }
@@ -17,7 +18,7 @@ public readonly record struct AddressSignatureInfo
     public bool Equals(AddressSignatureInfo other) =>
         Name == other.Name &&
         MemoryWatcherFactory == other.MemoryWatcherFactory &&
-        OffsetToWriteInstruction == other.OffsetToWriteInstruction &&
+        Equals(OffsetsToWriteInstruction, other.OffsetsToWriteInstruction) &&
         WriteInstructionLength == other.WriteInstructionLength &&
         EffectiveAddressOffset == other.EffectiveAddressOffset &&
         (
@@ -30,7 +31,7 @@ public readonly record struct AddressSignatureInfo
         var hash = new HashCode();
         hash.Add(Name);
         hash.Add(MemoryWatcherFactory);
-        hash.Add(OffsetToWriteInstruction);
+        hash.Add(OffsetsToWriteInstruction);
         hash.Add(WriteInstructionLength);
         hash.Add(EffectiveAddressOffset);
 

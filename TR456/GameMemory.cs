@@ -32,7 +32,7 @@ internal class GameMemory
                 Name = Constants.WatcherActiveGameName,
                 MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherActiveGameName },
                 Signature = [0x83, 0xE1, 0x03, 0x25, 0xFF, 0xFF, 0xE7, 0xFF],
-                OffsetToWriteInstruction = 0x8A,
+                OffsetsToWriteInstruction = [(null, 0x8A)],
                 WriteInstructionLength = 6,
                 EffectiveAddressOffset = 0,
             },
@@ -42,7 +42,7 @@ internal class GameMemory
                 Name = Constants.WatcherGFrameIndexName,
                 MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherGFrameIndexName },
                 Signature = [0x66, 0x66, 0x0F, 0x1F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8D, 0x84, 0x24, 0xB0, 0x00, 0x00, 0x00],
-                OffsetToWriteInstruction = 0x20,
+                OffsetsToWriteInstruction = [(null, 0x20)],
                 WriteInstructionLength = 7,
                 EffectiveAddressOffset = 0x208,
             },
@@ -52,7 +52,7 @@ internal class GameMemory
                 Name = Constants.WatcherIsLoadingName,
                 MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherIsLoadingName },
                 Signature = [0x48, 0x69, 0xC0, 0xE8, 0x03, 0x00, 0x00, 0xC7, 0x05],
-                OffsetToWriteInstruction = 7,
+                OffsetsToWriteInstruction = [(null, 7)],
                 WriteInstructionLength = 6,
                 EffectiveAddressOffset = 4,
             },
@@ -62,7 +62,7 @@ internal class GameMemory
                 Name = Constants.WatcherFmvName,
                 MemoryWatcherFactory = static address => new StringWatcher(address, 5) { Name = Constants.WatcherFmvName },
                 Signature = [0x0F, 0x57, 0xC9, 0x48, 0x89, 0x05],
-                OffsetToWriteInstruction = 0xA,
+                OffsetsToWriteInstruction = [(null, 0xA)],
                 WriteInstructionLength = 7,
                 EffectiveAddressOffset = 0,
             },
@@ -103,8 +103,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherLoadFadeName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherLoadFadeName },
-                    Signature = [0x3B, 0xD5, 0x0F, 0x4F, 0xD5],
-                    OffsetToWriteInstruction = 5,
+                    Signature = [0xC1, 0xE0, 0x04, 0x03, 0xD0],
+                    OffsetsToWriteInstruction = [(null, 0x11)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -116,8 +116,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherIgtName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
-                    Signature = [0x85, 0xC0, 0x74, 0x62, 0xC1, 0xE0, 0x09],
-                    OffsetToWriteInstruction = -0x3D,
+                    Signature = [0x85, 0xC0, 0x7E, 0x0A, 0xFF, 0xC8, 0x89, 0x05],
+                    OffsetsToWriteInstruction = [(null, 0x6F)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -128,8 +128,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherIgtName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
-                    Signature = [0x85, 0xC0, 0x74, 0x62, 0xC1, 0xE0, 0x09],
-                    OffsetToWriteInstruction = -0x37,
+                    Signature = [0x85, 0xC0, 0x7E, 0x0A, 0xFF, 0xC8, 0x89, 0x05],
+                    OffsetsToWriteInstruction = [(null, 0x6F)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -141,7 +141,7 @@ internal class GameMemory
                     Name = Constants.WatcherIgtName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherIgtName },
                     Signature = [0xA9, 0xF7, 0xFF, 0xFF, 0xFF, 0x74, 0x25],
-                    OffsetToWriteInstruction = 0x20,
+                    OffsetsToWriteInstruction = [(null, 0x20)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -154,7 +154,7 @@ internal class GameMemory
                     Name = Constants.WatcherLevelIgtName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherLevelIgtName },
                     Signature = [0xA9, 0xF7, 0xFF, 0xFF, 0xFF, 0x74, 0x25],
-                    OffsetToWriteInstruction = 0x26,
+                    OffsetsToWriteInstruction = [(null, 0x26)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -167,7 +167,7 @@ internal class GameMemory
                     Name = Constants.WatcherBonusFlagName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherBonusFlagName },
                     Signature = [0x01, 0x00, 0x00, 0x00, 0x85, 0xC9, 0x78, 0x0A],
-                    OffsetToWriteInstruction = -54,
+                    OffsetsToWriteInstruction = [(null, -54)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -178,9 +178,9 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherBonusFlagName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherBonusFlagName },
-                    Signature = [0x48, 0x98, 0x48, 0x89, 0xBC, 0x24, 0x68, 0x01, 0x00, 0x00],
-                    OffsetToWriteInstruction = 0x3A,
-                    WriteInstructionLength = 7,
+                    Signature = [0x19, 0x00, 0x00, 0x0F, 0xB6, 0x05],
+                    OffsetsToWriteInstruction = [(null, -0x4A)],
+                    WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
             },
@@ -192,7 +192,7 @@ internal class GameMemory
                     Name = Constants.WatcherGfInitializeGameName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<bool>(address) { Name = Constants.WatcherGfInitializeGameName },
                     Signature = [0xEB, 0x0A, 0x45, 0x32, 0xC9],
-                    OffsetToWriteInstruction = 0x5,
+                    OffsetsToWriteInstruction = [(null, 0x5)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 1,
                 }
@@ -205,7 +205,7 @@ internal class GameMemory
                     Name = Constants.WatcherGfRequiredStartPositionName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherGfRequiredStartPositionName },
                     Signature = [0x44, 0x0F, 0xB6, 0x5C, 0x24, 0x28],
-                    OffsetToWriteInstruction = 0x6,
+                    OffsetsToWriteInstruction = [(null, 0x6)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -218,7 +218,7 @@ internal class GameMemory
                     Name = Constants.WatcherRoomName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherRoomName },
                     Signature = [0x0F, 0xBF, 0x48, 0x06, 0x0F, 0xBF, 0x40, 0x04, 0x03, 0xC8, 0x89, 0x15],
-                    OffsetToWriteInstruction = 0x29,
+                    OffsetsToWriteInstruction = [(null, 0x29), (GameVersion.PublicV10Patch1, 0x36)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -231,7 +231,7 @@ internal class GameMemory
                     Name = Constants.WatcherLevelNameName,
                     MemoryWatcherFactory = static address => new StringWatcher(new DeepPointer(address, 0x572), 21) { Name = Constants.WatcherLevelNameName },
                     Signature = [0x48, 0x81, 0xC1, 0xA0, 0x00, 0x00, 0x00, 0x4D, 0x8B, 0xCE, 0x4D, 0x8B, 0xC7],
-                    OffsetToWriteInstruction = 0x25,
+                    OffsetsToWriteInstruction = [(null, 0x25)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                     IsPointer = true,
@@ -246,7 +246,7 @@ internal class GameMemory
                     Name = Constants.WatcherCurrentLevelName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherCurrentLevelName },
                     Signature = [0x3C, 0x29, 0x44, 0x8B, 0xC8, 0x44, 0x0F, 0x47, 0xCE],
-                    OffsetToWriteInstruction = 0x26,
+                    OffsetsToWriteInstruction = [(null, 0x26)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -258,7 +258,7 @@ internal class GameMemory
                     Name = Constants.WatcherCurrentLevelName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherCurrentLevelName },
                     Signature = [0x40, 0x80, 0xFF, 0x0F, 0x44, 0x0F, 0xB6, 0xCF, 0x44, 0x0F, 0x47, 0xCD],
-                    OffsetToWriteInstruction = 0x29,
+                    OffsetsToWriteInstruction = [(null, 0x29)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -270,8 +270,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherNextLevelName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherNextLevelName },
-                    Signature = [0x60, 0x04, 0x00, 0x00, 0x39, 0x30, 0x0F, 0x84],
-                    OffsetToWriteInstruction = -23,
+                    SignatureWithMasks = ["40 84 ?? ?? ?? 00 00 0F 84 ?? ?? 00 00 48 8B ?? ?? ?? 00 00 39 30"],
+                    OffsetsToWriteInstruction = [(null, -7)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -283,7 +283,7 @@ internal class GameMemory
                     Name = Constants.WatcherNextLevelName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<uint>(address) { Name = Constants.WatcherNextLevelName },
                     Signature = [0x2B, 0xC8, 0x0F, 0x48, 0xCF],
-                    OffsetToWriteInstruction = 0x2B,
+                    OffsetsToWriteInstruction = [(null, 0x2B)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -295,8 +295,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherHealthName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherHealthName },
-                    Signature = [0xBA, 0x03, 0x00, 0x00, 0x00, 0x48, 0x03, 0xC8, 0x48, 0xC1, 0xF9, 0x08],
-                    OffsetToWriteInstruction = 0x37,
+                    SignatureWithMasks = ["79 04 ?? ?? EB 0A B8 E8 03 00 00"],
+                    OffsetsToWriteInstruction = [(null, 0x10), (GameVersion.PublicV10Patch1, 0x29)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -307,8 +307,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherHealthName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherHealthName },
-                    Signature = [0xB8, 0x28, 0x00, 0x00, 0x00, 0xEB, 0x0D],
-                    OffsetToWriteInstruction = -6,
+                    SignatureWithMasks = ["39 ?? ?? ?? 16 00 74 ?? 89 ?? ?? ?? 16 00"],
+                    OffsetsToWriteInstruction = [(null, 0)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -320,7 +320,7 @@ internal class GameMemory
                     Name = Constants.WatcherHealthName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<float>(new DeepPointer(address, 0x1F0, 0xD64)) { Name = Constants.WatcherHealthName },
                     Signature = [0x79, 0x06, 0x33, 0xC0, 0x89, 0x44, 0x24, 0x70],
-                    OffsetToWriteInstruction = 8,
+                    OffsetsToWriteInstruction = [(null, 8)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -333,7 +333,7 @@ internal class GameMemory
                     Name = Constants.WatcherPickupsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
                     Signature = [0x75, 0x0C, 0x66, 0x42, 0x89, 0x6C],
-                    OffsetToWriteInstruction = 8,
+                    OffsetsToWriteInstruction = [(null, 8)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -345,7 +345,7 @@ internal class GameMemory
                     Name = Constants.WatcherPickupsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
                     Signature = [0xB8, 0x00, 0x01, 0x00, 0x00, 0x66, 0x85, 0x43, 0x30],
-                    OffsetToWriteInstruction = -15,
+                    OffsetsToWriteInstruction = [(null, -15)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -357,7 +357,7 @@ internal class GameMemory
                     Name = Constants.WatcherPickupsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<short>(address) { Name = Constants.WatcherPickupsName },
                     Signature = [0x74, 0x34, 0x66, 0x83, 0xF9, 0x51, 0x74, 0x2E],
-                    OffsetToWriteInstruction = 0xF,
+                    OffsetsToWriteInstruction = [(null, 0xF)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
                 }
@@ -369,8 +369,8 @@ internal class GameMemory
                 {
                     Name = Constants.WatcherSecretsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
-                    Signature = [0x45, 0x33, 0xDB, 0xBA, 0x00, 0x09, 0x00, 0x00, 0xEB, 0x1C],
-                    OffsetToWriteInstruction = -20,
+                    SignatureWithMasks = ["B9 05 00 00 00 E8 ?? ?? ?? 00 0F B6 05 ?? ?? ?? 00 FE 05 ?? ?? ?? 00 0F AB D8"],
+                    OffsetsToWriteInstruction = [(null, 0x11)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -382,7 +382,7 @@ internal class GameMemory
                     Name = Constants.WatcherSecretsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
                     Signature = [0x8D, 0x41, 0xFF, 0x3C, 0x02, 0x77, 0x09],
-                    OffsetToWriteInstruction = -12,
+                    OffsetsToWriteInstruction = [(null, -12)]   ,
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -394,7 +394,7 @@ internal class GameMemory
                     Name = Constants.WatcherSecretsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
                     Signature = [0x74, 0x34, 0x66, 0x83, 0xF9, 0x51, 0x74, 0x2E],
-                    OffsetToWriteInstruction = 0x1B,
+                    OffsetsToWriteInstruction = [(null, 0x1B)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }
@@ -407,7 +407,7 @@ internal class GameMemory
                     Name = Constants.WatcherMenuTickerName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<int>(address) { Name = Constants.WatcherMenuTickerName },
                     Signature = [0xC7, 0x40, 0x08, 0x01, 0x00, 0x03, 0x00],
-                    OffsetToWriteInstruction = 7,
+                    OffsetsToWriteInstruction = [(null, 7)],
                     WriteInstructionLength = 8,
                     EffectiveAddressOffset = 0,
                 }
@@ -513,14 +513,26 @@ internal class GameMemory
 
     private static IntPtr GetAddressFromSignature(SignatureScanner scanner, AddressSignatureInfo sigInfo)
     {
+        bool useMask = sigInfo.SignatureWithMasks is not null && sigInfo.SignatureWithMasks.Any();
+
         // Find bytes signature.
-        var target = new SigScanTarget(sigInfo.Signature);
+        SigScanTarget target = useMask
+            ? new SigScanTarget(sigInfo.SignatureWithMasks)
+            : new SigScanTarget(sigInfo.Signature);
         IntPtr signatureAddress = scanner.Scan(target);
         if (signatureAddress == IntPtr.Zero)
-            throw new Exception($"Signature not found for {sigInfo.Name}: {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))}");
+            throw new Exception($"Signature not found for {sigInfo.Name}: {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))}");
 
         // Find the write instruction using the offset argument.
-        IntPtr writeInstructionAddress = signatureAddress + sigInfo.OffsetToWriteInstruction;
+        if (sigInfo.OffsetsToWriteInstruction.Length <= 0)
+            throw new Exception($"Signature info not coded properly for {sigInfo.Name}: missing offset.");
+
+        int sigOffset = sigInfo.OffsetsToWriteInstruction[0].offset;
+        if (GameData.GameVersion is not GameVersion.Unknown && sigInfo.OffsetsToWriteInstruction.Length > 1) // Overwrite offsets if different for a later known version.
+            foreach ((_, int offset) in sigInfo.OffsetsToWriteInstruction.Where(static tuple => tuple.version is not null && (int)GameData.GameVersion >= (int)tuple.version))
+                sigOffset = offset;
+
+        IntPtr writeInstructionAddress = signatureAddress + sigOffset;
         byte[] instructionBytes = scanner.Process.ReadBytes(writeInstructionAddress, sigInfo.WriteInstructionLength);
         if (instructionBytes is null || instructionBytes.Length != sigInfo.WriteInstructionLength)
             throw new Exception($"Failed to read process memory at the write instruction at {writeInstructionAddress.ToString("X2")} for {sigInfo.Name}.");
@@ -532,7 +544,7 @@ internal class GameMemory
 
 #if DEBUG
         long moduleOffset = effectiveAddress.ToInt64() - scanner.Address.ToInt64();
-        LiveSplit.Options.Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
+        LiveSplit.Options.Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
                                       $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
                                       $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
                                       $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");

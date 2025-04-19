@@ -447,6 +447,9 @@ public class Autosplitter : IAutoSplitter, IDisposable
 
     private bool ShouldStartTr6()
     {
+        if (GameData.Tr6LevelName.Old is null)
+            return false;
+
         // ReSharper disable once StringLiteralTypo
         if (GameData.Fmv.Old.Trim().Equals("CRDIT")) // This is the second FMV that plays after "New Game" has been confirmed.
             _tr6NewGameStartedFromMenu = true;
