@@ -778,7 +778,7 @@ public sealed class ComponentSettings : UserControl
         const int rowHeight = 22;
         _tr6LevelTransitionSettingsPanel.Controls.Clear();
 
-        bool firstEntry = true;
+        var firstEntry = true;
         var rowCount = 0;
         var yOffset = 0;
         var font = new Font(_levelTransitionSelect.Font, FontStyle.Regular);

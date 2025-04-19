@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms.VisualStyles;
 using LiveSplit.ComponentUtil;
 
 namespace TR456;
