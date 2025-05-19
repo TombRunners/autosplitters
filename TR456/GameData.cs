@@ -170,6 +170,7 @@ public static class GameData
                     if (SignatureScanInfo.MaxRetriesReached)
                     {
                         SignatureScanStatus = SignatureScanStatus.Failure; // Update will not try again (unless GameProcess.HasExited).
+                        _retryTime = null;
                     }
                     else
                     {
@@ -178,7 +179,6 @@ public static class GameData
                         SignatureScanInfo.AddRetry();
                         SignatureScanStatus = SignatureScanStatus.Retrying;
                         _retryTime = DateTime.UtcNow.AddSeconds(3);
-                        return false;
                     }
                 }
 
@@ -191,8 +191,9 @@ public static class GameData
             GameMemory.UpdateMemoryWatchers(GameProcess);
             return GameIsInitialized;
         }
-        catch
+        catch (Exception e)
         {
+            LiveSplit.Options.Log.Error(e);
             return false;
         }
     }
