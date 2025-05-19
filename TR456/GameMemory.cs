@@ -382,7 +382,7 @@ internal class GameMemory
                     Name = Constants.WatcherSecretsName,
                     MemoryWatcherFactory = static address => new MemoryWatcher<byte>(address) { Name = Constants.WatcherSecretsName },
                     Signature = [0x8D, 0x41, 0xFF, 0x3C, 0x02, 0x77, 0x09],
-                    OffsetsToWriteInstruction = [(null, -12)]   ,
+                    OffsetsToWriteInstruction = [(null, -6)],
                     WriteInstructionLength = 6,
                     EffectiveAddressOffset = 0,
                 }

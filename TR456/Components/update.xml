@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.2.0.2">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>TR5: Corrected bug in Secrets address scan; now correctly points to savegame value instead of level value.</change>
+    </changelog>
+  </update>
   <update version="2025.2.0.1">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>

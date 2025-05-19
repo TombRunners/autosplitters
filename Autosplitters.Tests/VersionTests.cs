@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -42,8 +42,8 @@ public class VersionTests
         string dllVersionInfo = FileVersionInfo.GetVersionInfo(dllPath).FileVersion;
         Version dllVersion = ParseVersion(dllVersionInfo);
 
-        assemblyInfoVersion.Should().Be(dllVersion, $"Assembly Info version {assemblyInfoVersionString} must match DLL version {dllVersionInfo}");
-        updateXmlVersion.Should().Be(dllVersion, $"Update XML version {updateXmlVersionString} must match DLL version {dllVersionInfo}");
+        assemblyInfoVersion.ShouldBe(dllVersion, $"Assembly Info version {assemblyInfoVersionString} must match DLL version {dllVersionInfo}");
+        updateXmlVersion.ShouldBe(dllVersion, $"Update XML version {updateXmlVersionString} must match DLL version {dllVersionInfo}");
     }
 
     private static Version ParseVersion(string versionString)
