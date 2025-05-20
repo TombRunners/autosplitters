@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
@@ -32,6 +33,7 @@ public sealed class ComponentSettings : UserControl
         GameVersionInitialized = false;
     }
 
+    [SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
     private void InitializeComponent()
     {
         ModeSelect = new GroupBox();

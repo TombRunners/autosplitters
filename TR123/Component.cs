@@ -1,13 +1,13 @@
-using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
-using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
-using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
 using System;
-using System.Collections.Generic; // EventArgs, IDisposable
-using System.Linq;                        // Any
-using System.Windows.Forms;               // Control, TableLayoutPanel
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
-using Timer = LiveSplit.UI.Components.Timer; // XmlDocument, XmlNode
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.UI.Components;
+using LiveSplit.UI.Components.AutoSplit;
+using Timer = LiveSplit.UI.Components.Timer;
 
 namespace TR123;
 
