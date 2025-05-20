@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.0.0">
+    <files>
+      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Refactored codebase.</change>
+    </changelog>
+  </update>
   <update version="2024.2.0.0">
     <files>
       <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
