@@ -8,8 +8,11 @@ namespace Util;
 public static class ProcessExtensions
 {
     /// <summary>Computes the MD5 hash formatted as a simple, lowercased string.</summary>
-    /// <param name="process">The <see cref="Process"/> instance</param>
-    /// <returns>If the file executing <paramref name="process"/> is found: the lowercased, invariant string representing its MD5 hash; otherwise, <see langword="null"/></returns>
+    /// <param name="process">The <see cref="Process" /> instance</param>
+    /// <returns>
+    ///     If the file executing <paramref name="process" /> is found: the lowercased, invariant string representing its
+    ///     MD5 hash; otherwise, <see langword="null" />
+    /// </returns>
     public static string GetMd5Hash(this Process process)
     {
         string exePath = process?.MainModule?.FileName;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using LiveSplit.UI;
+using Util;
 
 namespace TR4;
 

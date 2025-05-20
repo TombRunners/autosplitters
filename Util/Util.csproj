@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="BaseAutosplitter.cs" />
     <Compile Include="BaseGameData.cs" />
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VersionDetector.cs" />
