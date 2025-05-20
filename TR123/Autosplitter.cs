@@ -1,10 +1,10 @@
 ﻿using System;
 using LiveSplit.Model;
-using LiveSplit.UI.Components.AutoSplit;
+using Util;
 
 namespace TR123;
 
-public class Autosplitter : IAutoSplitter, IDisposable
+public class Autosplitter : BaseAutosplitter
 {
     /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
     private static Game CurrentActiveGame => GameData.CurrentActiveGame;
@@ -17,12 +17,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     private static bool _cinematicValueUpdatedLastFrame;
     private static bool _loadingScreenFadedIn;
 
-    /// <summary>
-    ///     Determines if LiveSplit's "Game Time" pauses when the game is quit or <see cref="GetGameTime" /> returns <see langword="null" />
-    /// </summary>
-    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns><see langword="true" /> when "Game Time" should pause during the conditions, otherwise <see langword="false" /></returns>
-    public bool IsGameTimePaused(LiveSplitState state)
+    public override bool IsGameTimePaused(LiveSplitState state)
     {
         if (Settings.GameTimeMethod == GameTimeMethod.Igt)
             return true;
@@ -66,10 +61,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return !fadeDecreasing;
     }
 
-    /// <summary>Determines LiveSplit's "Game Time", which can be either IGT or RTA w/o Loads.</summary>
-    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns>"Game Time" as a <see cref="TimeSpan" /> if available, otherwise <see langword="null" /></returns>
-    public TimeSpan? GetGameTime(LiveSplitState state) =>
+    public override TimeSpan? GetGameTime(LiveSplitState state) =>
         Settings.GameTimeMethod switch
         {
             GameTimeMethod.Igt => IgtGameTime(Settings.Deathrun),
@@ -111,10 +103,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return TimeSpan.FromSeconds(totalTicks);
     }
 
-    /// <summary>Determines if the timer should split.</summary>
-    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns><see langword="true" /> if the timer should split, <see langword="false" /> otherwise</returns>
-    public bool ShouldSplit(LiveSplitState state)
+    public override bool ShouldSplit(LiveSplitState state)
     {
         // Handle Lara's Home special case.
         uint oldLevel = GameData.OldLevel();
@@ -159,10 +148,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return levelJustCompleted;
     }
 
-    /// <summary>Determines if the timer should reset.</summary>
-    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns><see langword="true" /> if the timer should reset, <see langword="false" /> otherwise</returns>
-    public bool ShouldReset(LiveSplitState state)
+    public override bool ShouldReset(LiveSplitState state)
     {
         if (!Settings.EnableAutoReset)
             return false;
@@ -182,10 +168,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
         return justEnteredTitleScreen;
     }
 
-    /// <summary>Determines if the timer should start.</summary>
-    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
-    /// <returns><see langword="true" /> if the timer should start, <see langword="false" /> otherwise</returns>
-    public bool ShouldStart(LiveSplitState state)
+    public override bool ShouldStart(LiveSplitState state)
     {
         // Do not start when on a title screen.
         var title = GameData.TitleLoaded;
@@ -246,8 +229,7 @@ public class Autosplitter : IAutoSplitter, IDisposable
     /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public void OnUndoSplit() => RunStats.UndoLevelStats();
 
-    /// <inheritdoc />
-    public void Dispose()
+    public override void Dispose()
     {
         GameData.OnGameVersionChanged -= Settings.SetGameVersion;
         Settings?.Dispose();
