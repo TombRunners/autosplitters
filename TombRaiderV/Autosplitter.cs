@@ -1,6 +1,6 @@
 ﻿using System;
+using LaterClassicUtil;
 using LiveSplit.Model;
-using TRUtil;
 
 namespace TR5;
 

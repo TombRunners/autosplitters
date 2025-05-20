@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace TRUtil;
+namespace LaterClassicUtil;
 
 public class LaterClassicComponentSettings : UserControl
 {

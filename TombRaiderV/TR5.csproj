@@ -75,10 +75,6 @@
       <Project>{5fccf047-18b5-421d-9aa1-cd1fe0b50af3}</Project>
       <Name>LaterClassicUtil</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
-      <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
-      <Name>TRUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{c441c7a6-1371-4690-b51e-45583d8f041f}</Project>
       <Name>Util</Name>

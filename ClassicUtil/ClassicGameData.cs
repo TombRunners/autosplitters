@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using LiveSplit.ComponentUtil;
+using Util;
 
-namespace TRUtil;
+namespace ClassicUtil;
 
 public abstract class ClassicGameData : BaseGameData
 {

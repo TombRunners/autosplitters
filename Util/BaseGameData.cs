@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using LiveSplit.ComponentUtil;
 
-namespace TRUtil;
+namespace Util;
 
 public abstract class BaseGameData
 {

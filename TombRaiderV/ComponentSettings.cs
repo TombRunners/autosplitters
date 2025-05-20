@@ -1,7 +1,8 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
-using TRUtil;
+using LaterClassicUtil;
 
 namespace TR5;
 
@@ -22,6 +23,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
     }
 
+    [SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
     private void InitializeComponent()
     {
         _modeSelect = new GroupBox();

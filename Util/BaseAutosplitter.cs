@@ -2,7 +2,7 @@
 using LiveSplit.Model;
 using LiveSplit.UI.Components.AutoSplit;
 
-namespace TRUtil;
+namespace Util;
 
 public abstract class BaseAutosplitter : IAutoSplitter, IDisposable
 {
@@ -14,7 +14,7 @@ public abstract class BaseAutosplitter : IAutoSplitter, IDisposable
     /// <summary>Determines if IGT pauses when the game is quit or <see cref="GetGameTime"/> returns <see langword="null"/></summary>
     /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
     /// <returns><see langword="true"/> when IGT should be paused during the conditions, <see langword="false"/> otherwise</returns>
-    public bool IsGameTimePaused(LiveSplitState state) => true;
+    public abstract bool IsGameTimePaused(LiveSplitState state);
 
     /// <summary>Determines if the timer should split.</summary>
     /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>

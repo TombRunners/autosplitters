@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace TRUtil;
+namespace Util;
 
 public static class ProcessExtensions
 {

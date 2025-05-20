@@ -1,6 +1,7 @@
 using System;
+using ClassicUtil;
 using LiveSplit.Model;
-using TRUtil;
+using Util;
 
 namespace TR1;
 

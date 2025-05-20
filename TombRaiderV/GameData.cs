@@ -1,6 +1,6 @@
 ﻿using System;
+using LaterClassicUtil;
 using LiveSplit.ComponentUtil;
-using TRUtil;
 
 // ReSharper disable ClassNeverInstantiated.Global
 

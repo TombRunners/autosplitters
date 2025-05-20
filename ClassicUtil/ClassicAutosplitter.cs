@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using LiveSplit.Model;
+using Util;
 
-namespace TRUtil;
+namespace ClassicUtil;
 
 public abstract class ClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
     where TData : ClassicGameData
@@ -42,6 +43,8 @@ public abstract class ClassicAutosplitter<TData>(Version version, TData data) : 
         ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, currentLevel);
         return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
     }
+
+    public override bool IsGameTimePaused(LiveSplitState state) => true;
 
     public override bool ShouldSplit(LiveSplitState state)
     {

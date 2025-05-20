@@ -49,17 +49,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LaterClassicAutosplitter.cs" />
+    <Compile Include="LaterClassicComponent.cs" />
+    <Compile Include="LaterClassicComponentSettings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="LaterClassicGameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
-      <Project>{29196311-2d7c-428b-a058-6bbfc8452909}</Project>
-      <Name>TRUtil</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{c441c7a6-1371-4690-b51e-45583d8f041f}</Project>
       <Name>Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="LaterClassicComponentSettings.resx">
+      <DependentUpon>LaterClassicComponentSettings.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

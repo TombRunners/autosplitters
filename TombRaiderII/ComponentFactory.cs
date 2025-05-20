@@ -1,10 +1,10 @@
-﻿using LiveSplit.Model;          // LiveSplitState
-using LiveSplit.UI.Components;  // IComponentFactory, IComponent, InfoTextComponent, ComponentCategory
-using System;                   // Version
-using System.IO;                // Path
-using System.Reflection;        // Assembly
-using TR2;                      // For [assembly:...]
-using UpdateManager;            // IUpdateable
+﻿using System;
+using System.IO;
+using System.Reflection;
+using LiveSplit.Model;
+using LiveSplit.UI.Components;
+using TR2;
+using UpdateManager;
 
 [assembly: ComponentFactory(typeof(ComponentFactory))]
 
