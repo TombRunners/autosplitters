@@ -46,6 +46,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7928)) { Name = "Health" });
                 FirstLevelTimeAddress = TR2FirstLevelTimeAddress;
                 break;
+
             case Tr2Version.EPC:
             case Tr2Version.MP:
             case Tr2Version.P1:
@@ -57,6 +58,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xD7918)) { Name = "Health" });
                 FirstLevelTimeAddress = TR2FirstLevelTimeAddress;
                 break;
+
             case Tr2Version.StellaGold:
             case Tr2Version.StellaGoldCracked:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11EE00)) { Name = "TitleScreen" });
@@ -67,7 +69,7 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xDA948)) { Name = "Health" });
                 FirstLevelTimeAddress = TR2GFirstLevelTimeAddress;
                 break;
-            case Tr2Version.None:
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

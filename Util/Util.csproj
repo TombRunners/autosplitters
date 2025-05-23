@@ -49,7 +49,15 @@
     <Compile Include="EnumExtensions.cs" />
     <Compile Include="ProcessExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VersionDetectionResult.cs" />
     <Compile Include="VersionDetector.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="PolySharp">
+      <Version>1.15.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

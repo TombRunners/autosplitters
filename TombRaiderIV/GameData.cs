@@ -116,7 +116,6 @@ internal class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x3FD2B0)) { Name = "GfRequiredStartPosition" });
                 break;
 
-            case Tr4Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

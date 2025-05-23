@@ -75,7 +75,6 @@ internal sealed class GameData : ClassicGameData
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0xA786B4, 0x244448)) { Name = "Health" });
                 break;
 
-            case Tr1Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

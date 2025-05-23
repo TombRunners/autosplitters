@@ -29,12 +29,10 @@ public abstract class BaseGameData
     public uint GameVersion { get; private set; }
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The version found; ideally, this will be converted from some <see cref="Enum"/> for clarity.</param>
-    /// <param name="hash">The MD5 hash of the game process EXE.</param>
-    public delegate void GameFoundDelegate(uint version, string hash);
+    public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public GameFoundDelegate OnGameVersionChanged;
+    public GameVersionChangedDelegate OnGameVersionChanged;
 
     #region MemoryWatcherList Items
 
@@ -52,7 +50,6 @@ public abstract class BaseGameData
     public MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
 
     #endregion
-
 
     /// <summary>Sets addresses for <see cref="Watchers" /> based on <paramref name="version" />.</summary>
     /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
@@ -76,9 +73,8 @@ public abstract class BaseGameData
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
     public bool Update()
     {
-        try
-        {
-            if (GameProcess is null || GameProcess.HasExited)
+        if (GameProcess is null || GameProcess.HasExited)
+            try
             {
                 if (!FindSupportedGame())
                     return false;
@@ -87,12 +83,24 @@ public abstract class BaseGameData
                 PreLoadWatchers();
                 return IsGameInitialized();
             }
+            catch (Exception e)
+            {
+                LiveSplit.Options.Log.Error(e);
+                return false;
+            }
 
+
+        if (GameVersion is VersionDetector.None or VersionDetector.Unknown)
+            return false;
+
+        try
+        {
             Watchers.UpdateAll(GameProcess);
             return IsGameInitialized();
         }
-        catch
+        catch (Exception e)
         {
+            LiveSplit.Options.Log.Error(e);
             return false;
         }
     }
@@ -104,18 +112,34 @@ public abstract class BaseGameData
     /// </returns>
     private bool FindSupportedGame()
     {
-        uint detectedVersion = _versionDetector.DetectVersion(out Process gameProcess, out string hash);
-        if (GameVersion != detectedVersion)
+        uint previousVersion = GameVersion;
+
+        VersionDetectionResult result = _versionDetector.DetectVersion();
+        switch (result)
         {
-            GameVersion = detectedVersion;
-            OnGameVersionChanged.Invoke(GameVersion, hash);
+            case VersionDetectionResult.Found found:
+                GameVersion = found.Version;
+                SetGameProcess(found.Process);
+                break;
+
+            case VersionDetectionResult.Unknown unknown:
+                GameVersion = VersionDetector.Unknown;
+                SetGameProcess(unknown.Process);
+                break;
+
+            case VersionDetectionResult.None:
+                GameVersion = VersionDetector.None;
+                GameProcess = null;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
         }
 
-        if (gameProcess is null)
-            return false;
+        if (previousVersion != GameVersion) // This protects against spamming the event in the repeated None case.
+            OnGameVersionChanged.Invoke(result);
 
-        SetGameProcess(gameProcess);
-        return true;
+        return result is VersionDetectionResult.Found;
     }
 
     /// <summary>Sets <see cref="GameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
@@ -124,7 +148,7 @@ public abstract class BaseGameData
     {
         GameProcess = gameProcess;
         GameProcess.EnableRaisingEvents = true;
-        GameProcess.Exited += (_, _) => OnGameVersionChanged.Invoke(VersionDetector.NoneOrUndetectedValue, string.Empty);
+        GameProcess.Exited += (_, _) => OnGameVersionChanged.Invoke(new VersionDetectionResult.None());
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>

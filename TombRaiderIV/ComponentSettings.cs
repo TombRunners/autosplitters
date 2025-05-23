@@ -25,7 +25,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     private Button _selectAllButton;
     private Button _unselectAllButton;
 
-    private Tr4Version ActiveVersion { get; set; } = Tr4Version.None;
+    private uint ActiveVersion { get; set; } = VersionDetector.None;
 
     private const string LegacyGlitchlessSettingTextDefault = "Legacy Glitchless Splits";
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
@@ -307,7 +307,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
         // Edit Controls.
         _levelTransitionSettingsPanel.Controls.Clear();
-        if (ActiveVersion == Tr4Version.None)
+        if (ActiveVersion == VersionDetector.None)
         {
             _selectAllButton.Enabled = _unselectAllButton.Enabled = false;
             _levelTransitionSettings.Text = $"{LevelTransitionSettingsTextDefault} (Disabled, No Game Active)";
@@ -317,7 +317,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             _selectAllButton.Enabled = _unselectAllButton.Enabled = true;
             _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
 
-            if (ActiveVersion == Tr4Version.SteamOrGog)
+            if ((Tr4Version)ActiveVersion == Tr4Version.SteamOrGog)
                 PopulateControl(Tr4LevelTransitions);
             else
                 PopulateControl(TteLevelTransitions);
@@ -411,32 +411,40 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         AdjustTransitionsGroupBoxState();
     }
 
-    public override void SetGameVersion(uint version, string hash)
+    public override void SetGameVersion(VersionDetectionResult result)
     {
         const string digitalText = "Steam/GOG [TR4]";
         const string tteText = "The Times Exclusive [TTE]";
 
-        ActiveVersion = (Tr4Version)version;
-        RefreshLevelTransitions();
-
-        string versionText;
-        switch (ActiveVersion)
+        switch (result)
         {
-            case Tr4Version.SteamOrGog:
-                versionText = digitalText;
+            case VersionDetectionResult.None:
+                ActiveVersion = VersionDetector.None;
+                base.SetGameVersion(result);
                 break;
 
-            case Tr4Version.TheTimesExclusive:
-                versionText = tteText;
-                break;
-
-            case Tr4Version.None:
-            default:
-                base.SetGameVersion(version, hash);
+            case VersionDetectionResult.Unknown:
+                ActiveVersion = VersionDetector.Unknown;
+                base.SetGameVersion(result);
                 return;
+
+            case VersionDetectionResult.Found found:
+                ActiveVersion = found.Version;
+                GameVersionLabel.Text =
+                    "Game Version: " +
+                    (Tr4Version)found.Version switch
+                    {
+                        Tr4Version.SteamOrGog => digitalText,
+                        Tr4Version.TheTimesExclusive => tteText,
+                        _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                    };
+                return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
         }
 
-        GameVersionLabel.Text = "Game Version: " + versionText;
+        RefreshLevelTransitions();
     }
 
     private void SelectAllButton_Click(object sender, EventArgs e) => SetAllCheckBoxes(true);
@@ -471,7 +479,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             text += " [Disabled: Deathrun Mode overrides split logic]";
         else if (LegacyGlitchless)
             text += " [Disabled: Legacy Glitchless overrides with preset transitions]";
-        else if (!FullGame && ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
+        else if (!FullGame && (Tr4Version)ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
             text += " [Disabled: IL Mode for TTE is the same as FG with all transitions active]";
         else if (!FullGame) // TR4 IL
             text += " [Disabled: IL Mode overrides because all transitions are split]";
@@ -481,7 +489,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void AdjustLegacyGlitchlessState()
     {
-        if (FullGame && ActiveVersion != Tr4Version.TheTimesExclusive)
+        if (FullGame && (Tr4Version)ActiveVersion != Tr4Version.TheTimesExclusive)
         {
             LegacyGlitchlessCheckbox.Enabled = true;
             LegacyGlitchlessCheckbox.Text = LegacyGlitchlessSettingTextDefault;
@@ -491,7 +499,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         // Disable for every Mode besides Full Game.
         LegacyGlitchlessCheckbox.Checked = LegacyGlitchlessCheckbox.Enabled = false;
 
-        if (ActiveVersion == Tr4Version.TheTimesExclusive)
+        if ((Tr4Version)ActiveVersion == Tr4Version.TheTimesExclusive)
             LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Does not apply to The Times Exclusive]";
         else if (Deathrun)
             LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]";

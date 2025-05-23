@@ -71,7 +71,6 @@ internal sealed class GameData : LaterClassicGameData
                 Watchers.Add(new MemoryWatcher<byte>(new DeepPointer(0x1082D0)) { Name = "GfGameMode" });
                 break;
 
-            case Tr5Version.None:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
         }

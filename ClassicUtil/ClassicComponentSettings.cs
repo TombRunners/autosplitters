@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Util;
 
 namespace ClassicUtil;
 
@@ -134,15 +135,16 @@ public class ClassicComponentSettings : UserControl
 
     public void SetAslWarningLabelVisibility(bool aslComponentIsPresent) => _aslWarningLabel.Visible = aslComponentIsPresent;
 
-    public virtual void SetGameVersion(uint version, string hash)
+    public virtual void SetGameVersion(VersionDetectionResult result)
     {
         const string noneUndetected = "Game Version: None / Undetected";
 
-        GameVersionLabel.Text = version switch
+        GameVersionLabel.Text = result switch
         {
-            0 => noneUndetected,
-            0xDEADBEEF => $"Found unknown version, MD5 hash: {hash}",
-            _ => GameVersionLabel.Text,
+            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
+            VersionDetectionResult.Found => GameVersionLabel.Text,
+            _ => throw new ArgumentOutOfRangeException(nameof(result)),
         };
     }
 

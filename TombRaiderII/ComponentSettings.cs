@@ -1,52 +1,44 @@
 using System;
 using ClassicUtil;
+using Util;
 
 namespace TR2;
 
 public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
-    public override void SetGameVersion(uint version, string hash)
+    public override void SetGameVersion(VersionDetectionResult result)
     {
-        const string multipatch = "Multipatch [TR2]";
-        const string eidosPremierCollection = "Eidos Premier Collection [TR2]";
-        const string corePatch1 = "CORE's Patch 1 [TR2]";
-        const string eidosUkBox = "Eidos UK Box [TR2]";
-        const string stella = "Stella [TR2G]";
-        const string stellaNoCd = "Stella No-CD [TR2G]";
+        const string mpText = "Multipatch [TR2]";
+        const string epcText = "Eidos Premier Collection [TR2]";
+        const string p1Text = "CORE's Patch 1 [TR2]";
+        const string ukbText = "Eidos UK Box [TR2]";
+        const string stellaText = "Stella [TR2G]";
+        const string stellaCrackedText = "Stella No-CD [TR2G]";
 
-        string versionText;
-        switch ((Tr2Version)version)
+        switch (result)
         {
-            case Tr2Version.MP:
-                versionText = multipatch;
-                break;
-
-            case Tr2Version.EPC:
-                versionText = eidosPremierCollection;
-                break;
-
-            case Tr2Version.P1:
-                versionText = corePatch1;
-                break;
-
-            case Tr2Version.UKB:
-                versionText = eidosUkBox;
-                break;
-
-            case Tr2Version.StellaGold:
-                versionText = stella;
-                break;
-
-            case Tr2Version.StellaGoldCracked:
-                versionText = stellaNoCd;
-                break;
-
-            case Tr2Version.None:
-            default:
-                base.SetGameVersion(version, hash);
+            case VersionDetectionResult.None:
+            case VersionDetectionResult.Unknown:
+                base.SetGameVersion(result);
                 return;
-        }
 
-        GameVersionLabel.Text = "Game Version: " + versionText;
+            case VersionDetectionResult.Found found:
+                GameVersionLabel.Text =
+                    "Game Version: " +
+                    (Tr2Version)found.Version switch
+                    {
+                        Tr2Version.MP => mpText,
+                        Tr2Version.EPC => epcText,
+                        Tr2Version.P1 => p1Text,
+                        Tr2Version.UKB => ukbText,
+                        Tr2Version.StellaGold => stellaText,
+                        Tr2Version.StellaGoldCracked => stellaCrackedText,
+                        _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                    };
+                return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
+        }
     }
 }
