@@ -162,6 +162,9 @@ public static class GameData
             {
                 SignatureScanInfo.ResetCount(); // Reset so searches can continue.
                 SignatureScanStatus = SignatureScanStatus.NotTriedYet;
+                _retryTime = DateTime.UtcNow.AddSeconds(3); // Hack to lessen weird code paths.
+                GameProcess = null;
+                return false;
             }
 
             try
@@ -175,6 +178,15 @@ public static class GameData
             }
             catch (Exception e)
             {
+                if (e is InvalidOperationException && e.Message.EndsWith("has exited.", StringComparison.Ordinal))
+                {
+                    // This code path can happen because GameProcess can become null before the process itself fully quits.
+                    SignatureScanInfo.ResetCount();
+                    SignatureScanStatus = SignatureScanStatus.NotTriedYet;
+                    _retryTime = null;
+                    return false;
+                }
+
                 LiveSplit.Options.Log.Error(e);
 
                 // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.

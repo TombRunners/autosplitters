@@ -1,6 +1,6 @@
 ﻿namespace TR456;
 
-public class SignatureScanInfo(uint maxRetries = 5)
+public class SignatureScanInfo(uint maxRetries = 6)
 {
     public SignatureScanStatus Status = SignatureScanStatus.NotTriedYet;
     public readonly uint MaxRetries = maxRetries;
