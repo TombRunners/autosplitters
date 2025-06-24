@@ -94,7 +94,6 @@
     <Compile Include="Stats\RunStats.cs" />
     <Compile Include="Tr4LevelTransitionSetting.cs" />
     <Compile Include="Tr6LevelTransitionSetting.cs" />
-    <Compile Include="VersionDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">

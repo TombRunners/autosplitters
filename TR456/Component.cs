@@ -7,6 +7,7 @@ using LiveSplit.Model;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using LiveSplit.UI.Components.AutoSplit;
+using Util;
 using Timer = LiveSplit.UI.Components.Timer;
 
 namespace TR456;
@@ -278,7 +279,7 @@ public class Component : AutoSplitComponent
             if (!ComponentSettings.GameVersionInitialized)
             {
                 GameData.GameProcess = null;
-                GameData.GameVersion = GameVersion.None;
+                GameData.CurrentGameVersion = VersionDetector.None;
             }
         }
 

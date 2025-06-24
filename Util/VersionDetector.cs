@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace Util;
 
-public class VersionDetector
+public class VersionDetector(List<string> processSearchNames, Dictionary<string, uint> versionHashes)
 {
     public const uint None = 0xBEEF;
     public const uint Unknown = 0xDEADBEEF;
 
     /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    internal readonly List<string> ProcessSearchNames = [];
+    internal List<string> ProcessSearchNames { get; } = processSearchNames;
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
     /// <remarks>Ideally, the <see cref="uint"/> will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    internal readonly Dictionary<string, uint> VersionHashes = [];
+    internal Dictionary<string, uint> VersionHashes { get; } = versionHashes;
 
     /// <summary>
     ///     Detects the version of a running game process using <see cref="ProcessSearchNames" /> and <see cref="VersionHashes" />.

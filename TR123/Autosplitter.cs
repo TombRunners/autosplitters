@@ -91,7 +91,7 @@ public class Autosplitter : BaseAutosplitter
         // To prevent the ticks from showing in LS, we use the fact that LevelComplete isn't reset to 0 until the next level is loaded.
         var levelComplete = GameData.LevelComplete;
         bool levelCompleteStillActive = levelComplete.Old && levelComplete.Current;
-        uint currentLevel = GameData.CurrentLevel();
+        uint currentLevel = GameData.CurrentLevel;
         bool currentLevelWasAlreadyCompleted = RunStats.LevelHasBeenSplit(CurrentActiveGame, currentLevel);
         if (currentLevelWasAlreadyCompleted && levelCompleteStillActive)
             return null;
@@ -106,7 +106,7 @@ public class Autosplitter : BaseAutosplitter
     public override bool ShouldSplit(LiveSplitState state)
     {
         // Handle Lara's Home special case.
-        uint oldLevel = GameData.OldLevel();
+        uint oldLevel = GameData.OldLevel;
         if (oldLevel == 0 && !GameData.TitleLoaded.Old) // Title Screen disambiguation
         {
             // The runner must be using the passport for this special case.
@@ -129,7 +129,7 @@ public class Autosplitter : BaseAutosplitter
             return false;
 
         // Prevent re-splits.
-        uint currentLevel = GameData.CurrentLevel();
+        uint currentLevel = GameData.CurrentLevel;
         bool levelAlreadySplit = RunStats.LevelHasBeenSplit(CurrentActiveGame, currentLevel);
         if (levelAlreadySplit)
             return false;
@@ -179,7 +179,7 @@ public class Autosplitter : BaseAutosplitter
         var igt = GameData.LevelIgt;
         bool levelTimeJustStarted = igt.Old == 0 && igt.Current > 0;
         return Settings.FullGame
-            ? levelTimeJustStarted && IsFirstLevel(GameData.CurrentLevel())
+            ? levelTimeJustStarted && IsFirstLevel(GameData.CurrentLevel)
             : levelTimeJustStarted;
     }
 

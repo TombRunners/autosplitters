@@ -525,11 +525,11 @@ internal class GameMemory
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
     /// <param name="version">Game version to base addresses on</param>
     /// <param name="gameProcess"><see cref="Process" /> of the game</param>
-    internal void InitializeMemoryWatchers(GameVersion version, Process gameProcess)
+    internal void InitializeMemoryWatchers(uint version, Process gameProcess)
     {
         Watchers.Clear();
 
-        switch (version)
+        switch ((GameVersion)version)
         {
             case GameVersion.PublicV10:
                 // Base game EXE (tomb123.exe)
@@ -591,8 +591,6 @@ internal class GameMemory
                 AddCommonDllWatchers(GameVersion.PublicV101Patch4);
                 break;
 
-            case GameVersion.None:
-            case GameVersion.Unknown:
             case GameVersion.EgsDebug:
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);

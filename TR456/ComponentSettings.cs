@@ -144,24 +144,29 @@ public sealed class ComponentSettings : UserControl
         PerformLayout();
     }
 
-    public void SetGameVersion(GameVersion version, string hash)
+    public void SetGameVersion(VersionDetectionResult result)
     {
-        const string noneUndetected = "No tomb456 process found";
+        const string noneUndetected = "Game Version: None / Undetected";
         const string gogV10 = "GOG v1.0";
         const string publicV10 = "GOG v1.0.0 / Steam 17156603 / EGS TRX2_250128_19221_WIN";
         const string publicV10Patch1 = "GOG v1.0.0_Patch_1 / Steam 17983102 / EGS TRX2_250404_20819_WIN";
 
-        string versionText = version switch
+        GameVersionLabel.Text = result switch
         {
-            GameVersion.None       => noneUndetected,
-            GameVersion.Unknown    => $"Unknown version, MD5 hash: {hash}",
-            GameVersion.GogV10     => gogV10,
-            GameVersion.PublicV10  => publicV10,
-            GameVersion.PublicV10Patch1  => publicV10Patch1,
-            _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
+            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
+            VersionDetectionResult.Found found => GameVersionLabel.Text =
+                "Game Version: " +
+                (GameVersion)found.Version switch
+                {
+                    GameVersion.GogV10 => gogV10,
+                    GameVersion.PublicV10 => publicV10,
+                    GameVersion.PublicV10Patch1 => publicV10Patch1,
+                    _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                },
+            _ => throw new ArgumentOutOfRangeException(nameof(result)),
         };
 
-        GameVersionLabel.Text = $"Game Version: {versionText}";
         GameVersionInitialized = true;
     }
 
@@ -494,7 +499,7 @@ public sealed class ComponentSettings : UserControl
         _toolTip.ReshowDelay = 250;
         PopulateLevelControls();
 
-        #region GameVersion and AutosplitterVersion Labels
+        #region CGameVersion and AutosplitterVersion Labels
 
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;

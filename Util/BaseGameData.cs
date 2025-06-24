@@ -7,7 +7,7 @@ namespace Util;
 
 public abstract class BaseGameData
 {
-    private readonly VersionDetector _versionDetector = new ();
+    private readonly VersionDetector _versionDetector = new ([], new Dictionary<string, uint>());
 
     /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
     private const int IGTTicksPerSecond = 30;
