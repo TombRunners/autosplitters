@@ -41,7 +41,7 @@ public abstract class ClassicAutosplitter<TData>(Version version, TData data) : 
 
         // Sum the current and completed levels' IGT.
         ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, currentLevel);
-        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
+        return TimeSpan.FromSeconds(BaseOgGameData.LevelTimeAsDouble(ticks));
     }
 
     public override bool IsGameTimePaused(LiveSplitState state) => true;

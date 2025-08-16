@@ -5,7 +5,7 @@ using LiveSplit.ComponentUtil;
 
 namespace Util;
 
-public abstract class BaseGameData
+public abstract class BaseOgGameData
 {
     private readonly VersionDetector _versionDetector = new ([], new Dictionary<string, uint>());
 
@@ -69,7 +69,7 @@ public abstract class BaseGameData
         Watchers.UpdateAll(GameProcess); // Moves Current to Old and loads new Current values.
     }
 
-    /// <summary>Updates <see cref="BaseGameData" /> implementation and its addresses' values.</summary>
+    /// <summary>Updates <see cref="BaseOgGameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
     public bool Update()
     {

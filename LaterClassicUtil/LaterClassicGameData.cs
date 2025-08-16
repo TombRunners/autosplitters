@@ -3,7 +3,7 @@ using Util;
 
 namespace LaterClassicUtil;
 
-public abstract class LaterClassicGameData : BaseGameData
+public abstract class LaterClassicGameData : BaseOgGameData
 {
     #region MemoryWatcherList Items
 
