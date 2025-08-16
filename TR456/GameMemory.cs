@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using LiveSplit.ComponentUtil;
+using Util;
 
 namespace TR456;
 
@@ -478,7 +479,7 @@ internal class GameMemory
     /// <summary>Sets addresses based on <paramref name="version" />.</summary>
     /// <param name="version">Game version to base addresses on</param>
     /// <param name="gameProcess"><see cref="Process" /> of the game</param>
-    internal void InitializeMemoryWatchers(GameVersion version, Process gameProcess)
+    internal void InitializeMemoryWatchers(uint version, Process gameProcess)
     {
         _watchersExe.Clear();
         _watchersTR4R.Clear();
@@ -486,7 +487,7 @@ internal class GameMemory
         _watchersTR6R.Clear();
 
         // Guard against an improper call.
-        if (version is GameVersion.None)
+        if (version is VersionDetector.None)
             throw new ArgumentOutOfRangeException(nameof(version), version, null);
 
         // tomb456.exe
@@ -528,8 +529,8 @@ internal class GameMemory
             throw new Exception($"Signature info not coded properly for {sigInfo.Name}: missing offset.");
 
         int sigOffset = sigInfo.OffsetsToWriteInstruction[0].offset;
-        if (GameData.GameVersion is not GameVersion.Unknown && sigInfo.OffsetsToWriteInstruction.Length > 1) // Overwrite offsets if different for a later known version.
-            foreach ((_, int offset) in sigInfo.OffsetsToWriteInstruction.Where(static tuple => tuple.version is not null && (int)GameData.GameVersion >= (int)tuple.version))
+        if (GameData.CurrentGameVersion is not VersionDetector.Unknown && sigInfo.OffsetsToWriteInstruction.Length > 1) // Overwrite offsets if different for a later known version.
+            foreach ((_, int offset) in sigInfo.OffsetsToWriteInstruction.Where(static tuple => tuple.version is not null && (int)GameData.CurrentGameVersion >= (int)tuple.version))
                 sigOffset = offset;
 
         IntPtr writeInstructionAddress = signatureAddress + sigOffset;

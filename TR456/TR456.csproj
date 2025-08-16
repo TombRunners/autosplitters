@@ -85,7 +85,6 @@
     <Compile Include="Enums\Tr5LevelSection.cs" />
     <Compile Include="Enums\Tr6Level.cs" />
     <Compile Include="Enums\TransitionDirection.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="GameMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,7 +94,6 @@
     <Compile Include="Stats\RunStats.cs" />
     <Compile Include="Tr4LevelTransitionSetting.cs" />
     <Compile Include="Tr6LevelTransitionSetting.cs" />
-    <Compile Include="VersionDetector.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ComponentSettings.resx">
@@ -131,10 +129,15 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
-      <Version>9.0.2</Version>
+      <Version>9.0.6</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{c441c7a6-1371-4690-b51e-45583d8f041f}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF "$(ConfigurationName)" == "Release" (xcopy $(TargetPath) $(ProjectDir)\Components\ /y)</PostBuildEvent>

@@ -1,7 +1,7 @@
-﻿using LiveSplit.Model; // LiveSplitState
+﻿using System.Xml;
+using LaterClassicUtil;
+using LiveSplit.Model;
 using LiveSplit.UI;
-using System.Xml;
-using TRUtil;          // LaterClassicAutosplitter, LaterClassicComponent
 
 namespace TR5;
 

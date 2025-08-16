@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
-using TRUtil;
+using LaterClassicUtil;
+using Util;
 
 namespace TR5;
 
@@ -22,6 +24,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
     }
 
+    [SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
     private void InitializeComponent()
     {
         _modeSelect = new GroupBox();
@@ -163,33 +166,33 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         SplitSecurityBreach = checkbox.Checked;
     }
 
-    public override void SetGameVersion(uint version, string hash)
+    public override void SetGameVersion(VersionDetectionResult result)
     {
         const string digitalText = "Steam/GOG [TR5]";
         const string digitalNoCutsceneText = "Steam/GOG [TR5] with Cutscene Skipper Mod";
         const string jpNoCdText = "Japanese No-CD [TR5]";
 
-        string versionText;
-        switch ((Tr5Version)version)
+        switch (result)
         {
-            case Tr5Version.SteamOrGog:
-                versionText = digitalText;
-                break;
-
-            case Tr5Version.SteamOrGogCutsceneless:
-                versionText = digitalNoCutsceneText;
-                break;
-
-            case Tr5Version.JapaneseNoCd:
-                versionText = jpNoCdText;
-                break;
-
-            case Tr5Version.None:
-            default:
-                base.SetGameVersion(version, hash);
+            case VersionDetectionResult.None:
+            case VersionDetectionResult.Unknown:
+                base.SetGameVersion(result);
                 return;
-        }
 
-        GameVersionLabel.Text = "Game Version: " + versionText;
+            case VersionDetectionResult.Found found:
+                GameVersionLabel.Text =
+                    "Game Version: " +
+                    (Tr5Version)found.Version switch
+                    {
+                        Tr5Version.SteamOrGog => digitalText,
+                        Tr5Version.SteamOrGogCutsceneless => digitalNoCutsceneText,
+                        Tr5Version.JapaneseNoCd => jpNoCdText,
+                        _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                    };
+                return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
+        }
     }
 }

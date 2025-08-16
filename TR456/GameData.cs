@@ -1,11 +1,26 @@
-﻿using System;
+﻿using LiveSplit.ComponentUtil;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using LiveSplit.ComponentUtil;
+using Util;
 
 namespace TR456;
 
 public static class GameData
 {
+    private static readonly VersionDetector VersionDetector =
+        new(
+            ["tomb456"],
+            new Dictionary<string, uint>
+            {
+                { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // EGS
+                { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // GOG
+                { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // Steam
+                { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch1 }, // EGS
+                { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch1 }, // GOG / Steam
+            }
+        );
+
     private static readonly GameMemory GameMemory = new ();
 
     private static readonly SignatureScanInfo SignatureScanInfo = new();
@@ -23,12 +38,10 @@ public static class GameData
     internal static Process GameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    internal static GameVersion GameVersion;
+    internal static uint CurrentGameVersion;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The new <see cref="GameVersion" /></param>
-    /// <param name="hash">MD5 hash of the game EXE</param>
-    public delegate void GameVersionChangedDelegate(GameVersion version, string hash);
+    public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public static GameVersionChangedDelegate OnGameVersionChanged;
@@ -140,54 +153,66 @@ public static class GameData
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
     public static bool Update()
     {
-        try
+        if (_retryTime.HasValue && DateTime.UtcNow < _retryTime.Value)
+            return false; // Waiting to retry
+
+        if (GameProcess is null || GameProcess.HasExited)
         {
-            if (_retryTime.HasValue && DateTime.UtcNow < _retryTime.Value)
-                return false; // Waiting to retry
-
-            if (GameProcess is null || GameProcess.HasExited)
+            if (GameProcess is not null && GameProcess.HasExited)
             {
-                if (GameProcess is not null && GameProcess.HasExited)
-                {
-                    SignatureScanInfo.ResetCount(); // Reset so searches can continue.
-                    SignatureScanStatus = SignatureScanStatus.NotTriedYet;
-                }
+                SignatureScanInfo.ResetCount(); // Reset so searches can continue.
+                SignatureScanStatus = SignatureScanStatus.NotTriedYet;
+                _retryTime = DateTime.UtcNow.AddSeconds(3); // Hack to lessen weird code paths.
+                GameProcess = null;
+                return false;
+            }
 
+            try
+            {
                 if (!FindSupportedGame())
                     return false;
 
-                try
+                GameMemory.InitializeMemoryWatchers(CurrentGameVersion, GameProcess);
+                SignatureScanStatus = SignatureScanStatus.Success;
+                _retryTime = null;
+            }
+            catch (Exception e)
+            {
+                if (e is InvalidOperationException && e.Message.EndsWith("has exited.", StringComparison.Ordinal))
                 {
-                    GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
-                    SignatureScanStatus = SignatureScanStatus.Success;
+                    // This code path can happen because GameProcess can become null before the process itself fully quits.
+                    SignatureScanInfo.ResetCount();
+                    SignatureScanStatus = SignatureScanStatus.NotTriedYet;
+                    _retryTime = null;
+                    return false;
+                }
+
+                LiveSplit.Options.Log.Error(e);
+
+                // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
+                if (SignatureScanInfo.MaxRetriesReached)
+                {
+                    SignatureScanStatus = SignatureScanStatus.Failure; // Update will not try again (unless GameProcess.HasExited).
                     _retryTime = null;
                 }
-                catch (Exception e)
+                else
                 {
-                    LiveSplit.Options.Log.Error(e);
-
-                    // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
-                    if (SignatureScanInfo.MaxRetriesReached)
-                    {
-                        SignatureScanStatus = SignatureScanStatus.Failure; // Update will not try again (unless GameProcess.HasExited).
-                        _retryTime = null;
-                    }
-                    else
-                    {
-                        // Set retry state.
-                        GameProcess = null;
-                        SignatureScanInfo.AddRetry();
-                        SignatureScanStatus = SignatureScanStatus.Retrying;
-                        _retryTime = DateTime.UtcNow.AddSeconds(3);
-                    }
+                    // Set retry state.
+                    GameProcess = null;
+                    SignatureScanInfo.AddRetry();
+                    SignatureScanStatus = SignatureScanStatus.Retrying;
+                    _retryTime = DateTime.UtcNow.AddSeconds(3);
                 }
-
-                return SignatureScanInfo.IsSuccess && GameIsInitialized;
             }
 
-            if (!SignatureScanInfo.IsSuccess)
-                return false;
+            return SignatureScanInfo.IsSuccess && GameIsInitialized;
+        }
 
+        if (!SignatureScanInfo.IsSuccess)
+            return false;
+
+        try
+        {
             GameMemory.UpdateMemoryWatchers(GameProcess);
             return GameIsInitialized;
         }
@@ -200,23 +225,39 @@ public static class GameData
 
     /// <summary>If applicable, finds a <see cref="Process" /> running an expected version of the game.</summary>
     /// <returns>
-    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="GameVersion" /> were meaningfully set,
+    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="CurrentGameVersion" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
     private static bool FindSupportedGame()
     {
-        GameVersion detectedVersion = VersionDetector.DetectVersion(out Process gameProcess, out string hash);
-        if (GameVersion != detectedVersion)
+        uint previousVersion = CurrentGameVersion;
+
+        VersionDetectionResult result = VersionDetector.DetectVersion();
+        switch (result)
         {
-            GameVersion = detectedVersion;
-            OnGameVersionChanged.Invoke(GameVersion, hash);
+            case VersionDetectionResult.Found found:
+                CurrentGameVersion = found.Version;
+                SetGameProcess(found.Process);
+                break;
+
+            case VersionDetectionResult.Unknown unknown:
+                CurrentGameVersion = VersionDetector.Unknown;
+                SetGameProcess(unknown.Process);
+                break;
+
+            case VersionDetectionResult.None:
+                CurrentGameVersion = VersionDetector.None;
+                GameProcess = null;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
         }
 
-        if (gameProcess is null)
-            return false;
+        if (previousVersion != CurrentGameVersion) // This protects against spamming the event in the repeated None case.
+            OnGameVersionChanged.Invoke(result);
 
-        SetGameProcess(gameProcess);
-        return true;
+        return result is VersionDetectionResult.Found;
     }
 
     /// <summary>Sets <see cref="GameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
@@ -225,6 +266,6 @@ public static class GameData
     {
         GameProcess = gameProcess;
         GameProcess.EnableRaisingEvents = true;
-        GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
+        GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(new VersionDetectionResult.None());
     }
 }

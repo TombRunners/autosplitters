@@ -1,6 +1,6 @@
 ﻿using System;
+using ClassicUtil;
 using LiveSplit.Model;
-using TRUtil;
 
 namespace TR2;
 

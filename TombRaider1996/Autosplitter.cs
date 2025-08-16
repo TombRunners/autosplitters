@@ -1,6 +1,7 @@
 using System;
+using ClassicUtil;
 using LiveSplit.Model;
-using TRUtil;
+using Util;
 
 namespace TR1;
 
@@ -54,7 +55,7 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 
         // Sum the current and completed levels' IGT.
         ulong ticks = currentLevelTicks + Data.SumLevelTimes(CompletedLevels, LastRealLevel);
-        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(ticks));
+        return TimeSpan.FromSeconds(BaseOgGameData.LevelTimeAsDouble(ticks));
     }
 
     /// <summary>

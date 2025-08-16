@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using Util;
 
 namespace TR123;
 
@@ -32,6 +34,7 @@ public sealed class ComponentSettings : UserControl
         GameVersionInitialized = false;
     }
 
+    [SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
     private void InitializeComponent()
     {
         ModeSelect = new GroupBox();
@@ -190,9 +193,9 @@ public sealed class ComponentSettings : UserControl
         _timerWarningLabel.Visible = !timerWithGameTimeIsPresent;
     }
 
-    public void SetGameVersion(GameVersion version, string hash)
+    public void SetGameVersion(VersionDetectionResult result)
     {
-        const string noneUndetected = "No tomb123 process found.";
+        const string noneUndetected = "Game Version: None / Undetected";
         const string egsDebug = "EGS debug release (Unsupported)";
         const string publicV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
@@ -201,21 +204,26 @@ public sealed class ComponentSettings : UserControl
         const string publicV101Patch3 = "GOG v1.01 Patch 3 / Steam 14397396";
         const string publicV101Patch4 = "GOG v1.01 Patch 4 / Steam 15795727";
 
-        string versionText = version switch
+        GameVersionLabel.Text = result switch
         {
-            GameVersion.None       => noneUndetected,
-            GameVersion.Unknown    => $"Found unknown version, MD5 hash: {hash}",
-            GameVersion.EgsDebug   => egsDebug,
-            GameVersion.PublicV10  => publicV10,
-            GameVersion.PublicV101 => publicV101,
-            GameVersion.PublicV101Patch1 => publicV101Patch1,
-            GameVersion.PublicV101Patch2 => publicV101Patch2,
-            GameVersion.PublicV101Patch3 => publicV101Patch3,
-            GameVersion.PublicV101Patch4 => publicV101Patch4,
-            _ => throw new ArgumentOutOfRangeException(nameof(version), version, "Unknown GameVersion"),
+            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
+            VersionDetectionResult.Found found => GameVersionLabel.Text =
+                "Game Version: " +
+                (GameVersion)found.Version switch
+                {
+                    GameVersion.EgsDebug => egsDebug,
+                    GameVersion.PublicV10 => publicV10,
+                    GameVersion.PublicV101 => publicV101,
+                    GameVersion.PublicV101Patch1 => publicV101Patch1,
+                    GameVersion.PublicV101Patch2 => publicV101Patch2,
+                    GameVersion.PublicV101Patch3 => publicV101Patch3,
+                    GameVersion.PublicV101Patch4 => publicV101Patch4,
+                    _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                },
+            _ => throw new ArgumentOutOfRangeException(nameof(result)),
         };
 
-        GameVersionLabel.Text = $"Game Version: {versionText}";
         GameVersionInitialized = true;
     }
 

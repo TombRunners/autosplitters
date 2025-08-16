@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using LaterClassicUtil;
 using LiveSplit.Model;
 using LiveSplit.UI;
-using TRUtil;
 
 namespace TR4;
 

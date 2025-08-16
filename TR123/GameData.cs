@@ -4,11 +4,27 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using LiveSplit.ComponentUtil;
+using Util;
 
 namespace TR123;
 
 public static class GameData
 {
+    private static readonly VersionDetector VersionDetector =
+        new(
+            ["tomb123"],
+            new Dictionary<string, uint>
+            {
+                { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), (uint)GameVersion.EgsDebug },
+                { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.PublicV10 },
+                { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
+                { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch1 },
+                { "224D11BEBEC79A0B579C0001C66E64CF".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch2 },
+                { "02D456CC7FEAAC61819BE9A05228D2B3".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch3 },
+                { "1930B6B2167805C890B293FEB0B640B3".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch4 },
+            }
+        );
+
     private static readonly GameMemory GameMemory = new ();
 
     /// <summary>Tests if the passes <paramref name="inventoryChosen" /> value matches a game's passport.</summary>
@@ -26,7 +42,7 @@ public static class GameData
     {
         get
         {
-            uint currentLevel = CurrentLevel();
+            uint currentLevel = CurrentLevel;
             Game baseGame = CurrentActiveBaseGame;
             // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
             switch (baseGame)
@@ -68,8 +84,14 @@ public static class GameData
     /// <summary>Identifies the game without NG+ identification.</summary>
     public static Game CurrentActiveBaseGame => (Game)(GameMemory.ActiveGame.Current * 3);
 
+    #region EXE Watcher Accessors
+
     /// <inheritdoc cref="GameMemory.GFrameIndex" />
     public static MemoryWatcher<int> GlobalFrameIndex => GameMemory.GFrameIndex;
+
+    #endregion
+
+    #region DLL Watcher Accessors
 
     /// <inheritdoc cref="GameMemory.CineWatchers"/>
     public static MemoryWatcher<short> Cinematic => GameMemory.CineWatchers[CurrentActiveBaseGame];
@@ -104,13 +126,15 @@ public static class GameData
     /// <inheritdoc cref="GameMemory.LevelWatchers" />
     private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
 
+    #endregion
+
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Current level of the game</returns>
-    public static uint CurrentLevel() => RealGameLevel(true);
+    public static uint CurrentLevel => RealGameLevel(true);
 
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
     /// <returns>Old level of the game</returns>
-    public static uint OldLevel() => RealGameLevel(false);
+    public static uint OldLevel => RealGameLevel(false);
 
     /// <summary>Accounts for special cases of Level readings to match the expected values at those points.</summary>
     /// <param name="current">Whether to use Level.Current; false means to use Level.Old.</param>
@@ -156,12 +180,10 @@ public static class GameData
     internal static Process GameProcess;
 
     /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    internal static GameVersion GameVersion;
+    internal static uint CurrentGameVersion;
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    /// <param name="version">The new <see cref="GameVersion" /></param>
-    /// <param name="hash">MD5 hash of the game EXE</param>
-    public delegate void GameVersionChangedDelegate(GameVersion version, string hash);
+    public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
 
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public static GameVersionChangedDelegate OnGameVersionChanged;
@@ -177,7 +199,7 @@ public static class GameData
                 if (!FindSupportedGame())
                     return false;
 
-                GameMemory.InitializeMemoryWatchers(GameVersion, GameProcess);
+                GameMemory.InitializeMemoryWatchers(CurrentGameVersion, GameProcess);
                 return GameIsInitialized;
             }
 
@@ -192,23 +214,39 @@ public static class GameData
 
     /// <summary>If applicable, finds a <see cref="Process" /> running an expected version of the game.</summary>
     /// <returns>
-    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="GameVersion" /> were meaningfully set,
+    ///     <see langword="true" /> if <see cref="GameProcess" /> and <see cref="CurrentGameVersion" /> were meaningfully set,
     ///     <see langword="false" /> otherwise
     /// </returns>
     private static bool FindSupportedGame()
     {
-        GameVersion detectedVersion = VersionDetector.DetectVersion(out Process gameProcess, out string hash);
-        if (GameVersion != detectedVersion)
+        uint previousVersion = CurrentGameVersion;
+
+        VersionDetectionResult result = VersionDetector.DetectVersion();
+        switch (result)
         {
-            GameVersion = detectedVersion;
-            OnGameVersionChanged.Invoke(GameVersion, hash);
+            case VersionDetectionResult.Found found:
+                CurrentGameVersion = found.Version;
+                SetGameProcess(found.Process);
+                break;
+
+            case VersionDetectionResult.Unknown unknown:
+                CurrentGameVersion = VersionDetector.Unknown;
+                SetGameProcess(unknown.Process);
+                break;
+
+            case VersionDetectionResult.None:
+                CurrentGameVersion = VersionDetector.None;
+                GameProcess = null;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
         }
 
-        if (gameProcess is null || GameVersion is GameVersion.EgsDebug) // EGS Debug is not supported.
-            return false;
+        if (previousVersion != CurrentGameVersion) // This protects against spamming the event in the repeated None case.
+            OnGameVersionChanged.Invoke(result);
 
-        SetGameProcess(gameProcess);
-        return true;
+        return result is VersionDetectionResult.Found;
     }
 
     /// <summary>Sets <see cref="GameProcess" /> and performs additional work to ensure the process's termination is handled.</summary>
@@ -217,7 +255,7 @@ public static class GameData
     {
         GameProcess = gameProcess;
         GameProcess.EnableRaisingEvents = true;
-        GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(GameVersion.None, string.Empty);
+        GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(new VersionDetectionResult.None());
     }
 
     /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
@@ -238,7 +276,7 @@ public static class GameData
 
         uint levelSaveStructSize = GameSaveStructSizes[activeBaseGame];
 
-        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[GameVersion][activeBaseGame].FirstLevelTime;
+        int firstLevelTimeAddress = GameMemory.GameVersionAddresses[(GameVersion)CurrentGameVersion][activeBaseGame].FirstLevelTime;
         IntPtr moduleBaseAddress = activeModule.BaseAddress;
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)

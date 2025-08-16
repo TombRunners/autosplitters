@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
-using System;
+﻿using System;
+using System.ComponentModel;
 using System.Reflection;
 
-namespace TR4;
+namespace Util;
 
 public static class EnumExtensions
 {

@@ -1,5 +1,5 @@
-﻿using LiveSplit.Model; // LiveSplitState
-using TRUtil;          // ClassicAutosplitter, ClassicComponent
+﻿using ClassicUtil;
+using LiveSplit.Model;
 
 namespace TR2;
 

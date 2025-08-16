@@ -75,9 +75,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TRUtil\TRUtil.csproj">
-      <Project>{29196311-2D7C-428B-A058-6BBFC8452909}</Project>
-      <Name>TRUtil</Name>
+    <ProjectReference Include="..\ClassicUtil\ClassicUtil.csproj">
+      <Project>{35b161e9-6dba-4bb9-bfa2-78db842d667e}</Project>
+      <Name>ClassicUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{c441c7a6-1371-4690-b51e-45583d8f041f}</Project>
+      <Name>Util</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

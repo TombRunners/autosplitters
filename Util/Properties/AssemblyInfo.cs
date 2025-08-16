@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TRComponentUtil")]
-[assembly: AssemblyDescription("Library for classic Tomb Raider autosplitting components.")]
+[assembly: AssemblyTitle("Util")]
+[assembly: AssemblyDescription("Utility library for Autosplitting Components.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TRComponentUtil")]
-[assembly: AssemblyCopyright("Copyright © 2024-2025")]
+[assembly: AssemblyProduct("Util")]
+[assembly: AssemblyCopyright("Copyright © 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("29196311-2d7c-428b-a058-6bbfc8452909")]
+[assembly: Guid("c441c7a6-1371-4690-b51e-45583d8f041f")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -28,8 +28,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-// You can specify all the values or you can default the Build and Revision Numbers
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.0")]
-[assembly: AssemblyFileVersion("2.5.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

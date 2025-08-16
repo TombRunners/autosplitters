@@ -1,13 +1,14 @@
-using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
-using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
-using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.UI.Components;
+using LiveSplit.UI.Components.AutoSplit;
 using System;
-using System.Collections.Generic; // EventArgs, IDisposable
-using System.Linq;                        // Any
-using System.Windows.Forms;               // Control, TableLayoutPanel
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
-using Timer = LiveSplit.UI.Components.Timer; // XmlDocument, XmlNode
+using Util;
+using Timer = LiveSplit.UI.Components.Timer;
 
 namespace TR123;
 
@@ -50,7 +51,7 @@ public class Component : AutoSplitComponent
 
     private void StateOnStart(object _0, EventArgs _1) => _splitter?.OnStart(_state);
 
-    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentLevel());
+    private void StateOnSplit(object _0, EventArgs _1) => _splitter?.OnSplit(GameData.CurrentLevel);
 
     private void StateOnUndoSplit(object _0, EventArgs _1) => _splitter?.OnUndoSplit();
 
@@ -151,7 +152,7 @@ public class Component : AutoSplitComponent
             if (!ComponentSettings.GameVersionInitialized)
             {
                 GameData.GameProcess = null;
-                GameData.GameVersion = GameVersion.None;
+                GameData.CurrentGameVersion = VersionDetector.None;
             }
         }
 

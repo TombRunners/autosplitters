@@ -1,12 +1,12 @@
-﻿using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
-using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
-using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
-using System;                             // EventArgs, IDisposable
-using System.Linq;                        // Any
-using System.Windows.Forms;               // Control, TableLayoutPanel
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.UI.Components;
+using LiveSplit.UI.Components.AutoSplit;
 
-namespace TRUtil;
+namespace LaterClassicUtil;
 
 /// <summary>
 ///     Implementation of <see cref="AutoSplitComponent"/>.
@@ -65,7 +65,7 @@ public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitCompone
     /// <param name="height">Height passed by LiveSplit</param>
     /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
     /// <remarks>
-    ///     This override allows <see cref="LaterClassicAutosplitter{TData,TSettings}"/> to use <see cref="ClassicGameData"/> in its logic.
+    ///     This override allows <see cref="LaterClassicAutosplitter{TData,TSettings}"/> to use <see cref="LaterClassicGameData"/> in its logic.
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {

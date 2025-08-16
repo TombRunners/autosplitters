@@ -3,7 +3,6 @@
 /// <summary>The supported game versions.</summary>
 internal enum Tr2Version
 {
-    None              = 0,
     MP                = 1, // Multipatch (Steam/GoG default)
     EPC               = 2, // Eidos Premier Collection
     P1                = 3, // CORE's Patch 1

@@ -1,7 +1,8 @@
 ﻿using System;
 using LiveSplit.Model;
+using Util;
 
-namespace TRUtil;
+namespace LaterClassicUtil;
 
 public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSettings settings) : BaseAutosplitter
     where TData : LaterClassicGameData
@@ -30,8 +31,10 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
         if (_ticksAtStartOfRun > Data.GameTimer.Current)
             return null;
 
-        return TimeSpan.FromSeconds(BaseGameData.LevelTimeAsDouble(Data.GameTimer.Current - _ticksAtStartOfRun));
+        return TimeSpan.FromSeconds(BaseOgGameData.LevelTimeAsDouble(Data.GameTimer.Current - _ticksAtStartOfRun));
     }
+
+    public override bool IsGameTimePaused(LiveSplitState state) => true;
 
     public override bool ShouldReset(LiveSplitState state)
     {

@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{29196311-2D7C-428B-A058-6BBFC8452909}</ProjectGuid>
+    <ProjectGuid>{35B161E9-6DBA-4BB9-BFA2-78DB842D667E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TRUtil</RootNamespace>
-    <AssemblyName>TRUtil</AssemblyName>
+    <RootNamespace>ClassicUtil</RootNamespace>
+    <AssemblyName>ClassicUtil</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LiveSplit.Core">
-      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\LiveSplit.Core.dll</HintPath>
+      <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\LiveSplit.Core\obj\Release\LiveSplit.Core.dll</HintPath>
     </Reference>
     <Reference Include="LiveSplit.ScriptableAutoSplit">
       <HintPath>..\..\..\vendor\LiveSplit\LiveSplit\bin\Release\Components\LiveSplit.ScriptableAutoSplit.dll</HintPath>
@@ -40,9 +40,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.ObjectEnum, Version=1.0.0.0, Culture=neutral, PublicKeyToken=3417009a98c7b227, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObjectEnum.1.0.0\lib\netstandard2.0\System.ObjectEnum.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,28 +49,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseAutosplitter.cs" />
-    <Compile Include="LaterClassicComponentSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="BaseGameData.cs" />
-    <Compile Include="LaterClassicComponent.cs" />
-    <Compile Include="LaterClassicGameData.cs" />
-    <Compile Include="LaterClassicAutosplitter.cs" />
     <Compile Include="ClassicAutosplitter.cs" />
     <Compile Include="ClassicComponent.cs" />
-    <Compile Include="ClassicGameData.cs" />
     <Compile Include="ClassicComponentSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ProcessExtensions.cs" />
+    <Compile Include="ClassicGameData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VersionDetector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="LaterClassicComponentSettings.resx">
-      <DependentUpon>LaterClassicComponentSettings.cs</DependentUpon>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Util\Util.csproj">
+      <Project>{c441c7a6-1371-4690-b51e-45583d8f041f}</Project>
+      <Name>Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="ClassicComponentSettings.resx">
       <DependentUpon>ClassicComponentSettings.cs</DependentUpon>
     </EmbeddedResource>

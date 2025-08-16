@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using LiveSplit.ComponentUtil;
+using Util;
 
-namespace TRUtil;
+namespace ClassicUtil;
 
-public abstract class ClassicGameData : BaseGameData
+public abstract class ClassicGameData : BaseOgGameData
 {
     /// <summary>Used to locate the first in-memory saved level time.</summary>
     protected uint FirstLevelTimeAddress;

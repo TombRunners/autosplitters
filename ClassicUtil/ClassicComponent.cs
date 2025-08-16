@@ -1,13 +1,13 @@
-﻿using LiveSplit.Model;                    // LiveSplitState
-using LiveSplit.UI;                       // IInvalidator, LayoutMode, SettingsHelper
-using LiveSplit.UI.Components;            // ASLComponent, IComponent, LogicComponent
-using LiveSplit.UI.Components.AutoSplit;  // AutoSplitComponent, IAutoSplitter
-using System;                             // EventArgs, IDisposable
-using System.Linq;                        // Any
-using System.Windows.Forms;               // Control, TableLayoutPanel
-using System.Xml;                         // XmlDocument, XmlNode
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using System.Xml;
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.UI.Components;
+using LiveSplit.UI.Components.AutoSplit;
 
-namespace TRUtil;
+namespace ClassicUtil;
 
 /// <summary>
 ///     Implementation of <see cref="AutoSplitComponent"/>.

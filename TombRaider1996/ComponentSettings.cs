@@ -1,37 +1,38 @@
 using System;
-using TRUtil;
+using ClassicUtil;
+using Util;
 
 namespace TR1;
 
 public sealed class ComponentSettings(Version version) : ClassicComponentSettings(version)
 {
-    public override void SetGameVersion(uint version, string hash)
+    public override void SetGameVersion(VersionDetectionResult result)
     {
         const string dosboxText = "DOSBox [TR 1996]";
         const string atiTr1Text = "TombATI [TR 1996]";
         const string atiTrUbText = "TombATI [TR:UB]";
 
-        string versionText;
-        switch ((Tr1Version)version)
+        switch (result)
         {
-            case Tr1Version.DOSBox:
-                versionText = dosboxText;
-                break;
-
-            case Tr1Version.Ati:
-                versionText = atiTr1Text;
-                break;
-
-            case Tr1Version.AtiUnfinishedBusiness:
-                versionText = atiTrUbText;
-                break;
-
-            case Tr1Version.None:
-            default:
-                base.SetGameVersion(version, hash);
+            case VersionDetectionResult.None:
+            case VersionDetectionResult.Unknown:
+                base.SetGameVersion(result);
                 return;
-        }
 
-        GameVersionLabel.Text = "Game Version: " + versionText;
+            case VersionDetectionResult.Found found:
+                GameVersionLabel.Text =
+                    "Game Version: " +
+                    (Tr1Version)found.Version switch
+                    {
+                        Tr1Version.Ati => atiTr1Text,
+                        Tr1Version.AtiUnfinishedBusiness => atiTrUbText,
+                        Tr1Version.DOSBox => dosboxText,
+                        _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                    };
+                return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
+        }
     }
 }
