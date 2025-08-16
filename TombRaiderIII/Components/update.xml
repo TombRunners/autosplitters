@@ -1,12 +1,4 @@
 <updates>
-  <update version="2025.1.0.0">
-    <files>
-      <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Refactored codebase.</change>
-    </changelog>
-  </update>
   <update version="2024.1.1.0">
     <files>
       <file path="TombRaiderIII/Components/TR3.dll" localPath="Components/TR3.dll" status="changed"/>
