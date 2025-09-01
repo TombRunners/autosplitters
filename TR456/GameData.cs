@@ -147,7 +147,7 @@ public static class GameData
     public static ulong OldLevelId => OldLevel;
 
     /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
-    internal static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
+    internal static bool GameIsInitialized => GameMemory?.ActiveGame?.Old is >= 0 and <= 2;
 
     private static DateTime? _retryTime;
 
@@ -205,6 +205,8 @@ public static class GameData
                     SignatureScanStatus = SignatureScanStatus.Retrying;
                     _retryTime = DateTime.UtcNow.AddSeconds(3);
                 }
+
+                return false;
             }
 
             return SignatureScanInfo.IsSuccess && GameIsInitialized;

@@ -62,6 +62,8 @@ public sealed class ComponentSettings : UserControl
 
     internal static bool GameVersionInitialized;
 
+    private SignatureScanInfo _displayInfo;
+
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
@@ -116,28 +118,39 @@ public sealed class ComponentSettings : UserControl
 
     public void SetSignatureScanStatusLabel(SignatureScanInfo info)
     {
+        _displayInfo = info;
+        if (IsHandleCreated)
+            UpdateSignatureScanStatusLabel();
+    }
+
+    private void UpdateSignatureScanStatusLabel()
+    {
+        if (_displayInfo is null)
+            return;
+
         SuspendLayout();
 
-        switch (info.Status)
+        switch (_displayInfo.Status)
         {
+            case SignatureScanStatus.NotTriedYet:
             case SignatureScanStatus.Success:
                 _signatureScanStatusLabel.Visible = false;
                 break;
+
             case SignatureScanStatus.Retrying:
-                _signatureScanStatusLabel.Text = $"Address scan failed! Retrying... ({info.RetryCount} of {info.MaxRetries})";
+                _signatureScanStatusLabel.Text = $"Address scan failed! Retrying... ({_displayInfo.RetryCount} of {_displayInfo.MaxRetries})";
                 _signatureScanStatusLabel.ForeColor = Color.DarkGoldenrod;
                 _signatureScanStatusLabel.Visible = true;
                 break;
+
             case SignatureScanStatus.Failure:
-                _signatureScanStatusLabel.Text = $"Address scan failed! Max retries reached. ({info.MaxRetries} of {info.MaxRetries})";
+                _signatureScanStatusLabel.Text = $"Address scan failed! Max retries reached. ({_displayInfo.MaxRetries} of {_displayInfo.MaxRetries})";
                 _signatureScanStatusLabel.ForeColor = Color.Crimson;
                 _signatureScanStatusLabel.Visible = true;
                 break;
-            case SignatureScanStatus.NotTriedYet:
-                _signatureScanStatusLabel.Visible = false;
-                break;
+
             default:
-                throw new ArgumentOutOfRangeException(nameof(info.Status), info.Status, "Unknown signature scan status");
+                throw new ArgumentOutOfRangeException(nameof(_displayInfo.Status), _displayInfo.Status, "Unknown signature scan status");
         }
 
         ResumeLayout();
@@ -915,6 +928,7 @@ public sealed class ComponentSettings : UserControl
     {
         AdjustSplitPickupsState();
         AdjustTransitionsGroupBoxState();
+        UpdateSignatureScanStatusLabel();
     }
 
     private void AdjustSplitPickupsState()
