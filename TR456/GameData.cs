@@ -13,13 +13,13 @@ public static class GameData
             ["tomb456"],
             new Dictionary<string, uint>
             {
-                { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // EGS
-                { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // GOG
-                { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10 }, // Steam
-                { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch1 }, // EGS
-                { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch1 }, // GOG / Steam
-                { "AAE3AFC4BA1F7E1822770D0CA9061BF8".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch2 }, // EGS
-                { "91EC963B96F7E689FC9C8FAD81545A30".ToLowerInvariant(), (uint)TR456.GameVersion.PublicV10Patch2 }, // GOG (?) / Steam
+                { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), (uint)GameVersion.GogV10 }, // GOG v1.0
+                { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), (uint)GameVersion.PublicV10 }, // EGS
+                { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), (uint)GameVersion.PublicV10 }, // GOG / Steam
+                { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), (uint)GameVersion.PublicV10Patch1 }, // EGS
+                { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), (uint)GameVersion.PublicV10Patch1 }, // GOG / Steam
+                { "AAE3AFC4BA1F7E1822770D0CA9061BF8".ToLowerInvariant(), (uint)GameVersion.PublicV10Patch2 }, // EGS
+                { "91EC963B96F7E689FC9C8FAD81545A30".ToLowerInvariant(), (uint)GameVersion.PublicV10Patch2 }, // GOG (?) / Steam
             }
         );
 
