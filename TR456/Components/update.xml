@@ -1,4 +1,15 @@
 <updates>
+  <update version="2025.3.0.0">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Autosplitter: Added support for currently available "Patch 2" releases.</change>
+	  <change>Autosplitter: Corrected bug with displaying the correct version name for GOG v1.0, the initial release on GOG.</change>
+	  <change>General: Fixed possible crash/hang from memory scanning and retry logic.</change>
+	  <change>TR6R: Corrected bug in detecting New Game+ correctly (for Achievements% support).</change>
+    </changelog>
+  </update>
   <update version="2025.2.0.2">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>

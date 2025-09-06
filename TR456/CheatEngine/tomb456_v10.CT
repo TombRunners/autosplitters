@@ -9,7 +9,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>118</ID>
-          <Description>"Patch 1"</Description>
+          <Description>"Patch 2"</Description>
           <Options moHideChildren="1" moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -18,24 +18,71 @@
               <Description>"ActiveGame"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb456.exe + 0x0016D3A8</Address>
+              <Address>tomb456.exe + 0x0069A810</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>120</ID>
               <Description>"gFrameIndex"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb456.exe + 0x0016DDC8</Address>
+              <Address>tomb456.exe + 0x0017BDC8</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>121</ID>
               <Description>"IsLoading"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb456.exe+0x00577C78</Address>
+              <Address>tomb456.exe + 0x00585F48</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>122</ID>
+              <Description>"FMV"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>5</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>tomb456.exe + 0x0017BF14</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>153</ID>
+          <Description>"Patch 1"</Description>
+          <Options moHideChildren="1" moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>162</ID>
+              <Description>"ActiveGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb456.exe + 0x0068C54C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>158</ID>
+              <Description>"ActiveGame (Old)"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb456.exe + 0x0016D3A8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>155</ID>
+              <Description>"gFrameIndex"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb456.exe + 0x0016DDC8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>156</ID>
+              <Description>"IsLoading"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb456.exe+0x00577C78</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>157</ID>
               <Description>"FMV"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
@@ -54,8 +101,15 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
-              <ID>0</ID>
+              <ID>159</ID>
               <Description>"ActiveGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"tomb456.exe" + 0x005D6530</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>160</ID>
+              <Description>"ActiveGame (Old)"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>"tomb456.exe" + 0x1373A8</Address>
@@ -122,8 +176,15 @@
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
-              <ID>2</ID>
+              <ID>0</ID>
               <Description>"ActiveGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>"tomb456.exe" + 0x005E0530</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>161</ID>
+              <Description>"ActiveGame (Old)"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
               <Address>"tomb456.exe" + 0x1413A8</Address>
@@ -179,7 +240,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>123</ID>
-          <Description>"Patch 1"</Description>
+          <Description>"Patch 2"</Description>
           <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -188,73 +249,158 @@
               <Description>"IGT"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x0065594C</Address>
+              <Address>tomb4.dll + 0x0066100C</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>124</ID>
               <Description>"LoadFade"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x00550300</Address>
+              <Address>tomb4.dll + 0x0055C140</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>125</ID>
               <Description>"CurrentLevel"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x00659850</Address>
+              <Address>tomb4.dll + 0x00664F10</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>126</ID>
               <Description>"NextLevel"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x00655944</Address>
+              <Address>tomb4.dll + 0x00661004</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>129</ID>
               <Description>"Health"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb4.dll + 0x001AFBAC</Address>
+              <Address>tomb4.dll + 0x001B7BAC</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>127</ID>
               <Description>"Pickups"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>2 Bytes</VariableType>
-              <Address>tomb4.dll + 0x00683CDC</Address>
+              <Address>tomb4.dll + 0x0068F39C</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>128</ID>
               <Description>"Secrets"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll + 0x00683CE2</Address>
+              <Address>tomb4.dll + 0x0068F3A2</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>21</ID>
               <Description>"BonusFlag (NG+)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll + 0x00683AB8</Address>
+              <Address>tomb4.dll + 0x0068F178</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>132</ID>
               <Description>"GfRequiredStartPosition"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll + 0x00658D20</Address>
+              <Address>tomb4.dll + 0x006643E0</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>131</ID>
               <Description>"GfInitializeGame"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb4.dll + 0x001B0C44</Address>
+              <Address>tomb4.dll + 0x001B8D64</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>130</ID>
+              <Description>"Room"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb4.dll + 0x00664D9C</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>185</ID>
+          <Description>"Patch 1"</Description>
+          <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>186</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll + 0x0065594C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>187</ID>
+              <Description>"LoadFade"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll + 0x00550300</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>188</ID>
+              <Description>"CurrentLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll + 0x00659850</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>189</ID>
+              <Description>"NextLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll + 0x00655944</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>190</ID>
+              <Description>"Health"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb4.dll + 0x001AFBAC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>191</ID>
+              <Description>"Pickups"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb4.dll + 0x00683CDC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>192</ID>
+              <Description>"Secrets"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll + 0x00683CE2</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>193</ID>
+              <Description>"BonusFlag (NG+)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll + 0x00683AB8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>194</ID>
+              <Description>"GfRequiredStartPosition"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll + 0x00658D20</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>195</ID>
+              <Description>"GfInitializeGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb4.dll + 0x001B0C44</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>196</ID>
               <Description>"Room"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>2 Bytes</VariableType>
@@ -446,7 +592,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>133</ID>
-          <Description>"Patch 1"</Description>
+          <Description>"Patch 2"</Description>
           <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -455,66 +601,144 @@
               <Description>"LoadFade"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x0054DED8</Address>
+              <Address>tomb5.dll + 0x00559578</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>8</ID>
               <Description>"NextLevel"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x0064E1F0</Address>
+              <Address>tomb5.dll + 0x0065AAD0</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>135</ID>
               <Description>"BonusFlag"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb5.dll + 0x006522B8</Address>
+              <Address>tomb5.dll + 0x0065EBB8</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>136</ID>
               <Description>"IGT"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x0064E238</Address>
+              <Address>tomb5.dll + 0x0065AB18</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>17</ID>
               <Description>"Pickups"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>2 Bytes</VariableType>
-              <Address>tomb5.dll + 0x006524DC</Address>
+              <Address>tomb5.dll + 0x0065EDDC</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>137</ID>
               <Description>"Secrets"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
-              <Address>tomb5.dll + 0x006524FA</Address>
+              <Address>tomb5.dll + 0x0065EDE2</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>138</ID>
               <Description>"CurrentLevel"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x00652280</Address>
+              <Address>tomb5.dll + 0x0065EB80</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>139</ID>
               <Description>"Health"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb5.dll + 0x001A9A50</Address>
+              <Address>tomb5.dll + 0x001B2AB0</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>140</ID>
               <Description>"Room"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>2 Bytes</VariableType>
-              <Address>tomb5.dll + 0x0066073C</Address>
+              <Address>tomb5.dll + 0x0066D03C</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>141</ID>
+              <Description>"GfInitializeGame"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll + 0x001AEA8C</Address>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>163</ID>
+          <Description>"Patch 1"</Description>
+          <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>164</ID>
+              <Description>"LoadFade"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll + 0x0054DED8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>165</ID>
+              <Description>"NextLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll + 0x0064E1F0</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>166</ID>
+              <Description>"BonusFlag"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll + 0x006522B8</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>167</ID>
+              <Description>"IGT"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll + 0x0064E238</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>168</ID>
+              <Description>"Pickups"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb5.dll + 0x006524DC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>169</ID>
+              <Description>"Secrets"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb5.dll + 0x006524FA</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>170</ID>
+              <Description>"CurrentLevel"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll + 0x00652280</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>171</ID>
+              <Description>"Health"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb5.dll + 0x001A9A50</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>172</ID>
+              <Description>"Room"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb5.dll + 0x0066073C</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>173</ID>
               <Description>"GfInitializeGame"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
@@ -732,7 +956,7 @@
       <CheatEntries>
         <CheatEntry>
           <ID>142</ID>
-          <Description>"Patch 1"</Description>
+          <Description>"Patch 2"</Description>
           <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
@@ -741,14 +965,14 @@
               <Description>"IGT (Frames, 60 FPS)"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb6.dll + 0x055F3C80</Address>
+              <Address>tomb6.dll + 0x0561C780</Address>
               <CheatEntries>
                 <CheatEntry>
                   <ID>144</ID>
                   <Description>"Level"</Description>
                   <ShowAsSigned>0</ShowAsSigned>
                   <VariableType>4 Bytes</VariableType>
-                  <Address>tomb6.dll + 0x055F3CA0</Address>
+                  <Address>tomb6.dll + 0x0561C7A0</Address>
                 </CheatEntry>
               </CheatEntries>
             </CheatEntry>
@@ -757,10 +981,107 @@
               <Description>"MenuTicker"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>4 Bytes</VariableType>
-              <Address>tomb6.dll + 0x0041D8BC</Address>
+              <Address>tomb6.dll + 0x0043BA6C</Address>
             </CheatEntry>
             <CheatEntry>
               <ID>146</ID>
+              <Description>"LevelName"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>String</VariableType>
+              <Length>21</Length>
+              <Unicode>0</Unicode>
+              <CodePage>0</CodePage>
+              <ZeroTerminate>1</ZeroTerminate>
+              <Address>tomb6.dll + 0x00C5F828</Address>
+              <Offsets>
+                <Offset>0x572</Offset>
+              </Offsets>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>147</ID>
+              <Description>"BonusFlag"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Byte</VariableType>
+              <Address>tomb6.dll + 0x0561C760</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>148</ID>
+              <Description>"Pickups"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll + 0x0561C790</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>149</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll + 0x0561C7B0</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>150</ID>
+              <Description>"Chocobars"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>2 Bytes</VariableType>
+              <Address>tomb6.dll + 0x0561C794</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>151</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>1</ShowAsSigned>
+                  <VariableType>2 Bytes</VariableType>
+                  <Address>tomb6.dll + 0x0561C7B4</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>152</ID>
+              <Description>"Health"</Description>
+              <ShowAsSigned>1</ShowAsSigned>
+              <VariableType>Float</VariableType>
+              <Address>tomb6.dll + 0x00CB3238</Address>
+              <Offsets>
+                <Offset>D64</Offset>
+                <Offset>1F0</Offset>
+              </Offsets>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>174</ID>
+          <Description>"Patch 1"</Description>
+          <Options moManualExpandCollapse="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>175</ID>
+              <Description>"IGT (Frames, 60 FPS)"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll + 0x055F3C80</Address>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>176</ID>
+                  <Description>"Level"</Description>
+                  <ShowAsSigned>0</ShowAsSigned>
+                  <VariableType>4 Bytes</VariableType>
+                  <Address>tomb6.dll + 0x055F3CA0</Address>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>177</ID>
+              <Description>"MenuTicker"</Description>
+              <ShowAsSigned>0</ShowAsSigned>
+              <VariableType>4 Bytes</VariableType>
+              <Address>tomb6.dll + 0x0041D8BC</Address>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>178</ID>
               <Description>"LevelName"</Description>
               <ShowAsSigned>0</ShowAsSigned>
               <VariableType>String</VariableType>
@@ -774,14 +1095,14 @@
               </Offsets>
             </CheatEntry>
             <CheatEntry>
-              <ID>147</ID>
+              <ID>179</ID>
               <Description>"BonusFlag"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Byte</VariableType>
               <Address>tomb6.dll + 0x055F3C60</Address>
             </CheatEntry>
             <CheatEntry>
-              <ID>148</ID>
+              <ID>180</ID>
               <Description>"Pickups"</Description>
               <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
               <ShowAsSigned>1</ShowAsSigned>
@@ -789,7 +1110,7 @@
               <Address>tomb6.dll + 0x055F3C90</Address>
               <CheatEntries>
                 <CheatEntry>
-                  <ID>149</ID>
+                  <ID>181</ID>
                   <Description>"Level"</Description>
                   <ShowAsSigned>1</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
@@ -798,7 +1119,7 @@
               </CheatEntries>
             </CheatEntry>
             <CheatEntry>
-              <ID>150</ID>
+              <ID>182</ID>
               <Description>"Chocobars"</Description>
               <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
               <ShowAsSigned>1</ShowAsSigned>
@@ -806,7 +1127,7 @@
               <Address>tomb6.dll + 0x055F3C94</Address>
               <CheatEntries>
                 <CheatEntry>
-                  <ID>151</ID>
+                  <ID>183</ID>
                   <Description>"Level"</Description>
                   <ShowAsSigned>1</ShowAsSigned>
                   <VariableType>2 Bytes</VariableType>
@@ -815,7 +1136,7 @@
               </CheatEntries>
             </CheatEntry>
             <CheatEntry>
-              <ID>152</ID>
+              <ID>184</ID>
               <Description>"Health"</Description>
               <ShowAsSigned>1</ShowAsSigned>
               <VariableType>Float</VariableType>
@@ -1124,6 +1445,13 @@
           </CheatEntries>
         </CheatEntry>
       </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>197</ID>
+      <Description>"No description"</Description>
+      <ShowAsSigned>1</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>tomb5.dll+0x00024AA8</Address>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
