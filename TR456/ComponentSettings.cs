@@ -162,8 +162,9 @@ public sealed class ComponentSettings : UserControl
         const string noneUndetected = "Game Version: None / Undetected";
         const string gogV10 = "GOG v1.0";
         const string publicV10 = "GOG v1.0.0 / Steam 17156603 / EGS TRX2_250128_19221_WIN";
-        const string publicV10Patch1 = "GOG v1.0.0_Patch_1 / Steam 17983102 / EGS TRX2_250404_20819_WIN";
-        const string publicV10Patch2 = "Steam 19062321 / EGS TRX2_250701_21868_WIN.7z";
+        const string patch1 = "GOG v1.0.0_Patch_1 / Steam 17983102 / EGS TRX2_250404_20819_WIN";
+        const string patch2 = "Steam 19062321 / EGS TRX2_250701_21868_WIN.7z";
+        const string patch2Hotfix1 = "Steam 19923088 / EGS TRX2_250910_21914_WIN.7z";
 
         GameVersionLabel.Text = result switch
         {
@@ -175,8 +176,9 @@ public sealed class ComponentSettings : UserControl
                 {
                     GameVersion.GogV10 => gogV10,
                     GameVersion.PublicV10 => publicV10,
-                    GameVersion.PublicV10Patch1 => publicV10Patch1,
-                    GameVersion.PublicV10Patch2 => publicV10Patch2,
+                    GameVersion.Patch1 => patch1,
+                    GameVersion.Patch2 => patch2,
+                    GameVersion.Patch2Hotfix1 => patch2Hotfix1,
                     _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                 },
             _ => throw new ArgumentOutOfRangeException(nameof(result)),

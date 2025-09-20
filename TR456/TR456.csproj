@@ -104,6 +104,8 @@
     <None Include="CheatEngine\.editorconfig" />
     <None Include="CheatEngine\tomb456_v10.CT" />
     <None Include="Enums\.editorconfig" />
+    <None Include="Hashes\egs_TRX2_250910_21914_WIN.7z.csv" />
+    <None Include="Hashes\steam_19923088.csv" />
     <None Include="Hashes\egs_TRX2_250701_21868_WIN.7z.csv" />
     <None Include="Hashes\gog_v1.0.0_Patch_1.csv" />
     <None Include="Hashes\egs_TRX2_250404_20819_WIN.csv" />

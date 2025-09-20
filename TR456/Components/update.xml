@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.3.1.0">
+    <files>
+      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Autosplitter: Added support for currently available "Patch 2 Hotfix 1" releases.</change>
+    </changelog>
+  </update>
   <update version="2025.3.0.0">
     <files>
       <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
