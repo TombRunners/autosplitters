@@ -197,12 +197,14 @@ public sealed class ComponentSettings : UserControl
     {
         const string noneUndetected = "Game Version: None / Undetected";
         const string egsDebug = "EGS debug release (Unsupported)";
-        const string publicV10 = "GOG v1.0";
+        const string gogV10 = "GOG v1.0";
         const string publicV101 = "GOG v1.01 / Steam 13430979";
-        const string publicV101Patch1 = "GOG v1.01 Patch 1 / Steam 13617493";
-        const string publicV101Patch2 = "GOG v1.01 Patch 2 / Steam 13946608";
-        const string publicV101Patch3 = "GOG v1.01 Patch 3 / Steam 14397396";
-        const string publicV101Patch4 = "GOG v1.01 Patch 4 / Steam 15795727";
+        const string patch1 = "GOG v1.01 Patch 1 / Steam 13617493";
+        const string patch2 = "GOG v1.01 Patch 2 / Steam 13946608";
+        const string patch3 = "GOG v1.01 Patch 3 / Steam 14397396";
+        const string patch4 = "GOG v1.01 Patch 4 / Steam 15795727";
+        const string patch4Update1 = "Steam 19001004";
+        const string patch4Update2 = "Steam 19617537";
 
         GameVersionLabel.Text = result switch
         {
@@ -213,12 +215,14 @@ public sealed class ComponentSettings : UserControl
                 (GameVersion)found.Version switch
                 {
                     GameVersion.EgsDebug => egsDebug,
-                    GameVersion.PublicV10 => publicV10,
+                    GameVersion.GogV10 => gogV10,
                     GameVersion.PublicV101 => publicV101,
-                    GameVersion.PublicV101Patch1 => publicV101Patch1,
-                    GameVersion.PublicV101Patch2 => publicV101Patch2,
-                    GameVersion.PublicV101Patch3 => publicV101Patch3,
-                    GameVersion.PublicV101Patch4 => publicV101Patch4,
+                    GameVersion.Patch1 => patch1,
+                    GameVersion.Patch2 => patch2,
+                    GameVersion.Patch3 => patch3,
+                    GameVersion.Patch4 => patch4,
+                    GameVersion.Patch4Update1 => patch4Update1,
+                    GameVersion.Patch4Update2 => patch4Update2,
                     _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                 },
             _ => throw new ArgumentOutOfRangeException(nameof(result)),

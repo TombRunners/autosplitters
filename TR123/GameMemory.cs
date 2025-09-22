@@ -24,7 +24,7 @@ internal class GameMemory
         new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
         {
             {
-                GameVersion.PublicV10,
+                GameVersion.GogV10,
                 new Dictionary<Game, GameAddresses>
                 {
                     {
@@ -144,7 +144,7 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.PublicV101Patch1,
+                GameVersion.Patch1,
                 new Dictionary<Game, GameAddresses>
                 {
                     {
@@ -204,7 +204,7 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.PublicV101Patch2,
+                GameVersion.Patch2,
                 new Dictionary<Game, GameAddresses>
                 {
                     {
@@ -264,7 +264,7 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.PublicV101Patch3,
+                GameVersion.Patch3,
                 new Dictionary<Game, GameAddresses>
                 {
                     {
@@ -324,7 +324,7 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.PublicV101Patch4,
+                GameVersion.Patch4,
                 new Dictionary<Game, GameAddresses>
                 {
                     {
@@ -383,6 +383,8 @@ internal class GameMemory
                     },
                 }
             },
+            // TODO: Add Patch 4 Update 1 common addresses.
+            // TODO: Add Patch 4 Update 2 common addresses.
         }.ToImmutableDictionary();
 
     #region MemoryWatcher Definitions
@@ -531,14 +533,14 @@ internal class GameMemory
 
         switch ((GameVersion)version)
         {
-            case GameVersion.PublicV10:
+            case GameVersion.GogV10:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x1A5B78)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x3B9C44)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xCFA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV10);
+                AddCommonDllWatchers(GameVersion.GogV10);
                 break;
 
             case GameVersion.PublicV101:
@@ -551,44 +553,54 @@ internal class GameMemory
                 AddCommonDllWatchers(GameVersion.PublicV101);
                 break;
 
-            case GameVersion.PublicV101Patch1:
+            case GameVersion.Patch1:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D0C)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xD8A54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV101Patch1);
+                AddCommonDllWatchers(GameVersion.Patch1);
                 break;
 
-            case GameVersion.PublicV101Patch2:
+            case GameVersion.Patch2:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3D34)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDBA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV101Patch2);
+                AddCommonDllWatchers(GameVersion.Patch2);
                 break;
 
-            case GameVersion.PublicV101Patch3:
+            case GameVersion.Patch3:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xDFB68)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F3DB4)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDCA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV101Patch3);
+                AddCommonDllWatchers(GameVersion.Patch3);
                 break;
 
-            case GameVersion.PublicV101Patch4:
+            case GameVersion.Patch4:
                 // Base game EXE (tomb123.exe)
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xE0B68)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2EF37C)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xDEA54)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
-                AddCommonDllWatchers(GameVersion.PublicV101Patch4);
+                AddCommonDllWatchers(GameVersion.Patch4);
+                break;
+
+            case GameVersion.Patch4Update1:
+                // TODO: Add Patch 4 Update 1 non-shared addresses.
+                AddCommonDllWatchers(GameVersion.Patch4Update1);
+                break;
+
+            case GameVersion.Patch4Update2:
+                // TODO: Add Patch 4 Update 2 non-shared addresses.
+                AddCommonDllWatchers(GameVersion.Patch4Update2);
                 break;
 
             case GameVersion.EgsDebug:
