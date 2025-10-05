@@ -383,7 +383,66 @@ internal class GameMemory
                     },
                 }
             },
-            // TODO: Add Patch 4 Update 1 common addresses.
+            {
+                GameVersion.Patch4Update1,
+                new Dictionary<Game, GameAddresses>
+                {
+                    {
+                        Game.Tr1,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x4C542A, // LevelIgt + 0x1A
+                            Cine = 0x34F5C8,
+                            FirstLevelTime = 0x4C4E50,
+                            Health = 0xFDE78,
+                            InventoryChosen = 0xE2E54,
+                            InventoryMode = 0xF96A0,
+                            Level = 0x4C5428, // LevelIgt + 0x18
+                            LevelComplete = 0xFD750, // TitleLoaded + 0x8
+                            LevelIgt = 0x4C5410,
+                            LoadFade = 0x29D9C4,
+                            OverlayFlag = 0xE2E50,
+                            TitleLoaded = 0xFD748,
+                        }
+                    },
+                    {
+                        Game.Tr2,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x4FB606, // LevelIgt + 0x1A
+                            Cine = 0x382B00,
+                            FirstLevelTime = 0x4FB030,
+                            Health = 0x131928,
+                            InventoryChosen = 0x114F14,
+                            InventoryMode = 0x1170C8,
+                            Level = 0x133B58,
+                            LevelComplete = 0x1340B8, // TitleLoaded + 0x8
+                            LevelIgt = 0x4FB5EC,
+                            LoadFade = 0x2D4450,
+                            OverlayFlag = 0x1152EC,
+                            TitleLoaded = 0x1340B0,
+                        }
+                    },
+                    {
+                        Game.Tr3,
+                        new GameAddresses
+                        {
+                            BonusFlag = 0x55E6D4, // LevelIgt + 0x2C
+                            Cine = 0x3DDDE8,
+                            FirstLevelTime = 0x55DEC4,
+                            Health = 0x18BCA8,
+                            InventoryChosen = 0x16AD88,
+                            InventoryMode = 0x16BA58,
+                            Level = 0x18E16C,
+                            LevelComplete = 0x18E690,
+                            LevelIgt = 0x55E6A8,
+                            LoadFade = 0x32F334,
+                            OverlayFlag = 0x1682DC,
+                            TitleLoaded = 0x18E684,
+                        }
+                    },
+                }
+            },
             {
                 GameVersion.Patch4Update2,
                 new Dictionary<Game, GameAddresses>
@@ -653,7 +712,12 @@ internal class GameMemory
                 break;
 
             case GameVersion.Patch4Update1:
-                // TODO: Add Patch 4 Update 1 non-shared addresses.
+                // Base game EXE (tomb123.exe)
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xE5BD8)) { Name = "ActiveGame" });
+                Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F45E4)) { Name = "GlobalFrameIndex" });
+                // One-offs from DLLs
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xE2AB8 )) { Name = "Tr1LevelCutscene" });
+                // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.Patch4Update1);
                 break;
 
