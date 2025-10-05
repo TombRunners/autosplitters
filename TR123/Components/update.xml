@@ -1,4 +1,12 @@
 <updates>
+  <update version="2025.1.0.0">
+    <files>
+      <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
+    </files>
+    <changelog>
+      <change>Added support for "Golden Guns" game versions.</change>
+    </changelog>
+  </update>
   <update version="2024.1.7.0">
     <files>
       <file path="TR123/Components/TR123.dll" localPath="Components/TR123.dll" status="changed"/>
