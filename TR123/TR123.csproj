@@ -111,6 +111,8 @@
     <None Include="Hashes\steam_13946608_hashes.csv" />
     <None Include="Hashes\steam_14397396_hashes.csv" />
     <None Include="Hashes\steam_15795727_hashes.csv" />
+    <None Include="Hashes\steam_19001004_hashes.csv" />
+    <None Include="Hashes\steam_19617537_hashes.csv" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

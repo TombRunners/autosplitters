@@ -16,12 +16,14 @@ public static class GameData
             new Dictionary<string, uint>
             {
                 { "0C0C1C466DAE013ABBB976F11B52C726".ToLowerInvariant(), (uint)GameVersion.EgsDebug },
-                { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.PublicV10 },
+                { "0A937857C0AF755AEEAA98F4520CA0D2".ToLowerInvariant(), (uint)GameVersion.GogV10 },
                 { "769B1016F945167C48C6837505E37748".ToLowerInvariant(), (uint)GameVersion.PublicV101 },
-                { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch1 },
-                { "224D11BEBEC79A0B579C0001C66E64CF".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch2 },
-                { "02D456CC7FEAAC61819BE9A05228D2B3".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch3 },
-                { "1930B6B2167805C890B293FEB0B640B3".ToLowerInvariant(), (uint)GameVersion.PublicV101Patch4 },
+                { "5B1644AFFD7BAD65B2AC5D76F15139C6".ToLowerInvariant(), (uint)GameVersion.Patch1 },
+                { "224D11BEBEC79A0B579C0001C66E64CF".ToLowerInvariant(), (uint)GameVersion.Patch2 },
+                { "02D456CC7FEAAC61819BE9A05228D2B3".ToLowerInvariant(), (uint)GameVersion.Patch3 },
+                { "1930B6B2167805C890B293FEB0B640B3".ToLowerInvariant(), (uint)GameVersion.Patch4 },
+                { "3F30F1735607E8006E93EFBD70DFE253".ToLowerInvariant(), (uint)GameVersion.Patch4Update1 },
+                { "33BE5AE3FC33DC87CCBEB1F595D7F8B8".ToLowerInvariant(), (uint)GameVersion.Patch4Update2 },
             }
         );
 
