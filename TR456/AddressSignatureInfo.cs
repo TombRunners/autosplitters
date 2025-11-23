@@ -12,8 +12,6 @@ public readonly record struct AddressSignatureInfo
     public (GameVersion? version, int offset)[] OffsetsToWriteInstruction { get; init; }
     public int WriteInstructionLength { get; init; }
     public int EffectiveAddressOffset { get; init; }
-    public bool IsPointer { get; init; }
-    public int OffsetAfterPointerResolution { get; init; }
 
     public bool Equals(AddressSignatureInfo other) =>
         Name == other.Name &&

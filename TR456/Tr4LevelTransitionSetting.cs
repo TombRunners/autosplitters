@@ -38,7 +38,6 @@ public class Tr4LevelTransitionSetting(
             sb.Append(lowerRoomNumber is null ?  "000" : lowerRoomNumber.Value.ToString("D3"));
             sb.Append(higherRoomNumber is null ?  "000" : higherRoomNumber.Value.ToString("D3"));
 
-
             return ulong.Parse(sb.ToString());
         }
     }
@@ -116,11 +115,13 @@ public class Tr4LevelTransitionSetting(
         int lowerValue = int.Parse(node[LowerSettingName].InnerText);
         if (!Enum.IsDefined(typeof(Tr4Level), lowerValue))
             throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{nameof(Tr4Level)}'.");
+
         var lower = (Tr4Level)Enum.ToObject(typeof(Tr4Level), lowerValue);
 
         int higherValue = int.Parse(node[HigherSettingName].InnerText);
         if (!Enum.IsDefined(typeof(Tr4Level), higherValue))
             throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{nameof(Tr4Level)}'.");
+
         var higher = (Tr4Level)Enum.ToObject(typeof(Tr4Level), higherValue);
 
         var directionality = (TransitionDirection)int.Parse(node[DirectionalitySettingName].InnerText);

@@ -55,7 +55,6 @@ public static class RunStats
         if (game is not Game.Tr6 and not Game.Tr6NgPlus)
             stats = stats with { Igt = stats.Igt - AllGameStats[game].IgtTicks };
 
-
         if (!AllGameStats[game].AddLevelStats(stats))
             return;
 

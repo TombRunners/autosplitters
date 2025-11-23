@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using LiveSplit.Model;
+using LiveSplit.Options;
 using Util;
 
 namespace TR456;
@@ -205,15 +206,15 @@ public class Autosplitter : BaseAutosplitter
         {
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
-            LiveSplit.Options.Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}");
+            Log.Warning($"No active transition match found!\nTransition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}");
 #endif
             return false;
         }
 
         if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
-            LiveSplit.Options.Log.Error($"TR4R Level Transition Settings improperly coded, found multiple matches!\n"
-                                        + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n"
-                                        + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
+            Log.Error($"TR4R Level Transition Settings improperly coded, found multiple matches!\n"
+                      + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n"
+                      + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
 
         Tr4LevelTransitionSetting match = activeMatches[0];
@@ -236,6 +237,7 @@ public class Autosplitter : BaseAutosplitter
 
                     break;
                 }
+
                 case ActiveSetting.IgnoreSecond:
                 {
                     if (levelHasBeenSplit)
@@ -243,6 +245,7 @@ public class Autosplitter : BaseAutosplitter
 
                     break;
                 }
+
                 case ActiveSetting.IgnoreFirst:
                 {
                     if (levelHasBeenSplit)
@@ -267,6 +270,7 @@ public class Autosplitter : BaseAutosplitter
 
                     return false;
                 }
+
                 case ActiveSetting.IgnoreAll:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(match.Active), match.Active, "Improper ActiveSetting");
@@ -347,8 +351,8 @@ public class Autosplitter : BaseAutosplitter
         {
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
-            LiveSplit.Options.Log.Warning($"No active transition match found!\n" +
-                                          $"{oldLevel} -> {currentLevel}");
+            Log.Warning($"No active transition match found!\n" +
+                        $"{oldLevel} -> {currentLevel}");
 #endif
             return false;
         }
@@ -356,9 +360,9 @@ public class Autosplitter : BaseAutosplitter
         if (activeMatches.Count > 1)
         {
             // Should be impossible if hardcoded default transitions are set up correctly.
-            LiveSplit.Options.Log.Error($"TR6R Level Transition Settings improperly coded, found multiple matches!\n"
-                                        + $"Transition: {oldLevel} -> {currentLevel} \n"
-                                        + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
+            Log.Error($"TR6R Level Transition Settings improperly coded, found multiple matches!\n"
+                      + $"Transition: {oldLevel} -> {currentLevel} \n"
+                      + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
             );
 
             return false;

@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using LiveSplit.ComponentUtil;
+using LiveSplit.Options;
 using Util;
 
 namespace TR456;
@@ -237,8 +238,6 @@ internal class GameMemory
                     OffsetsToWriteInstruction = [(null, 0x25)],
                     WriteInstructionLength = 7,
                     EffectiveAddressOffset = 0,
-                    IsPointer = true,
-                    OffsetAfterPointerResolution = 0x572,
                 }
             },
             // CurrentLevel
@@ -547,10 +546,10 @@ internal class GameMemory
 
 #if DEBUG
         long moduleOffset = effectiveAddress.ToInt64() - scanner.Address.ToInt64();
-        LiveSplit.Options.Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
-                                      $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
-                                      $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
-                                      $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
+        Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
+                    $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
+                    $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
+                    $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
 #endif
 
         // Return the address.
@@ -593,10 +592,9 @@ internal class GameMemory
             scanners.Add(game, scanner);
         }
 
-        if (scanners.Count != 3)
-            throw new Exception("Did not successfully scan all modules");
-
-        return scanners;
+        return scanners.Count == 3
+            ? scanners
+            : throw new Exception("Did not successfully scan all modules");
     }
 
     /// <summary>Adds MemoryWatchers related to game DLLs.</summary>
