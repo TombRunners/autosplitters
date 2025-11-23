@@ -154,7 +154,7 @@ internal readonly struct PuzzleItems(
     public byte MineDetonator      => Item08;
 
     /// <summary>Unique item active during <see cref="Tr4Level.SphinxComplex"/>.</summary>
-    public byte Shovel => Item01;
+    public byte Shovel        => Item01;
 
     /// <summary>Unique item active during <see cref="Tr4Level.UnderneathTheSphinx"/>.</summary>
     public byte StoneOfMaat   => Item01;

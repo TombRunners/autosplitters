@@ -4,7 +4,7 @@ using LiveSplit.Model;
 
 namespace TR5;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData, TSettings}"/>.</summary>
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData,TSettings}"/>.</summary>
 internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
@@ -40,7 +40,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         // Handle ILs and FG for both rulesets.
         bool loadingAnotherLevel = currentGfLevelComplete != 0;
         if (!Settings.SplitSecurityBreach)
-            loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint)Tr5Level.CutsceneSecurityBreach;
+            loadingAnotherLevel = loadingAnotherLevel && currentGfLevelComplete != (uint) Tr5Level.CutsceneSecurityBreach;
         return loadingAnotherLevel;
     }
 }

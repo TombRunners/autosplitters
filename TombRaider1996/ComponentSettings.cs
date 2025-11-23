@@ -24,9 +24,9 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
                     "Game Version: " +
                     (Tr1Version)found.Version switch
                     {
-                        Tr1Version.Ati => atiTr1Text,
+                        Tr1Version.Ati                   => atiTr1Text,
                         Tr1Version.AtiUnfinishedBusiness => atiTrUbText,
-                        Tr1Version.DOSBox => dosboxText,
+                        Tr1Version.DOSBox                => dosboxText,
                         _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                     };
                 return;

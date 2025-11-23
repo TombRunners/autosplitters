@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using LaterClassicUtil;
 using LiveSplit.Model;
+using LiveSplit.Options;
 using LiveSplit.UI;
 
 namespace TR4;
@@ -39,8 +40,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         return settingsNode;
     }
 
-    private static void AppendTransitionSettings<TLevel>(
-        XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
+    private static void AppendTransitionSettings<TLevel>(XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
         where TLevel : Enum
     {
         XmlElement transitionsNode = document.CreateElement(elementName);
@@ -60,12 +60,12 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], Splitter.Settings.SplitSecrets);
 
         // Assign values to Settings.
-        if (Splitter.Settings.FullGame)
-            Splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
+        if (Splitter.Settings.FullGame) // Grouped RadioButtons
+            Splitter.Settings.FullGameModeButton.Checked = true;
         else if (Splitter.Settings.Deathrun)
-            Splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
+            Splitter.Settings.DeathrunModeButton.Checked = true;
         else
-            Splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
+            Splitter.Settings.ILModeButton.Checked = true;
 
         Splitter.Settings.LegacyGlitchlessCheckbox.Checked = Splitter.Settings.LegacyGlitchless; // CheckBox
         Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset;   // CheckBox
@@ -87,7 +87,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
         if (xmlTransitionsCount != transitionsCount)
         {
-            LiveSplit.Options.Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
+            Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
             return;
         }
 
@@ -104,7 +104,7 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
             }
             catch (Exception ex)
             {
-                LiveSplit.Options.Log.Error($"{typeof(TLevel).Name} deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
+                Log.Error($"{typeof(TLevel).Name} deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
                 RevertSettings(settingsList, defaultOrExistingTransitions);
                 break;
             }
@@ -114,13 +114,13 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
             if (existingSetting.Count != 1)
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Found unexpected amount of matches ({existingSetting.Count}) for {typeof(TLevel).Name} from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                Log.Error($"Found unexpected amount of matches ({existingSetting.Count}) for {typeof(TLevel).Name} from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
             }
 
             if (!encounteredSettingIds.Add(settingFromXml.Id))
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Encountered {typeof(TLevel).Name} setting more than once from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                Log.Error($"Encountered {typeof(TLevel).Name} setting more than once from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
             }
 
             if (settingsNeedReversion)

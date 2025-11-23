@@ -1,31 +1,31 @@
-﻿using LiveSplit.ComponentUtil;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using LiveSplit.ComponentUtil;
+using LiveSplit.Options;
 using Util;
 
 namespace TR456;
 
 public static class GameData
 {
-    private static readonly VersionDetector VersionDetector =
-        new(
-            ["tomb456"],
-            new Dictionary<string, uint>
-            {
-                { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), (uint)GameVersion.GogV10 }, // GOG v1.0
-                { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), (uint)GameVersion.PublicV10 }, // EGS
-                { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), (uint)GameVersion.PublicV10 }, // GOG / Steam
-                { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), (uint)GameVersion.Patch1 }, // EGS
-                { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), (uint)GameVersion.Patch1 }, // GOG / Steam
-                { "AAE3AFC4BA1F7E1822770D0CA9061BF8".ToLowerInvariant(), (uint)GameVersion.Patch2 }, // EGS
-                { "91EC963B96F7E689FC9C8FAD81545A30".ToLowerInvariant(), (uint)GameVersion.Patch2 }, // Steam
-                { "55AE1EAADCF725B62F08F5CD5492304C".ToLowerInvariant(), (uint)GameVersion.Patch2Hotfix1 }, // EGS
-                { "6D3593354B88D66867974860DB027223".ToLowerInvariant(), (uint)GameVersion.Patch2Hotfix1 }, // Steam
-            }
-        );
+    private static readonly VersionDetector VersionDetector = new(
+        ["tomb456"],
+        new Dictionary<string, uint>
+        {
+            { "25FEE8EBB2FAE95BF13CABE151CB7A9F".ToLowerInvariant(), (uint) GameVersion.GogV10 },        // GOG v1.0
+            { "CA258829147BD3BF932152BFFABBE4A1".ToLowerInvariant(), (uint) GameVersion.PublicV10 },     // EGS
+            { "14479C2B293FAC5A8E175D0D540B7C77".ToLowerInvariant(), (uint) GameVersion.PublicV10 },     // GOG / Steam
+            { "CC6936505922BE1A29F12173BF1A3EB7".ToLowerInvariant(), (uint) GameVersion.Patch1 },        // EGS
+            { "9C191729BCAFE153BA74AD83D964D6EE".ToLowerInvariant(), (uint) GameVersion.Patch1 },        // GOG / Steam
+            { "AAE3AFC4BA1F7E1822770D0CA9061BF8".ToLowerInvariant(), (uint) GameVersion.Patch2 },        // EGS
+            { "91EC963B96F7E689FC9C8FAD81545A30".ToLowerInvariant(), (uint) GameVersion.Patch2 },        // Steam
+            { "55AE1EAADCF725B62F08F5CD5492304C".ToLowerInvariant(), (uint) GameVersion.Patch2Hotfix1 }, // EGS
+            { "6D3593354B88D66867974860DB027223".ToLowerInvariant(), (uint) GameVersion.Patch2Hotfix1 }, // Steam
+        }
+    );
 
-    private static readonly GameMemory GameMemory = new ();
+    private static readonly GameMemory GameMemory = new();
 
     private static readonly SignatureScanInfo SignatureScanInfo = new();
 
@@ -60,18 +60,18 @@ public static class GameData
     // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
     public static Game CurrentActiveGame => (Game)ActiveGame.Current switch
     {
-        Game.Tr4 =>
-            (Tr4Level)CurrentLevel >= Tr4Level.Office
-                ? Game.Tr4TheTimesExclusive
-                : BonusFlag.Current
-                    ? Game.Tr4NgPlus : Game.Tr4,
+        Game.Tr4 => (Tr4Level) CurrentLevel >= Tr4Level.Office
+            ? Game.Tr4TheTimesExclusive
+            : BonusFlag.Current
+                ? Game.Tr4NgPlus
+                : Game.Tr4,
         Game.Tr5 => BonusFlag.Current ? Game.Tr5NgPlus : Game.Tr5,
         Game.Tr6 => BonusFlag.Current ? Game.Tr6NgPlus : Game.Tr6,
-        _ => throw new ArgumentOutOfRangeException(nameof(CurrentActiveBaseGame), "Unknown Base Game"),
+        _        => throw new ArgumentOutOfRangeException(nameof(CurrentActiveBaseGame), "Unknown Base Game"),
     };
 
     /// <summary>Identifies the game without NG+ identification.</summary>
-    public static Game CurrentActiveBaseGame => (Game)ActiveGame.Current;
+    public static Game CurrentActiveBaseGame => (Game) ActiveGame.Current;
 
     #region EXE Watcher Accessors
 
@@ -191,7 +191,7 @@ public static class GameData
                     return false;
                 }
 
-                LiveSplit.Options.Log.Error(e);
+                Log.Error(e);
 
                 // Sometimes the cause of the error is LS attempting to scan too quickly when the game opens, before modules are fully available to scan.
                 if (SignatureScanInfo.MaxRetriesReached)
@@ -224,7 +224,7 @@ public static class GameData
         }
         catch (Exception e)
         {
-            LiveSplit.Options.Log.Error(e);
+            Log.Error(e);
             return false;
         }
     }

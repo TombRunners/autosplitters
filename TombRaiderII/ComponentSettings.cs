@@ -27,11 +27,11 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
                     "Game Version: " +
                     (Tr2Version)found.Version switch
                     {
-                        Tr2Version.MP => mpText,
-                        Tr2Version.EPC => epcText,
-                        Tr2Version.P1 => p1Text,
-                        Tr2Version.UKB => ukbText,
-                        Tr2Version.StellaGold => stellaText,
+                        Tr2Version.MP                => mpText,
+                        Tr2Version.EPC               => epcText,
+                        Tr2Version.P1                => p1Text,
+                        Tr2Version.UKB               => ukbText,
+                        Tr2Version.StellaGold        => stellaText,
                         Tr2Version.StellaGoldCracked => stellaCrackedText,
                         _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                     };

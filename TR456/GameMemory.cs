@@ -77,20 +77,20 @@ internal class GameMemory
 
     /// <summary>Gives the value of the active game, where TR4 is 0, TR5 is 1, TR6 is 2.</summary>
     /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherActiveGameName];
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>) _watchersExe?[Constants.WatcherActiveGameName];
 
     /// <summary>
     ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
     ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
     ///     During actual loading time (asset loading, etc.), freezes.
     /// </summary>
-    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)_watchersExe?[Constants.WatcherGFrameIndexName];
+    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>) _watchersExe?[Constants.WatcherGFrameIndexName];
 
     /// <summary>Found to be more reliable than the corresponding IsLoading in the tomb6.dll for TR6R.</summary>
-    internal MemoryWatcher<bool> IsLoading => (MemoryWatcher<bool>)_watchersExe?[Constants.WatcherIsLoadingName];
+    internal MemoryWatcher<bool> IsLoading => (MemoryWatcher<bool>) _watchersExe?[Constants.WatcherIsLoadingName];
 
     /// <summary>Gives the value of the active FMV, especially reliable for TR6R.</summary>
-    internal StringWatcher Fmv => (StringWatcher)_watchersExe?[Constants.WatcherFmvName];
+    internal StringWatcher Fmv => (StringWatcher) _watchersExe?[Constants.WatcherFmvName];
 
     #endregion
 
@@ -425,8 +425,8 @@ internal class GameMemory
     /// <summary>Contains memory addresses related to the TR6R game DLL, accessible as named members, used in auto-splitting logic.</summary>
     private readonly MemoryWatcherList _watchersTR6R = [];
 
-    private MemoryWatcherList GetMemoryWatcherListForGame(Game game) =>
-        game switch
+    private MemoryWatcherList GetMemoryWatcherListForGame(Game game)
+        => game switch
         {
             Game.Tr4 or Game.Tr4NgPlus or Game.Tr4TheTimesExclusive => _watchersTR4R,
             Game.Tr5 or Game.Tr5NgPlus                              => _watchersTR5R,
@@ -434,10 +434,11 @@ internal class GameMemory
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, "Invalid game"),
         };
 
-    private MemoryWatcher<T> GetMemoryWatcherForGame<T>(string name, Game game) where T : struct
+    private MemoryWatcher<T> GetMemoryWatcherForGame<T>(string name, Game game)
+        where T : struct
     {
         MemoryWatcherList list = GetMemoryWatcherListForGame(game);
-        return (MemoryWatcher<T>)list?[name];
+        return (MemoryWatcher<T>) list?[name];
     }
 
     internal MemoryWatcher<uint> LoadFade(Game game) => GetMemoryWatcherForGame<uint>(Constants.WatcherLoadFadeName, game);
@@ -523,7 +524,7 @@ internal class GameMemory
             : new SigScanTarget(sigInfo.Signature);
         IntPtr signatureAddress = scanner.Scan(target);
         if (signatureAddress == IntPtr.Zero)
-            throw new Exception($"Signature not found for {sigInfo.Name}: {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))}");
+            throw new Exception($"Signature not found for {sigInfo.Name}: {sigInfo.BytesAsString()}");
 
         // Find the write instruction using the offset argument.
         if (sigInfo.OffsetsToWriteInstruction.Length <= 0)
@@ -531,7 +532,7 @@ internal class GameMemory
 
         int sigOffset = sigInfo.OffsetsToWriteInstruction[0].offset;
         if (GameData.CurrentGameVersion is not VersionDetector.Unknown && sigInfo.OffsetsToWriteInstruction.Length > 1) // Overwrite offsets if different for a later known version.
-            foreach ((_, int offset) in sigInfo.OffsetsToWriteInstruction.Where(static tuple => tuple.version is not null && (int)GameData.CurrentGameVersion >= (int)tuple.version))
+            foreach ((_, int offset) in sigInfo.OffsetsToWriteInstruction.Where(static tuple => tuple.version is not null && (int) GameData.CurrentGameVersion >= (int) tuple.version))
                 sigOffset = offset;
 
         IntPtr writeInstructionAddress = signatureAddress + sigOffset;
@@ -546,10 +547,13 @@ internal class GameMemory
 
 #if DEBUG
         long moduleOffset = effectiveAddress.ToInt64() - scanner.Address.ToInt64();
-        Log.Warning($"Found signature for {sigInfo.Name} {string.Join(" ", useMask ? sigInfo.SignatureWithMasks : sigInfo.Signature.Select(static b => b.ToString("X2")))} at address {signatureAddress.ToString("X2")}.\n" +
-                    $"At address {writeInstructionAddress.ToString("X2")}, found bytes {string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")))}.\n" +
-                    $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
-                    $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}.");
+        string foundBytes = string.Join(" ", instructionBytes.Select(static b => b.ToString("X2")));
+        Log.Warning(
+            $"Found signature for {sigInfo.Name}: {sigInfo.BytesAsString()}.\n" +
+            $"At address {writeInstructionAddress.ToString("X2")}, found bytes {foundBytes}.\n" +
+            $"Extracted address {effectiveAddress.ToString("X2")} ({scanner.Address.ToString("X2")} + 0x{moduleOffset:X8})\n" +
+            $"using extracted offset {extractedOffset:X2} and effective address offset {sigInfo.EffectiveAddressOffset:X2}."
+        );
 #endif
 
         // Return the address.

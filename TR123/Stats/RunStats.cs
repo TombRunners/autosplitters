@@ -49,10 +49,11 @@ public static class RunStats
             .Where(entry => entry.Key != currentActiveGame)
             .Select(static entry => entry.Value)
             .Aggregate<GameStats, ulong>(
-                0, static (current1, gameStats) =>
+                0,
+                static (total, gameStats) =>
                     gameStats
                         .LevelStats
-                        .Aggregate(current1, static (current, levelStats) => current + levelStats.Igt)
+                        .Aggregate(total, static (current, levelStats) => current + levelStats.Igt)
             );
 
         // Sum IGT from current game.

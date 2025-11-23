@@ -43,7 +43,7 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
 
         bool loadingIntoMainMenu = Data.GfLevelComplete.Current == 0 && Data.Level.Current == 0 && Data.Loading.Current;
         // Checking the old level number ensures that someone re-opening the game (perhaps after a crash or Alt+F4) does not Reset.
-        // This works because when loading non-test/demo versions of the games, the level variable initializes as 0 before the main menu load is called.
+        // This works because when loading non-test/demo versions of the games, level initializes as 0 before the main menuload is called.
         bool comingFromALevel = Data.Level.Old != 0;
         return loadingIntoMainMenu && comingFromALevel;
     }
@@ -97,8 +97,5 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
     public virtual void OnUndoSplit() { }
     // ReSharper restore VirtualMemberNeverOverridden.Global
 
-    public override void Dispose()
-    {
-        Data.OnGameVersionChanged -= Settings.SetGameVersion;
-    }
+    public override void Dispose() => Data.OnGameVersionChanged -= Settings.SetGameVersion;
 }

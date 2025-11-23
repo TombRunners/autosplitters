@@ -24,12 +24,10 @@ internal class GameMemory
         new Dictionary<GameVersion, Dictionary<Game, GameAddresses>>
         {
             {
-                GameVersion.GogV10,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.GogV10, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x36CBBEA, // LevelIgt + 0x1A
                             Cine = 0x35F86F0,
@@ -46,8 +44,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x36FFE46, // LevelIgt + 0x1A
                             Cine = 0x3606928,
@@ -64,8 +61,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x3764994, // LevelIgt + 0x2C
                             Cine = 0x3666000,
@@ -84,12 +80,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.PublicV101,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.PublicV101, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x371EBEA, // LevelIgt + 0x1A
                             Cine = 0x364B6F0,
@@ -106,8 +100,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x3753E26, // LevelIgt + 0x1A
                             Cine = 0x365A908,
@@ -124,8 +117,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x37B7974, // LevelIgt + 0x2C
                             Cine = 0x36B8FE0,
@@ -144,12 +136,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch1,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch1, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x372978A, // LevelIgt + 0x1A
                             Cine = 0x36561D8,
@@ -166,8 +156,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x375E9E6, // LevelIgt + 0x1A
                             Cine = 0x36633E8,
@@ -184,8 +173,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x37C26F4, // LevelIgt + 0x2C
                             Cine = 0x36C1C80,
@@ -204,12 +192,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch2,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch2, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x373BFEA, // LevelIgt + 0x1A
                             Cine = 0x3668A38,
@@ -226,8 +212,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x3772246, // LevelIgt + 0x1A
                             Cine = 0x3674C28,
@@ -244,8 +229,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x37D8394, // LevelIgt + 0x2C
                             Cine = 0x36D4940,
@@ -264,12 +248,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch3,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch3, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x373E1EA, // LevelIgt + 0x1A
                             Cine = 0x366AC38,
@@ -277,7 +259,7 @@ internal class GameMemory
                             Health = 0xF7C88,
                             InventoryChosen = 0xE1F88,
                             InventoryMode = 0xE2C58, // InventoryChosen + 0xCD0
-                            Level = 0x373E1E8, // LevelIgt + 0x18
+                            Level = 0x373E1E8,       // LevelIgt + 0x18
                             LevelComplete = 0xF7560, // TitleLoaded + 0x8
                             LevelIgt = 0x373E1D0,
                             LoadFade = 0x297764,
@@ -286,8 +268,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x3775446, // LevelIgt + 0x1A
                             Cine = 0x3677E28,
@@ -304,8 +285,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x37D95B4, // LevelIgt + 0x2C
                             Cine = 0x36D5B60,
@@ -324,12 +304,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch4,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch4, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x4C124A, // LevelIgt + 0x1A
                             Cine = 0x3EDC98,
@@ -337,7 +315,7 @@ internal class GameMemory
                             Health = 0xF9CC8,
                             InventoryChosen = 0xE3F88,
                             InventoryMode = 0xE4C58, // InventoryChosen + 0xCD0
-                            Level = 0x4C1248, // LevelIgt + 0x18
+                            Level = 0x4C1248,        // LevelIgt + 0x18
                             LevelComplete = 0xF95A0, // TitleLoaded + 0x8
                             LevelIgt = 0x4C1230,
                             LoadFade = 0x2997E4,
@@ -346,8 +324,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x4F7466, // LevelIgt + 0x1A
                             Cine = 0x3F9E48,
@@ -364,8 +341,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x55A4D4, // LevelIgt + 0x2C
                             Cine = 0x456AA0,
@@ -384,12 +360,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch4Update1,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch4Update1, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x4C542A, // LevelIgt + 0x1A
                             Cine = 0x34F5C8,
@@ -397,7 +371,7 @@ internal class GameMemory
                             Health = 0xFDE78,
                             InventoryChosen = 0xE2E54,
                             InventoryMode = 0xF96A0,
-                            Level = 0x4C5428, // LevelIgt + 0x18
+                            Level = 0x4C5428,        // LevelIgt + 0x18
                             LevelComplete = 0xFD750, // TitleLoaded + 0x8
                             LevelIgt = 0x4C5410,
                             LoadFade = 0x29D9C4,
@@ -406,8 +380,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x4FB606, // LevelIgt + 0x1A
                             Cine = 0x382B00,
@@ -424,8 +397,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x55E6D4, // LevelIgt + 0x2C
                             Cine = 0x3DDDE8,
@@ -444,12 +416,10 @@ internal class GameMemory
                 }
             },
             {
-                GameVersion.Patch4Update2,
-                new Dictionary<Game, GameAddresses>
+                GameVersion.Patch4Update2, new Dictionary<Game, GameAddresses>
                 {
                     {
-                        Game.Tr1,
-                        new GameAddresses
+                        Game.Tr1, new GameAddresses
                         {
                             BonusFlag = 0x4C542A, // LevelIgt + 0x1A
                             Cine = 0x34F5C8,
@@ -457,7 +427,7 @@ internal class GameMemory
                             Health = 0xFDE78,
                             InventoryChosen = 0xE2E54,
                             InventoryMode = 0xF96A0,
-                            Level = 0x4C5428, // LevelIgt + 0x18
+                            Level = 0x4C5428,        // LevelIgt + 0x18
                             LevelComplete = 0xFD750, // TitleLoaded + 0x8
                             LevelIgt = 0x4C5410,
                             LoadFade = 0x29D9C4,
@@ -466,8 +436,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr2,
-                        new GameAddresses
+                        Game.Tr2, new GameAddresses
                         {
                             BonusFlag = 0x4FA606, // LevelIgt + 0x1A
                             Cine = 0x381B00,
@@ -484,8 +453,7 @@ internal class GameMemory
                         }
                     },
                     {
-                        Game.Tr3,
-                        new GameAddresses
+                        Game.Tr3, new GameAddresses
                         {
                             BonusFlag = 0x55E6D4, // LevelIgt + 0x2C
                             Cine = 0x3DDDE8,
@@ -512,60 +480,60 @@ internal class GameMemory
 
     /// <summary>Gives the value of the active game, where TR1 is 0, TR2 is 1, TR3 is 2.</summary>
     /// <remarks>The value should be converted to <see cref="GameVersion" />.</remarks>
-    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>)Watchers?["ActiveGame"];
+    internal MemoryWatcher<int> ActiveGame => (MemoryWatcher<int>) Watchers?["ActiveGame"];
 
     /// <summary>
     ///     From when a load occurs (level, FMV, in-game cutscene, title screen),
     ///     resets to 0 and then increments at the rate of IGT ticks (30 per second).
     ///     During actual loading time (asset loading, etc.), freezes.
     /// </summary>
-    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>)Watchers?["GlobalFrameIndex"];
+    internal MemoryWatcher<int> GFrameIndex => (MemoryWatcher<int>) Watchers?["GlobalFrameIndex"];
 
     /// <summary>The game's bonus flag which marks NG(+).</summary>
     /// <remarks>0 is NG, 1 is NG+; this flag has no effects on expansions.</remarks>
-    internal ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> BonusFlagWatchers
+        => new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1BonusFlag"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2BonusFlag"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3BonusFlag"] },
+            { Game.Tr1, (MemoryWatcher<bool>) Watchers?["Tr1BonusFlag"] },
+            { Game.Tr2, (MemoryWatcher<bool>) Watchers?["Tr2BonusFlag"] },
+            { Game.Tr3, (MemoryWatcher<bool>) Watchers?["Tr3BonusFlag"] },
         }.ToImmutableDictionary();
 
     /// <summary>This value is set immediately before a file read of an upcoming cutscene.</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers =>
-        new Dictionary<Game, MemoryWatcher<short>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> CineWatchers
+        => new Dictionary<Game, MemoryWatcher<short>>(3)
         {
-            { Game.Tr1,( MemoryWatcher<short>)Watchers?["Tr1Cine"] },
-            { Game.Tr2,( MemoryWatcher<short>)Watchers?["Tr2Cine"] },
-            { Game.Tr3,( MemoryWatcher<short>)Watchers?["Tr3Cine"] },
+            { Game.Tr1,( MemoryWatcher<short>) Watchers?["Tr1Cine"] },
+            { Game.Tr2,( MemoryWatcher<short>) Watchers?["Tr2Cine"] },
+            { Game.Tr3,( MemoryWatcher<short>) Watchers?["Tr3Cine"] },
         }.ToImmutableDictionary();
 
     /// <summary>Lara's current HP.</summary>
     /// <remarks>Max HP is 1000. When less than or equal to 0, Lara dies.</remarks>
-    internal ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers =>
-        new Dictionary<Game, MemoryWatcher<short>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> HealthWatchers
+        => new Dictionary<Game, MemoryWatcher<short>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1Health"] },
-            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2Health"] },
-            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3Health"] },
+            { Game.Tr1, (MemoryWatcher<short>) Watchers?["Tr1Health"] },
+            { Game.Tr2, (MemoryWatcher<short>) Watchers?["Tr2Health"] },
+            { Game.Tr3, (MemoryWatcher<short>) Watchers?["Tr3Health"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives a value for a chosen inventory item, or -1 if not in the inventory / title.</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers =>
-        new Dictionary<Game, MemoryWatcher<short>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<short>> InventoryChosenWatchers
+        => new Dictionary<Game, MemoryWatcher<short>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<short>)Watchers?["Tr1InventoryChosen"] },
-            { Game.Tr2, (MemoryWatcher<short>)Watchers?["Tr2InventoryChosen"] },
-            { Game.Tr3, (MemoryWatcher<short>)Watchers?["Tr3InventoryChosen"] },
+            { Game.Tr1, (MemoryWatcher<short>) Watchers?["Tr1InventoryChosen"] },
+            { Game.Tr2, (MemoryWatcher<short>) Watchers?["Tr2InventoryChosen"] },
+            { Game.Tr3, (MemoryWatcher<short>) Watchers?["Tr3InventoryChosen"] },
         }.ToImmutableDictionary();
 
     /// <summary>Value backed by <see cref="TR123.InventoryMode" />.</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers =>
-        new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<InventoryMode>> InventoryModeWatchers
+        => new Dictionary<Game, MemoryWatcher<InventoryMode>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<InventoryMode>)Watchers?["Tr1InventoryMode"] },
-            { Game.Tr2, (MemoryWatcher<InventoryMode>)Watchers?["Tr2InventoryMode"] },
-            { Game.Tr3, (MemoryWatcher<InventoryMode>)Watchers?["Tr3InventoryMode"] },
+            { Game.Tr1, (MemoryWatcher<InventoryMode>) Watchers?["Tr1InventoryMode"] },
+            { Game.Tr2, (MemoryWatcher<InventoryMode>) Watchers?["Tr2InventoryMode"] },
+            { Game.Tr3, (MemoryWatcher<InventoryMode>) Watchers?["Tr3InventoryMode"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the active level.</summary>
@@ -573,12 +541,12 @@ internal class GameMemory
     ///     Usually matches chronological number. Some exceptions are TR3 due to level order choice and TR1's Unfinished
     ///     Business.
     /// </remarks>
-    internal ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers =>
-        new Dictionary<Game, MemoryWatcher<byte>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<byte>> LevelWatchers
+        => new Dictionary<Game, MemoryWatcher<byte>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<byte>)Watchers?["Tr1Level"] },
-            { Game.Tr2, (MemoryWatcher<byte>)Watchers?["Tr2Level"] },
-            { Game.Tr3, (MemoryWatcher<byte>)Watchers?["Tr3Level"] },
+            { Game.Tr1, (MemoryWatcher<byte>) Watchers?["Tr1Level"] },
+            { Game.Tr2, (MemoryWatcher<byte>) Watchers?["Tr2Level"] },
+            { Game.Tr3, (MemoryWatcher<byte>) Watchers?["Tr3Level"] },
         }.ToImmutableDictionary();
 
     /// <summary>Indicates if the current level is finished.</summary>
@@ -588,30 +556,30 @@ internal class GameMemory
     ///     Before most end-level in-game cutscenes, the value changes from 0 to 1 then back to 0 immediately.
     ///     Otherwise, the value is 0.
     /// </remarks>
-    internal ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> LevelCompleteWatchers
+        => new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1LevelComplete"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2LevelComplete"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3LevelComplete"] },
+            { Game.Tr1, (MemoryWatcher<bool>) Watchers?["Tr1LevelComplete"] },
+            { Game.Tr2, (MemoryWatcher<bool>) Watchers?["Tr2LevelComplete"] },
+            { Game.Tr3, (MemoryWatcher<bool>) Watchers?["Tr3LevelComplete"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives the running IGT of the current level.</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers =>
-        new Dictionary<Game, MemoryWatcher<uint>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LevelIgtWatchers
+        => new Dictionary<Game, MemoryWatcher<uint>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LevelIgt"] },
-            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LevelIgt"] },
-            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LevelIgt"] },
+            { Game.Tr1, (MemoryWatcher<uint>) Watchers?["Tr1LevelIgt"] },
+            { Game.Tr2, (MemoryWatcher<uint>) Watchers?["Tr2LevelIgt"] },
+            { Game.Tr3, (MemoryWatcher<uint>) Watchers?["Tr3LevelIgt"] },
         }.ToImmutableDictionary();
 
     /// <summary>Gives the value of the loading screen fade-in and fade-out (like an alpha).</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers =>
-        new Dictionary<Game, MemoryWatcher<uint>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<uint>> LoadFadeWatchers
+        => new Dictionary<Game, MemoryWatcher<uint>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<uint>)Watchers?["Tr1LoadFade"] },
-            { Game.Tr2, (MemoryWatcher<uint>)Watchers?["Tr2LoadFade"] },
-            { Game.Tr3, (MemoryWatcher<uint>)Watchers?["Tr3LoadFade"] },
+            { Game.Tr1, (MemoryWatcher<uint>) Watchers?["Tr1LoadFade"] },
+            { Game.Tr2, (MemoryWatcher<uint>) Watchers?["Tr2LoadFade"] },
+            { Game.Tr3, (MemoryWatcher<uint>) Watchers?["Tr3LoadFade"] },
         }.ToImmutableDictionary();
 
     /// <summary>Value backed by <see cref="TR123.OverlayFlag" />.</summary>
@@ -621,24 +589,24 @@ internal class GameMemory
     ///    In the inventory, it's 0.
     ///    In any gameplay, FMVs, cutscenes, stats screens, loading screens, a crystal save menu, a death menu, credits, & title screen, it's 1.
     /// </remarks>
-    internal ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers =>
-        new Dictionary<Game, MemoryWatcher<OverlayFlag>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<OverlayFlag>> OverlayFlagWatchers
+        => new Dictionary<Game, MemoryWatcher<OverlayFlag>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<OverlayFlag>)Watchers?["Tr1OverlayFlag"] },
-            { Game.Tr2, (MemoryWatcher<OverlayFlag>)Watchers?["Tr2OverlayFlag"] },
-            { Game.Tr3, (MemoryWatcher<OverlayFlag>)Watchers?["Tr3OverlayFlag"] },
+            { Game.Tr1, (MemoryWatcher<OverlayFlag>) Watchers?["Tr1OverlayFlag"] },
+            { Game.Tr2, (MemoryWatcher<OverlayFlag>) Watchers?["Tr2OverlayFlag"] },
+            { Game.Tr3, (MemoryWatcher<OverlayFlag>) Watchers?["Tr3OverlayFlag"] },
         }.ToImmutableDictionary();
 
     /// <summary>Tells if the game is currently in the title screen.</summary>
-    internal ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers =>
-        new Dictionary<Game, MemoryWatcher<bool>>(3)
+    internal ImmutableDictionary<Game, MemoryWatcher<bool>> TitleLoadedWatchers
+        => new Dictionary<Game, MemoryWatcher<bool>>(3)
         {
-            { Game.Tr1, (MemoryWatcher<bool>)Watchers?["Tr1TitleLoaded"] },
-            { Game.Tr2, (MemoryWatcher<bool>)Watchers?["Tr2TitleLoaded"] },
-            { Game.Tr3, (MemoryWatcher<bool>)Watchers?["Tr3TitleLoaded"] },
+            { Game.Tr1, (MemoryWatcher<bool>) Watchers?["Tr1TitleLoaded"] },
+            { Game.Tr2, (MemoryWatcher<bool>) Watchers?["Tr2TitleLoaded"] },
+            { Game.Tr3, (MemoryWatcher<bool>) Watchers?["Tr3TitleLoaded"] },
         }.ToImmutableDictionary();
 
-    internal MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>)Watchers?["Tr1LevelCutscene"];
+    internal MemoryWatcher<uint> Tr1LevelCutscene => (MemoryWatcher<uint>) Watchers?["Tr1LevelCutscene"];
 
     #endregion
 
@@ -649,7 +617,7 @@ internal class GameMemory
     {
         Watchers.Clear();
 
-        switch ((GameVersion)version)
+        switch ((GameVersion) version)
         {
             case GameVersion.GogV10:
                 // Base game EXE (tomb123.exe)
@@ -716,7 +684,7 @@ internal class GameMemory
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xE5BD8)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F45E4)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xE2AB8 )) { Name = "Tr1LevelCutscene" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xE2AB8)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.Patch4Update1);
                 break;
@@ -726,7 +694,7 @@ internal class GameMemory
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0xE4BD8)) { Name = "ActiveGame" });
                 Watchers.Add(new MemoryWatcher<int>(new DeepPointer(0x2F35F4)) { Name = "GlobalFrameIndex" });
                 // One-offs from DLLs
-                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xE2AB8 )) { Name = "Tr1LevelCutscene" });
+                Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(GameModules[Game.Tr1], 0xE2AB8)) { Name = "Tr1LevelCutscene" });
                 // Common items for all game's DLLs
                 AddCommonDllWatchers(GameVersion.Patch4Update2);
                 break;

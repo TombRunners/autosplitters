@@ -1,12 +1,12 @@
-using LiveSplit.Model;
-using LiveSplit.UI;
-using LiveSplit.UI.Components;
-using LiveSplit.UI.Components.AutoSplit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using LiveSplit.Model;
+using LiveSplit.UI;
+using LiveSplit.UI.Components;
+using LiveSplit.UI.Components.AutoSplit;
 using Util;
 using Timer = LiveSplit.UI.Components.Timer;
 
@@ -75,12 +75,9 @@ public class Component : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         XmlElement settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
-            _splitter.Settings.EnableAutoReset));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
-            _splitter.Settings.FullGame));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
-            _splitter.Settings.Deathrun));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         return settingsNode;
     }
 
@@ -133,14 +130,15 @@ public class Component : AutoSplitComponent
                 {
                     return comp.Component switch
                     {
-                        Timer timer => timer.Settings.TimingMethod,
+                        Timer timer                 => timer.Settings.TimingMethod,
                         DetailedTimer detailedTimer => detailedTimer.Settings.TimingMethod,
-                        _ => comp.Component.ComponentName,
+                        _                           => comp.Component.ComponentName,
                     };
                 }
             )
             .ToList();
-        bool layoutOrTimingMethodChanged = currentTimingMethod != _lsCurrentTimingMethod || !layoutAndTimingMethods.SequenceEqual(_layoutAndTimingMethods);
+        bool layoutOrTimingMethodChanged = currentTimingMethod != _lsCurrentTimingMethod ||
+                                           !layoutAndTimingMethods.SequenceEqual(_layoutAndTimingMethods);
 
         bool importantLayoutOrSettingChanged = valuesNotInitialized || layoutOrTimingMethodChanged;
         if (importantLayoutOrSettingChanged)
@@ -169,8 +167,8 @@ public class Component : AutoSplitComponent
             timerWithGameTimeInLayout = timerComponent.Component switch
             {
                 DetailedTimer detailedTimer => TimerUsesGameTime(detailedTimer.Settings.TimingMethod, lsTimingMethodIsGameTime),
-                Timer timer => TimerUsesGameTime(timer.Settings.TimingMethod, lsTimingMethodIsGameTime),
-                _ => false,
+                Timer timer                 => TimerUsesGameTime(timer.Settings.TimingMethod, lsTimingMethodIsGameTime),
+                _                           => false,
             };
 
             if (timerWithGameTimeInLayout)

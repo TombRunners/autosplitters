@@ -1,6 +1,6 @@
 ﻿namespace TR123;
 
-public enum GameVersion: uint
+public enum GameVersion : uint
 {
     EgsDebug         = 1, // Unsupported Epic Games Store release with unfinished features and PDB files, later reverted to match GOG v1.01.
     GogV10           = 2, // GOG v1.0

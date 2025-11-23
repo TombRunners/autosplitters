@@ -19,24 +19,24 @@ public class Autosplitter : BaseAutosplitter
 
     private readonly Dictionary<Game, short> _pickups = new(6)
     {
-        {Game.Tr4, 0},
-        {Game.Tr4NgPlus, 0},
-        {Game.Tr4TheTimesExclusive, 0},
-        {Game.Tr5, 0},
-        {Game.Tr5NgPlus, 0},
-        {Game.Tr6, 0},
-        {Game.Tr6NgPlus, 0},
+        { Game.Tr4, 0 },
+        { Game.Tr4NgPlus, 0 },
+        { Game.Tr4TheTimesExclusive, 0 },
+        { Game.Tr5, 0 },
+        { Game.Tr5NgPlus, 0 },
+        { Game.Tr6, 0 },
+        { Game.Tr6NgPlus, 0 },
     };
 
     private readonly Dictionary<Game, short> _secrets = new(6)
     {
-        {Game.Tr4, 0},
-        {Game.Tr4NgPlus, 0},
-        {Game.Tr4TheTimesExclusive, 0},
-        {Game.Tr5, 0},
-        {Game.Tr5NgPlus, 0},
-        {Game.Tr6, 0},
-        {Game.Tr6NgPlus, 0},
+        { Game.Tr4, 0 },
+        { Game.Tr4NgPlus, 0 },
+        { Game.Tr4TheTimesExclusive, 0 },
+        { Game.Tr5, 0 },
+        { Game.Tr5NgPlus, 0 },
+        { Game.Tr6, 0 },
+        { Game.Tr6NgPlus, 0 },
     };
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
@@ -67,9 +67,9 @@ public class Autosplitter : BaseAutosplitter
     public override TimeSpan? GetGameTime(LiveSplitState state)
         => Settings.GameTimeMethod switch
         {
-            GameTimeMethod.Igt => IgtGameTime(Settings.Deathrun),
+            GameTimeMethod.Igt        => IgtGameTime(Settings.Deathrun),
             GameTimeMethod.RtaNoLoads => null,
-            _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
+            _                         => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
     private TimeSpan? IgtGameTime(bool deathrun)
@@ -96,7 +96,7 @@ public class Autosplitter : BaseAutosplitter
         long totalTicks = RunStats.GetTotalIgtIn60FpsTicks(GameData.CurrentActiveGame);
         totalTicks -= _ticksAtStartOfRun;
 
-        double totalSeconds = (double)totalTicks / 60;
+        double totalSeconds = (double) totalTicks / 60;
         return TimeSpan.FromSeconds(totalSeconds);
     }
 
@@ -187,18 +187,17 @@ public class Autosplitter : BaseAutosplitter
         // Handle FG.
         byte triggerTimer = GameData.GfRequiredStartPosition.Current;
         bool laraIsInLowerLevel = nextLevel >= oldLevel;
-        Tr4Level lowerLevel = laraIsInLowerLevel ? (Tr4Level)oldLevel : (Tr4Level)nextLevel;
-        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level)nextLevel : (Tr4Level)oldLevel;
+        Tr4Level lowerLevel = laraIsInLowerLevel  ? (Tr4Level) oldLevel  : (Tr4Level) nextLevel;
+        Tr4Level higherLevel = laraIsInLowerLevel ? (Tr4Level) nextLevel : (Tr4Level) oldLevel;
         TransitionDirection direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
 
         var activeMatches = Settings
-            .Tr4LevelTransitions
-            .Where(t =>
-                t.Active is not ActiveSetting.IgnoreAll &&
-                t.LowerLevel == lowerLevel &&
-                (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
-                (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
-                t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
+            .Tr4LevelTransitions.Where(t
+                => t.Active is not ActiveSetting.IgnoreAll                                                                     &&
+                   t.LowerLevel == lowerLevel                                                                                  &&
+                   (t.HigherLevel            == higherLevel                || nextLevel                == t.UnusedLevelNumber) &&
+                   (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction)           &&
+                   t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
             .ToList();
 
@@ -212,9 +211,10 @@ public class Autosplitter : BaseAutosplitter
         }
 
         if (activeMatches.Count > 1) // Should be impossible if hardcoded default transitions are set up correctly.
-            Log.Error($"TR4R Level Transition Settings improperly coded, found multiple matches!\n"
-                      + $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n"
-                      + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
+            Log.Error(
+                $"TR4R Level Transition Settings improperly coded, found multiple matches!\n"                                    +
+                $"Transition: {lowerLevel} | {direction} | {higherLevel} | room: {GameData.Room.Current} | tt: {triggerTimer}\n" +
+                $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
 
         Tr4LevelTransitionSetting match = activeMatches[0];
@@ -252,7 +252,7 @@ public class Autosplitter : BaseAutosplitter
                         return false;
 
                     if (levelHasBeenIgnored)
-                            break;
+                        break;
 
                     // Compose and store level stats.
                     uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus
@@ -292,7 +292,7 @@ public class Autosplitter : BaseAutosplitter
         if (nextLevel <= 1) // Use 1 to prevent a main menu or first level split, helpful for multi-game runs.
             return false;
 
-        bool loadingDesiredLevel = Settings.SplitSecurityBreach || nextLevel != (uint)Tr5Level.CutsceneSecurityBreach;
+        bool loadingDesiredLevel = Settings.SplitSecurityBreach || nextLevel != (uint) Tr5Level.CutsceneSecurityBreach;
         if (!loadingDesiredLevel)
             return false;
 
@@ -332,27 +332,22 @@ public class Autosplitter : BaseAutosplitter
 
         const string inventory = "INVENT";
         const string frontend = "FRONTEND";
-        if (oldLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
-            oldLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase) ||
+        if (oldLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase)     ||
+            oldLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase)      ||
             currentLevel.StartsWith(inventory, StringComparison.OrdinalIgnoreCase) ||
             currentLevel.StartsWith(frontend, StringComparison.OrdinalIgnoreCase))
             return false; // Guard against unnecessary checks when the inventory or main menu is accessed.
 
         var activeMatches = Settings
             .Tr6LevelTransitions
-            .Where(t =>
-                t.Active &&
-                t.OldLevel == oldLevel &&
-                t.NextLevel == currentLevel
-            )
+            .Where(t => t.Active && t.OldLevel == oldLevel && t.NextLevel == currentLevel)
             .ToList();
 
         if (!activeMatches.Any())
         {
 #if DEBUG
             // Warn is the minimum threshold when using LiveSplit's Event Viewer logging.
-            Log.Warning($"No active transition match found!\n" +
-                        $"{oldLevel} -> {currentLevel}");
+            Log.Warning($"No active transition match found!\n{oldLevel} -> {currentLevel}");
 #endif
             return false;
         }
@@ -360,9 +355,10 @@ public class Autosplitter : BaseAutosplitter
         if (activeMatches.Count > 1)
         {
             // Should be impossible if hardcoded default transitions are set up correctly.
-            Log.Error($"TR6R Level Transition Settings improperly coded, found multiple matches!\n"
-                      + $"Transition: {oldLevel} -> {currentLevel} \n"
-                      + $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
+            Log.Error(
+                $"TR6R Level Transition Settings improperly coded, found multiple matches!\n" +
+                $"Transition: {oldLevel} -> {currentLevel} \n"                                +
+                $"Matches: {string.Join(", ", activeMatches.Select(static s => s.Name))}"
             );
 
             return false;
@@ -476,7 +472,9 @@ public class Autosplitter : BaseAutosplitter
 
             _ticksAtStartOfRun = currentGame is Game.Tr6 or Game.Tr6NgPlus
                 ? GameData.Igt.Old
-                : GameData.Level.Current is 1 or 39 ? 0 : GameData.Igt.Old * 2;
+                : GameData.Level.Current is 1 or 39
+                    ? 0 // New game
+                    : GameData.Igt.Old * 2;
 
             _pickups[currentGame] = GameData.Pickups.Current;
             _secrets[currentGame] = GameData.Secrets.Current;

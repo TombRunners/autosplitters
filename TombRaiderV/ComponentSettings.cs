@@ -140,7 +140,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         AslWarningLabel.Name = "AslWarningLabel";
         AslWarningLabel.Size = new Size(476, 20);
         AslWarningLabel.TabStop = false;
-        AslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        AslWarningLabel.Text = "Scriptable Auto Splitter in Layout ï¿½ Please Remove!";
         AslWarningLabel.Visible = false;
 
         // ComponentSettings
@@ -162,7 +162,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void SplitSecurityBreachCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         SplitSecurityBreach = checkbox.Checked;
     }
 
@@ -184,9 +184,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     "Game Version: " +
                     (Tr5Version)found.Version switch
                     {
-                        Tr5Version.SteamOrGog => digitalText,
+                        Tr5Version.SteamOrGog             => digitalText,
                         Tr5Version.SteamOrGogCutsceneless => digitalNoCutsceneText,
-                        Tr5Version.JapaneseNoCd => jpNoCdText,
+                        Tr5Version.JapaneseNoCd           => jpNoCdText,
                         _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                     };
                 return;
