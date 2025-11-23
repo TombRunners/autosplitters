@@ -1069,7 +1069,11 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
             lowerRoomNumber: 23, lowerTriggerTimer: 1, higherRoomNumber: 26, higherTriggerTimer: 2, note: "Minefield"), // 23 <-> 25
         new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.TwoWay,
-            lowerRoomNumber: 44, lowerTriggerTimer: 0, higherRoomNumber: 08, higherTriggerTimer: 3, note: "Garage"),    // 23 <-> 25
+            lowerRoomNumber: 44, lowerTriggerTimer: 0, higherRoomNumber: 08, higherTriggerTimer: 3, note: "Garage",    // 23 <-> 25
+            complexIgnore: true,
+            toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
+                     $"The left checkbox is for the first visit split; the right checkbox is for the second visit split.{Environment.NewLine}" +
+                     "If Two-Way is selected, the checkboxes apply to both directions. If one way is selected, only that direction will be split accordingly."),
         new(Tr4Level.Trenches, Tr4Level.StreetBazaar, TransitionDirection.OneWayFromHigher,
             higherRoomNumber: 71, higherTriggerTimer: 4, note: "Chute After Guardian"),                                 // 25  -> 23
 
