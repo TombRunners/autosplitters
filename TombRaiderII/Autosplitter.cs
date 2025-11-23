@@ -26,7 +26,7 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
         uint oldLevel = Data.Level.Old;
 
         // Ignore demos.
-        if (currentLevel >= (uint)Tr2Level.DemoVenice) // Never true for TR2G; level values are never so high.
+        if (currentLevel >= (uint) Tr2Level.DemoVenice) // Never true for TR2G; level values are never so high.
             return false;
 
         // Check to see if the player has navigated to the New Game page of the passport.
@@ -41,8 +41,8 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
         if (_newGamePageSelected)
         {
             bool cameFromTitleScreen = Data.TitleScreen.Old && !Data.TitleScreen.Current;
-            bool cameFromLarasHome = oldLevel == (uint)Tr2Level.LarasHome; // Never true for TR2G.
-            bool justStartedFirstLevel = currentLevel == 1; // This value is good for GreatWall and TheColdWar.
+            bool cameFromLarasHome = oldLevel         == (uint) Tr2Level.LarasHome; // Never true for TR2G.
+            bool justStartedFirstLevel = currentLevel == 1;                         // This value is good for GreatWall and TheColdWar.
             bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
             if (newGameStarted)
                 return true;

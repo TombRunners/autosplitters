@@ -116,7 +116,7 @@ public class ClassicComponentSettings : UserControl
         _aslWarningLabel.Name = "_aslWarningLabel";
         _aslWarningLabel.Size = new Size(476, 20);
         _aslWarningLabel.TabStop = false;
-        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout ï¿½ Please Remove!";
         _aslWarningLabel.Visible = false;
 
         // ComponentSettings
@@ -141,10 +141,10 @@ public class ClassicComponentSettings : UserControl
 
         GameVersionLabel.Text = result switch
         {
-            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.None            => noneUndetected,
             VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
-            VersionDetectionResult.Found => GameVersionLabel.Text,
-            _ => throw new ArgumentOutOfRangeException(nameof(result)),
+            VersionDetectionResult.Found           => GameVersionLabel.Text,
+            _                                      => throw new ArgumentOutOfRangeException(nameof(result)),
         };
     }
 
@@ -168,7 +168,7 @@ public class ClassicComponentSettings : UserControl
 
     private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         EnableAutoReset = checkbox.Checked;
     }
 }

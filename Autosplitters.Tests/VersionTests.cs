@@ -24,18 +24,21 @@ public class VersionTests
 
         string assemblyInfoPath = Path.Combine(currentDirectory, $"../../../{project}/Properties/AssemblyInfo.cs");
         string assemblyInfoContents = File.ReadAllText(assemblyInfoPath);
-        string assemblyInfoVersionString = Regex.Matches(assemblyInfoContents, """\[assembly: AssemblyVersion\("(?<VersionString>.+)"\)]""")
-                                             .Cast<Match>()
-                                             .Last()
-                                             .Groups["VersionString"]
-                                             .Value;
+        string assemblyInfoVersionString =
+            Regex
+                .Matches(assemblyInfoContents, """\[assembly: AssemblyVersion\("(?<VersionString>.+)"\)]""")
+                .Cast<Match>()
+                .Last()
+                .Groups["VersionString"].Value;
         Version assemblyInfoVersion = ParseVersion(assemblyInfoVersionString);
 
         string updateXmlPath = Path.Combine(currentDirectory, $"../../../{project}/Components/update.xml");
         string updateXmlContents = File.ReadAllText(updateXmlPath);
-        string updateXmlVersionString = Regex.Match(updateXmlContents, """<update version="(?<VersionString>.+)">""")
-                                          .Groups["VersionString"]
-                                          .Value;
+        string updateXmlVersionString =
+            Regex
+                .Match(updateXmlContents, """<update version="(?<VersionString>.+)">""")
+                .Groups["VersionString"]
+                .Value;
         Version updateXmlVersion = ParseVersion(updateXmlVersionString);
 
         string dllPath = Path.Combine(currentDirectory, $"../../../{project}/Components/{dll}.dll");

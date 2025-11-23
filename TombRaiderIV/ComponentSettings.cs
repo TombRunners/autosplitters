@@ -317,7 +317,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             _selectAllButton.Enabled = _unselectAllButton.Enabled = true;
             _levelTransitionSettings.Text = LevelTransitionSettingsTextDefault;
 
-            if ((Tr4Version)ActiveVersion == Tr4Version.SteamOrGog)
+            if ((Tr4Version) ActiveVersion == Tr4Version.SteamOrGog)
                 PopulateControl(Tr4LevelTransitions);
             else
                 PopulateControl(TteLevelTransitions);
@@ -349,7 +349,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                 Checked = transition.UnusedLevelNumber is 39 || transition.Active,
                 Enabled = transition.CanBeConfigured,
             };
-            checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox)sender).Checked); };
+            checkBox.CheckedChanged += (sender, _) => { transition.UpdateActive(((CheckBox) sender).Checked); };
             _levelTransitionSettingsPanel.Controls.Add(checkBox);
 
             // ComboBox
@@ -372,10 +372,10 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                 string higherName = transition.HigherLevel.Description();
                 directionComboBox.Items.AddRange(["Two-Way", $"From {lowerName}", $"From {higherName}"]);
 
-                directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
+                directionComboBox.SelectedIndex = (int) transition.SelectedDirectionality;
                 directionComboBox.SelectedIndexChanged += (_, _) =>
                 {
-                    transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex;
+                    transition.SelectedDirectionality = (TransitionDirection) directionComboBox.SelectedIndex;
                 };
 
                 _levelTransitionSettingsPanel.Controls.Add(directionComboBox);
@@ -405,7 +405,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void LegacyGlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         LegacyGlitchless = checkbox.Checked;
 
         AdjustTransitionsGroupBoxState();
@@ -434,7 +434,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     "Game Version: " +
                     (Tr4Version)found.Version switch
                     {
-                        Tr4Version.SteamOrGog => digitalText,
+                        Tr4Version.SteamOrGog        => digitalText,
                         Tr4Version.TheTimesExclusive => tteText,
                         _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                     };
@@ -479,7 +479,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             text += " [Disabled: Deathrun Mode overrides split logic]";
         else if (LegacyGlitchless)
             text += " [Disabled: Legacy Glitchless overrides with preset transitions]";
-        else if (!FullGame && (Tr4Version)ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
+        else if (!FullGame && (Tr4Version) ActiveVersion == Tr4Version.TheTimesExclusive) // TTE IL
             text += " [Disabled: IL Mode for TTE is the same as FG with all transitions active]";
         else if (!FullGame) // TR4 IL
             text += " [Disabled: IL Mode overrides because all transitions are split]";
@@ -489,7 +489,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void AdjustLegacyGlitchlessState()
     {
-        if (FullGame && (Tr4Version)ActiveVersion != Tr4Version.TheTimesExclusive)
+        if (FullGame && (Tr4Version) ActiveVersion != Tr4Version.TheTimesExclusive)
         {
             LegacyGlitchlessCheckbox.Enabled = true;
             LegacyGlitchlessCheckbox.Text = LegacyGlitchlessSettingTextDefault;
@@ -499,7 +499,7 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         // Disable for every Mode besides Full Game.
         LegacyGlitchlessCheckbox.Checked = LegacyGlitchlessCheckbox.Enabled = false;
 
-        if ((Tr4Version)ActiveVersion == Tr4Version.TheTimesExclusive)
+        if ((Tr4Version) ActiveVersion == Tr4Version.TheTimesExclusive)
             LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Does not apply to The Times Exclusive]";
         else if (Deathrun)
             LegacyGlitchlessCheckbox.Text = $"{LegacyGlitchlessSettingTextDefault} [Disabled: Deathrun Mode overrides split logic]";

@@ -9,7 +9,9 @@ namespace TR4;
 
 public class TransitionSetting<TLevel>(
     TLevel lowerLevel, TLevel higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
-    int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null, string note = null)
+    int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null,
+    string note = null
+)
     where TLevel : Enum
 {
     public readonly TLevel LowerLevel = lowerLevel;
@@ -21,10 +23,10 @@ public class TransitionSetting<TLevel>(
     {
         get
         {
-            var sb = new StringBuilder($"{Convert.ToInt32(LowerLevel)}{(int)Directionality:D1}{Convert.ToInt32(HigherLevel)}");
-            sb.Append(UnusedLevelNumber is null ?  "000" : UnusedLevelNumber.Value.ToString("D3"));
-            sb.Append(lowerRoomNumber is null ?  "000" : lowerRoomNumber.Value.ToString("D3"));
-            sb.Append(higherRoomNumber is null ?  "000" : higherRoomNumber.Value.ToString("D3"));
+            var sb = new StringBuilder($"{Convert.ToInt32(LowerLevel)}{(int) Directionality:D1}{Convert.ToInt32(HigherLevel)}");
+            sb.Append(UnusedLevelNumber is null ? "000" : UnusedLevelNumber.Value.ToString("D3"));
+            sb.Append(lowerRoomNumber is null ? "000" : lowerRoomNumber.Value.ToString("D3"));
+            sb.Append(higherRoomNumber is null ? "000" : higherRoomNumber.Value.ToString("D3"));
 
             return ulong.Parse(sb.ToString());
         }
@@ -76,8 +78,8 @@ public class TransitionSetting<TLevel>(
         XmlElement element = document.CreateElement("TransitionSetting");
         element.AppendChild(SettingsHelper.ToElement(document, "Lower", Convert.ToInt32(LowerLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(HigherLevel)));
-        element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int)Directionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int)SelectedDirectionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int) Directionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int) SelectedDirectionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, "Active", Active));
 
         if (UnusedLevelNumber.HasValue)
@@ -98,18 +100,20 @@ public class TransitionSetting<TLevel>(
         int lowerValue = int.Parse(node["Lower"].InnerText);
         if (!Enum.IsDefined(typeof(TLevel), lowerValue))
             throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{typeof(TLevel).Name}'.");
-        var lower = (TLevel)Enum.ToObject(typeof(TLevel), lowerValue);
+
+        var lower = (TLevel) Enum.ToObject(typeof(TLevel), lowerValue);
 
         int higherValue = int.Parse(node["Higher"].InnerText);
         if (!Enum.IsDefined(typeof(TLevel), higherValue))
             throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{typeof(TLevel).Name}'.");
-        var higher = (TLevel)Enum.ToObject(typeof(TLevel), higherValue);
 
-        var directionality = (TransitionDirection)int.Parse(node["Directionality"].InnerText);
+        var higher = (TLevel) Enum.ToObject(typeof(TLevel), higherValue);
+
+        var directionality = (TransitionDirection) int.Parse(node["Directionality"].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), directionality))
             throw new InvalidDataException($"Invalid value '{directionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        var selectedDirectionality = (TransitionDirection)int.Parse(node["SelectedDirectionality"].InnerText);
+        var selectedDirectionality = (TransitionDirection) int.Parse(node["SelectedDirectionality"].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), selectedDirectionality))
             throw new InvalidDataException($"Invalid value '{selectedDirectionality}' for enum type '{nameof(TransitionDirection)}'.");
 

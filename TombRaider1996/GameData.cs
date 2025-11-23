@@ -16,9 +16,9 @@ internal sealed class GameData : ClassicGameData
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal GameData()
     {
-        VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint)Tr1Version.Ati);
-        VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint)Tr1Version.DOSBox);
-        VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint)Tr1Version.AtiUnfinishedBusiness);
+        VersionHashes.Add("e4b95c0479d7256af56b8a9897ed4b13", (uint) Tr1Version.Ati);
+        VersionHashes.Add("de6b2bf4c04a93f0833b9717386e4a3b", (uint) Tr1Version.DOSBox);
+        VersionHashes.Add("1e086eaa88568b23d322283d9cb664d6", (uint) Tr1Version.AtiUnfinishedBusiness);
 
         // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("dosbox");
@@ -38,13 +38,13 @@ internal sealed class GameData : ClassicGameData
     ///     If no menu item is activated, and the value gets higher than 480, Demo Mode starts.
     ///     If any menu item is active, the value increases and Demo Mode does not activate.
     /// </remarks>
-    public MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>)Watchers["DemoTimer"];
+    public MemoryWatcher<uint> DemoTimer => (MemoryWatcher<uint>) Watchers["DemoTimer"];
 
     /// <inheritdoc />
     protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((Tr1Version)version)
+        switch ((Tr1Version) version)
         {
             case Tr1Version.Ati:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x5A324)) { Name = "TitleScreen" });

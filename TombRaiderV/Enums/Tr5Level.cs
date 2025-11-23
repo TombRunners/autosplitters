@@ -20,16 +20,16 @@ internal enum Tr5Level
 
     // Russia
     [Description("The Base")]
-    TheBase        = 04,
+    TheBase      = 04,
 
     [Description("The Submarine")]
-    TheSubmarine   = 05,
+    TheSubmarine = 05,
 
     [Description("Deep Sea Dive")]
-    DeepseaDive    = 06,
+    DeepseaDive  = 06,
 
     [Description("Sinking Sub")]
-    SinkingSub     = 07,
+    SinkingSub   = 07,
 
     // Ireland
     [Description("Gallows Tree")]
@@ -43,14 +43,14 @@ internal enum Tr5Level
 
     // VCI Headquarters
     [Description("13th Floor")]
-    ThirteenthFloor         = 11,
+    ThirteenthFloor        = 11,
 
     [Description("Escape with the Iris")]
-    EscapeWithTheIris       = 12,
+    EscapeWithTheIris      = 12,
 
     [Description("Security Breach [Cutscene]")]
-    CutsceneSecurityBreach  = 13,
+    CutsceneSecurityBreach = 13,
 
     [Description("Red Alert!")]
-    RedAlert                = 14,
+    RedAlert               = 14,
 }

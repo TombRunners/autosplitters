@@ -67,12 +67,9 @@ public abstract class ClassicComponent<TData> : AutoSplitComponent
     public override XmlNode GetSettings(XmlDocument document)
     {
         XmlElement settingsNode = document.CreateElement("Settings");
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset),
-            _splitter.Settings.EnableAutoReset));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame),
-            _splitter.Settings.FullGame));
-        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun),
-            _splitter.Settings.Deathrun));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.EnableAutoReset), _splitter.Settings.EnableAutoReset));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.FullGame), _splitter.Settings.FullGame));
+        _ = settingsNode.AppendChild(SettingsHelper.ToElement(document, nameof(_splitter.Settings.Deathrun), _splitter.Settings.Deathrun));
         return settingsNode;
     }
 
@@ -93,12 +90,12 @@ public abstract class ClassicComponent<TData> : AutoSplitComponent
         // Assign values to Settings.
         _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
 
-        if (_splitter.Settings.FullGame)
-            _splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
+        if (_splitter.Settings.FullGame) // Grouped RadioButtons
+            _splitter.Settings.FullGameModeButton.Checked = true;
         else if (_splitter.Settings.Deathrun)
-            _splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.DeathrunModeButton.Checked = true;
         else
-            _splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
+            _splitter.Settings.ILModeButton.Checked = true;
     }
 
     public override string ComponentName => "Classic Tomb Raider Component";

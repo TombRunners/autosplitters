@@ -10,20 +10,20 @@ namespace TR4;
 internal class GameData : LaterClassicGameData
 {
     private const uint SizeOfItemInfo = 0x15F6;
-    private static readonly IntPtr FirstItemInfoPointer = (IntPtr)0x7FE28C;
+    private static readonly IntPtr FirstItemInfoPointer = (IntPtr) 0x7FE28C;
 
     /// <summary>A constructor that primarily exists to set/modify values/objects.</summary>
     public GameData()
     {
-        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint)Tr4Version.SteamOrGog);
-        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint)Tr4Version.TheTimesExclusive);
+        VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint) Tr4Version.SteamOrGog);
+        VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint) Tr4Version.TheTimesExclusive);
 
         ProcessSearchNames.Add("tomb4");
     }
 
     /// <summary>Used to disambiguate Lara's start position once loaded into a new level.</summary>
     /// <remarks>0 for levels without multiple Lara start positions; non-zero when going to the non-default start position.</remarks>
-    public MemoryWatcher<byte> GfRequiredStartPosition => (MemoryWatcher<byte>)Watchers["GfRequiredStartPosition"];
+    public MemoryWatcher<byte> GfRequiredStartPosition => (MemoryWatcher<byte>) Watchers["GfRequiredStartPosition"];
 
     /// <summary>
     ///     A bitfield indicating the "progress" at which Lara has collected the parts for or has completed
@@ -39,7 +39,7 @@ internal class GameData : LaterClassicGameData
     ///         <see cref="MechanicalScarab"/> & 4 => Mechanical Scarab (0000 0100)
     ///     When Lara has both Winding Key and Mechanical Scarab before combining them: (0000 0110)
     /// </remarks>
-    public MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>)Watchers["MechanicalScarab"];
+    public MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>) Watchers["MechanicalScarab"];
 
     /// <inheritdoc cref="TR4.PuzzleItems"/>
     /// <remarks>
@@ -49,7 +49,7 @@ internal class GameData : LaterClassicGameData
     ///     When unique items are in Lara's inventory, the address's value is 1.
     ///     Non-unique puzzle items, such as the Golden Skull secrets in Cambodia, continually increment their assigned index.
     /// </remarks>
-    public MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>)Watchers["PuzzleItemsArray"];
+    public MemoryWatcher<PuzzleItems> PuzzleItems => (MemoryWatcher<PuzzleItems>) Watchers["PuzzleItemsArray"];
 
     /// <summary>
     ///     An unsigned short used as a bitfield to track which combinable puzzle items Lara has in her inventory.
@@ -60,7 +60,7 @@ internal class GameData : LaterClassicGameData
     ///         <see cref="PuzzleItemsCombo"/> & 0x80 => Mine Position Data  (1000 0000 0000 0000)
     ///     When Lara has both Mine Detonator Body and Mine Position Data before combining them: (1100 0000 0000 0000)
     /// </remarks>
-    public MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>)Watchers["PuzzleItemsCombo"];
+    public MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>) Watchers["PuzzleItemsCombo"];
 
     /// <summary>
     ///     An unsigned short used as a bitfield to track which keys Lara has in her inventory.
@@ -69,16 +69,16 @@ internal class GameData : LaterClassicGameData
     ///     The corresponding bits are relevant for the autosplitter's logic:
     ///         <see cref="KeyItems"/> & 2 => Hypostyle Key (0000 0000 0000 0010)
     /// </remarks>
-    public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>)Watchers["KeyItems"];
+    public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>) Watchers["KeyItems"];
 
     /// <summary>Lara's current room.</summary>
-    public MemoryWatcher<short> Room => (MemoryWatcher<short>)Watchers?["Room"];
+    public MemoryWatcher<short> Room => (MemoryWatcher<short>) Watchers?["Room"];
 
     /// <inheritdoc />
     protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((Tr4Version)version)
+        switch ((Tr4Version) version)
         {
             case Tr4Version.SteamOrGog:
                 // Base

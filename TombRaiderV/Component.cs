@@ -5,7 +5,7 @@ using LiveSplit.UI;
 
 namespace TR5;
 
-/// <summary>Implementation of <see cref="LaterClassicComponent{TData, TSettings}" />.</summary>
+/// <summary>Implementation of <see cref="LaterClassicComponent{TData,TSettings}" />.</summary>
 /// <inheritdoc />
 internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSettings> autosplitter, LiveSplitState state)
     : LaterClassicComponent<GameData, ComponentSettings>(autosplitter, state)
@@ -42,12 +42,12 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.SplitSecrets = SettingsHelper.ParseBool(settings["SplitSecrets"], Splitter.Settings.SplitSecrets);
 
         // Assign values to Settings.
-        if (Splitter.Settings.FullGame)
-            Splitter.Settings.FullGameModeButton.Checked = true; // Grouped RadioButton
+        if (Splitter.Settings.FullGame) // Grouped RadioButtons
+            Splitter.Settings.FullGameModeButton.Checked = true;
         else if (Splitter.Settings.Deathrun)
-            Splitter.Settings.DeathrunModeButton.Checked = true; // Grouped RadioButton
+            Splitter.Settings.DeathrunModeButton.Checked = true;
         else
-            Splitter.Settings.ILModeButton.Checked = true;       // Grouped RadioButton
+            Splitter.Settings.ILModeButton.Checked = true;
 
         Splitter.Settings.SplitSecurityBreachCheckbox.Checked = Splitter.Settings.SplitSecurityBreach; // CheckBox
         Splitter.Settings.EnableAutoResetCheckbox.Checked = Splitter.Settings.EnableAutoReset;         // CheckBox

@@ -10,12 +10,12 @@ namespace TR4;
 
 [Serializable]
 public struct ItemInfo(
-    int floor, uint touch_bits, uint mesh_bits, short object_number,
-    short current_anim_state, short goal_anim_state, short required_anim_state, short anim_number, short frame_number,
-    short room_number, short next_item, short next_active, short speed, short fallspeed, short hit_points, ushort box_number,
-    short timer, ushort flags, short shade, short trigger_flags, short carried_item, short after_death, ushort fired_weapon,
-    ItemInfo.item_flags_Array item_flags, uint pData, ItemInfo.PHD_3DPOS pos, ItemInfo.ITEM_LIGHT il, uint bitfield, uint meshswap_meshbits,
-    short draw_room, short TOSSPAD)
+    int floor, uint touch_bits, uint mesh_bits, short object_number, short current_anim_state, short goal_anim_state,
+    short required_anim_state, short anim_number, short frame_number, short room_number, short next_item, short next_active, short speed,
+    short fallspeed, short hit_points, ushort box_number, short timer, ushort flags, short shade, short trigger_flags, short carried_item,
+    short after_death, ushort fired_weapon, ItemInfo.item_flags_Array item_flags, uint pData, ItemInfo.PHD_3DPOS pos,
+    ItemInfo.ITEM_LIGHT il, uint bitfield, uint meshswap_meshbits, short draw_room, short TOSSPAD
+)
 {
     public struct PHD_3DPOS(int x_pos, int y_pos, int z_pos, short x_rot, short y_rot, short z_rot)
     {
@@ -35,10 +35,11 @@ public struct ItemInfo(
     }
 
     public struct PCLIGHT(
-        float x, float y, float z, float r, float g, float b, int shadow,
-        float Inner, float Outer, float InnerAngle, float OuterAngle, float Cutoff,
-        float nx, float ny, float nz, int ix, int iy, int iz, int inx, int iny, int inz,
-        float tr, float tg, float tb, float rs, float gs, float bs, int fcnt, byte Type, byte Active, PHD_VECTOR rlp, int Range)
+        float x, float y, float z, float r, float g, float b, int shadow, float Inner, float Outer, float InnerAngle,
+        float OuterAngle, float Cutoff, float nx, float ny, float nz, int ix, int iy, int iz, int inx, int iny,
+        int inz, float tr, float tg, float tb, float rs, float gs, float bs, int fcnt, byte Type, byte Active,
+        PHD_VECTOR rlp, int Range
+    )
     {
         public float x { get; set; } = x;
         public float y { get; set; } = y;
@@ -77,10 +78,11 @@ public struct ItemInfo(
     public struct ITEM_LIGHT(
         int r, int g, int b, int ambient, int rs, int gs, int bs, int fcnt,
         PCLIGHT_Array CurrentLights, PCLIGHT_Array PrevLights, int nCurrentLights, int nPrevLights,
-        int room_number, int RoomChange, PHD_VECTOR item_pos, uint pCurrentLights, uint pPrevLights)
+        int room_number, int RoomChange, PHD_VECTOR item_pos, uint pCurrentLights, uint pPrevLights
+    )
     {
         public int r { get; set; } = r;
-        public int g { get;  } = g;
+        public int g { get; } = g;
         public int b { get; set; } = b;
         public int ambient { get; set; } = ambient;
         public int rs { get; set; } = rs;
@@ -99,10 +101,10 @@ public struct ItemInfo(
     }
 
     public struct PCLIGHT_Array(
-        PCLIGHT light00, PCLIGHT light01, PCLIGHT light02, PCLIGHT light03, PCLIGHT light04,
-        PCLIGHT light05, PCLIGHT light06, PCLIGHT light07, PCLIGHT light08, PCLIGHT light09, PCLIGHT light10,
-        PCLIGHT light11, PCLIGHT light12, PCLIGHT light13, PCLIGHT light14, PCLIGHT light15, PCLIGHT light16,
-        PCLIGHT light17, PCLIGHT light18, PCLIGHT light19, PCLIGHT light20)
+        PCLIGHT light00, PCLIGHT light01, PCLIGHT light02, PCLIGHT light03, PCLIGHT light04, PCLIGHT light05, PCLIGHT light06,
+        PCLIGHT light07, PCLIGHT light08, PCLIGHT light09, PCLIGHT light10, PCLIGHT light11, PCLIGHT light12, PCLIGHT light13,
+        PCLIGHT light14, PCLIGHT light15, PCLIGHT light16, PCLIGHT light17, PCLIGHT light18, PCLIGHT light19, PCLIGHT light20
+    )
     {
         public PCLIGHT light00 { get; set; } = light00;
         public PCLIGHT light01 { get; set; } = light01;

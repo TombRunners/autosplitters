@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
 using LiveSplit.Model;
+using LiveSplit.Options;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using LiveSplit.UI.Components.AutoSplit;
@@ -88,8 +89,9 @@ public class Component : AutoSplitComponent
         return settingsNode;
     }
 
-    private static void AppendTransitionSettings<T>(XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<T> transitions,
-        Func<T, XmlNode> toXmlElement)
+    private static void AppendTransitionSettings<T>(
+        XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<T> transitions, Func<T, XmlNode> toXmlElement
+    )
     {
         XmlElement transitionsNode = document.CreateElement(elementName);
         foreach (T transition in transitions)
@@ -115,29 +117,32 @@ public class Component : AutoSplitComponent
         _splitter.Settings.SplitSecurityBreach = SettingsHelper.ParseBool(settings[nameof(_splitter.Settings.SplitSecurityBreach)]);
 
         // Assign values to Settings.
-        if (_splitter.Settings.FullGame)
-            _splitter.Settings.FullGameButton.Checked = true; // Grouped RadioButton
+        if (_splitter.Settings.FullGame) // Grouped RadioButtons
+            _splitter.Settings.FullGameButton.Checked = true;
         else if (_splitter.Settings.Deathrun)
-            _splitter.Settings.DeathrunButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.DeathrunButton.Checked = true;
         else
-            _splitter.Settings.IlOrAreaButton.Checked = true; // Grouped RadioButton
+            _splitter.Settings.IlOrAreaButton.Checked = true;
 
-        switch (_splitter.Settings.PickupSplitSetting)
+        switch (_splitter.Settings.PickupSplitSetting) // Grouped RadioButtons
         {
             case PickupSplitSetting.None:
-                _splitter.Settings.SplitNoPickupsButton.Checked = true;   // Grouped RadioButton
+                _splitter.Settings.SplitNoPickupsButton.Checked = true;
                 break;
+
             case PickupSplitSetting.All:
-                _splitter.Settings.SplitAllPickupsButton.Checked = true;  // Grouped RadioButton
+                _splitter.Settings.SplitAllPickupsButton.Checked = true;
                 break;
+
             case PickupSplitSetting.SecretsOnly:
-                _splitter.Settings.SplitSecretsOnlyButton.Checked = true; // Grouped RadioButton
+                _splitter.Settings.SplitSecretsOnlyButton.Checked = true;
                 break;
+
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset; // CheckBox
+        _splitter.Settings.EnableAutoResetCheckbox.Checked = _splitter.Settings.EnableAutoReset;         // CheckBox
         _splitter.Settings.SplitSecurityBreachCheckbox.Checked = _splitter.Settings.SplitSecurityBreach; // CheckBox
 
         // Read and set level transition settings.
@@ -145,8 +150,10 @@ public class Component : AutoSplitComponent
         ProcessTr6LevelTransitionSettings(settings, nameof(_splitter.Settings.Tr6LevelTransitions), _splitter.Settings.Tr6LevelTransitions);
     }
 
-    private static void ProcessTransitionSettings<T>(XmlNode settings, string transitionsNodeName, List<T> settingsList, string settingsPrefix,
-        Func<XmlNode, T> fromXml, Action<T, T> updateSettings, Func<T, ulong> getId)
+    private static void ProcessTransitionSettings<T>(
+        XmlNode settings, string transitionsNodeName, List<T> settingsList, string settingsPrefix,
+        Func<XmlNode, T> fromXml, Action<T, T> updateSettings, Func<T, ulong> getId
+    )
     {
         XmlElement transitionsNode = settings[transitionsNodeName];
         if (transitionsNode == null)
@@ -156,8 +163,10 @@ public class Component : AutoSplitComponent
         int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
         if (xmlTransitionsCount != transitionsCount)
         {
-            LiveSplit.Options.Log.Error($"Refusing to apply {settingsPrefix} level transition settings due to a mismatched count. " +
-                                        $"{xmlTransitionsCount} found in XML, expected {transitionsCount}. Reverting to default/existing.");
+            Log.Error(
+                $"Refusing to apply {settingsPrefix} level transition settings due to a mismatched count. " +
+                $"{xmlTransitionsCount} found in XML, expected {transitionsCount}. Reverting to default/existing."
+            );
             return;
         }
 
@@ -174,7 +183,7 @@ public class Component : AutoSplitComponent
             }
             catch (Exception ex)
             {
-                LiveSplit.Options.Log.Error($"{settingsPrefix} level transition deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
+                Log.Error($"{settingsPrefix} level transition deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
                 RevertSettings(settingsList, defaultOrExistingTransitions);
                 break;
             }
@@ -184,15 +193,19 @@ public class Component : AutoSplitComponent
             if (existingSettings.Count != 1)
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Found unexpected amount of matches ({existingSettings.Count}) for {settingsPrefix} level transition " +
-                                            $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing.");
+                Log.Error(
+                    $"Found unexpected amount of matches ({existingSettings.Count}) for {settingsPrefix} level transition " +
+                    $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing."
+                );
             }
 
             if (!encounteredSettingIds.Add(getId(settingFromXml)))
             {
                 settingsNeedReversion = true;
-                LiveSplit.Options.Log.Error($"Encountered {settingsPrefix} level transition setting more than once " +
-                                            $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing.");
+                Log.Error(
+                    $"Encountered {settingsPrefix} level transition setting more than once " +
+                    $"from XML with ID {getId(settingFromXml)}. Reverting to default/existing."
+                );
             }
 
             if (settingsNeedReversion)
@@ -213,29 +226,32 @@ public class Component : AutoSplitComponent
     }
 
     // The TR4-specific wrapper simply calls the generic method with the appropriate delegates.
-    private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList)
-    {
-        ProcessTransitionSettings(settings, transitionsNodeName, settingsList, "TR4R",
+    private static void ProcessTr4LevelTransitionSettings(
+        XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList
+    )
+        => ProcessTransitionSettings(
+            settings, transitionsNodeName, settingsList, "TR4R",
             Tr4LevelTransitionSetting.FromXmlElement,
             static (existing, xml) =>
             {
                 existing.UpdateActive(xml.Active);
                 existing.SelectedDirectionality = xml.SelectedDirectionality;
-            }, static t => t.Id
+            },
+            static t => t.Id
         );
-    }
 
     // The TR6-specific wrapper also calls the generic method with its own delegates.
-    private static void ProcessTr6LevelTransitionSettings(XmlNode settings, string transitionsNodeName, List<Tr6LevelTransitionSetting> settingsList)
-    {
-        ProcessTransitionSettings(settings, transitionsNodeName, settingsList, "TR6R",
-            Tr6LevelTransitionSetting.FromXmlElement,
-            static (existing, xml) =>
+    private static void ProcessTr6LevelTransitionSettings(
+        XmlNode settings, string transitionsNodeName, List<Tr6LevelTransitionSetting> settingsList
+    )
+        => ProcessTransitionSettings(
+            settings, transitionsNodeName, settingsList, "TR6R",
+            Tr6LevelTransitionSetting.FromXmlElement, static (existing, xml) =>
             {
                 existing.UpdateActive(xml.Active);
-            }, static t => t.Id
+            },
+            static t => t.Id
         );
-    }
 
     /// <summary>
     ///     Adds <see cref="GameData" /> and <see cref="Autosplitter" /> management to <see cref="AutoSplitComponent.Update" />.
@@ -260,14 +276,15 @@ public class Component : AutoSplitComponent
                 {
                     return comp.Component switch
                     {
-                        Timer timer => timer.Settings.TimingMethod,
+                        Timer timer                 => timer.Settings.TimingMethod,
                         DetailedTimer detailedTimer => detailedTimer.Settings.TimingMethod,
-                        _ => comp.Component.ComponentName,
+                        _                           => comp.Component.ComponentName,
                     };
                 }
             )
             .ToList();
-        bool layoutOrTimingMethodChanged = currentTimingMethod != _lsCurrentTimingMethod || !layoutAndTimingMethods.SequenceEqual(_layoutAndTimingMethods);
+        bool layoutOrTimingMethodChanged = currentTimingMethod != _lsCurrentTimingMethod ||
+                                           !layoutAndTimingMethods.SequenceEqual(_layoutAndTimingMethods);
 
         bool importantLayoutOrSettingChanged = valuesNotInitialized || layoutOrTimingMethodChanged;
         if (importantLayoutOrSettingChanged)
@@ -296,8 +313,8 @@ public class Component : AutoSplitComponent
             timerWithGameTimeInLayout = timerComponent.Component switch
             {
                 DetailedTimer detailedTimer => TimerUsesGameTime(detailedTimer.Settings.TimingMethod, lsTimingMethodIsGameTime),
-                Timer timer => TimerUsesGameTime(timer.Settings.TimingMethod, lsTimingMethodIsGameTime),
-                _ => false,
+                Timer timer                 => TimerUsesGameTime(timer.Settings.TimingMethod, lsTimingMethodIsGameTime),
+                _                           => false,
             };
 
             if (timerWithGameTimeInLayout)

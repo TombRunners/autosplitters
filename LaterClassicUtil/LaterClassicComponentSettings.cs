@@ -23,10 +23,10 @@ public class LaterClassicComponentSettings : UserControl
 
         GameVersionLabel.Text = result switch
         {
-            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.None            => noneUndetected,
             VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
-            VersionDetectionResult.Found => GameVersionLabel.Text,
-            _ => throw new ArgumentOutOfRangeException(nameof(result)),
+            VersionDetectionResult.Found           => GameVersionLabel.Text,
+            _                                      => throw new ArgumentOutOfRangeException(nameof(result)),
         };
     }
 
@@ -50,13 +50,13 @@ public class LaterClassicComponentSettings : UserControl
 
     protected void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         EnableAutoReset = checkbox.Checked;
     }
 
     protected void SplitSecretsCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         SplitSecrets = checkbox.Checked;
     }
 }

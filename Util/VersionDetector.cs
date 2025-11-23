@@ -37,6 +37,7 @@ public class VersionDetector(List<string> processSearchNames, Dictionary<string,
         string hash = processes[0].GetMd5Hash() ?? string.Empty;
         if (VersionHashes.TryGetValue(hash, out uint version))
             return new VersionDetectionResult.Found(processes[0], hash, version);
+
         return new VersionDetectionResult.Unknown(processes[0], hash);
     }
 }

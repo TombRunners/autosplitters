@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -78,8 +79,8 @@ public sealed class ComponentSettings : UserControl
             componentSettingsDialog.SuspendLayout();
 
             componentSettingsDialog.Size = new Size(Width + 20, Height + 100);
-            parentParent.Size = new Size(Width + 10, Height + 50);
-            parent.Size = new Size(Width + 10, Height + 50);
+            parentParent.Size            = new Size(Width + 10, Height + 50);
+            parent.Size                  = new Size(Width + 10, Height + 50);
 
             componentSettingsDialog.ResumeLayout(false);
             componentSettingsDialog.PerformLayout();
@@ -168,16 +169,16 @@ public sealed class ComponentSettings : UserControl
 
         GameVersionLabel.Text = result switch
         {
-            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.None            => noneUndetected,
             VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
-            VersionDetectionResult.Found found => GameVersionLabel.Text =
+            VersionDetectionResult.Found found     => GameVersionLabel.Text =
                 "Game Version: " +
                 (GameVersion)found.Version switch
                 {
-                    GameVersion.GogV10 => gogV10,
-                    GameVersion.PublicV10 => publicV10,
-                    GameVersion.Patch1 => patch1,
-                    GameVersion.Patch2 => patch2,
+                    GameVersion.GogV10        => gogV10,
+                    GameVersion.PublicV10     => publicV10,
+                    GameVersion.Patch1        => patch1,
+                    GameVersion.Patch2        => patch2,
                     GameVersion.Patch2Hotfix1 => patch2Hotfix1,
                     _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                 },
@@ -191,9 +192,9 @@ public sealed class ComponentSettings : UserControl
     {
         string methodText = method switch
         {
-            GameTimeMethod.Igt => "IGT",
+            GameTimeMethod.Igt        => "IGT",
             GameTimeMethod.RtaNoLoads => "RTA w/o Loads",
-            _ => "Unknown",
+            _                         => "Unknown",
         };
 
         _gameTimeMethodLabel.Text = $"Game Time Method:{Environment.NewLine}{methodText}";
@@ -742,9 +743,9 @@ public sealed class ComponentSettings : UserControl
                         bool secondEnabled = secondSplitCheckBox.Checked;
                         activeSetting = (firstEnabled, secondEnabled) switch
                         {
-                            (true, true) => ActiveSetting.Active,
-                            (false, true) => ActiveSetting.IgnoreFirst,
-                            (true, false) => ActiveSetting.IgnoreSecond,
+                            (true, true)   => ActiveSetting.Active,
+                            (false, true)  => ActiveSetting.IgnoreFirst,
+                            (true, false)  => ActiveSetting.IgnoreSecond,
                             (false, false) => ActiveSetting.IgnoreAll,
                         };
                     }
@@ -776,9 +777,9 @@ public sealed class ComponentSettings : UserControl
                         bool secondEnabled = secondSplitCheckBox.Checked;
                         activeSetting = (firstEnabled, secondEnabled) switch
                         {
-                            (true, true) => ActiveSetting.Active,
-                            (false, true) => ActiveSetting.IgnoreFirst,
-                            (true, false) => ActiveSetting.IgnoreSecond,
+                            (true, true)   => ActiveSetting.Active,
+                            (false, true)  => ActiveSetting.IgnoreFirst,
+                            (true, false)  => ActiveSetting.IgnoreSecond,
                             (false, false) => ActiveSetting.IgnoreAll,
                         };
                     }
@@ -859,7 +860,7 @@ public sealed class ComponentSettings : UserControl
                 _toolTip.SetToolTip(checkBox, transition.ToolTip);
             }
 
-            checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox)sender).Checked);
+            checkBox.CheckedChanged += (sender, _) => transition.UpdateActive(((CheckBox) sender).Checked);
 
             firstEntry = false;
             rowCount += 1;
@@ -892,7 +893,7 @@ public sealed class ComponentSettings : UserControl
 
     private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         EnableAutoReset = checkbox.Checked;
     }
 
@@ -904,7 +905,7 @@ public sealed class ComponentSettings : UserControl
 
     private void SplitSecurityBreachCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         SplitSecurityBreach = checkbox.Checked;
     }
 
@@ -921,7 +922,7 @@ public sealed class ComponentSettings : UserControl
     private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
         if (e.Link.LinkData is string target)
-            System.Diagnostics.Process.Start(target);
+            Process.Start(target);
     }
 
     #endregion
@@ -1011,13 +1012,13 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.GreatHypostyleHall, Tr4Level.SacredLake, TransitionDirection.OneWayFromLower, complexIgnore: true,     // 08  -> 09
             toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
                      "The left checkbox is for the first visit split; the right checkbox is for the second visit split."),
-        new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                        // 09  -> 07
+        new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                            // 09  -> 07
         new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
 
         // Semerkhet
-        new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower,                // 11  -> 12
+        new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower, // 11  -> 12
             section: "Semerkhet"),
-        new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower),                // 12  -> 13
+        new(Tr4Level.GuardianOfSemerkhet, Tr4Level.DesertRailroad, TransitionDirection.OneWayFromLower), // 12  -> 13
 
         // Eastern Desert
         new(Tr4Level.DesertRailroad, Tr4Level.Alexandria, TransitionDirection.OneWayFromLower, // 13  -> 14
@@ -1041,21 +1042,22 @@ public sealed class ComponentSettings : UserControl
             lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End",    // 15 <-> 18
             toolTip: "To/from the Catabombs exit which allows an alternate backtracking route to Coastal Ruins."),
 
-        new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),          // 15 <-> 19
-        new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),             // 18 <-> 19
-        new(Tr4Level.TempleOfPoseidon, Tr4Level.TheLostLibrary, TransitionDirection.TwoWay),        // 19 <-> 20
-        new(Tr4Level.TheLostLibrary, Tr4Level.HallOfDemetrius, TransitionDirection.TwoWay),         // 20 <-> 21
-        new(Tr4Level.CoastalRuins, Tr4Level.HallOfDemetrius, TransitionDirection.OneWayFromHigher), // 21  -> 15
+        new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),               // 15 <-> 19
+        new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),                  // 18 <-> 19
+        new(Tr4Level.TempleOfPoseidon, Tr4Level.TheLostLibrary, TransitionDirection.TwoWay),             // 19 <-> 20
+        new(Tr4Level.TheLostLibrary, Tr4Level.HallOfDemetrius, TransitionDirection.TwoWay),              // 20 <-> 21
+        new(Tr4Level.CoastalRuins, Tr4Level.HallOfDemetrius, TransitionDirection.OneWayFromHigher),      // 21  -> 15
 
-        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromLower,  // 15  -> 16
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromLower,     // 15  -> 16
             lowerRoomNumber: 104, lowerTriggerTimer: 0, note: "Underwater Current"),
-        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher, // 16  -> 15
+        new(Tr4Level.CoastalRuins, Tr4Level.PharosTempleOfIsis, TransitionDirection.OneWayFromHigher,    // 16  -> 15
             higherRoomNumber: 77, higherTriggerTimer: 3, note: "Chute After Surfacing"),
-        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay, complexIgnore: true, // 16 <-> 17
+        new(Tr4Level.PharosTempleOfIsis, Tr4Level.CleopatrasPalaces, TransitionDirection.TwoWay,         // 16 <-> 17
+            complexIgnore: true,
             toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
                      $"The left checkbox is for the first visit split; the right checkbox is for the second visit split.{Environment.NewLine}" +
                      "If Two-Way is selected, the checkboxes apply to both directions. If one way is selected, only that direction will be split accordingly."),
-        new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower), // 17  -> 22
+        new(Tr4Level.CleopatrasPalaces, Tr4Level.CityOfTheDead, TransitionDirection.OneWayFromLower),    // 17  -> 22
 
         // Cairo
         new(Tr4Level.CityOfTheDead, Tr4Level.ChambersOfTulun, TransitionDirection.TwoWay,  // 22 <-> 24
@@ -1081,13 +1083,14 @@ public sealed class ComponentSettings : UserControl
         new(Tr4Level.MenkauresPyramid, Tr4Level.InsideMenkauresPyramid, TransitionDirection.TwoWay),        // 31 <-> 32
         new(Tr4Level.SphinxComplex, Tr4Level.InsideMenkauresPyramid, TransitionDirection.OneWayFromHigher), // 32  -> 28
 
-        new(Tr4Level.SphinxComplex, Tr4Level.TheMastabas, TransitionDirection.TwoWay),                                               // 28 <-> 33
-        new(Tr4Level.TheMastabas, Tr4Level.TheGreatPyramid, TransitionDirection.OneWayFromLower),                                    // 33  -> 34
-        new(Tr4Level.TheGreatPyramid, Tr4Level.KhufusQueensPyramid, TransitionDirection.OneWayFromLower),                            // 34  -> 35
-        new(Tr4Level.KhufusQueensPyramid, Tr4Level.InsideTheGreatPyramid, TransitionDirection.TwoWay),                               // 35 <-> 36
-        new(Tr4Level.InsideTheGreatPyramid, Tr4Level.TempleOfHorus, TransitionDirection.OneWayFromLower),                            // 36  -> 37
-        new(Tr4Level.TempleOfHorus, Tr4Level.HorusBoss, TransitionDirection.OneWayFromLower),                                        // 37  -> 38
-        new(Tr4Level.HorusBoss, Tr4Level.MainMenu, TransitionDirection.OneWayFromLower, unusedLevelNumber: 39, note: "End of Game"), // 38  -> End
+        new(Tr4Level.SphinxComplex, Tr4Level.TheMastabas, TransitionDirection.TwoWay),                    // 28 <-> 33
+        new(Tr4Level.TheMastabas, Tr4Level.TheGreatPyramid, TransitionDirection.OneWayFromLower),         // 33  -> 34
+        new(Tr4Level.TheGreatPyramid, Tr4Level.KhufusQueensPyramid, TransitionDirection.OneWayFromLower), // 34  -> 35
+        new(Tr4Level.KhufusQueensPyramid, Tr4Level.InsideTheGreatPyramid, TransitionDirection.TwoWay),    // 35 <-> 36
+        new(Tr4Level.InsideTheGreatPyramid, Tr4Level.TempleOfHorus, TransitionDirection.OneWayFromLower), // 36  -> 37
+        new(Tr4Level.TempleOfHorus, Tr4Level.HorusBoss, TransitionDirection.OneWayFromLower),             // 37  -> 38
+        new(Tr4Level.HorusBoss, Tr4Level.MainMenu, TransitionDirection.OneWayFromLower,                   // 38  -> End
+            unusedLevelNumber: 39, note: "End of Game"),
     ];
 
     internal readonly List<Tr6LevelTransitionSetting> Tr6LevelTransitions =

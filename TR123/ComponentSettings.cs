@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Reflection;
@@ -138,7 +139,7 @@ public sealed class ComponentSettings : UserControl
         _aslWarningLabel.Name = "_aslWarningLabel";
         _aslWarningLabel.Size = new Size(476, 20);
         _aslWarningLabel.TabStop = false;
-        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout ï¿½ Please Remove!";
         _aslWarningLabel.Visible = false;
 
         // _timerWarningLabel
@@ -149,7 +150,7 @@ public sealed class ComponentSettings : UserControl
         _timerWarningLabel.Name = "_timerWarningLabel";
         _timerWarningLabel.Size = new Size(476, 20);
         _timerWarningLabel.TabStop = false;
-        _timerWarningLabel.Text = "No Game Time Timer in Layout — Please Fix!";
+        _timerWarningLabel.Text = "No Game Time Timer in Layout ï¿½ Please Fix!";
         _timerWarningLabel.Visible = false;
 
         // _guideLabel
@@ -184,7 +185,7 @@ public sealed class ComponentSettings : UserControl
     private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
         if (e.Link.LinkData is string target)
-            System.Diagnostics.Process.Start(target);
+            Process.Start(target);
     }
 
     public void SetWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
@@ -208,9 +209,9 @@ public sealed class ComponentSettings : UserControl
 
         GameVersionLabel.Text = result switch
         {
-            VersionDetectionResult.None => noneUndetected,
+            VersionDetectionResult.None            => noneUndetected,
             VersionDetectionResult.Unknown unknown => $"Found unknown version, MD5 hash: {unknown.Hash}",
-            VersionDetectionResult.Found found => GameVersionLabel.Text =
+            VersionDetectionResult.Found found     => GameVersionLabel.Text =
                 "Game Version: " +
                 (GameVersion)found.Version switch
                 {
@@ -235,9 +236,9 @@ public sealed class ComponentSettings : UserControl
     {
         string methodText = method switch
         {
-            GameTimeMethod.Igt => "IGT",
+            GameTimeMethod.Igt        => "IGT",
             GameTimeMethod.RtaNoLoads => "RTA w/o Loads",
-            _ => "Unknown",
+            _                         => "Unknown",
         };
         _gameTimeMethodLabel.Text = $"Game Time Method:\n{methodText}";
 
@@ -267,7 +268,7 @@ public sealed class ComponentSettings : UserControl
 
     private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
     {
-        var checkbox = (CheckBox)sender;
+        var checkbox = (CheckBox) sender;
         EnableAutoReset = checkbox.Checked;
     }
 }

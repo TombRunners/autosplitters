@@ -28,6 +28,7 @@ public class Autosplitter : BaseAutosplitter
         {
             if (!GameData.GlobalFrameIndex.Changed)
                 return true;
+
             _cinematicValueUpdatedLastFrame = false;
         }
         else
@@ -61,12 +62,12 @@ public class Autosplitter : BaseAutosplitter
         return !fadeDecreasing;
     }
 
-    public override TimeSpan? GetGameTime(LiveSplitState state) =>
-        Settings.GameTimeMethod switch
+    public override TimeSpan? GetGameTime(LiveSplitState state)
+        => Settings.GameTimeMethod switch
         {
-            GameTimeMethod.Igt => IgtGameTime(Settings.Deathrun),
+            GameTimeMethod.Igt        => IgtGameTime(Settings.Deathrun),
             GameTimeMethod.RtaNoLoads => null,
-            _ => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
+            _                         => throw new ArgumentOutOfRangeException(nameof(Settings.GameTimeMethod), "Unknown GameTimeMethod"),
         };
 
     private static TimeSpan? IgtGameTime(bool deathrun)
@@ -186,8 +187,8 @@ public class Autosplitter : BaseAutosplitter
     /// <summary>Determines if <paramref name="level" /> is the first of the game or expansion.</summary>
     /// <param name="level">Level to check</param>
     /// <returns><see langword="true" /> if <paramref name="level" /> is the first; <see langword="false" /> otherwise.</returns>
-    private static bool IsFirstLevel(uint level) =>
-        CurrentActiveGame switch
+    private static bool IsFirstLevel(uint level)
+        => CurrentActiveGame switch
         {
             Game.Tr1 or Game.Tr1NgPlus => (Tr1Level)level is Tr1Level.Caves,
             Game.Tr1UnfinishedBusiness => (Tr1Level)level is Tr1Level.AtlanteanStronghold,

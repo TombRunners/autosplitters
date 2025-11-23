@@ -12,9 +12,9 @@ internal sealed class GameData : LaterClassicGameData
     /// <summary>A constructor that primarily exists to set/modify values/objects.</summary>
     public GameData()
     {
-        VersionHashes.Add("179164156e3ca6641708d0419d6a91e9", (uint)Tr5Version.SteamOrGog);
-        VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint)Tr5Version.JapaneseNoCd);
-        VersionHashes.Add("502fd7d1461e934471cfe37c27f246fe", (uint)Tr5Version.SteamOrGogCutsceneless);
+        VersionHashes.Add("179164156e3ca6641708d0419d6a91e9", (uint) Tr5Version.SteamOrGog);
+        VersionHashes.Add("e7cb29194a4ab2eb8bf759ffc3fe7e3d", (uint) Tr5Version.JapaneseNoCd);
+        VersionHashes.Add("502fd7d1461e934471cfe37c27f246fe", (uint) Tr5Version.SteamOrGogCutsceneless);
 
         // ReSharper disable StringLiteralTypo
         ProcessSearchNames.Add("PCTomb5");
@@ -30,7 +30,7 @@ internal sealed class GameData : LaterClassicGameData
     /// <remarks>
     ///     0 during any gameplay, 1 while in the main menu, 4 while loading a save.
     /// </remarks>
-    public MemoryWatcher<byte> GfGameMode => (MemoryWatcher<byte>)Watchers?["GfGameMode"];
+    public MemoryWatcher<byte> GfGameMode => (MemoryWatcher<byte>) Watchers?["GfGameMode"];
 
     #endregion
 
@@ -38,7 +38,7 @@ internal sealed class GameData : LaterClassicGameData
     protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((Tr5Version)version)
+        switch ((Tr5Version) version)
         {
             case Tr5Version.SteamOrGog:
             case Tr5Version.SteamOrGogCutsceneless:

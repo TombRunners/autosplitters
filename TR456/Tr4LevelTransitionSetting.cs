@@ -10,7 +10,8 @@ namespace TR456;
 public class Tr4LevelTransitionSetting(
     Tr4Level lowerLevel, Tr4Level higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
     int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null,
-    string note = null, string toolTip = null, string section = null, bool complexIgnore = false)
+    string note = null, string toolTip = null, string section = null, bool complexIgnore = false
+)
 {
     private const string LowerSettingName = "Lower";
     private const string HigherSettingName = "Higher";
@@ -33,11 +34,10 @@ public class Tr4LevelTransitionSetting(
     {
         get
         {
-            var sb = new StringBuilder($"{Convert.ToInt32(LowerLevel)}{(int)Directionality:D1}{Convert.ToInt32(HigherLevel)}");
-            sb.Append(UnusedLevelNumber is null ?  "000" : UnusedLevelNumber.Value.ToString("D3"));
-            sb.Append(lowerRoomNumber is null ?  "000" : lowerRoomNumber.Value.ToString("D3"));
-            sb.Append(higherRoomNumber is null ?  "000" : higherRoomNumber.Value.ToString("D3"));
-
+            var sb = new StringBuilder($"{Convert.ToInt32(LowerLevel)}{(int) Directionality:D1}{Convert.ToInt32(HigherLevel)}");
+            sb.Append(UnusedLevelNumber is null ? "000" : UnusedLevelNumber.Value.ToString("D3"));
+            sb.Append(lowerRoomNumber is null ? "000" : lowerRoomNumber.Value.ToString("D3"));
+            sb.Append(higherRoomNumber is null ? "000" : higherRoomNumber.Value.ToString("D3"));
 
             return ulong.Parse(sb.ToString());
         }
@@ -116,22 +116,24 @@ public class Tr4LevelTransitionSetting(
         int lowerValue = int.Parse(node[LowerSettingName].InnerText);
         if (!Enum.IsDefined(typeof(Tr4Level), lowerValue))
             throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{nameof(Tr4Level)}'.");
-        var lower = (Tr4Level)Enum.ToObject(typeof(Tr4Level), lowerValue);
+
+        var lower = (Tr4Level) Enum.ToObject(typeof(Tr4Level), lowerValue);
 
         int higherValue = int.Parse(node[HigherSettingName].InnerText);
         if (!Enum.IsDefined(typeof(Tr4Level), higherValue))
             throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{nameof(Tr4Level)}'.");
-        var higher = (Tr4Level)Enum.ToObject(typeof(Tr4Level), higherValue);
 
-        var directionality = (TransitionDirection)int.Parse(node[DirectionalitySettingName].InnerText);
+        var higher = (Tr4Level) Enum.ToObject(typeof(Tr4Level), higherValue);
+
+        var directionality = (TransitionDirection) int.Parse(node[DirectionalitySettingName].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), directionality))
             throw new InvalidDataException($"Invalid value '{directionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        var selectedDirectionality = (TransitionDirection)int.Parse(node[SelectedDirectionalitySettingName].InnerText);
+        var selectedDirectionality = (TransitionDirection) int.Parse(node[SelectedDirectionalitySettingName].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), selectedDirectionality))
             throw new InvalidDataException($"Invalid value '{selectedDirectionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        var active = (ActiveSetting)int.Parse(node[ActiveSettingName].InnerText);
+        var active = (ActiveSetting) int.Parse(node[ActiveSettingName].InnerText);
         if (!Enum.IsDefined(typeof(ActiveSetting), active))
             throw new InvalidDataException($"Invalid value '{active}' for enum type '{nameof(ActiveSetting)}'.");
 

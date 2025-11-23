@@ -10,8 +10,8 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 {
     private bool _newGamePageSelected;
 
-    private bool IsUnfinishedBusiness => Data.GameVersion == (uint)Tr1Version.AtiUnfinishedBusiness;
-    private uint? LastRealLevel => IsUnfinishedBusiness ? Data.Level.Current : (uint?)GetLastRealLevel(Data.Level.Current);
+    private bool IsUnfinishedBusiness => Data.GameVersion == (uint) Tr1Version.AtiUnfinishedBusiness;
+    private uint? LastRealLevel => IsUnfinishedBusiness ? Data.Level.Current : (uint?) GetLastRealLevel(Data.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter(Version version) : base(version, new GameData())
@@ -65,7 +65,7 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
     /// <returns>The last non-cutscene <see cref="Tr1Level"/></returns>
     private static Tr1Level? GetLastRealLevel(uint level)
     {
-        var lastLevel = (Tr1Level)level;
+        var lastLevel = (Tr1Level) level;
         if (lastLevel <= Tr1Level.TheGreatPyramid)
             return lastLevel;
 
@@ -73,14 +73,15 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
         return lastLevel switch
         {
             Tr1Level.QualopecCutscene => Tr1Level.Qualopec,
-            Tr1Level.TihocanCutscene => Tr1Level.Tihocan,
-            Tr1Level.MinesToAtlantis => Tr1Level.NatlasMines,
+            Tr1Level.TihocanCutscene  => Tr1Level.Tihocan,
+            Tr1Level.MinesToAtlantis  => Tr1Level.NatlasMines,
             Tr1Level.AfterAtlantisFMV => Tr1Level.Atlantis,
-            _ => null,
+            _                         => null,
         };
     }
 
-    public override bool ShouldSplit(LiveSplitState state) => LastRealLevel is not null && !CompletedLevels.Contains(LastRealLevel.Value) && base.ShouldSplit(state);
+    public override bool ShouldSplit(LiveSplitState state)
+        => LastRealLevel is not null && !CompletedLevels.Contains(LastRealLevel.Value) && base.ShouldSplit(state);
 
     public override bool ShouldStart(LiveSplitState state)
     {
@@ -104,8 +105,8 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
         {
             if (IsUnfinishedBusiness)
             {
-                bool cameFromTitleScreen = oldLevel == (uint)TrUbLevel.Title;
-                bool justStartedFirstLevel = currentLevel == (uint)TrUbLevel.ReturnToEgypt;
+                bool cameFromTitleScreen = oldLevel       == (uint) TrUbLevel.Title;
+                bool justStartedFirstLevel = currentLevel == (uint) TrUbLevel.ReturnToEgypt;
                 bool newGameStarted = cameFromTitleScreen && justStartedFirstLevel;
                 if (newGameStarted)
                     return true;
@@ -113,8 +114,8 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
             else
             {
                 bool cameFromTitleScreen = Data.TitleScreen.Old && !Data.TitleScreen.Current;
-                bool cameFromLarasHome = oldLevel == (uint)Tr1Level.LarasHome;
-                bool justStartedFirstLevel = currentLevel == (uint)Tr1Level.Caves;
+                bool cameFromLarasHome = oldLevel         == (uint) Tr1Level.LarasHome;
+                bool justStartedFirstLevel = currentLevel == (uint) Tr1Level.Caves;
                 bool newGameStarted = (cameFromTitleScreen || cameFromLarasHome) && justStartedFirstLevel;
                 if (newGameStarted)
                     return true;

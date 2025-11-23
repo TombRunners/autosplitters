@@ -15,12 +15,12 @@ internal sealed class GameData : ClassicGameData
     /// <summary>A constructor that primarily exists to set/modify static values/objects.</summary>
     internal GameData()
     {
-        VersionHashes.Add("964f0c4e08ff44a905e8fc9a78f605dc", (uint)Tr2Version.MP);
-        VersionHashes.Add("793c67c79a50984d9bd17ad391f03c57", (uint)Tr2Version.EPC);
-        VersionHashes.Add("39cab6b4ae3c761b67ae308a0ab22e44", (uint)Tr2Version.P1);
-        VersionHashes.Add("12d56521ce038b55efba97463357a3d7", (uint)Tr2Version.UKB);
-        VersionHashes.Add("13fa4e8585d1a1d52d342a513f65f19f", (uint)Tr2Version.StellaGold);
-        VersionHashes.Add("3f262621d07a3c6c6fdd6f654814f988", (uint)Tr2Version.StellaGoldCracked);
+        VersionHashes.Add("964f0c4e08ff44a905e8fc9a78f605dc", (uint) Tr2Version.MP);
+        VersionHashes.Add("793c67c79a50984d9bd17ad391f03c57", (uint) Tr2Version.EPC);
+        VersionHashes.Add("39cab6b4ae3c761b67ae308a0ab22e44", (uint) Tr2Version.P1);
+        VersionHashes.Add("12d56521ce038b55efba97463357a3d7", (uint) Tr2Version.UKB);
+        VersionHashes.Add("13fa4e8585d1a1d52d342a513f65f19f", (uint) Tr2Version.StellaGold);
+        VersionHashes.Add("3f262621d07a3c6c6fdd6f654814f988", (uint) Tr2Version.StellaGoldCracked);
 
         ProcessSearchNames.Add("tomb2");
         ProcessSearchNames.Add("tr2");
@@ -35,7 +35,7 @@ internal sealed class GameData : ClassicGameData
     protected override void SetMemoryAddresses(uint version)
     {
         Watchers.Clear();
-        switch ((Tr2Version)version)
+        switch ((Tr2Version) version)
         {
             case Tr2Version.UKB:
                 Watchers.Add(new MemoryWatcher<bool>(new DeepPointer(0x11BDA0)) { Name = "TitleScreen" });
@@ -85,7 +85,7 @@ internal sealed class GameData : ClassicGameData
         uint finishedLevelsTicks = completedLevels
             .TakeWhile(completedLevel => completedLevel != currentLevel)
             .Select(completedLevel => (completedLevel - 1) * LevelSaveStructSize)
-            .Select(levelOffset => (IntPtr)(FirstLevelTimeAddress + levelOffset))
+            .Select(levelOffset => (IntPtr) (FirstLevelTimeAddress + levelOffset))
             .Aggregate<IntPtr, uint>(0, (ticks, levelAddress) => ticks + GameProcess.ReadValue<uint>(levelAddress));
 
         return finishedLevelsTicks;

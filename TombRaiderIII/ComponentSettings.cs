@@ -24,8 +24,8 @@ public sealed class ComponentSettings(Version version) : ClassicComponentSetting
                     "Game Version: " +
                     (Tr3Version)found.Version switch
                     {
-                        Tr3Version.Int or Tr3Version.Int16x9 => intText,
-                        Tr3Version.JpCracked or Tr3Version.JpCracked16x9 => jpTr3Text,
+                        Tr3Version.Int or Tr3Version.Int16x9                   => intText,
+                        Tr3Version.JpCracked or Tr3Version.JpCracked16x9       => jpTr3Text,
                         Tr3Version.JpTlaCracked or Tr3Version.JpTlaCracked16x9 => jpTlaText,
                         _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                     };

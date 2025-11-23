@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using LiveSplit.ComponentUtil;
+using LiveSplit.Options;
 
 namespace Util;
 
@@ -43,11 +44,11 @@ public abstract class BaseOgGameData
     ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
     ///         the first level's value is 0, and the main menu is level 4.
     /// </remarks>
-    public MemoryWatcher<uint> Level => (MemoryWatcher<uint>)Watchers?["Level"];
+    public MemoryWatcher<uint> Level => (MemoryWatcher<uint>) Watchers?["Level"];
 
     /// <summary>Lara's current HP.</summary>
     /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
-    public MemoryWatcher<short> Health => (MemoryWatcher<short>)Watchers?["Health"];
+    public MemoryWatcher<short> Health => (MemoryWatcher<short>) Watchers?["Health"];
 
     #endregion
 
@@ -85,10 +86,9 @@ public abstract class BaseOgGameData
             }
             catch (Exception e)
             {
-                LiveSplit.Options.Log.Error(e);
+                Log.Error(e);
                 return false;
             }
-
 
         if (GameVersion is VersionDetector.None or VersionDetector.Unknown)
             return false;
@@ -100,7 +100,7 @@ public abstract class BaseOgGameData
         }
         catch (Exception e)
         {
-            LiveSplit.Options.Log.Error(e);
+            Log.Error(e);
             return false;
         }
     }
@@ -152,5 +152,5 @@ public abstract class BaseOgGameData
     }
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
-    public static double LevelTimeAsDouble(ulong ticks) => (double)ticks / IGTTicksPerSecond;
+    public static double LevelTimeAsDouble(ulong ticks) => (double) ticks / IGTTicksPerSecond;
 }
