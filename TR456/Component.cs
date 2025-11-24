@@ -89,11 +89,9 @@ public class Component : AutoSplitComponent
         return settingsNode;
     }
 
-    private static void AppendTransitionSettings<T>(
-        XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<T> transitions, Func<T, XmlNode> toXmlElement
-    )
+    private static void AppendTransitionSettings<T>(XmlDocument doc, XmlNode settingsNode, string elementName, IEnumerable<T> transitions, Func<T, XmlNode> toXmlElement)
     {
-        XmlElement transitionsNode = document.CreateElement(elementName);
+        XmlElement transitionsNode = doc.CreateElement(elementName);
         foreach (T transition in transitions)
             transitionsNode.AppendChild(toXmlElement(transition));
 
@@ -103,7 +101,7 @@ public class Component : AutoSplitComponent
     /// <inheritdoc />
     /// <param name="settings"><see cref="XmlNode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     This might happen more than once (e.g., when the settings dialog is cancelled, to restore previous settings).
+    ///     This might happen more than once (e.g., when the settings dialog is canceled, to restore previous settings).
     ///     The XML file is the <c>[game - category].lss</c> file in your LiveSplit folder.
     ///     <see href="https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70" />
     ///     <see href="https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25" />
@@ -226,11 +224,9 @@ public class Component : AutoSplitComponent
     }
 
     // The TR4-specific wrapper simply calls the generic method with the appropriate delegates.
-    private static void ProcessTr4LevelTransitionSettings(
-        XmlNode settings, string transitionsNodeName, List<Tr4LevelTransitionSetting> settingsList
-    )
+    private static void ProcessTr4LevelTransitionSettings(XmlNode settings, string nodeName, List<Tr4LevelTransitionSetting> settingsList)
         => ProcessTransitionSettings(
-            settings, transitionsNodeName, settingsList, "TR4R",
+            settings, nodeName, settingsList, "TR4R",
             Tr4LevelTransitionSetting.FromXmlElement,
             static (existing, xml) =>
             {
@@ -241,11 +237,9 @@ public class Component : AutoSplitComponent
         );
 
     // The TR6-specific wrapper also calls the generic method with its own delegates.
-    private static void ProcessTr6LevelTransitionSettings(
-        XmlNode settings, string transitionsNodeName, List<Tr6LevelTransitionSetting> settingsList
-    )
+    private static void ProcessTr6LevelTransitionSettings(XmlNode settings, string nodeName, List<Tr6LevelTransitionSetting> settingsList)
         => ProcessTransitionSettings(
-            settings, transitionsNodeName, settingsList, "TR6R",
+            settings, nodeName, settingsList, "TR6R",
             Tr6LevelTransitionSetting.FromXmlElement, static (existing, xml) =>
             {
                 existing.UpdateActive(xml.Active);
