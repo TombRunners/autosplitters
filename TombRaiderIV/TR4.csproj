@@ -60,6 +60,7 @@
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Include="GameData.cs"/>
+        <Compile Include="Enums\ActiveSetting.cs" />
         <Compile Include="Enums\TransitionDirection.cs"/>
         <Compile Include="Enums\Tr4Level.cs"/>
         <Compile Include="Enums\Tr4LevelSection.cs"/>

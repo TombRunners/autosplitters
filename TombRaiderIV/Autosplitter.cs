@@ -75,12 +75,12 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
         var activeMatches = Settings
             .Tr4LevelTransitions
-            .Where(t =>
-                t.Active &&
-                t.LowerLevel == lowerLevel &&
-                (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
-                (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
-                t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
+            .Where(t
+                => t.Active is not ActiveSetting.IgnoreAll                                                                     &&
+                   t.LowerLevel == lowerLevel                                                                                  &&
+                   (t.HigherLevel            == higherLevel                || nextLevel                == t.UnusedLevelNumber) &&
+                   (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction)           &&
+                   t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
             .ToList();
 
@@ -111,7 +111,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
         // So, if the player also wants to split the cutscene (level 1), this is effectively the same as IL Mode.
         uint currentGfLevelComplete = Data.GfLevelComplete.Current;
 
-        var levelsToSplit = Settings.TteLevelTransitions.Where(static t => t.Active).ToHashSet();
+        var levelsToSplit = Settings.TteLevelTransitions.Where(static t => t.Active is ActiveSetting.Active).ToHashSet();
         return levelsToSplit.Count == 2
             ? currentGfLevelComplete != 0
             : currentGfLevelComplete == HardcodedCreditsTrigger;
