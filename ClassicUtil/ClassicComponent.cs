@@ -76,7 +76,7 @@ public abstract class ClassicComponent<TData> : AutoSplitComponent
     /// <inheritdoc/>
     /// <param name="settings"><see cref="XmlNode"/> passed by LiveSplit</param>
     /// <remarks>
-    ///     This might happen more than once (e.g., when the settings dialog is cancelled, to restore previous settings).
+    ///     This might happen more than once (e.g., when the settings dialog is canceled, to restore previous settings).
     ///     The XML file is the <c>[game - category].lss</c> file in your LiveSplit folder.
     /// </remarks>
     /// <example><inheritdoc cref="GetSettings"/></example>
