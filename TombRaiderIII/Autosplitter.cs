@@ -3,7 +3,7 @@ using ClassicUtil;
 
 namespace TR3;
 
-/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}"/>.</summary>
+/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}" />.</summary>
 internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 {
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>

@@ -16,7 +16,7 @@ public static class RunStats
     /// <summary>Tracks splits across all games.</summary>
     private static readonly Stack<Tr4Version> GamesSplitStack = new();
 
-    /// <summary>Adds level <paramref name="stats" /> to <paramref name="game"/>.</summary>
+    /// <summary>Adds level <paramref name="stats" /> to <paramref name="game" />.</summary>
     /// <param name="game">The level's corresponding <see cref="Tr4Version" /></param>
     /// <param name="stats"><see cref="LevelStats" /> to add</param>
     public static void AddLevelStats(Tr4Version game, LevelStats stats)

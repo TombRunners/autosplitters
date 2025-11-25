@@ -8,14 +8,15 @@ namespace ClassicUtil;
 public abstract class ClassicAutosplitter<TData>(Version version, TData data) : BaseAutosplitter
     where TData : ClassicGameData
 {
-    protected internal ClassicComponentSettings Settings = new(version);
+    /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
+    protected readonly List<uint> CompletedLevels = [];
+
     public TData Data = data;
 
     /// <summary>Used to size CompletedLevels.</summary>
     protected int LevelCount = 0;
 
-    /// <summary>Used to decide when to split and which level time addresses should be read from memory.</summary>
-    protected readonly List<uint> CompletedLevels = [];
+    protected internal ClassicComponentSettings Settings = new(version);
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
@@ -95,14 +96,14 @@ public abstract class ClassicAutosplitter<TData>(Version version, TData data) : 
         return !Settings.FullGame && levelTimeJustStarted && !oldTitleScreen;
     }
 
-    /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
+    /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public virtual void OnStart() => CompletedLevels.Clear();
 
-    /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
-    /// <param name="completedLevel">What to add to <see cref="CompletedLevels"/></param>
+    /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
+    /// <param name="completedLevel">What to add to <see cref="CompletedLevels" /></param>
     public virtual void OnSplit(uint completedLevel) => CompletedLevels.Add(completedLevel);
 
-    /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
+    /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public virtual void OnUndoSplit() => CompletedLevels.RemoveAt(CompletedLevels.Count - 1);
 
     public override void Dispose()

@@ -47,13 +47,13 @@ public class Tr4LevelTransitionSetting(
 
     public bool CanBeConfigured => UnusedLevelNumber is not 39;
 
+    public TransitionDirection SelectedDirectionality { get; set; } = directionality;
+
     public void UpdateActive(ActiveSetting active)
     {
         if (CanBeConfigured)
             Active = active;
     }
-
-    public TransitionDirection SelectedDirectionality { get; set; } = directionality;
 
     public string DisplayName()
     {

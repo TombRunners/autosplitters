@@ -4,7 +4,7 @@ using LiveSplit.Model;
 
 namespace TR2;
 
-/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}"/>.</summary>
+/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}" />.</summary>
 internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 {
     private bool _newGamePageSelected;

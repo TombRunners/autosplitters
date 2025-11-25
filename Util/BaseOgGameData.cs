@@ -8,26 +8,13 @@ namespace Util;
 
 public abstract class BaseOgGameData
 {
-    private readonly VersionDetector _versionDetector = new ([], new Dictionary<string, uint>());
-
-    /// <summary>Used to calculate <see cref="TimeSpan"/>s from IGT ticks.</summary>
+    /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
     private const int IGTTicksPerSecond = 30;
 
-    /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
-    protected List<string> ProcessSearchNames => _versionDetector.ProcessSearchNames;
-
-    /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>Ideally, this will be converted from some <see cref="Enum"/> for clarity.</remarks>
-    protected Dictionary<string, uint> VersionHashes => _versionDetector.VersionHashes;
+    private readonly VersionDetector _versionDetector = new([], new Dictionary<string, uint>());
 
     /// <summary>Contains memory addresses, accessible by named members, used in auto-splitting logic.</summary>
     protected readonly MemoryWatcherList Watchers = [];
-
-    /// <summary>Sometimes directly read, especially for reading level times.</summary>
-    protected Process GameProcess { get; private set; }
-
-    /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    public uint GameVersion { get; private set; }
 
     /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
     public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
@@ -35,22 +22,18 @@ public abstract class BaseOgGameData
     /// <summary>Allows subscribers to know when and what game version was found.</summary>
     public GameVersionChangedDelegate OnGameVersionChanged;
 
-    #region MemoryWatcherList Items
+    /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
+    protected List<string> ProcessSearchNames => _versionDetector.ProcessSearchNames;
 
-    /// <summary>Gives the value of the active level; for TR1, also matches an active cutscene, FMV, or demo.</summary>
-    /// <remarks>
-    ///     Usually matches chronological number (TR3 can have exceptions due to level order choice).
-    ///     Lara's Home (even if not present in the game) usually counts as 0.
-    ///         One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
-    ///         the first level's value is 0, and the main menu is level 4.
-    /// </remarks>
-    public MemoryWatcher<uint> Level => (MemoryWatcher<uint>) Watchers?["Level"];
+    /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
+    /// <remarks>Ideally, this will be converted from some <see cref="Enum" /> for clarity.</remarks>
+    protected Dictionary<string, uint> VersionHashes => _versionDetector.VersionHashes;
 
-    /// <summary>Lara's current HP.</summary>
-    /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
-    public MemoryWatcher<short> Health => (MemoryWatcher<short>) Watchers?["Health"];
+    /// <summary>Sometimes directly read, especially for reading level times.</summary>
+    protected Process GameProcess { get; private set; }
 
-    #endregion
+    /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
+    public uint GameVersion { get; private set; }
 
     /// <summary>Sets addresses for <see cref="Watchers" /> based on <paramref name="version" />.</summary>
     /// <param name="version">Version to base addresses on; the uint will be converted to <see cref="GameVersion" />.</param>
@@ -153,4 +136,21 @@ public abstract class BaseOgGameData
 
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double) ticks / IGTTicksPerSecond;
+
+    #region MemoryWatcherList Items
+
+    /// <summary>Gives the value of the active level; for TR1, also matches an active cutscene, FMV, or demo.</summary>
+    /// <remarks>
+    ///     Usually matches chronological number (TR3 can have exceptions due to level order choice).
+    ///     Lara's Home (even if not present in the game) usually counts as 0.
+    ///     One exception is in the ATI version of Tomb Raider Unfinished Business, where Lara's Home is not present,
+    ///     the first level's value is 0, and the main menu is level 4.
+    /// </remarks>
+    public MemoryWatcher<uint> Level => (MemoryWatcher<uint>) Watchers?["Level"];
+
+    /// <summary>Lara's current HP.</summary>
+    /// <remarks>Max HP is 1000. When it hits 0, Lara dies.</remarks>
+    public MemoryWatcher<short> Health => (MemoryWatcher<short>) Watchers?["Health"];
+
+    #endregion
 }

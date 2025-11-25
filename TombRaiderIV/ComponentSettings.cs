@@ -11,34 +11,18 @@ namespace TR4;
 
 public sealed class ComponentSettings : LaterClassicComponentSettings
 {
-    #region UI Declarations
-
-    private GroupBox _modeSelect;
-    public RadioButton ILModeButton;
-    public RadioButton FullGameModeButton;
-    public RadioButton DeathrunModeButton;
-    public CheckBox LegacyGlitchlessCheckbox;
-    public CheckBox EnableAutoResetCheckbox;
-    public CheckBox SplitSecretsCheckbox;
-    public bool LegacyGlitchless;
-
-    private GroupBox _levelTransitionSelect;
-    private ToolTip _toolTip;
-    private Label _levelTransitionActiveTabLabel;
-    private Button _tr4LevelSettingsButton;
-    private Button _tteLevelSettingsButton;
-    private Panel _tr4LevelTransitionSettingsPanel;
-    private Button _tr4SelectAllButton;
-    private Button _tr4UnselectAllButton;
-    private Panel _tteLevelTransitionSettingsPanel;
-
-    #endregion
-
-    private uint ActiveVersion { get; set; } = VersionDetector.None;
-
     private const string LegacyGlitchlessSettingTextDefault = "Legacy Glitchless Splits (TR4 FG Only)";
     private const string LevelTransitionSettingsTextDefault = "Level Transition Settings";
     private const string SplitsSecretsSettingTextDefault = "Split When Secret is Triggered";
+
+    public ComponentSettings(Version version)
+    {
+        InitializeComponent();
+        AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
+        EnableControlsPerState();
+    }
+
+    private uint ActiveVersion { get; set; } = VersionDetector.None;
 
     protected override void OnLoad(EventArgs e)
     {
@@ -76,13 +60,6 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
     {
         ResetScrolling();
         base.OnHandleDestroyed(e);
-    }
-
-    public ComponentSettings(Version version)
-    {
-        InitializeComponent();
-        AutosplitterVersionLabel.Text = $"Autosplitter Version: {version}";
-        EnableControlsPerState();
     }
 
     [SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
@@ -356,11 +333,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
         ResetScrolling();
     }
 
-    private void PopulateTr4LevelControls()
-        => PopulateControl(Tr4LevelTransitions, _tr4LevelTransitionSettingsPanel);
+    private void PopulateTr4LevelControls() => PopulateControl(Tr4LevelTransitions, _tr4LevelTransitionSettingsPanel);
 
-    private void PopulateTteLevelControls()
-        => PopulateControl(TteLevelTransitions, _tteLevelTransitionSettingsPanel);
+    private void PopulateTteLevelControls() => PopulateControl(TteLevelTransitions, _tteLevelTransitionSettingsPanel);
 
     private void PopulateControl<TLevel>(List<TransitionSetting<TLevel>> referenceList, Panel panel)
         where TLevel : Enum
@@ -406,7 +381,8 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Location = new Point(0, yOffset),
                     Size = new Size(20, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreSecond,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreSecond,
                     Enabled = transition.CanBeConfigured,
                 };
                 panel.Controls.Add(firstSplitCheckBox);
@@ -417,7 +393,8 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Location = new Point(firstSplitCheckBox.Width + checkBoxPadding, yOffset),
                     Size = new Size(widthNeeded, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreFirst,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreFirst,
                     Enabled = transition.CanBeConfigured,
                 };
             }
@@ -429,7 +406,8 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                     Location = new Point(0, yOffset),
                     Size = new Size(widthNeeded, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active,
                     Enabled = transition.CanBeConfigured,
                 };
             }
@@ -468,8 +446,11 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                 string higherName = transition.HigherLevel.Description();
                 directionComboBox.Items.AddRange(["Two-Way", $"From {lowerName}", $"From {higherName}"]);
 
-                directionComboBox.SelectedIndex = (int)transition.SelectedDirectionality;
-                directionComboBox.SelectedIndexChanged += (_, _) => { transition.SelectedDirectionality = (TransitionDirection)directionComboBox.SelectedIndex; };
+                directionComboBox.SelectedIndex = (int) transition.SelectedDirectionality;
+                directionComboBox.SelectedIndexChanged += (_, _) =>
+                {
+                    transition.SelectedDirectionality = (TransitionDirection) directionComboBox.SelectedIndex;
+                };
 
                 EventHandler handler = (_, _) =>
                 {
@@ -539,76 +520,6 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
             firstEntry = false;
         }
     }
-
-    #region Form Event Handlers
-
-    protected override void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
-    {
-        base.FullGameModeButtonCheckedChanged(sender, e);
-        EnableControlsPerState();
-    }
-
-    protected override void ILModeButtonCheckedChanged(object sender, EventArgs e)
-    {
-        base.ILModeButtonCheckedChanged(sender, e);
-        EnableControlsPerState();
-    }
-
-    protected override void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
-    {
-        base.DeathrunModeButtonCheckedChanged(sender, e);
-        EnableControlsPerState();
-    }
-
-    private void LegacyGlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
-    {
-        var checkbox = (CheckBox) sender;
-        LegacyGlitchless = checkbox.Checked;
-
-        EnableControlsPerState();
-    }
-
-    public override void SetGameVersion(VersionDetectionResult result)
-    {
-        const string digitalText = "Steam/GOG [TR4]";
-        const string tteText = "The Times Exclusive [TTE]";
-
-        switch (result)
-        {
-            case VersionDetectionResult.None:
-                ActiveVersion = VersionDetector.None;
-                base.SetGameVersion(result);
-                break;
-
-            case VersionDetectionResult.Unknown:
-                ActiveVersion = VersionDetector.Unknown;
-                base.SetGameVersion(result);
-                return;
-
-            case VersionDetectionResult.Found found:
-                ActiveVersion = found.Version;
-                GameVersionLabel.Text =
-                    "Game Version: " +
-                    (Tr4Version)found.Version switch
-                    {
-                        Tr4Version.SteamOrGog        => digitalText,
-                        Tr4Version.TheTimesExclusive => tteText,
-                        _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
-                    };
-                return;
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(result));
-        }
-    }
-
-    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Tr4Version.SteamOrGog);
-    private void _tteLevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Tr4Version.TheTimesExclusive);
-
-    private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
-    private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
-
-    #endregion
 
     private void SetAllTr4CheckBoxes(bool check)
     {
@@ -690,6 +601,98 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
 
     private void ResetScrolling()
         => _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tteLevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
+
+    #region UI Declarations
+
+    private GroupBox _modeSelect;
+    public RadioButton ILModeButton;
+    public RadioButton FullGameModeButton;
+    public RadioButton DeathrunModeButton;
+    public CheckBox LegacyGlitchlessCheckbox;
+    public CheckBox EnableAutoResetCheckbox;
+    public CheckBox SplitSecretsCheckbox;
+    public bool LegacyGlitchless;
+
+    private GroupBox _levelTransitionSelect;
+    private ToolTip _toolTip;
+    private Label _levelTransitionActiveTabLabel;
+    private Button _tr4LevelSettingsButton;
+    private Button _tteLevelSettingsButton;
+    private Panel _tr4LevelTransitionSettingsPanel;
+    private Button _tr4SelectAllButton;
+    private Button _tr4UnselectAllButton;
+    private Panel _tteLevelTransitionSettingsPanel;
+
+    #endregion
+
+    #region Form Event Handlers
+
+    protected override void FullGameModeButtonCheckedChanged(object sender, EventArgs e)
+    {
+        base.FullGameModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
+    }
+
+    protected override void ILModeButtonCheckedChanged(object sender, EventArgs e)
+    {
+        base.ILModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
+    }
+
+    protected override void DeathrunModeButtonCheckedChanged(object sender, EventArgs e)
+    {
+        base.DeathrunModeButtonCheckedChanged(sender, e);
+        EnableControlsPerState();
+    }
+
+    private void LegacyGlitchlessCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox) sender;
+        LegacyGlitchless = checkbox.Checked;
+
+        EnableControlsPerState();
+    }
+
+    public override void SetGameVersion(VersionDetectionResult result)
+    {
+        const string digitalText = "Steam/GOG [TR4]";
+        const string tteText = "The Times Exclusive [TTE]";
+
+        switch (result)
+        {
+            case VersionDetectionResult.None:
+                ActiveVersion = VersionDetector.None;
+                base.SetGameVersion(result);
+                break;
+
+            case VersionDetectionResult.Unknown:
+                ActiveVersion = VersionDetector.Unknown;
+                base.SetGameVersion(result);
+                return;
+
+            case VersionDetectionResult.Found found:
+                ActiveVersion = found.Version;
+                GameVersionLabel.Text = "Game Version: " +
+                                        (Tr4Version) found.Version switch
+                                        {
+                                            Tr4Version.SteamOrGog        => digitalText,
+                                            Tr4Version.TheTimesExclusive => tteText,
+                                            _                            => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                                        };
+                return;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(result));
+        }
+    }
+
+    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Tr4Version.SteamOrGog);
+    private void _tteLevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Tr4Version.TheTimesExclusive);
+
+    private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
+    private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
+
+    #endregion
 
     // ReSharper disable ArgumentsStyleLiteral
     internal readonly List<TransitionSetting<Tr4Level>> Tr4LevelTransitions =

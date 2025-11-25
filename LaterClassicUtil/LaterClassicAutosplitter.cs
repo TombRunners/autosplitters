@@ -8,12 +8,12 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
     where TData : LaterClassicGameData
     where TSettings : LaterClassicComponentSettings
 {
-    public readonly TSettings Settings = settings;
     protected internal readonly TData Data = data;
+    public readonly TSettings Settings = settings;
 
-    /// <summary>Populated by the default implementation of <see cref="OnStart"/>.</summary>
+    /// <summary>Populated by the default implementation of <see cref="OnStart" />.</summary>
     /// <remarks>
-    ///     <see cref="_ticksAtStartOfRun"/> is used in <see cref="GetGameTime(LiveSplitState)"/> to subtract from <see cref="LaterClassicGameData.GameTimer"/>.
+    ///     <see cref="_ticksAtStartOfRun" /> is used in <see cref="GetGameTime(LiveSplitState)" /> to subtract from <see cref="LaterClassicGameData.GameTimer" />.
     ///     The subtraction is necessary for ILs/section runs starting on any level besides the first to get an accurate IGT from the start of the run.
     /// </remarks>
     private ulong _ticksAtStartOfRun;
@@ -76,8 +76,10 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
         return Settings.FullGame ? oldGfLevelComplete == 1 : oldGfLevelComplete != 0;
     }
 
+    public override void Dispose() => Data.OnGameVersionChanged -= Settings.SetGameVersion;
+
     // ReSharper disable VirtualMemberNeverOverridden.Global
-    /// <summary>On <see cref="LiveSplitState.OnStart"/>, updates values.</summary>
+    /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
     public virtual void OnStart()
     {
         try
@@ -90,12 +92,10 @@ public abstract class LaterClassicAutosplitter<TData, TSettings>(TData data, TSe
         }
     }
 
-    /// <summary>On <see cref="LiveSplitState.OnSplit"/>, updates values.</summary>
+    /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
     public virtual void OnSplit() { }
 
-    /// <summary>On <see cref="LiveSplitState.OnUndoSplit"/>, updates values.</summary>
+    /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
     public virtual void OnUndoSplit() { }
     // ReSharper restore VirtualMemberNeverOverridden.Global
-
-    public override void Dispose() => Data.OnGameVersionChanged -= Settings.SetGameVersion;
 }

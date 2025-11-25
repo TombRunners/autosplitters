@@ -10,13 +10,6 @@ namespace TR456;
 
 public class Autosplitter : BaseAutosplitter
 {
-    internal readonly ComponentSettings Settings = new();
-
-    private bool _tr6NewGameStartedFromMenu;
-    private long _ticksAtStartOfRun;
-    private ulong _latestSplitId;
-    private TransitionDirection _latestSplitDirection;
-
     private readonly Dictionary<Game, short> _pickups = new(6)
     {
         { Game.Tr4, 0 },
@@ -38,6 +31,13 @@ public class Autosplitter : BaseAutosplitter
         { Game.Tr6, 0 },
         { Game.Tr6NgPlus, 0 },
     };
+
+    internal readonly ComponentSettings Settings = new();
+    private TransitionDirection _latestSplitDirection;
+    private ulong _latestSplitId;
+    private long _ticksAtStartOfRun;
+
+    private bool _tr6NewGameStartedFromMenu;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter()
@@ -98,6 +98,69 @@ public class Autosplitter : BaseAutosplitter
 
         double totalSeconds = (double) totalTicks / 60;
         return TimeSpan.FromSeconds(totalSeconds);
+    }
+
+    /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
+    public void OnStart(LiveSplitState state)
+    {
+        RunStats.Clear();
+        foreach (Game game in _pickups.Keys.ToList())
+            _pickups[game] = 0;
+        foreach (Game game in _secrets.Keys.ToList())
+            _secrets[game] = 0;
+
+        // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
+        if (!state.IsGameTimeInitialized)
+            state.SetGameTime(state.CurrentTime.RealTime ?? TimeSpan.Zero);
+        state.IsGameTimePaused = false;
+
+        try
+        {
+            Game currentGame = GameData.CurrentActiveGame;
+
+            _ticksAtStartOfRun = currentGame is Game.Tr6 or Game.Tr6NgPlus
+                ? GameData.Igt.Old
+                : GameData.Level.Current is 1 or 39
+                    ? 0 // New game
+                    : GameData.Igt.Old * 2;
+
+            _pickups[currentGame] = GameData.Pickups.Current;
+            _secrets[currentGame] = GameData.Secrets.Current;
+        }
+        catch // GameData is unpopulated when no game is running.
+        {
+            _ticksAtStartOfRun = 0;
+        }
+    }
+
+    /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
+    /// <param name="game">Game whose split was completed</param>
+    public void OnSplit(Game game)
+    {
+        if (Settings.RunType is not RunType.FullGame)
+            return;
+
+        // Compose and store level stats.
+        uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus ? GameData.LevelIgt.Current : GameData.Igt.Current;
+
+        var stats = new LevelStats { LevelId = _latestSplitId, Igt = igtTicks, Direction = _latestSplitDirection };
+
+        RunStats.AddLevelStats(game, stats);
+    }
+
+    /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
+    public void OnUndoSplit()
+    {
+        if (Settings.RunType is not RunType.FullGame)
+            return;
+
+        RunStats.UndoLevelStats();
+    }
+
+    public override void Dispose()
+    {
+        GameData.OnGameVersionChanged -= Settings.SetGameVersion;
+        Settings?.Dispose();
     }
 
     #region ShouldSplit
@@ -165,8 +228,8 @@ public class Autosplitter : BaseAutosplitter
 
         uint nextLevel = GameData.NextLevel.Current;
         uint oldLevel = GameData.Level.Old;
-        if (nextLevel == oldLevel || nextLevel == 0 || oldLevel is 0 or (uint)Tr4Level.Office) // Ignore the menu and opening cutscene of TTE.
-            return false;
+        if (nextLevel == oldLevel || nextLevel == 0 || oldLevel is 0 or (uint)Tr4Level.Office)
+            return false; // Ignore the menu and opening cutscene of TTE.
 
         // Handle when credits are triggered.
         if (nextLevel == hardcodedCreditsTrigger)
@@ -452,72 +515,4 @@ public class Autosplitter : BaseAutosplitter
     }
 
     #endregion
-
-    /// <summary>On <see cref="LiveSplitState.OnStart" />, updates values.</summary>
-    public void OnStart(LiveSplitState state)
-    {
-        RunStats.Clear();
-        foreach (Game game in _pickups.Keys.ToList())
-            _pickups[game] = 0;
-        foreach (Game game in _secrets.Keys.ToList())
-            _secrets[game] = 0;
-
-        // Ensure LiveSplit's GameTime initializes, matching Real Time if it has already increased.
-        if (!state.IsGameTimeInitialized)
-            state.SetGameTime(state.CurrentTime.RealTime ?? TimeSpan.Zero);
-        state.IsGameTimePaused = false;
-
-        try
-        {
-            Game currentGame = GameData.CurrentActiveGame;
-
-            _ticksAtStartOfRun = currentGame is Game.Tr6 or Game.Tr6NgPlus
-                ? GameData.Igt.Old
-                : GameData.Level.Current is 1 or 39
-                    ? 0 // New game
-                    : GameData.Igt.Old * 2;
-
-            _pickups[currentGame] = GameData.Pickups.Current;
-            _secrets[currentGame] = GameData.Secrets.Current;
-        }
-        catch // GameData is unpopulated when no game is running.
-        {
-            _ticksAtStartOfRun = 0;
-        }
-    }
-
-    /// <summary>On <see cref="LiveSplitState.OnSplit" />, updates values.</summary>
-    /// <param name="game">Game whose split was completed</param>
-    public void OnSplit(Game game)
-    {
-        if (Settings.RunType is not RunType.FullGame)
-            return;
-
-        // Compose and store level stats.
-        uint igtTicks = game is Game.Tr6 or Game.Tr6NgPlus ? GameData.LevelIgt.Current : GameData.Igt.Current;
-
-        var stats = new LevelStats
-        {
-            LevelId = _latestSplitId,
-            Igt = igtTicks,
-            Direction = _latestSplitDirection,
-        };
-
-        RunStats.AddLevelStats(game, stats);
-    }
-
-    /// <summary>On <see cref="LiveSplitState.OnUndoSplit" />, updates values.</summary>
-    public void OnUndoSplit()
-    {
-        if (Settings.RunType is not RunType.FullGame)
-            return;
-
-        RunStats.UndoLevelStats();
-    }
-
-    public override void Dispose()
-    {
-        GameData.OnGameVersionChanged -= Settings.SetGameVersion;
-        Settings?.Dispose();
-    }
 }

@@ -10,11 +10,11 @@ public class VersionDetector(List<string> processSearchNames, Dictionary<string,
     public const uint None = 0xBEEF;
     public const uint Unknown = 0xDEADBEEF;
 
-    /// <summary>Strings used when searching for a running game <see cref="Process"/>.</summary>
+    /// <summary>Strings used when searching for a running game <see cref="Process" />.</summary>
     internal List<string> ProcessSearchNames { get; } = processSearchNames;
 
     /// <summary>Used to reasonably assure a potential game process is a known, unmodified EXE.</summary>
-    /// <remarks>Ideally, the <see cref="uint"/> will be converted from some <see cref="Enum"/> for clarity.</remarks>
+    /// <remarks>Ideally, the <see cref="uint" /> will be converted from some <see cref="Enum" /> for clarity.</remarks>
     internal Dictionary<string, uint> VersionHashes { get; } = versionHashes;
 
     /// <summary>

@@ -6,16 +6,16 @@ namespace TR123;
 
 public class Autosplitter : BaseAutosplitter
 {
-    /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
-    private static Game CurrentActiveGame => GameData.CurrentActiveGame;
+    private static bool _cinematicValueUpdatedLastFrame;
+    private static bool _loadingScreenFadedIn;
 
     internal readonly ComponentSettings Settings = new();
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter() => GameData.OnGameVersionChanged += Settings.SetGameVersion;
 
-    private static bool _cinematicValueUpdatedLastFrame;
-    private static bool _loadingScreenFadedIn;
+    /// <summary>Shorthand for accessing <see cref="GameData.CurrentActiveGame" />.</summary>
+    private static Game CurrentActiveGame => GameData.CurrentActiveGame;
 
     public override bool IsGameTimePaused(LiveSplitState state)
     {

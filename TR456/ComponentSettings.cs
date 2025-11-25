@@ -65,6 +65,14 @@ public sealed class ComponentSettings : UserControl
 
     private SignatureScanInfo _displayInfo;
 
+    public ComponentSettings()
+    {
+        InitializeComponent();
+        SetGameTimeMethod(RunType == RunType.Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
+        GameVersionInitialized = false;
+        EnableControlsPerState();
+    }
+
     protected override void OnLoad(EventArgs e)
     {
         base.OnLoad(e);
@@ -101,14 +109,6 @@ public sealed class ComponentSettings : UserControl
     {
         ResetScrolling();
         base.OnHandleDestroyed(e);
-    }
-
-    public ComponentSettings()
-    {
-        InitializeComponent();
-        SetGameTimeMethod(RunType == RunType.Deathrun ? GameTimeMethod.Igt : GameTimeMethod.RtaNoLoads);
-        GameVersionInitialized = false;
-        EnableControlsPerState();
     }
 
     public void SetLayoutWarningLabelVisibilities(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent)
@@ -662,7 +662,8 @@ public sealed class ComponentSettings : UserControl
                     Location = new Point(0, yOffset),
                     Size = new Size(20, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreSecond,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreSecond,
                     Enabled = transition.CanBeConfigured,
                 };
                 _tr4LevelTransitionSettingsPanel.Controls.Add(firstSplitCheckBox);
@@ -673,7 +674,8 @@ public sealed class ComponentSettings : UserControl
                     Location = new Point(firstSplitCheckBox.Width + checkBoxPadding, yOffset),
                     Size = new Size(widthNeeded, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreFirst,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active or ActiveSetting.IgnoreFirst,
                     Enabled = transition.CanBeConfigured,
                 };
             }
@@ -685,7 +687,8 @@ public sealed class ComponentSettings : UserControl
                     Location = new Point(0, yOffset),
                     Size = new Size(widthNeeded, 20),
                     Padding = Padding with { Left = 0, Right = 0 },
-                    Checked = transition.UnusedLevelNumber is 39 || transition.Active is ActiveSetting.Active,
+                    Checked = transition.UnusedLevelNumber is 39 ||
+                              transition.Active is ActiveSetting.Active,
                     Enabled = transition.CanBeConfigured,
                 };
             }
@@ -867,65 +870,6 @@ public sealed class ComponentSettings : UserControl
         }
     }
 
-    #region Form Event Handlers
-
-    private void FullGameButtonCheckedChanged(object sender, EventArgs e)
-    {
-        RunType = RunType.FullGame;
-        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
-        EnableControlsPerState();
-    }
-
-    private void IlOrAreaButtonCheckedChanged(object sender, EventArgs e)
-    {
-        RunType = RunType.IndividualLevelOrArea;
-        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
-        EnableControlsPerState();
-    }
-
-    private void DeathrunButtonCheckedChanged(object sender, EventArgs e)
-    {
-        RunType = RunType.Deathrun;
-        SetGameTimeMethod(GameTimeMethod.Igt);
-        EnableControlsPerState();
-    }
-
-    private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
-    {
-        var checkbox = (CheckBox) sender;
-        EnableAutoReset = checkbox.Checked;
-    }
-
-    private void SplitNoPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.None;
-
-    private void SplitAllPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.All;
-
-    private void SplitSecretsOnlyButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.SecretsOnly;
-
-    private void SplitSecurityBreachCheckboxCheckedChanged(object sender, EventArgs e)
-    {
-        var checkbox = (CheckBox) sender;
-        SplitSecurityBreach = checkbox.Checked;
-    }
-
-    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr4);
-    private void _tr5LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr5);
-    private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr6);
-
-    private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
-    private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
-
-    private void _tr6SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(true);
-    private void _tr6UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(false);
-
-    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        if (e.Link.LinkData is string target)
-            Process.Start(target);
-    }
-
-    #endregion
-
     private void EnableControlsPerState()
     {
         AdjustSplitPickupsState();
@@ -995,6 +939,65 @@ public sealed class ComponentSettings : UserControl
 
     private void ResetScrolling()
         => _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
+
+    #region Form Event Handlers
+
+    private void FullGameButtonCheckedChanged(object sender, EventArgs e)
+    {
+        RunType = RunType.FullGame;
+        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
+        EnableControlsPerState();
+    }
+
+    private void IlOrAreaButtonCheckedChanged(object sender, EventArgs e)
+    {
+        RunType = RunType.IndividualLevelOrArea;
+        SetGameTimeMethod(GameTimeMethod.RtaNoLoads);
+        EnableControlsPerState();
+    }
+
+    private void DeathrunButtonCheckedChanged(object sender, EventArgs e)
+    {
+        RunType = RunType.Deathrun;
+        SetGameTimeMethod(GameTimeMethod.Igt);
+        EnableControlsPerState();
+    }
+
+    private void EnableAutoResetCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox) sender;
+        EnableAutoReset = checkbox.Checked;
+    }
+
+    private void SplitNoPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.None;
+
+    private void SplitAllPickupsButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.All;
+
+    private void SplitSecretsOnlyButtonCheckedChanged(object sender, EventArgs e) => PickupSplitSetting = PickupSplitSetting.SecretsOnly;
+
+    private void SplitSecurityBreachCheckboxCheckedChanged(object sender, EventArgs e)
+    {
+        var checkbox = (CheckBox) sender;
+        SplitSecurityBreach = checkbox.Checked;
+    }
+
+    private void _tr4LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr4);
+    private void _tr5LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr5);
+    private void _tr6LevelSettingsButtonClicked(object sender, EventArgs e) => ShowCorrectTab(Game.Tr6);
+
+    private void _tr4SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(true);
+    private void _tr4UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr4CheckBoxes(false);
+
+    private void _tr6SelectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(true);
+    private void _tr6UnselectAllButtonClicked(object sender, EventArgs e) => SetAllTr6CheckBoxes(false);
+
+    private static void GuideLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        if (e.Link.LinkData is string target)
+            Process.Start(target);
+    }
+
+    #endregion
 
     // ReSharper disable ArgumentsStyleLiteral
     internal readonly List<Tr4LevelTransitionSetting> Tr4LevelTransitions =
