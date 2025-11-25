@@ -5,7 +5,7 @@
         </files>
         <changelog>
             <change>UI: Fixed a typo in a TR4R level selection tooltip.</change>
-            <change>UI: Improved performance of opening Settings menu by removing duplicate calls.</change>
+            <change>UI: Improved the performance of opening the Settings menu by removing duplicate calls.</change>
         </changelog>
     </update>
     <update version="2025.3.2.0">
