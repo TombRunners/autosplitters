@@ -247,7 +247,7 @@ public class Autosplitter : BaseAutosplitter
                     break;
                 }
 
-                case ActiveSetting.IgnoreFirst:
+                case ActiveSetting.IgnoreFirst: // We want to split this second visit.
                 {
                     if (levelHasBeenSplit)
                         return false;
