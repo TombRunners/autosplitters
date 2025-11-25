@@ -366,9 +366,14 @@ public sealed class ComponentSettings : UserControl
 
         #endregion
 
-        #region _levelTransitionSettings
+        // _toolTip
+        _toolTip.AutoPopDelay = 60000;
+        _toolTip.InitialDelay = 500;
+        _toolTip.ReshowDelay = 250;
 
-        // _levelTransitionSettings
+        #region _levelTransitionSelect
+
+        // _levelTransitionSelect
         _levelTransitionSelect.Controls.Add(_levelTransitionActiveTabLabel);
         _levelTransitionSelect.Controls.Add(_tr4LevelSettingsButton);
         _levelTransitionSelect.Controls.Add(_tr5LevelSettingsButton);
@@ -390,7 +395,6 @@ public sealed class ComponentSettings : UserControl
         _levelTransitionActiveTabLabel.Location = new Point(180, 17);
         _levelTransitionActiveTabLabel.Name = "_levelTransitionActiveTabLabel";
         _levelTransitionActiveTabLabel.Size = new Size(150, 30);
-        _levelTransitionActiveTabLabel.TabIndex = 0;
         _levelTransitionActiveTabLabel.Text = "Currently showing: TR4";
         _levelTransitionActiveTabLabel.TextAlign = ContentAlignment.MiddleCenter;
 
@@ -512,12 +516,7 @@ public sealed class ComponentSettings : UserControl
 
         #endregion
 
-        _toolTip.AutoPopDelay = 60000;
-        _toolTip.InitialDelay = 500;
-        _toolTip.ReshowDelay = 250;
-        PopulateLevelControls();
-
-        #region CGameVersion and AutosplitterVersion Labels
+        #region GameVersion and AutosplitterVersion Labels
 
         // GameVersionLabel
         GameVersionLabel.AutoSize = true;
@@ -544,11 +543,11 @@ public sealed class ComponentSettings : UserControl
         _aslWarningLabel.Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
         _aslWarningLabel.ForeColor = Color.Crimson;
         _aslWarningLabel.Location = new Point(0, 470);
-        _aslWarningLabel.TextAlign = ContentAlignment.MiddleCenter;
         _aslWarningLabel.Name = "_aslWarningLabel";
         _aslWarningLabel.Size = new Size(476, 20);
         _aslWarningLabel.TabStop = false;
         _aslWarningLabel.Text = "Scriptable Auto Splitter in Layout — Please Remove!";
+        _aslWarningLabel.TextAlign = ContentAlignment.MiddleCenter;
         _aslWarningLabel.Visible = false;
 
         // _timerWarningLabel
@@ -952,13 +951,12 @@ public sealed class ComponentSettings : UserControl
     {
         ResetScrolling();
 
-        // Enabled or disable.
+        // Enable or disable.
         bool tr4Tr6Enable = RunType is RunType.FullGame;
-        _tr4LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Enabled = tr4Tr6Enable;
-        _tr4LevelSettingsButton.Enabled = _tr6LevelSettingsButton.Enabled = tr4Tr6Enable;
+        EnableTr4Tr6LevelSelectControls(tr4Tr6Enable);
 
         bool tr5Enable = RunType is not RunType.Deathrun;
-        _tr5LevelSettingsButton.Enabled = SplitSecurityBreachCheckbox.Enabled = tr5Enable;
+        EnableTr5LevelSelectControls(tr5Enable);
 
         // Set the text to reflect the state.
         string text = LevelTransitionSettingsTextDefault; // ReSharper disable once ConvertIfStatementToSwitchStatement
@@ -970,6 +968,16 @@ public sealed class ComponentSettings : UserControl
         _levelTransitionActiveTabLabel.Enabled = RunType is not RunType.Deathrun;
         _levelTransitionSelect.Text = text;
     }
+
+    private void EnableTr4Tr6LevelSelectControls(bool enable) =>
+        _tr4LevelTransitionSettingsPanel.Enabled = _tr6LevelTransitionSettingsPanel.Enabled =
+        _tr4LevelSettingsButton.Enabled = _tr6LevelSettingsButton.Enabled =
+        _tr4SelectAllButton.Enabled = _tr4UnselectAllButton.Enabled =
+        _tr6SelectAllButton.Enabled = _tr6UnselectAllButton.Enabled = enable;
+
+    private void EnableTr5LevelSelectControls(bool enable) =>
+        _tr5LevelSettingsButton.Enabled =
+        SplitSecurityBreachCheckbox.Enabled = enable;
 
     private void ShowCorrectTab(Game game)
     {
@@ -989,7 +997,6 @@ public sealed class ComponentSettings : UserControl
         => _tr4LevelTransitionSettingsPanel.AutoScrollPosition = _tr5LevelTransitionSettingsPanel.AutoScrollPosition = _tr6LevelTransitionSettingsPanel.AutoScrollPosition = new Point(0, 0);
 
     // ReSharper disable ArgumentsStyleLiteral
-    // ReSharper disable StringLiteralTypo
     internal readonly List<Tr4LevelTransitionSetting> Tr4LevelTransitions =
     [
         // Cambodia
@@ -1013,7 +1020,7 @@ public sealed class ComponentSettings : UserControl
             toolTip: $"You can disable the first, the second, or both splits. Runs that only visit the levels once can safely leave both boxes checked and have only one split.{Environment.NewLine}" +
                      "The left checkbox is for the first visit split; the right checkbox is for the second visit split."),
         new(Tr4Level.TempleOfKarnak, Tr4Level.SacredLake, TransitionDirection.OneWayFromHigher),                            // 09  -> 07
-        new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10), // 09  -> 11
+        new(Tr4Level.SacredLake, Tr4Level.TombOfSemerkhet, TransitionDirection.OneWayFromLower, unusedLevelNumber: 10),     // 09  -> 11
 
         // Semerkhet
         new(Tr4Level.TombOfSemerkhet, Tr4Level.GuardianOfSemerkhet, TransitionDirection.OneWayFromLower, // 11  -> 12
@@ -1040,7 +1047,7 @@ public sealed class ComponentSettings : UserControl
                      "If Two-Way is selected, the checkboxes apply to both directions. If one way is selected, only that direction will be split accordingly."),
         new(Tr4Level.CoastalRuins, Tr4Level.Catacombs, TransitionDirection.TwoWay,
             lowerRoomNumber: 158, lowerTriggerTimer: 2, higherRoomNumber: 9, higherTriggerTimer: 4, note: "End",    // 15 <-> 18
-            toolTip: "To/from the Catabombs exit which allows an alternate backtracking route to Coastal Ruins."),
+            toolTip: "To/from the Catacombs exit which allows an alternate backtracking route to Coastal Ruins."),
 
         new(Tr4Level.CoastalRuins, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),               // 15 <-> 19
         new(Tr4Level.Catacombs, Tr4Level.TempleOfPoseidon, TransitionDirection.TwoWay),                  // 18 <-> 19
@@ -1141,6 +1148,5 @@ public sealed class ComponentSettings : UserControl
         new("Boaz Returns", "CUTSCENE\\CS_14_6.GMX", "PRAGUE6A.GMX"),
         new("The Lost Domain", "PRAGUE6A.GMX", "PRAGUE6.GMX"),
     ];
-    // ReSharper restore StringLiteralTypo
     // ReSharper restore ArgumentsStyleLiteral
 }

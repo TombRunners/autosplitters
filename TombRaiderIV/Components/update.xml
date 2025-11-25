@@ -1,132 +1,141 @@
 <updates>
-  <update version="2024.2.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Improved routing support via Level Transition Settings, configurable by GUI.</change>
-	  <change>Added option to Split whenever a secret is triggered.</change>
-	  <change>Changed "Glitchless" checkbox to "Legacy Glitchless"; when checked, it deactivates Level Transition Settings.</change>
-	  <change>Selecting "IL" or "Deathrun" Modes will deactivate Level Transition Settings and Legacy Glitchless accordingly.</change>
-      <change>Resolved Legacy Glitchless's Split issues in Catacombs and Trenches.</change>
-    </changelog>
-  </update>
-  <update version="2024.1.1.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Deathrun improvement when more than 1 split exists: stopped IGT when Lara is dead.</change>
-      <change>Resolved IGT underflow issue occurring when an incongruous save was loaded; IGT now stops in such cases.</change>
-    </changelog>
-  </update>
-  <update version="2024.1.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="removed"/>
-    </files>
-    <changelog>
-      <change>Changed Auto-Reset checkbox to now enable instead of disable, unchecked by default.</change>
-      <change>Improved Game Version text when no game is running and when an unknown version is running.</change>
-      <change>Added a warning label when a Scriptable Auto Splitter is present in the LiveSplit layout to help prevent undefined behavior.</change>
-      <change>Removed TRUtil.dll as a separate file dependency.</change>
-      <change>Changed versioning scheme to Year.Major.Minor.Hotfix.</change>
-    </changelog>
-  </update>
-  <update version="2.4.2.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed issues with Component Settings serialization.</change>
-    </changelog>
-  </update>
-  <update version="2.4.1.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed Glitchless split bug that sometimes occurred when loading in or out of the level Catacombs.</change>
-    </changelog>
-  </update>
-  <update version="2.4.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed GetGameTime bug affected performance.</change>
-    </changelog>
-  </update>
-  <update version="2.3.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed a Split issue for Glitchless runs when entering Street Bazaar.</change>
-    </changelog>
-  </update>
-  <update version="2.2.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed a Split issue for Glitched runs when warping.</change>
-    </changelog>
-  </update>
-  <update version="2.1.1.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Internal code improvements; no functional changes.</change>
-    </changelog>
-  </update>
-  <update version="2.1.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Added Settings option to disable automatic reset.</change>
-    </changelog>
-  </update>
-  <update version="2.0.1.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed TR4 Glitchless Split differences versus old ASL.</change>
-    </changelog>
-  </update>
-  <update version="2.0.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Added support for The Times Exclusive standalone level.</change>
-    </changelog>
-  </update>
-  <update version="1.0.1.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Improved Settings code for later classics.</change>
-    </changelog>
-  </update>
-  <update version="1.0.0.0">
-    <files>
-      <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="added"/>
-      <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="added"/>
-    </files>
-    <changelog>
-      <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
-    </changelog>
-  </update>
+    <update version="2025.1.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Refactored the Settings menu to match the TR4R autosplitter's level selection capabilities.</change>
+            <change>Removed the requirement that the game must be running to edit the level selection, since each has a tab now.</change>
+        </changelog>
+    </update>
+    <update version="2024.2.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Improved routing support via Level Transition Settings, configurable by GUI.</change>
+            <change>Added option to Split whenever a secret is triggered.</change>
+            <change>Changed "Glitchless" checkbox to "Legacy Glitchless"; when checked, it deactivates Level Transition Settings.</change>
+            <change>Selecting "IL" or "Deathrun" Modes will deactivate Level Transition Settings and Legacy Glitchless accordingly.</change>
+            <change>Resolved Legacy Glitchless's Split issues in Catacombs and Trenches.</change>
+        </changelog>
+    </update>
+    <update version="2024.1.1.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Deathrun improvement when more than 1 split exists: stopped IGT when Lara is dead.</change>
+            <change>Resolved IGT underflow issue occurring when an incongruous save was loaded; IGT now stops in such cases.</change>
+        </changelog>
+    </update>
+    <update version="2024.1.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="removed"/>
+        </files>
+        <changelog>
+            <change>Changed Auto-Reset checkbox to now enable instead of disable, unchecked by default.</change>
+            <change>Improved Game Version text when no game is running and when an unknown version is running.</change>
+            <change>Added a warning label when a Scriptable Auto Splitter is present in the LiveSplit layout to help prevent undefined behavior.</change>
+            <change>Removed TRUtil.dll as a separate file dependency.</change>
+            <change>Changed versioning scheme to Year.Major.Minor.Hotfix.</change>
+        </changelog>
+    </update>
+    <update version="2.4.2.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed issues with Component Settings serialization.</change>
+        </changelog>
+    </update>
+    <update version="2.4.1.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed Glitchless split bug that sometimes occurred when loading in or out of the level Catacombs.</change>
+        </changelog>
+    </update>
+    <update version="2.4.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed GetGameTime bug affected performance.</change>
+        </changelog>
+    </update>
+    <update version="2.3.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed a Split issue for Glitchless runs when entering Street Bazaar.</change>
+        </changelog>
+    </update>
+    <update version="2.2.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed a Split issue for Glitched runs when warping.</change>
+        </changelog>
+    </update>
+    <update version="2.1.1.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Internal code improvements; no functional changes.</change>
+        </changelog>
+    </update>
+    <update version="2.1.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Added Settings option to disable automatic reset.</change>
+        </changelog>
+    </update>
+    <update version="2.0.1.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed TR4 Glitchless Split differences versus old ASL.</change>
+        </changelog>
+    </update>
+    <update version="2.0.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Added support for The Times Exclusive standalone level.</change>
+        </changelog>
+    </update>
+    <update version="1.0.1.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="changed"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Improved Settings code for later classics.</change>
+        </changelog>
+    </update>
+    <update version="1.0.0.0">
+        <files>
+            <file path="TombRaiderIV/Components/TR4.dll" localPath="Components/TR4.dll" status="added"/>
+            <file path="TRUtil/Components/TRUtil.dll" localPath="Components/TRUtil.dll" status="added"/>
+        </files>
+        <changelog>
+            <change>Supports IGT and autosplitting for FG, IL, and deathruns; works for both glitched and glitchless runs.</change>
+        </changelog>
+    </update>
 </updates>

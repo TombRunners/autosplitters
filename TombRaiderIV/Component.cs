@@ -40,16 +40,24 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         return settingsNode;
     }
 
-    private static void AppendTransitionSettings<TLevel>(XmlDocument document, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
+    private static void AppendTransitionSettings<TLevel>(XmlDocument doc, XmlNode settingsNode, string elementName, IEnumerable<TransitionSetting<TLevel>> transitions)
         where TLevel : Enum
     {
-        XmlElement transitionsNode = document.CreateElement(elementName);
+        XmlElement transitionsNode = doc.CreateElement(elementName);
         foreach (var transition in transitions)
-            transitionsNode.AppendChild(transition.ToXmlElement(document));
+            transitionsNode.AppendChild(transition.ToXmlElement(doc));
 
         settingsNode.AppendChild(transitionsNode);
     }
 
+    /// <inheritdoc />
+    /// <param name="settings"><see cref="XmlNode" /> passed by LiveSplit</param>
+    /// <remarks>
+    ///     This might happen more than once (e.g., when the settings dialog is canceled, to restore previous settings).
+    ///     The XML file is the <c>[game - category].lss</c> file in your LiveSplit folder.
+    ///     <see href="https://github.com/LiveSplit/LiveSplit.ScriptableAutoSplit/blob/7e5a6cbe91569e7688fdb37446d32326b4b14b1c/ComponentSettings.cs#L70" />
+    ///     <see href="https://github.com/CapitaineToinon/LiveSplit.DarkSoulsIGT/blob/master/LiveSplit.DarkSoulsIGT/UI/DSSettings.cs#L25" />
+    /// </remarks>
     public override void SetSettings(XmlNode settings)
     {
         // Read serialized values, or keep defaults if they are not yet serialized.
@@ -72,14 +80,16 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         Splitter.Settings.SplitSecretsCheckbox.Checked = Splitter.Settings.SplitSecrets;         // CheckBox
 
         // Update transition settings lists.
-        ProcessTransitionSettings(settings, nameof(Splitter.Settings.Tr4LevelTransitions), Splitter.Settings.Tr4LevelTransitions);
-        ProcessTransitionSettings(settings, nameof(Splitter.Settings.TteLevelTransitions), Splitter.Settings.TteLevelTransitions);
+        ProcessTransitionSettings(settings, nameof(Splitter.Settings.Tr4LevelTransitions), Splitter.Settings.Tr4LevelTransitions, "TR4");
+        ProcessTransitionSettings(settings, nameof(Splitter.Settings.TteLevelTransitions), Splitter.Settings.TteLevelTransitions, "TTE");
     }
 
-    private static void ProcessTransitionSettings<TLevel>(XmlNode settings, string transitionsNodeName, List<TransitionSetting<TLevel>> settingsList)
+    private static void ProcessTransitionSettings<TLevel>(
+        XmlNode settings, string nodeName, List<TransitionSetting<TLevel>> settingsList, string settingsPrefix
+    )
         where TLevel : Enum
     {
-        XmlElement transitionsNode = settings[transitionsNodeName];
+        XmlElement transitionsNode = settings[nodeName];
         if (transitionsNode == null)
             return;
 
@@ -87,13 +97,16 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
         int xmlTransitionsCount = transitionsNode.ChildNodes.Count;
         if (xmlTransitionsCount != transitionsCount)
         {
-            Log.Error($"Refusing to apply settings due to a mismatched count. {xmlTransitionsCount} found in XML, expected {transitionsCount}. Continuing with default/existing.");
+            Log.Error(
+                $"Refusing to apply {settingsPrefix} level transition settings due to a mismatched count. " +
+                $"{xmlTransitionsCount} found in XML, expected {transitionsCount}. Reverting to default/existing."
+            );
             return;
         }
 
-        var defaultOrExistingTransitions = new TransitionSetting<TLevel>[transitionsCount];
+        // Create a copy of the existing settings for potential reversion.
+        var defaultOrExistingTransitions = settingsList.ToArray();
         var encounteredSettingIds = new HashSet<ulong>(transitionsCount);
-        settingsList.CopyTo(defaultOrExistingTransitions);
 
         foreach (XmlNode transitionNode in transitionsNode.ChildNodes)
         {
@@ -104,23 +117,29 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
             }
             catch (Exception ex)
             {
-                Log.Error($"{typeof(TLevel).Name} deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
+                Log.Error($"{settingsPrefix} level transition deserialization failed: {ex.Message}\n\n{ex.StackTrace}");
                 RevertSettings(settingsList, defaultOrExistingTransitions);
                 break;
             }
 
             var settingsNeedReversion = false;
-            var existingSetting = settingsList.Where(t => t.Id == settingFromXml.Id).ToList();
-            if (existingSetting.Count != 1)
+            var existingSettings = settingsList.Where(t => t.Id == settingFromXml.Id).ToList();
+            if (existingSettings.Count != 1)
             {
                 settingsNeedReversion = true;
-                Log.Error($"Found unexpected amount of matches ({existingSetting.Count}) for {typeof(TLevel).Name} from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                Log.Error(
+                    $"Found unexpected amount of matches ({existingSettings.Count}) for {settingsPrefix} level transition " +
+                    $"from XML with ID {settingFromXml.Id}. Reverting to default/existing."
+                );
             }
 
             if (!encounteredSettingIds.Add(settingFromXml.Id))
             {
                 settingsNeedReversion = true;
-                Log.Error($"Encountered {typeof(TLevel).Name} setting more than once from XML with ID {settingFromXml.Id}. Reverting to default/existing.");
+                Log.Error(
+                    $"Encountered {settingsPrefix} level transition setting more than once " +
+                    $"from XML with ID {settingFromXml.Id}. Reverting to default/existing."
+                );
             }
 
             if (settingsNeedReversion)
@@ -129,8 +148,8 @@ internal sealed class Component(LaterClassicAutosplitter<GameData, ComponentSett
                 break;
             }
 
-            existingSetting[0].UpdateActive(settingFromXml.Active);
-            existingSetting[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
+            existingSettings[0].UpdateActive(settingFromXml.Active);
+            existingSettings[0].SelectedDirectionality = settingFromXml.SelectedDirectionality;
         }
     }
 

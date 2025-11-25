@@ -10,10 +10,43 @@ namespace TR4;
 internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     private const uint HardcodedCreditsTrigger = 39;
+    private ulong _latestSplitId;
+    private TransitionDirection _latestSplitDirection;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter(Version version) : base(new GameData(), new ComponentSettings(version))
         => Data.OnGameVersionChanged += Settings.SetGameVersion;
+
+    public override void OnStart()
+    {
+        RunStats.Clear();
+        base.OnStart();
+    }
+
+    public override void OnSplit()
+    {
+        if (!Settings.FullGame)
+            return;
+
+        var stats = new LevelStats
+        {
+            LevelId = _latestSplitId,
+            Direction = _latestSplitDirection,
+        };
+
+        RunStats.AddLevelStats((Tr4Version) Data.GameVersion, stats);
+
+        base.OnSplit();
+    }
+
+    public override void OnUndoSplit()
+    {
+        if (!Settings.FullGame)
+            return;
+
+        RunStats.UndoLevelStats();
+        base.OnUndoSplit();
+    }
 
     public override bool ShouldSplit(LiveSplitState state)
     {
@@ -35,8 +68,8 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
             // Below bool is never true for The Times Exclusive; its level values never match these TR4 levels.
             var currentLevel = (Tr4Level) Data.Level.Current;
-            bool possibleGlitchlessPostLoadSplitLevel = currentLevel is Tr4Level.Catacombs or Tr4Level.Trenches;
-            return possibleGlitchlessPostLoadSplitLevel && GlitchlessShouldSplit();
+            bool legacyGlitchlessPostLoadSplitLevel = currentLevel is Tr4Level.Catacombs or Tr4Level.Trenches;
+            return legacyGlitchlessPostLoadSplitLevel && LegacyGlitchlessShouldSplit();
         }
 
         // Handle IL / Section runs, which assumes all level transitions are desirable splits.
@@ -48,15 +81,21 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
         // Handle when credits are triggered.
         if (currentGfLevelComplete == HardcodedCreditsTrigger)
+        {
+            _latestSplitId = Data.Level.Old;
+            _latestSplitDirection = TransitionDirection.OneWayFromLower;
             return true;
+        }
 
         // Handle Legacy Glitchless runs.
         if (Settings.LegacyGlitchless)
-            return GlitchlessShouldSplit();
+            return LegacyGlitchlessShouldSplit();
 
         // Handle Full Game, non-Glitchless runs.
         bool playingTheTimesExclusive = (Tr4Version) Data.GameVersion == Tr4Version.TheTimesExclusive;
-        return playingTheTimesExclusive ? TteShouldSplit() : Tr4ShouldSplit();
+        return playingTheTimesExclusive
+            ? TteShouldSplit()
+            : Tr4ShouldSplit();
     }
 
     /// <remarks>This assumes double-splits have already been prevented.</remarks>
@@ -75,12 +114,12 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
 
         var activeMatches = Settings
             .Tr4LevelTransitions
-            .Where(t =>
-                t.Active &&
-                t.LowerLevel == lowerLevel &&
-                (t.HigherLevel == higherLevel || nextLevel == t.UnusedLevelNumber) &&
-                (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction) &&
-                t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
+            .Where(t
+                => t.Active is not ActiveSetting.IgnoreAll                                                                     &&
+                   t.LowerLevel == lowerLevel                                                                                  &&
+                   (t.HigherLevel            == higherLevel                || nextLevel                == t.UnusedLevelNumber) &&
+                   (t.SelectedDirectionality == TransitionDirection.TwoWay || t.SelectedDirectionality == direction)           &&
+                   t.TriggerMatchedOrNotRequired(triggerTimer, laraIsInLowerLevel)
             )
             .ToList();
 
@@ -100,6 +139,62 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
                 $"Matches: {string.Join(", ", activeMatches.Select(static s => s.DisplayName()))}"
             );
 
+        var match = activeMatches[0];
+        var game = (Tr4Version) Data.GameVersion;
+        if (!match.ComplexIgnore)
+        {
+            if (RunStats.LevelWasSplit(game, match.Id, direction))
+                return false;
+        }
+        else
+        {
+            bool levelHasBeenSplit = RunStats.LevelWasSplit(game, match.Id, direction);
+            bool levelHasBeenIgnored = RunStats.LevelWasIgnored(game, match.Id, direction);
+            switch (match.Active)
+            {
+                case ActiveSetting.Active:
+                {
+                    if (RunStats.LevelSplitCount(game, match.Id, direction) > 1)
+                        return false;
+
+                    break;
+                }
+
+                case ActiveSetting.IgnoreSecond:
+                {
+                    if (levelHasBeenSplit)
+                        return false;
+
+                    break;
+                }
+
+                case ActiveSetting.IgnoreFirst:
+                {
+                    if (levelHasBeenSplit)
+                        return false;
+
+                    if (levelHasBeenIgnored)
+                        break; // We want to split this second visit.
+
+                    var stats = new LevelStats
+                    {
+                        LevelId = match.Id,
+                        Ignored = true,
+                        Direction = direction,
+                    };
+                    RunStats.AddLevelStats(game, stats);
+
+                    return false;
+                }
+
+                case ActiveSetting.IgnoreAll:
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(match.Active), match.Active, "Improper ActiveSetting");
+            }
+        }
+
+        _latestSplitId = match.Id;
+        _latestSplitDirection = direction;
         return true;
     }
 
@@ -108,18 +203,27 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
     {
         // There are only 2 non-menu levels; 1 is the cutscene and 2 is the playable level.
         // The playable level is hardcoded to trigger credits, and this transition is always enabled.
-        // So, if the player also wants to split the cutscene (level 1), this is effectively the same as IL Mode.
-        uint currentGfLevelComplete = Data.GfLevelComplete.Current;
+        var officeCutsceneActiveTransition = Settings
+            .TteLevelTransitions
+            .Where(static t =>t.LowerLevel == TteLevel.Office && t.Active is ActiveSetting.Active)
+            .ToList();
 
-        var levelsToSplit = Settings.TteLevelTransitions.Where(static t => t.Active).ToHashSet();
-        return levelsToSplit.Count == 2
-            ? currentGfLevelComplete != 0
-            : currentGfLevelComplete == HardcodedCreditsTrigger;
+        if (officeCutsceneActiveTransition.Count == 0)
+            return false; // Credits trigger is handled elsewhere and the Office cutscene split is not desired.
+
+        if (Data.GfLevelComplete.Current != (uint) TteLevel.TheTimesExclusive)
+            return false;
+
+        var match = officeCutsceneActiveTransition[0];
+        _latestSplitId = match.Id;
+        _latestSplitDirection = TransitionDirection.OneWayFromLower;
+
+        return true;
     }
 
     #region Legacy Glitchless Logic
 
-    private bool GlitchlessShouldSplit()
+    private bool LegacyGlitchlessShouldSplit()
         => Data.Level.Current switch
         {
             >= (uint) Tr4LevelSection.Giza             => GlitchlessShouldSplitGiza(),

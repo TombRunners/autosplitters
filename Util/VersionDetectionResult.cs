@@ -8,5 +8,5 @@ public abstract record VersionDetectionResult
 
     public sealed record Unknown(Process Process, string Hash) : VersionDetectionResult;
 
-    public sealed record Found(Process Process, string Hash, uint Version) : VersionDetectionResult;
+    public sealed record Found(Process Process, uint Version) : VersionDetectionResult;
 }

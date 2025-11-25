@@ -1,130 +1,139 @@
 <updates>
-  <update version="2025.3.2.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>TR4R: Added support for two splits of the transition between Trenches and Street Bazaar via garage.</change>
-    </changelog>
-  </update>
-  <update version="2025.3.1.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Autosplitter: Added support for currently available "Patch 2 Hotfix 1" releases.</change>
-    </changelog>
-  </update>
-  <update version="2025.3.0.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Autosplitter: Added support for currently available "Patch 2" releases.</change>
-	  <change>Autosplitter: Corrected bug with displaying the correct version name for GOG v1.0, the initial release on GOG.</change>
-	  <change>General: Fixed possible crash/hang from memory scanning and retry logic.</change>
-	  <change>TR6R: Corrected bug in detecting New Game+ correctly (for Achievements% support).</change>
-    </changelog>
-  </update>
-  <update version="2025.2.0.2">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>TR5: Corrected bug in Secrets address scan; now correctly points to savegame value instead of level value.</change>
-    </changelog>
-  </update>
-  <update version="2025.2.0.1">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Autosplitter: Updated several signatures to work with Patch 1 changes.</change>
-    </changelog>
-  </update>
-  <update version="2025.2.0.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>General: Corrected version detection bug to now show the unknown game's MD5 hash.</change>
-	  <change>General: Improved scan retry logic and made the timer non-blocking to LiveSplit process.</change>
-      <change>Autosplitter: Updated TR4 Pickups signature to work with Patch 1 changes.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.3.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Pickups and Secrets splits: Improved consistency.</change>
-      <change>Autosplitter: Added additional retries with Settings menu messages when unsuccessfully scanning launching game.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.2.1">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>TR4R: Improved Split consistency.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.2.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>TR4R: Fixed IL / Area% logic which may also resolve TTE inconsistencies.</change>
-      <change>Settings menu: fixed bug where controls were not disabling correctly while a game was found.</change>
-      <change>Settings menu: forced LiveSplit to render setting in bigger window, which should remove scroll bars and improve UX.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.1.1">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed TR6 false start when loading after launch.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.1.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Improved TR4 and TR5 LRT.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.0.3">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Fixed TR4 and TTE double-split prevention for last level. Fixed edge case undesired Reset when setting was not enabled.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.0.2">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Hotfix for TTE inconsistent splits; Office cutscene should now always be skipped and playable level should always split at the end.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.0.1">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
-    </files>
-    <changelog>
-      <change>Hotfix for TR5R LRT breaking during Deepsea Dive and Security Breach.</change>
-    </changelog>
-  </update>
-  <update version="2025.1.0.0">
-    <files>
-      <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
-    </files>
-    <changelog>
-      <change>Initial release. FG, IL / Area%, and Deathrun support with automatic Start, Split, and optional Reset. Supports LiveSplit's Undo Split.</change>
-    </changelog>
-  </update>
+    <update version="2025.3.2.1">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>UI: Fixed a typo in a TR4R level selection tooltip.</change>
+            <change>UI: Improved the performance of opening the Settings menu by removing duplicate calls.</change>
+        </changelog>
+    </update>
+    <update version="2025.3.2.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>TR4R: Added support for two splits of the transition between Trenches and Street Bazaar via garage.</change>
+        </changelog>
+    </update>
+    <update version="2025.3.1.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Autosplitter: Added support for currently available "Patch 2 Hotfix 1" releases.</change>
+        </changelog>
+    </update>
+    <update version="2025.3.0.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Autosplitter: Added support for currently available "Patch 2" releases.</change>
+            <change>Autosplitter: Corrected bug with displaying the correct version name for GOG v1.0, the initial release on GOG.</change>
+            <change>General: Fixed possible crash/hang from memory scanning and retry logic.</change>
+            <change>TR6R: Corrected bug in detecting New Game+ correctly (for Achievements% support).</change>
+        </changelog>
+    </update>
+    <update version="2025.2.0.2">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>TR5: Corrected bug in Secrets address scan; now correctly points to savegame value instead of level value.</change>
+        </changelog>
+    </update>
+    <update version="2025.2.0.1">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Autosplitter: Updated several signatures to work with Patch 1 changes.</change>
+        </changelog>
+    </update>
+    <update version="2025.2.0.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>General: Corrected version detection bug to now show the unknown game's MD5 hash.</change>
+            <change>General: Improved scan retry logic and made the timer non-blocking to LiveSplit process.</change>
+            <change>Autosplitter: Updated TR4 Pickups signature to work with Patch 1 changes.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.3.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Pickups and Secrets splits: Improved consistency.</change>
+            <change>Autosplitter: Added additional retries with Settings menu messages when unsuccessfully scanning launching game.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.2.1">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>TR4R: Improved Split consistency.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.2.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>TR4R: Fixed IL / Area% logic which may also resolve TTE inconsistencies.</change>
+            <change>Settings menu: fixed bug where controls were not disabling correctly while a game was found.</change>
+            <change>Settings menu: forced LiveSplit to render setting in bigger window, which should remove scroll bars and improve UX.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.1.1">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed TR6 false start when loading after launch.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.1.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Improved TR4 and TR5 LRT.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.0.3">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Fixed TR4 and TTE double-split prevention for last level. Fixed edge case undesired Reset when setting was not enabled.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.0.2">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Hotfix for TTE inconsistent splits; Office cutscene should now always be skipped and playable level should always split at the end.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.0.1">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="changed"/>
+        </files>
+        <changelog>
+            <change>Hotfix for TR5R LRT breaking during Deepsea Dive and Security Breach.</change>
+        </changelog>
+    </update>
+    <update version="2025.1.0.0">
+        <files>
+            <file path="TR456/Components/TR456.dll" localPath="Components/TR456.dll" status="added"/>
+        </files>
+        <changelog>
+            <change>Initial release. FG, IL / Area%, and Deathrun support with automatic Start, Split, and optional Reset. Supports LiveSplit's Undo Split.</change>
+        </changelog>
+    </update>
 </updates>

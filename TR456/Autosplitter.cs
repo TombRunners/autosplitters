@@ -192,7 +192,8 @@ public class Autosplitter : BaseAutosplitter
         TransitionDirection direction = laraIsInLowerLevel ? TransitionDirection.OneWayFromLower : TransitionDirection.OneWayFromHigher;
 
         var activeMatches = Settings
-            .Tr4LevelTransitions.Where(t
+            .Tr4LevelTransitions
+            .Where(t
                 => t.Active is not ActiveSetting.IgnoreAll                                                                     &&
                    t.LowerLevel == lowerLevel                                                                                  &&
                    (t.HigherLevel            == higherLevel                || nextLevel                == t.UnusedLevelNumber) &&
@@ -246,7 +247,7 @@ public class Autosplitter : BaseAutosplitter
                     break;
                 }
 
-                case ActiveSetting.IgnoreFirst:
+                case ActiveSetting.IgnoreFirst: // We want to split this second visit.
                 {
                     if (levelHasBeenSplit)
                         return false;

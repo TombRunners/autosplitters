@@ -10,14 +10,26 @@ namespace TR4;
 public class TransitionSetting<TLevel>(
     TLevel lowerLevel, TLevel higherLevel, TransitionDirection directionality, int? unusedLevelNumber = null,
     int? lowerRoomNumber = null, int? higherRoomNumber = null, byte? lowerTriggerTimer = null, byte? higherTriggerTimer = null,
-    string note = null
+    string note = null, string toolTip = null, string section = null, bool complexIgnore = false
 )
     where TLevel : Enum
 {
+    private const string LowerSettingName = "Lower";
+    private const string HigherSettingName = "Higher";
+    private const string DirectionalitySettingName = "Directionality";
+    private const string SelectedDirectionalitySettingName = "SelectedDirectionality";
+    private const string UnusedLevelNumberSettingName = "UnusedLevelNumber";
+    private const string LowerRoomNumberSettingName = "LowerRoomNumber";
+    private const string HigherRoomNumberSettingName = "HigherRoomNumber";
+    private const string ActiveSettingName = "Active";
+
     public readonly TLevel LowerLevel = lowerLevel;
     public readonly TLevel HigherLevel = higherLevel;
     public readonly TransitionDirection Directionality = directionality;
+    public readonly bool ComplexIgnore = complexIgnore;
     public readonly int? UnusedLevelNumber = unusedLevelNumber;
+    public readonly string ToolTip = toolTip;
+    public readonly string Section = section;
 
     public ulong Id
     {
@@ -32,10 +44,15 @@ public class TransitionSetting<TLevel>(
         }
     }
 
-    public bool Active { get; private set; } = true;
+    public ActiveSetting Active { get; private set; } = ActiveSetting.Active;
+
     public bool CanBeConfigured => UnusedLevelNumber is not 39;
 
-    public void UpdateActive(bool active) => Active = CanBeConfigured && active;
+    public void UpdateActive(ActiveSetting active)
+    {
+        if (CanBeConfigured)
+            Active = active;
+    }
 
     public TransitionDirection SelectedDirectionality { get; set; } = directionality;
 
@@ -76,18 +93,18 @@ public class TransitionSetting<TLevel>(
     public XmlNode ToXmlElement(XmlDocument document)
     {
         XmlElement element = document.CreateElement("TransitionSetting");
-        element.AppendChild(SettingsHelper.ToElement(document, "Lower", Convert.ToInt32(LowerLevel)));
-        element.AppendChild(SettingsHelper.ToElement(document, "Higher", Convert.ToInt32(HigherLevel)));
-        element.AppendChild(SettingsHelper.ToElement(document, "Directionality", ((int) Directionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, "SelectedDirectionality", ((int) SelectedDirectionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, "Active", Active));
+        element.AppendChild(SettingsHelper.ToElement(document, LowerSettingName, Convert.ToInt32(LowerLevel)));
+        element.AppendChild(SettingsHelper.ToElement(document, HigherSettingName, Convert.ToInt32(HigherLevel)));
+        element.AppendChild(SettingsHelper.ToElement(document, DirectionalitySettingName, ((int)Directionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, SelectedDirectionalitySettingName, ((int)SelectedDirectionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, ActiveSettingName, Convert.ToInt32(Active)));
 
         if (UnusedLevelNumber.HasValue)
-            element.AppendChild(SettingsHelper.ToElement(document, "UnusedLevelNumber", UnusedLevelNumber.Value.ToString()));
+            element.AppendChild(SettingsHelper.ToElement(document, UnusedLevelNumberSettingName, UnusedLevelNumber.Value.ToString()));
         if (lowerRoomNumber.HasValue)
-            element.AppendChild(SettingsHelper.ToElement(document, "LowerRoomNumber", lowerRoomNumber.Value.ToString()));
+            element.AppendChild(SettingsHelper.ToElement(document, LowerRoomNumberSettingName, lowerRoomNumber.Value.ToString()));
         if (higherRoomNumber.HasValue)
-            element.AppendChild(SettingsHelper.ToElement(document, "HigherRoomNumber", higherRoomNumber.Value.ToString()));
+            element.AppendChild(SettingsHelper.ToElement(document, HigherRoomNumberSettingName, higherRoomNumber.Value.ToString()));
 
         return element;
     }
@@ -97,36 +114,38 @@ public class TransitionSetting<TLevel>(
         if (node == null)
             throw new ArgumentNullException(nameof(node));
 
-        int lowerValue = int.Parse(node["Lower"].InnerText);
+        int lowerValue = int.Parse(node[LowerSettingName].InnerText);
         if (!Enum.IsDefined(typeof(TLevel), lowerValue))
-            throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{typeof(TLevel).Name}'.");
+            throw new InvalidDataException($"Invalid value '{lowerValue}' for enum type '{nameof(TLevel)}'.");
 
         var lower = (TLevel) Enum.ToObject(typeof(TLevel), lowerValue);
 
-        int higherValue = int.Parse(node["Higher"].InnerText);
+        int higherValue = int.Parse(node[HigherSettingName].InnerText);
         if (!Enum.IsDefined(typeof(TLevel), higherValue))
-            throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{typeof(TLevel).Name}'.");
+            throw new InvalidDataException($"Invalid value '{higherValue}' for enum type '{nameof(TLevel)}'.");
 
         var higher = (TLevel) Enum.ToObject(typeof(TLevel), higherValue);
 
-        var directionality = (TransitionDirection) int.Parse(node["Directionality"].InnerText);
+        var directionality = (TransitionDirection) int.Parse(node[DirectionalitySettingName].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), directionality))
             throw new InvalidDataException($"Invalid value '{directionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        var selectedDirectionality = (TransitionDirection) int.Parse(node["SelectedDirectionality"].InnerText);
+        var selectedDirectionality = (TransitionDirection) int.Parse(node[SelectedDirectionalitySettingName].InnerText);
         if (!Enum.IsDefined(typeof(TransitionDirection), selectedDirectionality))
             throw new InvalidDataException($"Invalid value '{selectedDirectionality}' for enum type '{nameof(TransitionDirection)}'.");
 
-        bool active = bool.Parse(node["Active"].InnerText);
+        var active = (ActiveSetting) int.Parse(node[ActiveSettingName].InnerText);
+        if (!Enum.IsDefined(typeof(ActiveSetting), active))
+            throw new InvalidDataException($"Invalid value '{active}' for enum type '{nameof(ActiveSetting)}'.");
 
-        int? unusedLevelNumber = ParseNullableInt("UnusedLevelNumber");
-        int? lowerRoomNumber = ParseNullableInt("LowerRoomNumber");
-        int? higherRoomNumber = ParseNullableInt("HigherRoomNumber");
+        int? unusedLevelNumber = ParseNullableInt(UnusedLevelNumberSettingName);
+        int? lowerRoomNumber = ParseNullableInt(LowerRoomNumberSettingName);
+        int? higherRoomNumber = ParseNullableInt(HigherRoomNumberSettingName);
 
         var setting = new TransitionSetting<TLevel>(lower, higher, directionality, unusedLevelNumber, lowerRoomNumber, higherRoomNumber)
         {
-            SelectedDirectionality = selectedDirectionality,
             Active = active,
+            SelectedDirectionality = selectedDirectionality,
         };
 
         return setting;
