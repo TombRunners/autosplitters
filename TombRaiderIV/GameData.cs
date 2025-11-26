@@ -16,10 +16,16 @@ internal class GameData : LaterClassicGameData
     public GameData()
     {
         VersionHashes.Add("bff3fea78480671ee81831cc6c6e8805", (uint) Tr4Version.SteamOrGog);
+        VersionHashes.Add("8911cb2762051da52092bd4a752c2aaa", (uint) Tr4Version.SteamOrGog16x9);
         VersionHashes.Add("106f76bf6867b294035074ee005ab91a", (uint) Tr4Version.TheTimesExclusive);
+        VersionHashes.Add("bc0c6169022f59176867daa884425547", (uint) Tr4Version.TheTimesExclusive16x9);
 
         ProcessSearchNames.Add("tomb4");
     }
+
+    /// <summary>Returns the "base game", either The Last Revelation or The Times Exclusive, regardless of widescreen patch.</summary>
+    /// <remarks>If the value is even (a widescreen-patched version), goes down to the previous odd (TR4 or TTE).</remarks>
+    public Tr4Version BaseGameVersion => (Tr4Version) (GameVersion - ((GameVersion & 1) ^ 1));
 
     /// <summary>Used to disambiguate Lara's start position once loaded into a new level.</summary>
     /// <remarks>0 for levels without multiple Lara start positions; non-zero when going to the non-default start position.</remarks>
@@ -81,6 +87,7 @@ internal class GameData : LaterClassicGameData
         switch ((Tr4Version) version)
         {
             case Tr4Version.SteamOrGog:
+            case Tr4Version.SteamOrGog16x9:
                 // Base
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD290)) { Name = "Level" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E13C, 0x22)) { Name = "Health" });
@@ -101,6 +108,7 @@ internal class GameData : LaterClassicGameData
                 break;
 
             case Tr4Version.TheTimesExclusive:
+            case Tr4Version.TheTimesExclusive16x9:
                 // Base
                 Watchers.Add(new MemoryWatcher<uint>(new DeepPointer(0x3FD2D0)) { Name = "Level" });
                 Watchers.Add(new MemoryWatcher<short>(new DeepPointer(0x40E17C, 0x22)) { Name = "Health" });

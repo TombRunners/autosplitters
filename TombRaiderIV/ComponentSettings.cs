@@ -675,9 +675,9 @@ public sealed class ComponentSettings : LaterClassicComponentSettings
                 GameVersionLabel.Text = "Game Version: " +
                                         (Tr4Version) found.Version switch
                                         {
-                                            Tr4Version.SteamOrGog        => digitalText,
-                                            Tr4Version.TheTimesExclusive => tteText,
-                                            _                            => throw new ArgumentOutOfRangeException(nameof(found.Version)),
+                                            Tr4Version.SteamOrGog        or Tr4Version.SteamOrGog16x9        => digitalText,
+                                            Tr4Version.TheTimesExclusive or Tr4Version.TheTimesExclusive16x9 => tteText,
+                                            _ => throw new ArgumentOutOfRangeException(nameof(found.Version)),
                                         };
                 return;
 

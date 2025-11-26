@@ -1,4 +1,6 @@
-﻿namespace TR3;
+﻿// ReSharper disable InconsistentNaming
+
+namespace TR3;
 
 /// <summary>The supported game versions.</summary>
 internal enum Tr3Version
