@@ -23,6 +23,10 @@ internal class GameData : LaterClassicGameData
         ProcessSearchNames.Add("tomb4");
     }
 
+    /// <summary>Returns the "base game", either The Last Revelation or The Times Exclusive, regardless of widescreen patch.</summary>
+    /// <remarks>If the value is even (a widescreen-patched version), goes down to the previous odd (TR4 or TTE).</remarks>
+    public Tr4Version BaseGameVersion => (Tr4Version) (GameVersion - ((GameVersion & 1) ^ 1));
+
     /// <summary>Used to disambiguate Lara's start position once loaded into a new level.</summary>
     /// <remarks>0 for levels without multiple Lara start positions; non-zero when going to the non-default start position.</remarks>
     public MemoryWatcher<byte> GfRequiredStartPosition => (MemoryWatcher<byte>) Watchers["GfRequiredStartPosition"];

@@ -34,7 +34,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             Direction = _latestSplitDirection,
         };
 
-        RunStats.AddLevelStats((Tr4Version) Data.GameVersion, stats);
+        RunStats.AddLevelStats(Data.BaseGameVersion, stats);
 
         base.OnSplit();
     }
@@ -92,7 +92,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             return LegacyGlitchlessShouldSplit();
 
         // Handle Full Game, non-Glitchless runs.
-        bool playingTheTimesExclusive = (Tr4Version) Data.GameVersion == Tr4Version.TheTimesExclusive;
+        bool playingTheTimesExclusive = Data.BaseGameVersion is Tr4Version.TheTimesExclusive;
         return playingTheTimesExclusive
             ? TteShouldSplit()
             : Tr4ShouldSplit();
@@ -140,7 +140,7 @@ internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, Componen
             );
 
         var match = activeMatches[0];
-        var game = (Tr4Version) Data.GameVersion;
+        Tr4Version game = Data.BaseGameVersion;
         if (!match.ComplexIgnore)
         {
             if (RunStats.LevelWasSplit(game, match.Id, direction))
