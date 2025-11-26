@@ -11,6 +11,8 @@ public record GameStats
     /// <summary>Accessor for the backing stack.</summary>
     private IEnumerable<LevelStats> LevelStats => _levelStatistics;
 
+    public int Count => _levelStatistics.Count;
+
     /// <summary>Pushes <paramref name="stats" /> to the backing stack.</summary>
     /// <param name="stats">Stats to add</param>
     public bool AddLevelStats(LevelStats stats)
@@ -25,8 +27,6 @@ public record GameStats
         LevelStats stats = _levelStatistics.Pop();
         return stats;
     }
-
-    public int Count => _levelStatistics.Count;
 
     /// <summary>Clears the backing stack of all <see cref="LevelStats" />.</summary>
     public void Clear() => _levelStatistics.Clear();

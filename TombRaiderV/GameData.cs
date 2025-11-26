@@ -6,7 +6,7 @@ using LiveSplit.ComponentUtil;
 
 namespace TR5;
 
-/// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
+/// <summary>Manages the game's watched memory values for <see cref="Autosplitter" />'s use.</summary>
 internal sealed class GameData : LaterClassicGameData
 {
     /// <summary>A constructor that primarily exists to set/modify values/objects.</summary>

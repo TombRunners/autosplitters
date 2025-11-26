@@ -9,18 +9,18 @@ using LiveSplit.UI.Components.AutoSplit;
 namespace LaterClassicUtil;
 
 /// <summary>
-///     Implementation of <see cref="AutoSplitComponent"/>.
+///     Implementation of <see cref="AutoSplitComponent" />.
 /// </summary>
 /// <remarks>
-///     <see cref="AutoSplitComponent"/> is derived from <see cref="LogicComponent"/>,
-///     which derives from <see cref="IComponent"/> and <see cref="IDisposable"/>.
+///     <see cref="AutoSplitComponent" /> is derived from <see cref="LogicComponent" />,
+///     which derives from <see cref="IComponent" /> and <see cref="IDisposable" />.
 /// </remarks>
 public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitComponent
     where TData : LaterClassicGameData
     where TSettings : LaterClassicComponentSettings
 {
-    protected readonly LaterClassicAutosplitter<TData, TSettings> Splitter;
     private readonly LiveSplitState _state;
+    protected readonly LaterClassicAutosplitter<TData, TSettings> Splitter;
 
     private bool? _aslComponentPresent;
     private int _layoutComponentCount;
@@ -30,10 +30,6 @@ public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitCompone
 
     /// <summary>Allows subscribers to know when an ASL Component was found in the LiveSplit layout.</summary>
     private AslComponentChangedDelegate _onAslComponentChanged;
-
-    private void StateOnStart(object _0, EventArgs _1) => Splitter?.OnStart();
-    private void StateOnSplit(object _0, EventArgs _1) => Splitter?.OnSplit();
-    private void StateOnUndoSplit(object _0, EventArgs _1) => Splitter?.OnUndoSplit();
 
     protected LaterClassicComponent(LaterClassicAutosplitter<TData, TSettings> autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
@@ -46,26 +42,30 @@ public abstract class LaterClassicComponent<TData, TSettings> : AutoSplitCompone
         _state.OnUndoSplit += StateOnUndoSplit;
     }
 
+    public override string ComponentName => "Later Classic Tomb Raider Component";
+
+    private void StateOnStart(object _0, EventArgs _1) => Splitter?.OnStart();
+    private void StateOnSplit(object _0, EventArgs _1) => Splitter?.OnSplit();
+    private void StateOnUndoSplit(object _0, EventArgs _1) => Splitter?.OnUndoSplit();
+
     /// <inheritdoc />
-    /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+    /// <param name="mode"><see cref="LayoutMode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     The returned object must contain at least an empty <see cref="TableLayoutPanel"/>,
+    ///     The returned object must contain at least an empty <see cref="TableLayoutPanel" />,
     ///     otherwise the Layout Settings menu doesn't show up!
     /// </remarks>
     public override Control GetSettingsControl(LayoutMode mode) => Splitter.Settings;
 
-    public override string ComponentName => "Later Classic Tomb Raider Component";
-
     /// <summary>
-    ///     Adds <see cref="LaterClassicGameData"/> and <see cref="LaterClassicAutosplitter{TData,TSettings}"/> management to <see cref="AutoSplitComponent.Update"/>.
+    ///     Adds <see cref="LaterClassicGameData" /> and <see cref="LaterClassicAutosplitter{TData,TSettings}" /> management to <see cref="AutoSplitComponent.Update" />.
     /// </summary>
-    /// <param name="invalidator"><see cref="IInvalidator"/> passed by LiveSplit</param>
-    /// <param name="state"><see cref="LiveSplitState"/> passed by LiveSplit</param>
+    /// <param name="invalidator"><see cref="IInvalidator" /> passed by LiveSplit</param>
+    /// <param name="state"><see cref="LiveSplitState" /> passed by LiveSplit</param>
     /// <param name="width">Width passed by LiveSplit</param>
     /// <param name="height">Height passed by LiveSplit</param>
-    /// <param name="mode"><see cref="LayoutMode"/> passed by LiveSplit</param>
+    /// <param name="mode"><see cref="LayoutMode" /> passed by LiveSplit</param>
     /// <remarks>
-    ///     This override allows <see cref="LaterClassicAutosplitter{TData,TSettings}"/> to use <see cref="LaterClassicGameData"/> in its logic.
+    ///     This override allows <see cref="LaterClassicAutosplitter{TData,TSettings}" /> to use <see cref="LaterClassicGameData" /> in its logic.
     /// </remarks>
     public override void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
     {

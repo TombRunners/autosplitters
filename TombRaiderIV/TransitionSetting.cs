@@ -48,13 +48,13 @@ public class TransitionSetting<TLevel>(
 
     public bool CanBeConfigured => UnusedLevelNumber is not 39;
 
+    public TransitionDirection SelectedDirectionality { get; set; } = directionality;
+
     public void UpdateActive(ActiveSetting active)
     {
         if (CanBeConfigured)
             Active = active;
     }
-
-    public TransitionDirection SelectedDirectionality { get; set; } = directionality;
 
     public string DisplayName()
     {
@@ -95,8 +95,8 @@ public class TransitionSetting<TLevel>(
         XmlElement element = document.CreateElement("TransitionSetting");
         element.AppendChild(SettingsHelper.ToElement(document, LowerSettingName, Convert.ToInt32(LowerLevel)));
         element.AppendChild(SettingsHelper.ToElement(document, HigherSettingName, Convert.ToInt32(HigherLevel)));
-        element.AppendChild(SettingsHelper.ToElement(document, DirectionalitySettingName, ((int)Directionality).ToString()));
-        element.AppendChild(SettingsHelper.ToElement(document, SelectedDirectionalitySettingName, ((int)SelectedDirectionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, DirectionalitySettingName, ((int) Directionality).ToString()));
+        element.AppendChild(SettingsHelper.ToElement(document, SelectedDirectionalitySettingName, ((int) SelectedDirectionality).ToString()));
         element.AppendChild(SettingsHelper.ToElement(document, ActiveSettingName, Convert.ToInt32(Active)));
 
         if (UnusedLevelNumber.HasValue)

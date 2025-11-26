@@ -6,7 +6,7 @@ using LiveSplit.ComponentUtil;
 
 namespace TR4;
 
-/// <summary>Manages the game's watched memory values for <see cref="Autosplitter"/>'s use.</summary>
+/// <summary>Manages the game's watched memory values for <see cref="Autosplitter" />'s use.</summary>
 internal class GameData : LaterClassicGameData
 {
     private const uint SizeOfItemInfo = 0x15F6;
@@ -33,15 +33,15 @@ internal class GameData : LaterClassicGameData
     ///     if Lara has both parts or the combined object, there is no need to revisit Temple of Isis.
     /// </summary>
     /// <remarks>
-    ///     Only the first 3 bits of the <see cref="byte"/> are used. The game checks for the parts using bitwise '&':
-    ///         <see cref="MechanicalScarab"/> & 1 => Mechanical Scarab With Key (0000 0001)
-    ///         <see cref="MechanicalScarab"/> & 2 => Winding Key (0000 0010)
-    ///         <see cref="MechanicalScarab"/> & 4 => Mechanical Scarab (0000 0100)
+    ///     Only the first 3 bits of the <see cref="byte" /> are used. The game checks for the parts using bitwise '&':
+    ///         <see cref="MechanicalScarab" /> & 1 => Mechanical Scarab With Key (0000 0001)
+    ///         <see cref="MechanicalScarab" /> & 2 => Winding Key (0000 0010)
+    ///         <see cref="MechanicalScarab" /> & 4 => Mechanical Scarab (0000 0100)
     ///     When Lara has both Winding Key and Mechanical Scarab before combining them: (0000 0110)
     /// </remarks>
     public MemoryWatcher<byte> MechanicalScarab => (MemoryWatcher<byte>) Watchers["MechanicalScarab"];
 
-    /// <inheritdoc cref="TR4.PuzzleItems"/>
+    /// <inheritdoc cref="TR4.PuzzleItems" />
     /// <remarks>
     ///     The corresponding items/indices are relevant for the autosplitter's logic:
     ///         Index 7, Item 8 || Cairo || Mine Detonator (the combined item)
@@ -56,8 +56,8 @@ internal class GameData : LaterClassicGameData
     /// </summary>
     /// <remarks>
     ///     The corresponding bits are relevant for the autosplitter's logic:
-    ///         <see cref="PuzzleItemsCombo"/> & 0x40 => Mine Detonator Body (0100 0000 0000 0000)
-    ///         <see cref="PuzzleItemsCombo"/> & 0x80 => Mine Position Data  (1000 0000 0000 0000)
+    ///         <see cref="PuzzleItemsCombo" /> & 0x40 => Mine Detonator Body (0100 0000 0000 0000)
+    ///         <see cref="PuzzleItemsCombo" /> & 0x80 => Mine Position Data  (1000 0000 0000 0000)
     ///     When Lara has both Mine Detonator Body and Mine Position Data before combining them: (1100 0000 0000 0000)
     /// </remarks>
     public MemoryWatcher<ushort> PuzzleItemsCombo => (MemoryWatcher<ushort>) Watchers["PuzzleItemsCombo"];
@@ -67,7 +67,7 @@ internal class GameData : LaterClassicGameData
     /// </summary>
     /// <remarks>
     ///     The corresponding bits are relevant for the autosplitter's logic:
-    ///         <see cref="KeyItems"/> & 2 => Hypostyle Key (0000 0000 0000 0010)
+    ///         <see cref="KeyItems" /> & 2 => Hypostyle Key (0000 0000 0000 0010)
     /// </remarks>
     public MemoryWatcher<ushort> KeyItems => (MemoryWatcher<ushort>) Watchers["KeyItems"];
 

@@ -49,7 +49,7 @@ public readonly record struct AddressSignatureInfo
 
     public string BytesAsString()
     {
-        bool signatureIsNullOrEmpty = Signature == null || Signature.Length == 0;
+        bool signatureIsNullOrEmpty = Signature     == null || Signature.Length          == 0;
         bool maskIsNullOrEmpty = SignatureWithMasks == null || SignatureWithMasks.Length == 0;
         if (signatureIsNullOrEmpty && maskIsNullOrEmpty)
             return string.Empty;

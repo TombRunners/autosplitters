@@ -6,12 +6,12 @@ using LiveSplit.Options;
 
 namespace TR4;
 
-/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData,TSettings}"/>.</summary>
+/// <summary>Implementation of <see cref="LaterClassicAutosplitter{TData,TSettings}" />.</summary>
 internal sealed class Autosplitter : LaterClassicAutosplitter<GameData, ComponentSettings>
 {
     private const uint HardcodedCreditsTrigger = 39;
-    private ulong _latestSplitId;
     private TransitionDirection _latestSplitDirection;
+    private ulong _latestSplitId;
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter(Version version) : base(new GameData(), new ComponentSettings(version))

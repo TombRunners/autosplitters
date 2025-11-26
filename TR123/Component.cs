@@ -24,6 +24,20 @@ public class Component : AutoSplitComponent
     private readonly Autosplitter _splitter;
     private readonly LiveSplitState _state;
 
+    private bool? _aslComponentPresent;
+
+    private List<string> _layoutAndTimingMethods = [];
+
+    private TimingMethod? _lsCurrentTimingMethod;
+
+    /// <summary>Allows creation of an event when an important LiveSplit layout or setting change occurs.</summary>
+    private delegate void ImportantLayoutOrSettingChangedDelegate(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent);
+
+    /// <summary>Allows subscribers to know when an important LiveSplit layout or setting change occurs.</summary>
+    private ImportantLayoutOrSettingChangedDelegate _onImportantLayoutOrSettingChanged;
+
+    private bool? _timerWithGameTimePresent;
+
     /// <inheritdoc />
     public Component(Autosplitter autosplitter, LiveSplitState state) : base(autosplitter, state)
     {
@@ -35,17 +49,6 @@ public class Component : AutoSplitComponent
         _state.OnStart += StateOnStart;
         _state.OnUndoSplit += StateOnUndoSplit;
     }
-
-    private bool? _aslComponentPresent;
-    private bool? _timerWithGameTimePresent;
-    private TimingMethod? _lsCurrentTimingMethod;
-    private List<string> _layoutAndTimingMethods = [];
-
-    /// <summary>Allows creation of an event when an important LiveSplit layout or setting change occurs.</summary>
-    private delegate void ImportantLayoutOrSettingChangedDelegate(bool aslComponentIsPresent, bool timerWithGameTimeIsPresent);
-
-    /// <summary>Allows subscribers to know when an important LiveSplit layout or setting change occurs.</summary>
-    private ImportantLayoutOrSettingChangedDelegate _onImportantLayoutOrSettingChanged;
 
     public override string ComponentName => "Tomb Raider I-III Remastered";
 

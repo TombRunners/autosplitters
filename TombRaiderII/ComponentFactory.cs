@@ -11,37 +11,37 @@ using UpdateManager;
 namespace TR2;
 
 /// <summary>
-///     Implementation of <see cref="IComponentFactory"/> for the component.
+///     Implementation of <see cref="IComponentFactory" /> for the component.
 /// </summary>
 /// <remarks>
 ///     This class is necessary for LiveSplit to create and apply metadata to the component.
-///     It must implement all of <see cref="IComponentFactory"/> which is derived from <see cref="IUpdateable"/>
-///     IComponentFactory: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/LiveSplit.Core/UI/Components/IComponentFactory.cs"/>
-///     IUpdateable: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/UpdateManager/IUpdateable.cs"/>
+///     It must implement all of <see cref="IComponentFactory" /> which is derived from <see cref="IUpdateable" />
+///     IComponentFactory: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/LiveSplit.Core/UI/Components/IComponentFactory.cs" />
+///     IUpdateable: <see href="https://github.com/LiveSplit/LiveSplit/blob/master/LiveSplit/UpdateManager/IUpdateable.cs" />
 /// </remarks>
 internal class ComponentFactory : IComponentFactory
 {
     #region IComponentFactory Implementations
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <remarks>
-    ///     Using <see cref="ComponentCategory.Timer"/> makes the component appear in the <c>Timer</c> section of the <c>+</c> menu in LiveSplit's Layout Editor.
+    ///     Using <see cref="ComponentCategory.Timer" /> makes the component appear in the <c>Timer</c> section of the <c>+</c> menu in LiveSplit's Layout Editor.
     /// </remarks>
     public ComponentCategory Category => ComponentCategory.Timer;
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <remarks>
     ///     This is the text you see in the menu which you see after pressing + in the Layout Editor.
     /// </remarks>
     public string ComponentName => "Tomb Raider II and Golden Mask";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <remarks>
     ///     This is the text that appears when you hover over the component in the <c>+</c> menu in LiveSplit's Layout Editor.
     /// </remarks>
     public string Description => "Autosplitter for Tomb Raider II and Golden Mask";
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     /// <param name="state">State passed by LiveSplit</param>
     /// <remarks>
     ///     This loads the component's code into LiveSplit.
@@ -66,7 +66,7 @@ internal class ComponentFactory : IComponentFactory
     ///     Name used for component updates.
     /// </summary>
     /// <remarks>
-    ///     This can be the same as <see cref="IComponentFactory.ComponentName"/>.
+    ///     This can be the same as <see cref="IComponentFactory.ComponentName" />.
     /// </remarks>
     public string UpdateName => ComponentName;
 

@@ -76,7 +76,7 @@ public static class RunStats
         return finishedLevelsTicks;
     }
 
-    /// <summary>Adds level <paramref name="stats" /> to <paramref name="game"/>.</summary>
+    /// <summary>Adds level <paramref name="stats" /> to <paramref name="game" />.</summary>
     /// <param name="game">The level's corresponding <see cref="Game" /></param>
     /// <param name="stats"><see cref="LevelStats" /> to add</param>
     public static void AddLevelStats(Game game, LevelStats stats)

@@ -5,13 +5,10 @@ using Util;
 
 namespace TR1;
 
-/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}"/>.</summary>
+/// <summary>Implementation of <see cref="ClassicAutosplitter{TData}" />.</summary>
 internal sealed class Autosplitter : ClassicAutosplitter<GameData>
 {
     private bool _newGamePageSelected;
-
-    private bool IsUnfinishedBusiness => Data.GameVersion == (uint) Tr1Version.AtiUnfinishedBusiness;
-    private uint? LastRealLevel => IsUnfinishedBusiness ? Data.Level.Current : (uint?) GetLastRealLevel(Data.Level.Current);
 
     /// <summary>A constructor that primarily exists to handle events/delegations and set static values.</summary>
     public Autosplitter(Version version) : base(version, new GameData())
@@ -24,6 +21,9 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
         GameData.CompletedLevelTicks.Capacity = LevelCount;
         Data.OnGameVersionChanged += Settings.SetGameVersion;
     }
+
+    private bool IsUnfinishedBusiness => Data.GameVersion == (uint) Tr1Version.AtiUnfinishedBusiness;
+    private uint? LastRealLevel => IsUnfinishedBusiness ? Data.Level.Current : (uint?) GetLastRealLevel(Data.Level.Current);
 
     public override TimeSpan? GetGameTime(LiveSplitState state)
     {
@@ -59,10 +59,10 @@ internal sealed class Autosplitter : ClassicAutosplitter<GameData>
     }
 
     /// <summary>
-    ///     Gets the last non-cutscene <see cref="Tr1Level"/> the runner was on.
+    ///     Gets the last non-cutscene <see cref="Tr1Level" /> the runner was on.
     /// </summary>
-    /// <param name="level"><see cref="Tr1Level"/></param>
-    /// <returns>The last non-cutscene <see cref="Tr1Level"/></returns>
+    /// <param name="level"><see cref="Tr1Level" /></param>
+    /// <returns>The last non-cutscene <see cref="Tr1Level" /></returns>
     private static Tr1Level? GetLastRealLevel(uint level)
     {
         var lastLevel = (Tr1Level) level;

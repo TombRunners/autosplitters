@@ -24,6 +24,14 @@ internal class GameMemory
 
     internal bool WatchersPopulated => _watchersExe.Count > 0 && _watchersTR6R.Count > 0;
 
+    internal void UpdateMemoryWatchers(Process gameProcess)
+    {
+        _watchersExe.UpdateAll(gameProcess);
+        _watchersTR4R.UpdateAll(gameProcess);
+        _watchersTR5R.UpdateAll(gameProcess);
+        _watchersTR6R.UpdateAll(gameProcess);
+    }
+
     #region EXE Signatures and MemoryWatchers
 
     /// <summary>Address signature information for the game's EXE.</summary>
@@ -623,12 +631,4 @@ internal class GameMemory
     }
 
     #endregion
-
-    internal void UpdateMemoryWatchers(Process gameProcess)
-    {
-        _watchersExe.UpdateAll(gameProcess);
-        _watchersTR4R.UpdateAll(gameProcess);
-        _watchersTR5R.UpdateAll(gameProcess);
-        _watchersTR6R.UpdateAll(gameProcess);
-    }
 }

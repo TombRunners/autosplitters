@@ -10,6 +10,9 @@ namespace TR123;
 
 public static class GameData
 {
+    /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
+    private const int IgtTicksPerSecond = 30;
+
     private static readonly VersionDetector VersionDetector = new(
         ["tomb123"],
         new Dictionary<string, uint>
@@ -28,15 +31,25 @@ public static class GameData
 
     private static readonly GameMemory GameMemory = new();
 
-    /// <summary>Tests if the passes <paramref name="inventoryChosen" /> value matches a game's passport.</summary>
-    /// <param name="inventoryChosen">Value of chosen inventory item</param>
-    /// <returns><see langword="true" /> if a game's passport was chosen, <see langword="false" /> otherwise</returns>
-    public static bool PassportWasChosen(short inventoryChosen)
+    /// <summary>Contains the sizes of the save game structs for each base <see cref="Game" />.</summary>
+    private static readonly ImmutableDictionary<Game, uint> GameSaveStructSizes = new Dictionary<Game, uint>(3)
     {
-        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
-        bool passportWasChosen = inventoryChosen is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
-        return passportWasChosen;
-    }
+        { Game.Tr1, 0x30 },
+        { Game.Tr2, 0x30 },
+        { Game.Tr3, 0x40 },
+    }.ToImmutableDictionary();
+
+    /// <summary>Sometimes directly read, especially for reading level times.</summary>
+    internal static Process GameProcess;
+
+    /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
+    internal static uint CurrentGameVersion;
+
+    /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
+    public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
+
+    /// <summary>Allows subscribers to know when and what game version was found.</summary>
+    public static GameVersionChangedDelegate OnGameVersionChanged;
 
     /// <summary>Reads the current active game or expansion, accounting for NG+ variations for base games.</summary>
     public static Game CurrentActiveGame
@@ -95,43 +108,6 @@ public static class GameData
 
     #endregion
 
-    #region DLL Watcher Accessors
-
-    /// <inheritdoc cref="GameMemory.CineWatchers"/>
-    public static MemoryWatcher<short> Cinematic => GameMemory.CineWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.HealthWatchers" />
-    public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.InventoryChosenWatchers" />
-    public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.InventoryModeWatchers" />
-    public static MemoryWatcher<InventoryMode> InventoryMode => GameMemory.InventoryModeWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.LevelCompleteWatchers" />
-    public static MemoryWatcher<bool> LevelComplete => GameMemory.LevelCompleteWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.LevelIgtWatchers" />
-    public static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgtWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.LoadFadeWatchers" />
-    public static MemoryWatcher<uint> LoadFade => GameMemory.LoadFadeWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.OverlayFlagWatchers" />
-    public static MemoryWatcher<OverlayFlag> OverlayFlag => GameMemory.OverlayFlagWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.TitleLoadedWatchers" />
-    public static MemoryWatcher<bool> TitleLoaded => GameMemory.TitleLoadedWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.BonusFlagWatchers" />
-    private static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlagWatchers[CurrentActiveBaseGame];
-
-    /// <inheritdoc cref="GameMemory.LevelWatchers" />
-    private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
-
-    #endregion
-
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the current level.</summary>
     /// <returns>Current level of the game</returns>
     public static uint CurrentLevel => RealGameLevel(true);
@@ -139,6 +115,19 @@ public static class GameData
     /// <summary>Based on <see cref="CurrentActiveBaseGame" />, determines the old level.</summary>
     /// <returns>Old level of the game</returns>
     public static uint OldLevel => RealGameLevel(false);
+
+    /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
+    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
+
+    /// <summary>Tests if the passes <paramref name="inventoryChosen" /> value matches a game's passport.</summary>
+    /// <param name="inventoryChosen">Value of chosen inventory item</param>
+    /// <returns><see langword="true" /> if a game's passport was chosen, <see langword="false" /> otherwise</returns>
+    public static bool PassportWasChosen(short inventoryChosen)
+    {
+        const short tr1PassportChosen = 71, tr2PassportChosen = 120, tr3PassportChosen = 145;
+        bool passportWasChosen = inventoryChosen is tr1PassportChosen or tr2PassportChosen or tr3PassportChosen;
+        return passportWasChosen;
+    }
 
     /// <summary>Accounts for special cases of Level readings to match the expected values at those points.</summary>
     /// <param name="current">Whether to use Level.Current; false means to use Level.Old.</param>
@@ -168,29 +157,6 @@ public static class GameData
         bool levelCutsceneIsFirstLevel = levelCutsceneValue is Tr1Level.Caves or Tr1Level.AtlanteanStronghold;
         return levelCutsceneIsFirstLevel ? (uint) levelCutsceneValue : level;
     }
-
-    /// <summary>Test that the game has fully initialized based on expected memory readings.</summary>
-    private static bool GameIsInitialized => GameMemory.ActiveGame.Old is >= 0 and <= 2;
-
-    /// <summary>Contains the sizes of the save game structs for each base <see cref="Game" />.</summary>
-    private static readonly ImmutableDictionary<Game, uint> GameSaveStructSizes = new Dictionary<Game, uint>(3)
-    {
-        { Game.Tr1, 0x30 },
-        { Game.Tr2, 0x30 },
-        { Game.Tr3, 0x40 },
-    }.ToImmutableDictionary();
-
-    /// <summary>Sometimes directly read, especially for reading level times.</summary>
-    internal static Process GameProcess;
-
-    /// <summary>Used to determine which addresses to watch and what text to display in the settings menu.</summary>
-    internal static uint CurrentGameVersion;
-
-    /// <summary>Allows creation of an event regarding when and what game version was found.</summary>
-    public delegate void GameVersionChangedDelegate(VersionDetectionResult result);
-
-    /// <summary>Allows subscribers to know when and what game version was found.</summary>
-    public static GameVersionChangedDelegate OnGameVersionChanged;
 
     /// <summary>Updates <see cref="GameData" /> implementation and its addresses' values.</summary>
     /// <returns><see langword="true" /> if game data was updated, <see langword="false" /> otherwise</returns>
@@ -262,9 +228,6 @@ public static class GameData
         GameProcess.Exited += static (_, _) => OnGameVersionChanged.Invoke(new VersionDetectionResult.None());
     }
 
-    /// <summary>Used to calculate <see cref="TimeSpan" />s from IGT ticks.</summary>
-    private const int IgtTicksPerSecond = 30;
-
     /// <summary>Converts IGT ticks to a double representing time elapsed in decimal seconds.</summary>
     public static double LevelTimeAsDouble(ulong ticks) => (double) ticks / IgtTicksPerSecond;
 
@@ -290,4 +253,41 @@ public static class GameData
 
         return finishedLevelsTicks;
     }
+
+    #region DLL Watcher Accessors
+
+    /// <inheritdoc cref="GameMemory.CineWatchers" />
+    public static MemoryWatcher<short> Cinematic => GameMemory.CineWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.HealthWatchers" />
+    public static MemoryWatcher<short> Health => GameMemory.HealthWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.InventoryChosenWatchers" />
+    public static MemoryWatcher<short> InventoryChosen => GameMemory.InventoryChosenWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.InventoryModeWatchers" />
+    public static MemoryWatcher<InventoryMode> InventoryMode => GameMemory.InventoryModeWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelCompleteWatchers" />
+    public static MemoryWatcher<bool> LevelComplete => GameMemory.LevelCompleteWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelIgtWatchers" />
+    public static MemoryWatcher<uint> LevelIgt => GameMemory.LevelIgtWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LoadFadeWatchers" />
+    public static MemoryWatcher<uint> LoadFade => GameMemory.LoadFadeWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.OverlayFlagWatchers" />
+    public static MemoryWatcher<OverlayFlag> OverlayFlag => GameMemory.OverlayFlagWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.TitleLoadedWatchers" />
+    public static MemoryWatcher<bool> TitleLoaded => GameMemory.TitleLoadedWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.BonusFlagWatchers" />
+    private static MemoryWatcher<bool> BonusFlag => GameMemory.BonusFlagWatchers[CurrentActiveBaseGame];
+
+    /// <inheritdoc cref="GameMemory.LevelWatchers" />
+    private static MemoryWatcher<byte> Level => GameMemory.LevelWatchers[CurrentActiveBaseGame];
+
+    #endregion
 }

@@ -13,15 +13,6 @@ public class Tr6LevelTransitionSetting(string name, string oldLevel, string next
     private const string NextName = "Next";
     private const string ActiveName = "Active";
 
-    public readonly string OldLevel = oldLevel;
-    public readonly string NextLevel = nextLevel;
-    public readonly string Name = name;
-    public readonly string ToolTip = toolTip;
-    public readonly string Section = section;
-
-    public bool Active { get; private set; } = true;
-    public void UpdateActive(bool active) => Active = active;
-
     private static readonly ImmutableDictionary<string, Tr6Level> LevelNameMap = new Dictionary<string, Tr6Level>
     {
         { "FRONTEND.GMX", Tr6Level.MainMenu },
@@ -60,6 +51,15 @@ public class Tr6LevelTransitionSetting(string name, string oldLevel, string next
         { "CUTSCENE\\CS_15_24.GMX", Tr6Level.EckhardtsLabCutscene3 },
     }.ToImmutableDictionary();
 
+    public readonly string Name = name;
+    public readonly string NextLevel = nextLevel;
+
+    public readonly string OldLevel = oldLevel;
+    public readonly string Section = section;
+    public readonly string ToolTip = toolTip;
+
+    public bool Active { get; private set; } = true;
+
     public ulong Id
     {
         get
@@ -75,6 +75,8 @@ public class Tr6LevelTransitionSetting(string name, string oldLevel, string next
             return ulong.Parse($"{oldLevelNumber:D3}{nextLevelNumber:D3}");
         }
     }
+
+    public void UpdateActive(bool active) => Active = active;
 
     public XmlNode ToXmlElement(XmlDocument document)
     {
